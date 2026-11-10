@@ -108,3 +108,57 @@ class Planner(unittest.TestCase):
 
     def test_no_space_relaxation_and_scope(self):
         self.assertEqual(self._p("노형동 임대료 얼마야?", False)["status"], "범위밖")
+
+
+class RunnerX2(unittest.TestCase):
+    """실험 X2 연결 시험의 기본 경로(05 문서 11-2절)."""
+    def _order(self, q="비 오는 날 아라동 방문은?"):
+        import planner
+        import runner
+        return runner.build_order(planner.plan(qparse.parse(q), {"center_db": False}))
+
+    def test_schema_and_success(self):
+        import runner
+        o = self._order()
+        self.assertEqual(runner.validate(o), [])
+        r = runner.run(o, {"question": "비 오는 날 아라동 방문은?"})
+        self.assertEqual(r["status"], "성공")
+        judged = next(v for v in r["store"].values() if "judgement" in v)["judgement"]
+        self.assertEqual([j["name"] for j in judged], ["아라동"])  # 동네 필터 전달
+
+    def test_schema_error(self):
+        import runner
+        o = self._order()
+        o["tasks"][1]["depends_on"] = ["t9"]
+        self.assertTrue(runner.validate(o))
+        o2 = self._order()
+        o2["tasks"][1]["out"] = o2["tasks"][0]["out"]  # 저장소 키 충돌
+        self.assertTrue(any("충돌" in e for e in runner.validate(o2)))
+
+    def test_retry_then_success(self):
+        import runner
+        r = runner.run(self._order(), {"inject": {"t1": "실행"}})  # 실행 오류는 1회 재시도로 회복
+        self.assertEqual(r["status"], "성공")
+        self.assertEqual(next(x for x in r["log"] if x["task_id"] == "t1")["attempts"], 2)
+
+    def test_dependency_skip_partial(self):
+        import runner
+        r = runner.run(self._order(), {"inject": {"t3": "계산"}})  # S3 실패 → 의존 작업만 건너뜀
+        self.assertEqual(r["status"], "부분 결과")
+        st = {x["task_id"]: x["status"] for x in r["log"]}
+        self.assertEqual(st["t1"], "성공")
+        self.assertEqual(st["t3"], "실패")
+        self.assertIn("건너뜀", [st["t4"], st["t5"]])
+
+    def test_timeout(self):
+        import runner
+        o = self._order()
+        o["policy"]["timeout_ms"] = 0
+        r = runner.run(o, {})
+        self.assertTrue(any(x.get("reason") == "시간 초과" for x in r["log"]))
+
+    def test_parallel_same_result(self):
+        import runner
+        o = self._order("노형동 생활 진단해줘")
+        a, b = runner.run(o, {}), runner.run(o, {"parallel": True})
+        self.assertEqual(sorted(a["store"]), sorted(b["store"]))
