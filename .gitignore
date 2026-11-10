@@ -1,0 +1,29 @@
+# 비밀값·로컬 환경
+.env
+.venv/
+__pycache__/
+.DS_Store
+
+# 원본·중간 데이터(용량·재배포 조건 미확인). 실행에는 data/tables만 쓴다.
+data/raw/
+data/interim/
+
+# 작업용 기록(개인 경로·내부 검토가 들어 있음)
+CLAUDE.md
+HANDOFF.md
+TODO.md
+interaction/
+.claude/
+.agents/
+docs/조사/
+docs/기획/
+docs/평가/화면/
+dist/
+
+# 화면 빌드 부산물(web/out은 Node 없는 실행을 위해 저장소에 둔다)
+web/node_modules/
+web/.next/
+web/test-results/
+web/playwright-report/
+web/tsconfig.tsbuildinfo
+web/next-env.d.ts

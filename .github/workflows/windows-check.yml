@@ -1,0 +1,50 @@
+# 센터 PC(운영체제 미공개, Intel·NVIDIA 사양이라 Windows로 추정)를 대신해 Windows에서 설치·시험·서버 응답을 확인한다.
+name: windows-check
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      # 사용자가 실행하는 설치 스크립트를 그대로 쓴다. 끝의 pause가 입력을 기다리지 않게 빈 입력을 넣는다.
+      - name: setup_windows.bat
+        shell: cmd
+        run: echo.| call scripts\setup_windows.bat
+
+      - name: unit tests (LLM 없음)
+        shell: cmd
+        env:
+          LLM_BACKEND: rule
+        run: .venv\Scripts\python -m unittest discover -s tests
+
+      # run_windows.bat과 같은 명령으로 서버를 띄우고 화면·질문 응답을 확인한다.
+      - name: server smoke test
+        shell: pwsh
+        env:
+          LLM_BACKEND: rule
+        run: |
+          $p = Start-Process -FilePath ".venv\Scripts\python.exe" -ArgumentList "-m","uvicorn","app.api:app","--host","127.0.0.1","--port","8501" -PassThru
+          $ok = $false
+          for ($i = 0; $i -lt 60; $i++) {
+            try { $h = Invoke-RestMethod http://127.0.0.1:8501/api/health; if ($h.status -eq "ok") { $ok = $true; break } } catch {}
+            Start-Sleep -Seconds 1
+          }
+          if (-not $ok) { throw "server did not start" }
+          $h | ConvertTo-Json
+          $page = Invoke-WebRequest http://127.0.0.1:8501/ -UseBasicParsing
+          if ($page.StatusCode -ne 200) { throw "web page failed" }
+          $body = [Text.Encoding]::UTF8.GetBytes((@{ question = "노형동 상권 어때?" } | ConvertTo-Json))
+          $t = Measure-Command { $a = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8501/api/ask -ContentType "application/json; charset=utf-8" -Body $body }
+          if ($a.status -ne "ok") { throw "ask failed: $($a.status)" }
+          "ask ok in $([math]::Round($t.TotalSeconds, 2)) s (GitHub runner, not center PC)"
+          Stop-Process -Id $p.Id

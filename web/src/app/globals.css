@@ -1,0 +1,143 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+@import "../styles/krds-tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+  --font-heading: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* shadcn 변수를 KRDS 토큰에 연결한다. 값은 krds-tokens.css에서만 정한다. */
+  --background: var(--krds-surface-white);
+  --foreground: var(--krds-text-basic);
+  --card: var(--krds-surface-white);
+  --card-foreground: var(--krds-text-basic);
+  --popover: var(--krds-surface-white);
+  --popover-foreground: var(--krds-text-basic);
+  --primary: var(--krds-button-primary-fill);
+  --primary-foreground: #ffffff;
+  --secondary: var(--krds-button-secondary-fill);
+  --secondary-foreground: var(--krds-text-primary);
+  --muted: var(--krds-surface-gray-subtler);
+  --muted-foreground: var(--krds-text-subtle);
+  --accent: var(--krds-surface-gray-subtler);
+  --accent-foreground: var(--krds-text-basic);
+  --destructive: var(--krds-text-danger);
+  --border: var(--krds-border-gray-light);
+  --input: var(--krds-border-gray);
+  --ring: var(--krds-border-primary);
+  --radius: var(--krds-radius-medium1);
+  --chart-open: var(--krds-element-primary);
+  --chart-close: var(--krds-element-point);
+  --chart-reference: var(--krds-element-gray);
+  --chart-grid: var(--krds-surface-gray-subtle);
+  --modal-shadow: 0 0 0.125rem 0 var(--krds-alpha-shadow2), 0 1rem 1.5rem 0 var(--krds-alpha-shadow3);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-size: var(--krds-fs-body-medium);
+    line-height: 1.5;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  button, a, summary, label, select, [role="button"] { touch-action: manipulation; }
+  table { font-variant-numeric: tabular-nums; }
+  h1 { font-size: var(--krds-fs-heading-large); font-weight: 700; line-height: 1.3; }
+  h2 { font-size: var(--krds-fs-heading-medium); font-weight: 700; line-height: 1.35; }
+  h3 { font-size: var(--krds-fs-heading-small); font-weight: 700; line-height: 1.4; }
+  a { color: var(--krds-link-default); }
+  a:hover { color: var(--krds-link-hover); }
+  :focus-visible { outline: 2px solid var(--krds-border-primary); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+/* 입력 요소는 휴대폰 확대를 막기 위해 16px 이상을 유지한다. */
+.field {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--krds-border-gray);
+  border-radius: var(--krds-radius-medium1);
+  background-color: var(--krds-surface-white);
+  color: var(--krds-text-basic);
+  font-size: max(1rem, var(--krds-fs-body-small));
+}
+
+/* KRDS 모달 토큰: 폭 400·560·760px, 모서리 xlarge1, 배경 dim, 그림자 shadow2+shadow3 */
+.krds-modal {
+  border-radius: var(--krds-radius-xlarge1);
+  border: 1px solid var(--krds-border-gray);
+  box-shadow: var(--modal-shadow);
+  padding: 1.5rem;
+  max-height: calc(100dvh - 3rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (min-width: 768px) {
+  .krds-modal { padding: 2.5rem; }
+}
+
+@media print {
+  @page { size: A4; margin: 16mm; }
+  html { font-size: 11pt !important; }
+  body { background: #ffffff; color: #000000; }
+  a { color: inherit; text-decoration: none; }
+  .print-avoid { break-inside: avoid; }
+}
