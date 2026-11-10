@@ -4,7 +4,8 @@
 - 자료 선택: 지표 사전(data/metric_dict.json)에서 지표의 공개·센터 경로를 찾는다. 실행 환경(env.center_db)에 센터 DB가 있으면 센터 경로를 앞에 둔다.
 - 축 확인: 시간대 세분(T13 등)은 '시간' 단위 자료(센터 4-11·3-04·1-14)만 지원한다.
 - 완화 순서(바꿀 수 없음): 조건 → 시간 해상도(시간대 → 일 → 월) → 세분·대상. 동네는 완화하지 않는다. 완화한 내용은 relaxed에 적어 답에 쓴다.
-- 레시피(S3)·통계 검정(S6)이 필요한 유형은 해당 단계를 붙인다.
+- 레시피(S3)·통계 검정(S6)이 필요한 유형은 해당 단계를 붙인다. 학습하는 레시피는 S3 앞에 S2 학습 전 점검을 둔다.
+- Sub 순서는 고정이 아니다. 유형별 경로는 TYPE_PLAN에 있다.
 """
 import json
 import sys
@@ -15,6 +16,9 @@ import qtuple as Q  # noqa: E402
 
 MD = json.loads((Q.ROOT / "data" / "metric_dict.json").read_text(encoding="utf-8"))
 CAT = {r["id"]: r for r in json.loads((Q.ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))}
+# 센터 전용 지표 → 공개 자료로 대신 답할 지표(완화 답, 사용자 결정 2026-11-11). 대신한 내용은 relaxed에 적는다.
+CENTER_SUBSTITUTE = {"매출": ["일평균방문", "점포수"], "시간대방문": ["일평균방문"], "시간대버스": ["버스일평균"]}
+NO_CHECK = {"R3", "R8", "R9"}  # 미리 계산한 검정 결과(R3)·센터 전용(R8·R9)은 점검하지 않는다
 FOOD = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점", "편의점", "음식점"}
 
 # 유형별 기본 지표(질문에 지표가 없을 때)
@@ -62,6 +66,8 @@ def plan(t, env=None):
     metrics = list(t["metric"]) or ([DEFAULT_METRIC.get(t["type"])] if DEFAULT_METRIC.get(t["type"]) else [])
     if t["type"] == "T8" and not t["metric"] and ("버스" in str(t.get("target")) or t.get("target") == "어르신"):
         metrics = ["버스일평균"]
+    if t["type"] == "T9" and not metrics:  # 유사도 특성(R5)의 재료: 업종·방문·버스
+        metrics = ["점포수", "일평균방문", "버스일평균"]
     if t["type"] in ("T2", "T14") and not metrics:
         metrics = ["점포수", "일평균방문", "버스일평균"]
     # 음식점만 있는 지표에 다른 업종이 오면 범위 밖(사전 해석기와 같은 규칙)
@@ -72,6 +78,8 @@ def plan(t, env=None):
     subs, recipe = TYPE_PLAN.get(t["type"], (["S1"], None))
     if t["type"] == "T8" and metrics == ["버스일평균"]:
         recipe = "R2"
+    if any(m in ("5년생존율", "조건부생존") for m in metrics) and t.get("target"):
+        subs, recipe = ["S1", "S3", "S4"], "R4"  # 업종 생존은 업종 묶음 카플란-마이어(동네별 표에는 업종 구분이 없다)
     breakdown = t.get("breakdown")
     if t["type"] == "T13" or any(m in ("시간대방문", "시간대버스") for m in metrics):
         breakdown = "시간대"  # 시간대 패턴은 질문에 '시간대'라는 말이 없어도 시간대 세분이다
@@ -98,9 +106,15 @@ def plan(t, env=None):
             breakdown = None
             if t["type"] == "T13":
                 recipe = None
-        if route == "center_only":
-            out["status"] = "센터에서만 가능"
-            out["notes"].append(f"{Q.METRICS.get(m, m)}: {src['note']}")
+        if route == "center_only":  # 완화 답: 공개 대체 지표로 답하고, 원래 지표는 센터에서 볼 수 있다고 안내한다
+            subs_m = [x for x in CENTER_SUBSTITUTE.get(m, []) if pick_source(x, env)[0] == "public"]
+            if not subs_m:
+                out["notes"].append(f"{Q.METRICS.get(m, m)}: {src['note']}")
+                continue
+            out["relaxed"].append(f"{Q.METRICS.get(m, m)}: {src['note']}({src['dataset']}) → {'·'.join(subs_m)}로 대신 답함")
+            for x in subs_m:
+                flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}
+                out["steps"].append({"sub": "S1", "op": "조회", "metric": x, "route": "public", "source": pick_source(x, env)[1], "filter": flt, "breakdown": breakdown, "instead_of": m})
             continue
         if route is None:
             out["notes"].append(f"{m}: 지표 사전에 없음")
@@ -111,6 +125,8 @@ def plan(t, env=None):
     if t["cond"] and t["type"] not in ("T6",):
         out["relaxed"].append(f"조건({', '.join(t['cond'])})은 이 질문 유형에서 쓰지 않음")
     for s in subs[1:]:
+        if s == "S3" and recipe and recipe not in NO_CHECK:  # 학습 전 점검(S2)을 S3 앞에 둔다(사용자 결정 2026-11-11)
+            out["steps"].append({"sub": "S2", "op": "학습 전 점검", "recipe": recipe})
         step = {"sub": s}
         if s == "S3":
             step.update(op="레시피 학습·검증·추론", recipe=recipe)
@@ -123,8 +139,6 @@ def plan(t, env=None):
         elif s == "S4":
             step.update(op="차트·지도")
         out["steps"].append(step)
-    if out["steps"] and out["status"] == "센터에서만 가능" and any(st["sub"] == "S1" for st in out["steps"]):
-        out["status"] = "ok"  # 완화해서 답할 수 있으면 답한다(완화 내용은 relaxed에)
     seen, uniq = set(), []
     for st in out["steps"]:  # 같은 후속 단계(S4 등) 중복 제거
         key = json.dumps(st, ensure_ascii=False, sort_keys=True, default=str)

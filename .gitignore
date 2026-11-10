@@ -37,3 +37,5 @@ data/x1/train.jsonl
 data/x1/valid.jsonl
 data/x1/bank.jsonl
 .vscode/
+models/cache/
+models/registry.json

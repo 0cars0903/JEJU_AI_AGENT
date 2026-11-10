@@ -97,8 +97,12 @@ class Planner(unittest.TestCase):
     def test_bus_hour_maps_to_bus(self):
         self.assertEqual(self._p("탑동 버스 몇시에 제일 많이 타?", True)["steps"][0]["metric"], "시간대버스")
 
-    def test_sales_center_only(self):
-        self.assertEqual(self._p("노형동 매출 어때?", False)["status"], "센터에서만 가능")
+    def test_sales_center_only(self):  # 완화 답: 공개 지표로 대신 답하고 안내(2026-11-11 결정)
+        p = self._p("노형동 매출 어때?", False)
+        self.assertEqual(p["status"], "ok")
+        self.assertTrue(any("대신 답함" in r for r in p["relaxed"]))
+        self.assertTrue(all(s.get("metric") != "매출" for s in p["steps"]))
+        self.assertTrue(any(s.get("metric") == "매출" for s in self._p("노형동 매출 어때?", True)["steps"]))
         self.assertEqual(self._p("노형동 매출 어때?", True)["steps"][0]["route"], "center")
 
     def test_recipe_steps(self):
@@ -162,3 +166,78 @@ class RunnerX2(unittest.TestCase):
         o = self._order("노형동 생활 진단해줘")
         a, b = runner.run(o, {}), runner.run(o, {"parallel": True})
         self.assertEqual(sorted(a["store"]), sorted(b["store"]))
+
+
+class RecipesW5(unittest.TestCase):
+    """W5: 레시피 등록부·학습 전 점검(S2)·S3 학습·검증·추론·S6 관문·캐시."""
+
+    def _plan(self, q):
+        import planner
+        return planner.plan(qparse.parse(q), {"center_db": False})
+
+    def test_registry_has_r1_to_r9(self):
+        import recipes
+        self.assertEqual(sorted(k for k in recipes.REG if k.startswith("R")), [f"R{i}" for i in range(1, 10)])
+        for k in ("answers", "target", "family", "pass", "fallback"):
+            self.assertIn(k, recipes.REG["R1"])
+
+    def test_check_before_train(self):  # 학습하는 레시피는 S3 바로 앞에 S2 점검
+        for q in ["노형동 다음주 방문 예측해줘", "올해 노형동 폐업 이상하게 많아?", "노형동이랑 비슷한 동네는?"]:
+            st = self._plan(q)["steps"]
+            i = next(i for i, s in enumerate(st) if s["sub"] == "S3")
+            self.assertEqual((st[i - 1]["sub"], st[i - 1]["op"]), ("S2", "학습 전 점검"), q)
+
+    def test_r3_has_no_check(self):  # 미리 계산한 검정 결과(R3)는 점검하지 않는다
+        st = self._plan("비 오면 노형동 사람 줄어?")["steps"]
+        self.assertFalse(any(s.get("op") == "학습 전 점검" for s in st))
+
+    def test_check_fail_skips_training(self):
+        import pandas as pd
+        import recipes
+        short = pd.DataFrame({"dong": ["노형동"] * 5, "ym": pd.date_range("2025-01-01", periods=5, freq="MS").astype(str), "value": [1.0] * 5})
+        chk = recipes.check("R2", {"dong": ["노형동"]}, [short])
+        self.assertFalse(chk["pass"])
+        out = recipes.run("R2", {"dong": ["노형동"]}, [short], chk)
+        self.assertFalse(out["trained"])
+        self.assertTrue(out["fallback"])
+
+    def test_center_only_recipe(self):
+        import recipes
+        with self.assertRaises(recipes.RecipeError):
+            recipes.run("R9", {})
+
+    def test_r7_runner_and_s6(self):
+        import runner
+        r = runner.run(runner.build_order(self._plan("올해 노형동 폐업 이상하게 많아?")), {})
+        self.assertEqual(r["status"], "성공")
+        j = [v for v in r["store"].values() if "judgement" in v][0]["judgement"]
+        self.assertIn(j[0]["claim"], ("많음", "적음", "보통 범위"))
+
+    def test_r5_neighbors(self):
+        import recipes
+        out = recipes.run("R5", {"dong": ["노형동"]})
+        self.assertEqual(len(out["neighbors"]["노형동"]), 5)
+        self.assertNotIn("노형동", out["neighbors"]["노형동"])
+
+    def test_r2_gate_judged_by_s6(self):  # 관문 판정은 S6(s6.gate)이 하고 결과에 사용 여부를 붙인다
+        import runner
+        r = runner.run(runner.build_order(self._plan("노형동 버스 다음달 얼마나 탈까?")), {})
+        g = [x for v in r["store"].values() if "judgement" in v for x in v["judgement"] if x["name"].startswith("관문")]
+        self.assertEqual(len(g), 1)
+        self.assertIn("use_forecast", g[0])
+
+    def test_cache_hit(self):
+        import tempfile
+        import recipes
+        with tempfile.TemporaryDirectory() as d:
+            old = recipes.CACHE, recipes.REGISTRY
+            recipes.CACHE, recipes.REGISTRY = Path(d) / "c", Path(d) / "reg.json"
+            try:
+                calls = []
+                build = lambda: calls.append(1) or {"gate_input": {"mase": 0.5}}  # noqa: E731
+                a = recipes._cached("RX", ["f:1:1"], {"a": 1}, build)
+                b = recipes._cached("RX", ["f:1:1"], {"a": 1}, build)
+                c = recipes._cached("RX", ["f:2:1"], {"a": 1}, build)  # 자료 판이 바뀌면 다시 학습
+            finally:
+                recipes.CACHE, recipes.REGISTRY = old
+            self.assertEqual((a["cache"], b["cache"], c["cache"], len(calls)), ("miss", "hit", "miss", 2))

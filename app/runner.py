@@ -6,7 +6,7 @@
   · 실패하면 그 작업과 그 작업에 의존하는 작업만 건너뛴다(partial). 실행 오류는 같은 작업을 1회 다시 실행한다.
   · 기본은 순차 실행. env["parallel"]=True면 의존 관계가 없는 작업을 스레드로 함께 돌린다(실험 X2에서 시간 비교).
   · env["inject"]={task_id: 오류 유형}으로 오류를 주입한다(실험 X2).
-- 이번 최소판의 Sub 범위: S0 자료 탐색, S1 공개 경로 조회(지표 사전의 표), S2 기술 통계·추세, S3 레시피 R2·R3(나머지는 '미구현'으로 부분 결과), S4 차트 명세, S5 통과, S6 판정.
+- 이번 최소판의 Sub 범위: S0 자료 탐색, S1 공개 경로 조회(지표 사전의 표), S2 기술 통계·추세, S2 학습 전 점검, S3 레시피 R1~R7(app/recipes.py, W5), R8·R9는 센터 전용, S4 차트 명세, S5 통과, S6 판정.
   센터 경로(S1 center)는 W9 어댑터 전이라 '센터 DB 미연결' 실행 오류로 처리한다.
 """
 import json
@@ -20,6 +20,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import qtuple as Q  # noqa: E402
+import recipes  # noqa: E402
 import s6  # noqa: E402
 from tools import REST_MAP  # noqa: E402
 
@@ -119,6 +120,10 @@ def s1_query(task, store, env):
             bm = bm[bm["user_type"] == "경로"]
         g = bm.groupby(["dong", "ym"]).agg(n=("n", "sum"), days=("days", "first")).reset_index()
         return {"table": g.assign(value=g["n"] / g["days"])[["dong", "ym", "value"]], "dataset": "743 버스", "unit": "명/일"}
+    if m in ("5년생존율", "조건부생존"):  # 동네별 카플란-마이어(음식점 전체, 07 문서)
+        k = by_dong(pd.read_parquet(TAB / "km.parquet")).pivot_table(index="dong", columns="year", values="survival_pct")
+        v = k[5] if m == "5년생존율" else k[5] / k[2] * 100
+        return {"table": v.rename("value").reset_index(), "dataset": "780 음식점 인허가(동네별, 업종 구분 없음)", "unit": "%"}
     if m == "거주연령구성":
         a = by_dong(pd.read_parquet(TAB / "pop_age.parquet"))
         a = a[a["year"] == a["year"].max()].groupby(["dong", "ageGroup"])["resd"].sum().rename("value").reset_index()
@@ -136,6 +141,11 @@ def s0_catalog(task, store, env):
 
 def s2_describe(task, store, env):
     tabs = [store[k]["table"] for k in task["in"] if k in store and "table" in store[k]]
+    if task.get("op") == "학습 전 점검":  # S3 앞: 레시피 자료가 학습할 만한지(동네별 기간·결측·0값, 표본 수)
+        try:
+            return {"check": recipes.check(task.get("recipe"), task.get("filter"), tabs), "recipe": task.get("recipe")}
+        except recipes.RecipeError as e:
+            raise TaskError("계산", str(e))
     if not tabs:
         raise TaskError("계산", "입력 표 없음")
     timed = [x for x in tabs if "year" in x or "ym" in x]  # 추세를 볼 수 있는 표를 먼저
@@ -160,23 +170,20 @@ def s2_describe(task, store, env):
 def s3_recipe(task, store, env):
     r = task.get("recipe")
     if r == "R3":  # 조건 효과: 08 문서의 동네별 비 효과(가설 검정 결과)
-        rt = json.loads((Q.ROOT / "data" / "interim" / "gates" / "rain_test.json").read_text(encoding="utf-8"))["per_dong"] if (Q.ROOT / "data" / "interim" / "gates" / "rain_test.json").exists() else None
-        if rt is None:
+        f = Q.ROOT / "data" / "interim" / "gates" / "rain_test.json"
+        if not f.exists():
             raise TaskError("실행", "R3 결과표 없음")
+        rt = json.loads(f.read_text(encoding="utf-8"))["per_dong"]
         dongs = (task.get("filter") or {}).get("dong")
         rows = [x for x in rt if not isinstance(dongs, list) or x["dong"] in dongs]
         return {"effects": [{"name": x["dong"], "beta": x["beta"], "se": x["se"], "dof": 800} for x in rows], "recipe": "R3", "gate": "08 문서 검정 결과 사용"}
-    if r == "R2":  # 버스 수준 예상: 계절 단순(12개월 전 같은 달)
-        src = next((store[k] for k in task["in"] if k in store and "table" in store[k]), None)
-        if src is None:
-            raise TaskError("계산", "입력 표 없음")
-        t = src["table"].copy()
-        t["ym"] = pd.to_datetime(t["ym"])
-        last = t["ym"].max()
-        target = last + pd.DateOffset(months=1)
-        base = t[t["ym"] == target - pd.DateOffset(years=1)]
-        return {"forecast": base.assign(ym=str(target.date()))[["dong", "ym", "value"]].to_dict(orient="records"), "recipe": "R2", "interval": "±25%(관문 v2 conformal 80%)", "gate": "09 문서: 계절 단순이 릿지보다 나음"}
-    raise TaskError("실행", f"레시피 {r} 미구현(최소판)")
+    tabs = [store[k]["table"] for k in task["in"] if k in store and "table" in store[k]]
+    chk = next((store[k]["check"] for k in task["in"] if k in store and "check" in store[k]), None)
+    metric = next((store[k].get("metric") for k in task["in"] if k in store and store[k].get("metric")), None)
+    try:  # 학습·검증·추론(app/recipes.py). 관문 판정은 S6
+        return recipes.run(r, task.get("filter"), tabs, chk, metric)
+    except recipes.RecipeError as e:
+        raise TaskError("실행", str(e))
 
 
 def s4_chart(task, store, env):
@@ -194,6 +201,13 @@ def s6_judge(task, store, env):
         v = store.get(k, {})
         if "effects" in v:
             out += [{"name": r["name"], "claim": r["claim"], "effect_pct": round(r["effect_pct"], 2), "ci95": [round(c, 2) for c in r["ci95"]]} for r in s6.judge_effects(v["effects"])]
+        if v.get("gate_input") and v["gate_input"].get("mase") is not None:  # S3 레시피 관문
+            gi = v["gate_input"]
+            g = s6.gate(gi["model_err"], gi["baseline_err"], gi["mase"])
+            out.append({"name": f"관문 {v.get('recipe')}", "claim": "통과(예측 사용)" if g["pass"] else "실패(fallback)", "mase": round(g["mase"], 4),
+                        "better": f"{g['better']}/{g['n']}", "p_sign": g["p_sign"], "use_forecast": g["pass"]})
+        if v.get("anomaly"):  # R7: 포아송 z(예측 아님)
+            out += [{"name": f"{a['dong']} {a['year']}년 {v.get('kind')}", "claim": a["flag"], "z": a["z"], "count": a["count"], "expected": a["expected"]} for a in v["anomaly"]]
         if "summary" in v and v["summary"].get("slope_se"):
             sm = v["summary"]
             from scipy import stats
@@ -220,6 +234,8 @@ def _exec(task, store, env):
             res = EXEC[task["sub"]](task, store, env)
             if task["sub"] == "S1" and task.get("source", {}) and isinstance(task.get("source"), dict) and task["source"].get("export") == "불가능":
                 res["export"] = "집계만"
+            if task.get("metric"):
+                res.setdefault("metric", task["metric"])
             return {**res, "task_id": task["id"], "status": "성공", "attempts": attempts, "sec": round(time.perf_counter() - t0, 4)}
         except TaskError as e:
             if e.kind == "실행" and attempts < 2:  # 실행 오류는 같은 Sub에서 1회 재시도
