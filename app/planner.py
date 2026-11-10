@@ -1,0 +1,146 @@
+"""W3 Main Layer M2 자료 매칭 (docs/기획/05_Agent구조_v2.md 3-3절·5절·15절, 2026-11-11 구현).
+
+질문 Tuple → 실행 계획(단계 목록). 단계마다 담당 Sub·연산·자료·레시피를 정한다.
+- 자료 선택: 지표 사전(data/metric_dict.json)에서 지표의 공개·센터 경로를 찾는다. 실행 환경(env.center_db)에 센터 DB가 있으면 센터 경로를 앞에 둔다.
+- 축 확인: 시간대 세분(T13 등)은 '시간' 단위 자료(센터 4-11·3-04·1-14)만 지원한다.
+- 완화 순서(바꿀 수 없음): 조건 → 시간 해상도(시간대 → 일 → 월) → 세분·대상. 동네는 완화하지 않는다. 완화한 내용은 relaxed에 적어 답에 쓴다.
+- 레시피(S3)·통계 검정(S6)이 필요한 유형은 해당 단계를 붙인다.
+"""
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import qtuple as Q  # noqa: E402
+
+MD = json.loads((Q.ROOT / "data" / "metric_dict.json").read_text(encoding="utf-8"))
+CAT = {r["id"]: r for r in json.loads((Q.ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))}
+FOOD = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점", "편의점", "음식점"}
+
+# 유형별 기본 지표(질문에 지표가 없을 때)
+DEFAULT_METRIC = {"T1": "점포수", "T2": None, "T3": "점포수", "T4": "개업수", "T5": "거주연령구성", "T6": "일평균방문", "T8": "일평균방문",
+                  "T13": "시간대방문", "T14": None, "T15": "폐업수"}
+# 유형 → (담당 Sub 흐름, 레시피)
+TYPE_PLAN = {
+    "T1": (["S1"], None), "T2": (["S1", "S4"], None), "T3": (["S1", "S4"], None), "T4": (["S1", "S2", "S6", "S4"], None),
+    "T5": (["S1", "S4"], None), "T6": (["S1", "S5", "S3", "S6", "S4"], "R3"), "T7": (["S1", "S5", "S2", "S6", "S4"], None),
+    "T8": (["S1", "S3", "S6", "S4"], "R1"), "T9": (["S1", "S3"], "R5"), "T10": (["S1", "S2", "S4"], None), "T11": (["S0"], None),
+    "T13": (["S1", "S4"], "R8"), "T14": (["S1", "S4"], None), "T15": (["S1", "S3", "S6"], "R7"),
+}
+
+
+def pick_source(metric, env):
+    """지표 → (경로, 자료 설명). 센터 DB가 있으면 센터 경로 우선(센터 자료가 본체)."""
+    m = MD.get(metric)
+    if not m:
+        return None, None
+    if env.get("center_db") and m.get("center"):
+        c = CAT.get(m["center"], {})
+        return "center", {"dataset": m["center"], "name": c.get("name"), "time": c.get("time"), "export": c.get("export")}
+    if m.get("public"):
+        return "public", m["public"]
+    if m.get("center"):
+        return "center_only", {"dataset": m["center"], "note": m.get("note", "센터에서만 가능")}
+    return None, None
+
+
+def plan(t, env=None):
+    env = env or {"center_db": False}
+    out = {"type": t["type"], "steps": [], "relaxed": [], "notes": [], "status": "ok"}
+    if t["expect"] != "답함":
+        out["status"] = t["expect"]  # 되묻기·범위밖은 실행하지 않는다
+        return out
+    if t["type"] == "T11":
+        out["steps"].append({"sub": "S0", "op": "자료 목록 검색", "dataset": "catalog"})
+        return out
+    if t["type"] == "T10":  # 묶음 템플릿
+        for sub_t in ["T1", "T4", "T5"]:
+            p = plan(dict(t, type=sub_t, metric=[]), env)
+            out["steps"] += p["steps"]
+            out["notes"] += p["notes"]
+        return out
+    metrics = list(t["metric"]) or ([DEFAULT_METRIC.get(t["type"])] if DEFAULT_METRIC.get(t["type"]) else [])
+    if t["type"] == "T8" and not t["metric"] and ("버스" in str(t.get("target")) or t.get("target") == "어르신"):
+        metrics = ["버스일평균"]
+    if t["type"] in ("T2", "T14") and not metrics:
+        metrics = ["점포수", "일평균방문", "버스일평균"]
+    # 음식점만 있는 지표에 다른 업종이 오면 범위 밖(사전 해석기와 같은 규칙)
+    if t.get("target") and t["target"] not in FOOD and t["target"] not in Q.TARGETS_POP and any(m in ("개업수", "폐업수", "폐업률", "5년생존율", "조건부생존") for m in metrics):
+        out["status"] = "범위밖"
+        out["notes"].append(f"{t['target']}은 개업·폐업 자료(음식점 인허가)에 없음")
+        return out
+    subs, recipe = TYPE_PLAN.get(t["type"], (["S1"], None))
+    if t["type"] == "T8" and metrics == ["버스일평균"]:
+        recipe = "R2"
+    breakdown = t.get("breakdown")
+    if t["type"] == "T13" or any(m in ("시간대방문", "시간대버스") for m in metrics):
+        breakdown = "시간대"  # 시간대 패턴은 질문에 '시간대'라는 말이 없어도 시간대 세분이다
+        if any(m in ("버스일평균", "경로일평균", "정류소일이용") for m in metrics):  # 버스 질문의 '몇 시'는 버스 시간대
+            metrics = ["시간대버스" if m == "시간대방문" else m for m in metrics]
+        if "시간대방문" in metrics or "시간대버스" in metrics:  # 시간대 지표가 있으면 같은 대상의 일 단위 지표는 뺀다
+            metrics = [m for m in metrics if m not in ("일평균방문", "버스일평균")]
+        elif metrics:
+            metrics = [{"일평균방문": "시간대방문", "버스일평균": "시간대버스"}.get(m, m) for m in metrics]
+        else:
+            metrics = ["시간대방문"]
+    for m in metrics:
+        route, src = pick_source(m, env)
+        # 시간대 세분: 시간 단위 자료(센터)만 지원 → 없으면 시간 해상도 완화
+        if breakdown == "시간대" and route != "center":
+            if route == "center_only" or route is None:
+                fallback = {"시간대방문": "일평균방문", "시간대버스": "버스일평균"}.get(m)
+                if fallback:
+                    out["relaxed"].append(f"시간대 → 일 단위({m} 대신 {fallback}). 시간대 자료는 센터에서만 가능")
+                    m = fallback
+                    route, src = pick_source(m, env)
+            else:
+                out["relaxed"].append("시간대 → 일 단위. 시간대 자료는 센터에서만 가능")
+            breakdown = None
+            if t["type"] == "T13":
+                recipe = None
+        if route == "center_only":
+            out["status"] = "센터에서만 가능"
+            out["notes"].append(f"{Q.METRICS.get(m, m)}: {src['note']}")
+            continue
+        if route is None:
+            out["notes"].append(f"{m}: 지표 사전에 없음")
+            continue
+        flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}
+        out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route, "source": src, "filter": flt, "breakdown": breakdown})
+    # 조건(비·주말 등): 조건 효과 레시피가 지원하는 지표가 아니면 조건 완화
+    if t["cond"] and t["type"] not in ("T6",):
+        out["relaxed"].append(f"조건({', '.join(t['cond'])})은 이 질문 유형에서 쓰지 않음")
+    for s in subs[1:]:
+        step = {"sub": s}
+        if s == "S3":
+            step.update(op="레시피 학습·검증·추론", recipe=recipe)
+        elif s == "S6":
+            step.update(op="판정(차이·동등성·짝 비교)")
+        elif s == "S5":
+            step.update(op="단위 맞추기(정류소→동네, 관측소→동네, 일→월)")
+        elif s == "S2":
+            step.update(op="기술 통계·추세·상관")
+        elif s == "S4":
+            step.update(op="차트·지도")
+        out["steps"].append(step)
+    if out["steps"] and out["status"] == "센터에서만 가능" and any(st["sub"] == "S1" for st in out["steps"]):
+        out["status"] = "ok"  # 완화해서 답할 수 있으면 답한다(완화 내용은 relaxed에)
+    seen, uniq = set(), []
+    for st in out["steps"]:  # 같은 후속 단계(S4 등) 중복 제거
+        key = json.dumps(st, ensure_ascii=False, sort_keys=True, default=str)
+        if key not in seen:
+            seen.add(key)
+            uniq.append(st)
+    out["steps"] = uniq
+    if not any(st["sub"] == "S1" for st in out["steps"]) and out["status"] == "ok":
+        out["status"] = "자료 없음"
+    return out
+
+
+if __name__ == "__main__":
+    import qparse
+    for q in sys.argv[1:]:
+        t = qparse.parse(q)
+        for env in ({"center_db": False}, {"center_db": True}):
+            p = plan(t, env)
+            print(q, "| 센터 DB" if env["center_db"] else "| 공개", "|", p["status"], [f"{s['sub']}:{s.get('metric') or s.get('recipe') or s.get('op')}" for s in p["steps"]], p["relaxed"], p["notes"])

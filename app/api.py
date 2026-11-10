@@ -142,6 +142,37 @@ def compare(dongs: list[str] = Query(default=[])):
     return clean({"dongs": [p["dong"] for p in ps], "rows": rows, "profiles": ps, "limits": list(dict.fromkeys(x for p in ps for x in p["limits"]))})
 
 
+class Interpret(BaseModel):
+    question: str = Field(..., max_length=300)
+
+
+_m1 = None
+
+
+@app.post("/api/interpret")
+def interpret(body: Interpret):
+    """W2 M1 질의 해석: 질문 Tuple + 의도 확인 카드 + 확신도 + 쓴 경로(B3 / 사전 규칙 대체) + 처리 시간."""
+    global _m1
+    q = body.question.strip()
+    if not q:
+        raise HTTPException(422, "질문을 입력해 주세요.")
+    if _m1 is None:
+        import m1
+        _m1 = m1.M1()
+    return clean(_m1.interpret(q))
+
+
+@app.get("/api/catalog")
+def catalog(q: str = Query(default="", max_length=50)):
+    """S0 자료 탐색(T11): 자료 목록(data/catalog.json)에서 이름·영역·열에 검색어가 든 자료를 돌려준다."""
+    import json as _json
+    rows = _json.loads((ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))
+    words = [w for w in re.split(r"\s+", q.strip()) if w]
+    hit = [r for r in rows if all(w in f"{r['name']} {r.get('domain', '')} {r.get('columns') or ''}" for w in words)] if words else rows
+    keep = ["id", "name", "source", "space", "time", "domain", "period", "export", "access"]
+    return clean({"query": q, "count": len(hit), "items": [{k: r.get(k) for k in keep} for r in hit[:20]]})
+
+
 @app.get("/api/health")
 def health():
     return {"status": "ok", "web_built": OUT.exists()}

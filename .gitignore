@@ -27,3 +27,13 @@ web/test-results/
 web/playwright-report/
 web/tsconfig.tsbuildinfo
 web/next-env.d.ts
+
+# 질의 해석 실험(X1) 부산물: 다시 만들 수 있거나 큼(2026-11-11)
+data/x1/emb_cache.json
+data/x1/lora/
+data/x1/results/
+data/x1/*_raw.jsonl
+data/x1/train.jsonl
+data/x1/valid.jsonl
+data/x1/bank.jsonl
+.vscode/

@@ -1,0 +1,1735 @@
+{
+ "categories": {
+  "펜션": {
+   "major": "숙박",
+   "middle": "일반 숙박",
+   "stores_793": 6050,
+   "rest_group": null
+  },
+  "백반/한정식": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 4576,
+   "rest_group": null
+  },
+  "카페": {
+   "major": "음식",
+   "middle": "비알코올 ",
+   "stores_793": 3011,
+   "rest_group": null
+  },
+  "부동산 중개/대리업": {
+   "major": "부동산",
+   "middle": "부동산 서비스",
+   "stores_793": 1846,
+   "rest_group": null
+  },
+  "미용실": {
+   "major": "수리·개인",
+   "middle": "이용·미용",
+   "stores_793": 1701,
+   "rest_group": null
+  },
+  "요리 주점": {
+   "major": "음식",
+   "middle": "주점",
+   "stores_793": 1600,
+   "rest_group": null
+  },
+  "돼지고기 구이/찜": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 1558,
+   "rest_group": null
+  },
+  "편의점": {
+   "major": "소매",
+   "middle": "종합 소매",
+   "stores_793": 1330,
+   "rest_group": "편의점",
+   "rest_780": 1434
+  },
+  "슈퍼마켓": {
+   "major": "소매",
+   "middle": "종합 소매",
+   "stores_793": 1044,
+   "rest_group": null
+  },
+  "입시·교과학원": {
+   "major": "교육",
+   "middle": "일반 교육",
+   "stores_793": 910,
+   "rest_group": null
+  },
+  "여관/모텔": {
+   "major": "숙박",
+   "middle": "일반 숙박",
+   "stores_793": 909,
+   "rest_group": null
+  },
+  "일반 유흥 주점": {
+   "major": "음식",
+   "middle": "주점",
+   "stores_793": 881,
+   "rest_group": null
+  },
+  "여행사": {
+   "major": "시설관리·임대",
+   "middle": "여행사·보조",
+   "stores_793": 869,
+   "rest_group": null
+  },
+  "김밥/만두/분식": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 849,
+   "rest_group": null
+  },
+  "채소/과일 소매업": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 782,
+   "rest_group": null
+  },
+  "여성 의류 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 771,
+   "rest_group": null
+  },
+  "기타 의류 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 740,
+   "rest_group": null
+  },
+  "피부 관리실": {
+   "major": "수리·개인",
+   "middle": "이용·미용",
+   "stores_793": 725,
+   "rest_group": null
+  },
+  "사진촬영업": {
+   "major": "과학·기술",
+   "middle": "사진 촬영",
+   "stores_793": 714,
+   "rest_group": null
+  },
+  "빵/도넛": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 682,
+   "rest_group": null
+  },
+  "치킨": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 671,
+   "rest_group": null
+  },
+  "횟집": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 644,
+   "rest_group": "횟집",
+   "rest_780": 757
+  },
+  "경양식": {
+   "major": "음식",
+   "middle": "서양식",
+   "stores_793": 620,
+   "rest_group": "기타",
+   "rest_780": 1675
+  },
+  "기념품점": {
+   "major": "소매",
+   "middle": "장식품 소매",
+   "stores_793": 584,
+   "rest_group": null
+  },
+  "화장품 소매업": {
+   "major": "소매",
+   "middle": "의약·화장품 소매",
+   "stores_793": 578,
+   "rest_group": null
+  },
+  "요가/필라테스 학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 562,
+   "rest_group": null
+  },
+  "국수/칼국수": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 552,
+   "rest_group": null
+  },
+  "국/탕/찌개류": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 536,
+   "rest_group": null
+  },
+  "경영 컨설팅업": {
+   "major": "과학·기술",
+   "middle": "본사·경영 컨설팅",
+   "stores_793": 532,
+   "rest_group": null
+  },
+  "중국집": {
+   "major": "음식",
+   "middle": "중식",
+   "stores_793": 484,
+   "rest_group": null
+  },
+  "자동차 정비소": {
+   "major": "수리·개인",
+   "middle": "자동차 수리·세차",
+   "stores_793": 483,
+   "rest_group": null
+  },
+  "건축 설계 및 관련 서비스업": {
+   "major": "과학·기술",
+   "middle": "기술 서비스",
+   "stores_793": 463,
+   "rest_group": null
+  },
+  "인테리어 디자인업": {
+   "major": "과학·기술",
+   "middle": "전문 디자인",
+   "stores_793": 442,
+   "rest_group": null
+  },
+  "건축물 일반 청소업": {
+   "major": "시설관리·임대",
+   "middle": "청소·방제",
+   "stores_793": 410,
+   "rest_group": null
+  },
+  "일식 회/초밥": {
+   "major": "음식",
+   "middle": "일식",
+   "stores_793": 404,
+   "rest_group": null
+  },
+  "네일숍": {
+   "major": "수리·개인",
+   "middle": "이용·미용",
+   "stores_793": 383,
+   "rest_group": null
+  },
+  "피자": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 375,
+   "rest_group": null
+  },
+  "세탁소": {
+   "major": "수리·개인",
+   "middle": "세탁",
+   "stores_793": 354,
+   "rest_group": null
+  },
+  "광고 대행업": {
+   "major": "과학·기술",
+   "middle": "광고",
+   "stores_793": 330,
+   "rest_group": null
+  },
+  "약국": {
+   "major": "소매",
+   "middle": "의약·화장품 소매",
+   "stores_793": 317,
+   "rest_group": null
+  },
+  "기타 기술/직업 훈련학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 312,
+   "rest_group": null
+  },
+  "전시/컨벤션/행사 대행 서비스업": {
+   "major": "시설관리·임대",
+   "middle": "기타 사업 서비스",
+   "stores_793": 307,
+   "rest_group": null
+  },
+  "시각 디자인업": {
+   "major": "과학·기술",
+   "middle": "전문 디자인",
+   "stores_793": 289,
+   "rest_group": null
+  },
+  "핸드폰 소매업": {
+   "major": "소매",
+   "middle": "가전·통신 소매",
+   "stores_793": 282,
+   "rest_group": null
+  },
+  "노래방": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 279,
+   "rest_group": null
+  },
+  "수산물 소매업": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 269,
+   "rest_group": null
+  },
+  "반찬/식료품 소매업": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 266,
+   "rest_group": null
+  },
+  "자동차 세차장": {
+   "major": "수리·개인",
+   "middle": "자동차 수리·세차",
+   "stores_793": 256,
+   "rest_group": null
+  },
+  "호텔/리조트": {
+   "major": "숙박",
+   "middle": "일반 숙박",
+   "stores_793": 255,
+   "rest_group": null
+  },
+  "골프 연습장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 253,
+   "rest_group": null
+  },
+  "명함/간판/광고물 제작": {
+   "major": "과학·기술",
+   "middle": "인쇄·제품제작",
+   "stores_793": 243,
+   "rest_group": null
+  },
+  "당구장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 227,
+   "rest_group": null
+  },
+  "생맥주 전문": {
+   "major": "음식",
+   "middle": "주점",
+   "stores_793": 227,
+   "rest_group": null
+  },
+  "운동용품 소매업": {
+   "major": "소매",
+   "middle": "오락용품 소매",
+   "stores_793": 224,
+   "rest_group": null
+  },
+  "가구 소매업": {
+   "major": "소매",
+   "middle": "가구 소매",
+   "stores_793": 215,
+   "rest_group": null
+  },
+  "철물/공구 소매업": {
+   "major": "소매",
+   "middle": "철물·건설자재 소매",
+   "stores_793": 214,
+   "rest_group": null
+  },
+  "건강보조식품 소매업": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 213,
+   "rest_group": null
+  },
+  "헬스장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 212,
+   "rest_group": null
+  },
+  "정육점": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 212,
+   "rest_group": null
+  },
+  "기타 운송장비 대여업": {
+   "major": "시설관리·임대",
+   "middle": "운송장비 대여",
+   "stores_793": 207,
+   "rest_group": null
+  },
+  "꽃집": {
+   "major": "소매",
+   "middle": "식물 소매",
+   "stores_793": 206,
+   "rest_group": null
+  },
+  "그 외 기타 간이 음식점": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 202,
+   "rest_group": null
+  },
+  "주유소": {
+   "major": "소매",
+   "middle": "연료 소매",
+   "stores_793": 195,
+   "rest_group": null
+  },
+  "해산물 구이/찜": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 192,
+   "rest_group": null
+  },
+  "가전제품 소매업": {
+   "major": "소매",
+   "middle": "가전·통신 소매",
+   "stores_793": 183,
+   "rest_group": null
+  },
+  "가전제품 수리업": {
+   "major": "수리·개인",
+   "middle": "가전제품 수리",
+   "stores_793": 182,
+   "rest_group": null
+  },
+  "그 외 기타 상품 전문 소매업": {
+   "major": "소매",
+   "middle": "기타 상품 소매",
+   "stores_793": 176,
+   "rest_group": null
+  },
+  "침구류/커튼 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 174,
+   "rest_group": null
+  },
+  "그 외 기타 교육기관": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 173,
+   "rest_group": null
+  },
+  "주방/가정용품 소매업": {
+   "major": "소매",
+   "middle": "기타 생활용품 소매",
+   "stores_793": 173,
+   "rest_group": null
+  },
+  "기타 오락관련 서비스업": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 172,
+   "rest_group": null
+  },
+  "가정용 연료 소매업": {
+   "major": "소매",
+   "middle": "연료 소매",
+   "stores_793": 166,
+   "rest_group": null
+  },
+  "스포츠/레크리에이션 용품 대여업": {
+   "major": "시설관리·임대",
+   "middle": "가정용품 대여",
+   "stores_793": 162,
+   "rest_group": null
+  },
+  "태권도/무술학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 159,
+   "rest_group": null
+  },
+  "예술품 소매업": {
+   "major": "소매",
+   "middle": "장식품 소매",
+   "stores_793": 154,
+   "rest_group": null
+  },
+  "액세서리/잡화 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 153,
+   "rest_group": null
+  },
+  "셀프 빨래방": {
+   "major": "수리·개인",
+   "middle": "세탁",
+   "stores_793": 153,
+   "rest_group": null
+  },
+  "장난감 소매업": {
+   "major": "소매",
+   "middle": "오락용품 소매",
+   "stores_793": 149,
+   "rest_group": null
+  },
+  "떡/한과": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 149,
+   "rest_group": null
+  },
+  "그 외 기타 종합 소매업": {
+   "major": "소매",
+   "middle": "종합 소매",
+   "stores_793": 141,
+   "rest_group": null
+  },
+  "남성 의류 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 139,
+   "rest_group": null
+  },
+  "음악학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 138,
+   "rest_group": null
+  },
+  "서점": {
+   "major": "소매",
+   "middle": "오락용품 소매",
+   "stores_793": 137,
+   "rest_group": null
+  },
+  "중고 상품 소매업": {
+   "major": "소매",
+   "middle": "중고 상품 소매",
+   "stores_793": 137,
+   "rest_group": null
+  },
+  "시계/귀금속 소매업": {
+   "major": "소매",
+   "middle": "시계·귀금속 소매",
+   "stores_793": 134,
+   "rest_group": null
+  },
+  "문구/회화용품 소매업": {
+   "major": "소매",
+   "middle": "오락용품 소매",
+   "stores_793": 133,
+   "rest_group": null
+  },
+  "세무사": {
+   "major": "과학·기술",
+   "middle": "회계·세무",
+   "stores_793": 132,
+   "rest_group": null
+  },
+  "안경렌즈 소매업": {
+   "major": "소매",
+   "middle": "안경·정밀기기 소매",
+   "stores_793": 131,
+   "rest_group": null
+  },
+  "마사지/안마": {
+   "major": "수리·개인",
+   "middle": "욕탕·신체관리",
+   "stores_793": 130,
+   "rest_group": null
+  },
+  "목욕탕/사우나": {
+   "major": "수리·개인",
+   "middle": "욕탕·신체관리",
+   "stores_793": 129,
+   "rest_group": null
+  },
+  "미술학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 127,
+   "rest_group": null
+  },
+  "자동차 대여업": {
+   "major": "시설관리·임대",
+   "middle": "운송장비 대여",
+   "stores_793": 126,
+   "rest_group": null
+  },
+  "그 외 기타 개인/가정용품 수리업": {
+   "major": "수리·개인",
+   "middle": "기타 가정용품 수리",
+   "stores_793": 124,
+   "rest_group": null
+  },
+  "PC방": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 123,
+   "rest_group": null
+  },
+  "애완동물/애완용품 소매업": {
+   "major": "소매",
+   "middle": "애완동물·용품 소매",
+   "stores_793": 123,
+   "rest_group": null
+  },
+  "베트남식 전문": {
+   "major": "음식",
+   "middle": "동남아시아",
+   "stores_793": 121,
+   "rest_group": null
+  },
+  "닭/오리고기 구이/찜": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 118,
+   "rest_group": null
+  },
+  "유아용 의류 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 113,
+   "rest_group": null
+  },
+  "기타 개인/가정용품 대여업": {
+   "major": "시설관리·임대",
+   "middle": "가정용품 대여",
+   "stores_793": 111,
+   "rest_group": null
+  },
+  "독서실/스터디 카페": {
+   "major": "예술·스포츠",
+   "middle": "도서관·사적지",
+   "stores_793": 111,
+   "rest_group": null
+  },
+  "수상/해양 레저업": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 110,
+   "rest_group": null
+  },
+  "광고물 설계/제작업": {
+   "major": "과학·기술",
+   "middle": "광고",
+   "stores_793": 110,
+   "rest_group": null
+  },
+  "전기용품/조명장치 소매업": {
+   "major": "소매",
+   "middle": "기타 생활용품 소매",
+   "stores_793": 109,
+   "rest_group": null
+  },
+  "신발 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 107,
+   "rest_group": null
+  },
+  "사업시설 유지·관리 서비스업": {
+   "major": "시설관리·임대",
+   "middle": "시설관리",
+   "stores_793": 103,
+   "rest_group": null
+  },
+  "기타 교육지원 서비스업": {
+   "major": "교육",
+   "middle": "교육 지원",
+   "stores_793": 102,
+   "rest_group": null
+  },
+  "벽지/장판/마루 소매업": {
+   "major": "소매",
+   "middle": "철물·건설자재 소매",
+   "stores_793": 101,
+   "rest_group": null
+  },
+  "고용 알선업": {
+   "major": "시설관리·임대",
+   "middle": "고용 알선",
+   "stores_793": 99,
+   "rest_group": null
+  },
+  "레크리에이션 교육기관": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 99,
+   "rest_group": null
+  },
+  "외국어학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 98,
+   "rest_group": null
+  },
+  "복권 발행/판매업": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 98,
+   "rest_group": null
+  },
+  "변호사": {
+   "major": "과학·기술",
+   "middle": "법무관련 ",
+   "stores_793": 95,
+   "rest_group": null
+  },
+  "의료기기 소매업": {
+   "major": "소매",
+   "middle": "의약·화장품 소매",
+   "stores_793": 95,
+   "rest_group": null
+  },
+  "소고기 구이/찜": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 95,
+   "rest_group": null
+  },
+  "버거": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 94,
+   "rest_group": null
+  },
+  "곱창 전골/구이": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 94,
+   "rest_group": null
+  },
+  "기타 엔지니어링 서비스업": {
+   "major": "과학·기술",
+   "middle": "기술 서비스",
+   "stores_793": 93,
+   "rest_group": null
+  },
+  "건물 및 토목 엔지니어링 서비스업": {
+   "major": "과학·기술",
+   "middle": "기술 서비스",
+   "stores_793": 92,
+   "rest_group": null
+  },
+  "기타 예술/스포츠 교육기관": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 91,
+   "rest_group": null
+  },
+  "기타 오락장": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 90,
+   "rest_group": null
+  },
+  "자동차 부품 소매업": {
+   "major": "소매",
+   "middle": "자동차 부품 소매",
+   "stores_793": 90,
+   "rest_group": null
+  },
+  "구내식당": {
+   "major": "음식",
+   "middle": "구내식당·뷔페",
+   "stores_793": 87,
+   "rest_group": null
+  },
+  "소독; 구충 및 방제 서비스업": {
+   "major": "시설관리·임대",
+   "middle": "청소·방제",
+   "stores_793": 85,
+   "rest_group": null
+  },
+  "컴퓨터/소프트웨어 소매업": {
+   "major": "소매",
+   "middle": "가전·통신 소매",
+   "stores_793": 85,
+   "rest_group": null
+  },
+  "족발/보쌈": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 84,
+   "rest_group": null
+  },
+  "법무사": {
+   "major": "과학·기술",
+   "middle": "법무관련 ",
+   "stores_793": 82,
+   "rest_group": null
+  },
+  "동물병원": {
+   "major": "과학·기술",
+   "middle": "수의",
+   "stores_793": 81,
+   "rest_group": null
+  },
+  "의류 대여업": {
+   "major": "시설관리·임대",
+   "middle": "가정용품 대여",
+   "stores_793": 78,
+   "rest_group": null
+  },
+  "조경 유지·관리 서비스업": {
+   "major": "시설관리·임대",
+   "middle": "조경·유지",
+   "stores_793": 75,
+   "rest_group": null
+  },
+  "기타 사무 지원 서비스업": {
+   "major": "시설관리·임대",
+   "middle": "사무 지원",
+   "stores_793": 73,
+   "rest_group": null
+  },
+  "임시/일용 인력 공급업": {
+   "major": "시설관리·임대",
+   "middle": "고용 알선",
+   "stores_793": 70,
+   "rest_group": null
+  },
+  "행정사": {
+   "major": "과학·기술",
+   "middle": "법무관련 ",
+   "stores_793": 69,
+   "rest_group": null
+  },
+  "치과의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 69,
+   "rest_group": null
+  },
+  "의류/이불 수선업": {
+   "major": "수리·개인",
+   "middle": "기타 가정용품 수리",
+   "stores_793": 68,
+   "rest_group": null
+  },
+  "캠핑/글램핑": {
+   "major": "숙박",
+   "middle": "일반 숙박",
+   "stores_793": 66,
+   "rest_group": null
+  },
+  "교육컨설팅업": {
+   "major": "교육",
+   "middle": "교육 지원",
+   "stores_793": 66,
+   "rest_group": null
+  },
+  "마라탕/훠궈": {
+   "major": "음식",
+   "middle": "중식",
+   "stores_793": 64,
+   "rest_group": null
+  },
+  "컴퓨터/노트북/프린터 수리업": {
+   "major": "수리·개인",
+   "middle": "컴퓨터 수리",
+   "stores_793": 60,
+   "rest_group": null
+  },
+  "실/섬유제품 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 58,
+   "rest_group": null
+  },
+  "냉면/밀면": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 58,
+   "rest_group": null
+  },
+  "기타 스포츠시설 운영업": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 56,
+   "rest_group": null
+  },
+  "산업설비; 운송장비 및 공공장소 청소업": {
+   "major": "시설관리·임대",
+   "middle": "청소·방제",
+   "stores_793": 56,
+   "rest_group": null
+  },
+  "제품 디자인업": {
+   "major": "과학·기술",
+   "middle": "전문 디자인",
+   "stores_793": 55,
+   "rest_group": null
+  },
+  "기타 산업용 기계/장비 대여업": {
+   "major": "시설관리·임대",
+   "middle": "산업용품 대여",
+   "stores_793": 54,
+   "rest_group": null
+  },
+  "가방 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 53,
+   "rest_group": null
+  },
+  "피부/비뇨기과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 52,
+   "rest_group": null
+  },
+  "건어물/젓갈 소매업": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 51,
+   "rest_group": null
+  },
+  "기타 여행 보조/예약 서비스업": {
+   "major": "시설관리·임대",
+   "middle": "여행사·보조",
+   "stores_793": 50,
+   "rest_group": null
+  },
+  "체형/비만 관리": {
+   "major": "수리·개인",
+   "middle": "욕탕·신체관리",
+   "stores_793": 49,
+   "rest_group": null
+  },
+  "한의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 49,
+   "rest_group": null
+  },
+  "컴퓨터/사무기기 대여업": {
+   "major": "시설관리·임대",
+   "middle": "산업용품 대여",
+   "stores_793": 47,
+   "rest_group": null
+  },
+  "내과/소아과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 45,
+   "rest_group": null
+  },
+  "모터사이클 수리업": {
+   "major": "수리·개인",
+   "middle": "모터사이클 수리",
+   "stores_793": 44,
+   "rest_group": null
+  },
+  "장례식장": {
+   "major": "수리·개인",
+   "middle": "장례식장 ",
+   "stores_793": 42,
+   "rest_group": null
+  },
+  "건설기계/장비 대여업": {
+   "major": "시설관리·임대",
+   "middle": "산업용품 대여",
+   "stores_793": 41,
+   "rest_group": null
+  },
+  "번역/통역 서비스업": {
+   "major": "과학·기술",
+   "middle": "기타 전문 과학",
+   "stores_793": 41,
+   "rest_group": null
+  },
+  "아이스크림/빙수": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 40,
+   "rest_group": null
+  },
+  "기타 건설/건축자재 소매업": {
+   "major": "소매",
+   "middle": "철물·건설자재 소매",
+   "stores_793": 40,
+   "rest_group": null
+  },
+  "테니스장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 40,
+   "rest_group": null
+  },
+  "유사 의료업": {
+   "major": "보건의료",
+   "middle": "기타 보건",
+   "stores_793": 39,
+   "rest_group": null
+  },
+  "토스트/샌드위치/샐러드": {
+   "major": "음식",
+   "middle": "기타 간이",
+   "stores_793": 39,
+   "rest_group": null
+  },
+  "파스타/스테이크": {
+   "major": "음식",
+   "middle": "서양식",
+   "stores_793": 38,
+   "rest_group": null
+  },
+  "기타 한식 음식점": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 37,
+   "rest_group": null
+  },
+  "가스 충전소": {
+   "major": "소매",
+   "middle": "연료 소매",
+   "stores_793": 37,
+   "rest_group": null
+  },
+  "모터사이클 및 부품 소매업": {
+   "major": "소매",
+   "middle": "모터사이클 소매",
+   "stores_793": 36,
+   "rest_group": null
+  },
+  "담배/전자담배 소매업": {
+   "major": "소매",
+   "middle": "담배 소매",
+   "stores_793": 35,
+   "rest_group": null
+  },
+  "직원 훈련기관": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 31,
+   "rest_group": null
+  },
+  "청소년 수련시설": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 29,
+   "rest_group": null
+  },
+  "외과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 28,
+   "rest_group": null
+  },
+  "뷔페": {
+   "major": "음식",
+   "middle": "구내식당·뷔페",
+   "stores_793": 28,
+   "rest_group": null
+  },
+  "일식 면 요리": {
+   "major": "음식",
+   "middle": "일식",
+   "stores_793": 28,
+   "rest_group": null
+  },
+  "자전거 소매업": {
+   "major": "소매",
+   "middle": "오락용품 소매",
+   "stores_793": 28,
+   "rest_group": null
+  },
+  "사무기기 소매업": {
+   "major": "소매",
+   "middle": "안경·정밀기기 소매",
+   "stores_793": 27,
+   "rest_group": null
+  },
+  "기타 광고 관련 서비스업": {
+   "major": "과학·기술",
+   "middle": "광고",
+   "stores_793": 27,
+   "rest_group": null
+  },
+  "악기 소매업": {
+   "major": "소매",
+   "middle": "기타 생활용품 소매",
+   "stores_793": 27,
+   "rest_group": null
+  },
+  "사업/무형 재산권 중개업": {
+   "major": "과학·기술",
+   "middle": "기타 전문 과학",
+   "stores_793": 27,
+   "rest_group": null
+  },
+  "타이어 소매업": {
+   "major": "소매",
+   "middle": "자동차 부품 소매",
+   "stores_793": 25,
+   "rest_group": null
+  },
+  "공인회계사": {
+   "major": "과학·기술",
+   "middle": "회계·세무",
+   "stores_793": 25,
+   "rest_group": null
+  },
+  "결혼 상담 서비스업": {
+   "major": "수리·개인",
+   "middle": "기타 개인",
+   "stores_793": 24,
+   "rest_group": null
+  },
+  "상용 인력 공급 및 인사관리 서비스업": {
+   "major": "시설관리·임대",
+   "middle": "고용 알선",
+   "stores_793": 24,
+   "rest_group": null
+  },
+  "패션/섬유/기타 전문 디자인업": {
+   "major": "과학·기술",
+   "middle": "전문 디자인",
+   "stores_793": 24,
+   "rest_group": null
+  },
+  "옥외/전시 광고 대행업": {
+   "major": "과학·기술",
+   "middle": "광고",
+   "stores_793": 23,
+   "rest_group": null
+  },
+  "핸드폰/통신장비 수리업": {
+   "major": "수리·개인",
+   "middle": "통신장비 수리",
+   "stores_793": 23,
+   "rest_group": null
+  },
+  "도시 계획 및 조경 설계 서비스업": {
+   "major": "과학·기술",
+   "middle": "기술 서비스",
+   "stores_793": 23,
+   "rest_group": null
+  },
+  "건설/건축자재 소매업": {
+   "major": "소매",
+   "middle": "철물·건설자재 소매",
+   "stores_793": 22,
+   "rest_group": null
+  },
+  "환경 관련 엔지니어링 서비스업": {
+   "major": "과학·기술",
+   "middle": "기술 서비스",
+   "stores_793": 22,
+   "rest_group": null
+  },
+  "일식 카레/돈가스/덮밥": {
+   "major": "음식",
+   "middle": "일식",
+   "stores_793": 22,
+   "rest_group": null
+  },
+  "생수/음료 소매업": {
+   "major": "소매",
+   "middle": "음료 소매",
+   "stores_793": 21,
+   "rest_group": null
+  },
+  "전자 게임장": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 20,
+   "rest_group": null
+  },
+  "탁구장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 20,
+   "rest_group": null
+  },
+  "포장/충전업": {
+   "major": "시설관리·임대",
+   "middle": "기타 사업 서비스",
+   "stores_793": 20,
+   "rest_group": null
+  },
+  "주류 소매업": {
+   "major": "소매",
+   "middle": "음료 소매",
+   "stores_793": 20,
+   "rest_group": null
+  },
+  "기타 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 20,
+   "rest_group": null
+  },
+  "성형외과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 18,
+   "rest_group": null
+  },
+  "볼링장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 17,
+   "rest_group": null
+  },
+  "그 외 기타 숙박업": {
+   "major": "숙박",
+   "middle": "기타 숙박",
+   "stores_793": 16,
+   "rest_group": null
+  },
+  "예식장업": {
+   "major": "수리·개인",
+   "middle": "기타 개인",
+   "stores_793": 16,
+   "rest_group": null
+  },
+  "가죽/가방/신발 수선업": {
+   "major": "수리·개인",
+   "middle": "기타 가정용품 수리",
+   "stores_793": 15,
+   "rest_group": null
+  },
+  "시장 조사 및 여론 조사업": {
+   "major": "과학·기술",
+   "middle": "시장 조사",
+   "stores_793": 15,
+   "rest_group": null
+  },
+  "한복 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 14,
+   "rest_group": null
+  },
+  "곡물/곡분 소매업": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 14,
+   "rest_group": null
+  },
+  "가축 사료 소매업": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 14,
+   "rest_group": null
+  },
+  "우유 소매업": {
+   "major": "소매",
+   "middle": "음료 소매",
+   "stores_793": 13,
+   "rest_group": null
+  },
+  "기타 서양식 음식점": {
+   "major": "음식",
+   "middle": "서양식",
+   "stores_793": 13,
+   "rest_group": null
+  },
+  "만화방": {
+   "major": "시설관리·임대",
+   "middle": "가정용품 대여",
+   "stores_793": 13,
+   "rest_group": null
+  },
+  "수영장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 12,
+   "rest_group": null
+  },
+  "사회교육시설": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 11,
+   "rest_group": null
+  },
+  "복 요리 전문": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 11,
+   "rest_group": null
+  },
+  "공인노무사": {
+   "major": "과학·기술",
+   "middle": "법무관련 ",
+   "stores_793": 11,
+   "rest_group": null
+  },
+  "컴퓨터 학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 11,
+   "rest_group": null
+  },
+  "종합 스포츠시설": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 10,
+   "rest_group": null
+  },
+  "운전학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 9,
+   "rest_group": null
+  },
+  "신경/정신과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 9,
+   "rest_group": null
+  },
+  "사진기/기타 광학기기 소매업": {
+   "major": "소매",
+   "middle": "안경·정밀기기 소매",
+   "stores_793": 9,
+   "rest_group": null
+  },
+  "시계/귀금속/악기 수리업": {
+   "major": "수리·개인",
+   "middle": "기타 가정용품 수리",
+   "stores_793": 9,
+   "rest_group": null
+  },
+  "산부인과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 8,
+   "rest_group": null
+  },
+  "기타 동남아식 전문": {
+   "major": "음식",
+   "middle": "동남아시아",
+   "stores_793": 8,
+   "rest_group": null
+  },
+  "요양병원": {
+   "major": "보건의료",
+   "middle": "병원",
+   "stores_793": 7,
+   "rest_group": null
+  },
+  "전/부침개": {
+   "major": "음식",
+   "middle": "한식",
+   "stores_793": 7,
+   "rest_group": null
+  },
+  "복사업": {
+   "major": "시설관리·임대",
+   "middle": "사무 지원",
+   "stores_793": 7,
+   "rest_group": null
+  },
+  "이비인후과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 7,
+   "rest_group": null
+  },
+  "일반병원": {
+   "major": "보건의료",
+   "middle": "병원",
+   "stores_793": 7,
+   "rest_group": null
+  },
+  "무도 유흥 주점": {
+   "major": "음식",
+   "middle": "주점",
+   "stores_793": 6,
+   "rest_group": null
+  },
+  "종합병원": {
+   "major": "보건의료",
+   "middle": "병원",
+   "stores_793": 6,
+   "rest_group": null
+  },
+  "기타 일식 음식점": {
+   "major": "음식",
+   "middle": "일식",
+   "stores_793": 6,
+   "rest_group": null
+  },
+  "광고 매체 판매업": {
+   "major": "과학·기술",
+   "middle": "광고",
+   "stores_793": 6,
+   "rest_group": null
+  },
+  "안과 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 6,
+   "rest_group": null
+  },
+  "바둑/장기/체스 경기 운영업": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 5,
+   "rest_group": null
+  },
+  "화장터/묘지/납골당": {
+   "major": "수리·개인",
+   "middle": "장례식장 ",
+   "stores_793": 5,
+   "rest_group": null
+  },
+  "기숙사/고시원": {
+   "major": "숙박",
+   "middle": "기타 숙박",
+   "stores_793": 5,
+   "rest_group": null
+  },
+  "음반/비디오물 소매업": {
+   "major": "소매",
+   "middle": "오락용품 소매",
+   "stores_793": 5,
+   "rest_group": null
+  },
+  "패밀리레스토랑": {
+   "major": "음식",
+   "middle": "서양식",
+   "stores_793": 5,
+   "rest_group": null
+  },
+  "기타 법무관련 서비스업": {
+   "major": "과학·기술",
+   "middle": "법무관련 ",
+   "stores_793": 4,
+   "rest_group": null
+  },
+  "음반/비디오물 대여업": {
+   "major": "시설관리·임대",
+   "middle": "가정용품 대여",
+   "stores_793": 4,
+   "rest_group": null
+  },
+  "스쿼시/라켓볼장": {
+   "major": "예술·스포츠",
+   "middle": "스포츠 서비스",
+   "stores_793": 4,
+   "rest_group": null
+  },
+  "가발 소매업": {
+   "major": "소매",
+   "middle": "섬유·의복·신발 소매",
+   "stores_793": 3,
+   "rest_group": null
+  },
+  "방사선 진단/병리 검사 의원": {
+   "major": "보건의료",
+   "middle": "의원",
+   "stores_793": 3,
+   "rest_group": null
+  },
+  "얼음 소매업": {
+   "major": "소매",
+   "middle": "음료 소매",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "비디오방": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "아이스크림 할인점": {
+   "major": "소매",
+   "middle": "식료품 소매",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "낚시터 운영업": {
+   "major": "예술·스포츠",
+   "middle": "유원지·오락",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "기타 회계 관련 서비스업": {
+   "major": "과학·기술",
+   "middle": "회계·세무",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "한방병원": {
+   "major": "보건의료",
+   "middle": "병원",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "변리사": {
+   "major": "과학·기술",
+   "middle": "법무관련 ",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "전문자격/고시학원": {
+   "major": "교육",
+   "middle": "기타 교육",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "치과병원": {
+   "major": "보건의료",
+   "middle": "병원",
+   "stores_793": 1,
+   "rest_group": null
+  },
+  "한식": {
+   "rest_780": 20004,
+   "rest_group": "한식"
+  },
+  "기타": {
+   "rest_780": 5272,
+   "rest_group": "기타"
+  },
+  "커피숍": {
+   "rest_780": 4178,
+   "rest_group": "카페"
+  },
+  "호프/통닭": {
+   "rest_780": 2894,
+   "rest_group": "주점"
+  },
+  "기타 휴게음식점": {
+   "rest_780": 2711,
+   "rest_group": "기타"
+  },
+  "일반조리판매": {
+   "rest_780": 2313,
+   "rest_group": "기타"
+  },
+  "식육(숯불구이)": {
+   "rest_780": 1311,
+   "rest_group": "한식"
+  },
+  "까페": {
+   "rest_780": 1096,
+   "rest_group": "카페"
+  },
+  "분식": {
+   "rest_780": 1039,
+   "rest_group": "분식"
+  },
+  "과자점": {
+   "rest_780": 950,
+   "rest_group": "기타"
+  },
+  "통닭(치킨)": {
+   "rest_780": 866,
+   "rest_group": "치킨"
+  },
+  "일식": {
+   "rest_780": 846,
+   "rest_group": "일식"
+  },
+  "중국식": {
+   "rest_780": 785,
+   "rest_group": "중식"
+  },
+  "다방": {
+   "rest_780": 634,
+   "rest_group": "카페"
+  },
+  "패스트푸드": {
+   "rest_780": 497,
+   "rest_group": "기타"
+  },
+  "외국음식전문점(인도,태국등)": {
+   "rest_780": 277,
+   "rest_group": "기타"
+  },
+  "푸드트럭": {
+   "rest_780": 265,
+   "rest_group": "기타"
+  },
+  "정종/대포집/소주방": {
+   "rest_780": 251,
+   "rest_group": "주점"
+  },
+  "뷔페식": {
+   "rest_780": 245,
+   "rest_group": "기타"
+  },
+  "패밀리레스트랑": {
+   "rest_780": 166,
+   "rest_group": "기타"
+  },
+  "탕류(보신용)": {
+   "rest_780": 106,
+   "rest_group": "한식"
+  },
+  "전통찻집": {
+   "rest_780": 101,
+   "rest_group": "카페"
+  },
+  "아이스크림": {
+   "rest_780": 85,
+   "rest_group": "기타"
+  },
+  "감성주점": {
+   "rest_780": 76,
+   "rest_group": "주점"
+  },
+  "김밥(도시락)": {
+   "rest_780": 61,
+   "rest_group": "분식"
+  },
+  "키즈카페": {
+   "rest_780": 48,
+   "rest_group": "카페"
+  },
+  "떡카페": {
+   "rest_780": 38,
+   "rest_group": "카페"
+  },
+  "복어취급": {
+   "rest_780": 26,
+   "rest_group": "일식"
+  },
+  "라이브카페": {
+   "rest_780": 25,
+   "rest_group": "카페"
+  },
+  "관광호텔": {
+   "rest_780": 19,
+   "rest_group": "기타"
+  },
+  "출장조리": {
+   "rest_780": 17,
+   "rest_group": "기타"
+  },
+  "냉면집": {
+   "rest_780": 14,
+   "rest_group": "한식"
+  },
+  "공항": {
+   "rest_780": 10,
+   "rest_group": "기타"
+  },
+  "유원지": {
+   "rest_780": 6,
+   "rest_group": "기타"
+  },
+  "극장": {
+   "rest_780": 5,
+   "rest_group": "기타"
+  },
+  "백화점": {
+   "rest_780": 3,
+   "rest_group": "기타"
+  },
+  "이동조리": {
+   "rest_780": 1,
+   "rest_group": "기타"
+  }
+ },
+ "colloquial": {
+  "카페": [
+   "커피숍",
+   "커피집",
+   "디저트카페",
+   "베이커리카페",
+   "빵집",
+   "베이커리"
+  ],
+  "한식": [
+   "백반집",
+   "고깃집",
+   "고기집",
+   "국밥집",
+   "한식당"
+  ],
+  "일식": [
+   "초밥집",
+   "스시",
+   "일식집",
+   "돈가스"
+  ],
+  "횟집": [
+   "횟집",
+   "회센터",
+   "횟집"
+  ],
+  "중식": [
+   "중국집",
+   "짜장면집",
+   "중식당"
+  ],
+  "치킨": [
+   "치킨집",
+   "통닭집"
+  ],
+  "분식": [
+   "분식집",
+   "김밥집",
+   "떡볶이집"
+  ],
+  "주점": [
+   "술집",
+   "호프",
+   "포차",
+   "이자카야",
+   "바"
+  ],
+  "편의점": [
+   "편의점"
+  ],
+  "음식점": [
+   "음식점",
+   "식당",
+   "밥집",
+   "외식업",
+   "요식업"
+  ],
+  "숙박": [
+   "숙박업소",
+   "숙박업",
+   "숙박",
+   "펜션",
+   "게스트하우스",
+   "호텔",
+   "민박",
+   "숙소"
+  ],
+  "소매": [
+   "소매점",
+   "소매업",
+   "소매",
+   "작은 가게",
+   "구멍가게",
+   "슈퍼",
+   "마트"
+  ],
+  "미용": [
+   "미용실",
+   "헤어샵",
+   "네일샵"
+  ],
+  "학원": [
+   "학원",
+   "교습소"
+  ],
+  "약국": [
+   "약국"
+  ],
+  "병원": [
+   "병원",
+   "의원",
+   "치과",
+   "한의원"
+  ]
+ },
+ "coverage_by_metric": {
+  "점포수": "793 상가 전 업종(소분류 246종)",
+  "특화계수": "793 상가 전 업종",
+  "개업수": "780 음식점(휴게·일반)만",
+  "폐업수": "780 음식점만",
+  "폐업률": "780 음식점만",
+  "5년생존율": "780 음식점만"
+ }
+}

@@ -1,0 +1,809 @@
+{"q": "애월읍에 카페 몇 곳이야?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 한식당 몇 개나 있어요", "tuple": {"type": "T1", "metric": ["점포수"], "target": "한식", "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "제주대 쪽 치킨집 숫자 알려줘", "tuple": {"type": "T1", "metric": ["점포수"], "target": "치킨", "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "신제주에 편의점이 몇 군데인가요?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "편의점", "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산 숙박업소 개수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "숙박", "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 근처 횟집 몇 집?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "횟집", "space": ["일도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 분식집 수 좀요", "tuple": {"type": "T1", "metric": ["점포수"], "target": "분식", "space": ["이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 술집 얼마나 많아?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "주점", "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "모슬포에 중국집 몇 곳 있는지 궁금합니다", "tuple": {"type": "T1", "metric": ["점포수"], "target": "중식", "space": ["대정읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형 초밥집 갯수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "일식", "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "매일올레시장 있는 동네 소매점 몇개야", "tuple": {"type": "T1", "metric": ["점포수"], "target": "소매", "space": ["중앙동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "협재 쪽 식당이 총 몇 개죠", "tuple": {"type": "T1", "metric": ["점포수"], "target": "음식점", "space": ["한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "월정리 카페 몇개 있냐", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "함덕 커피숍 개수가 궁금해요", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": ["조천읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "공항 근처 식당 수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "음식점", "space": ["용담2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선에 편의점 있는 곳 몇 개예요?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "편의점", "space": ["표선면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동 펜션이랑 호텔 합쳐서 몇 개", "tuple": {"type": "T1", "metric": ["점포수"], "target": "숙박", "space": ["중문동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도2동 백반집 몇 곳 돼", "tuple": {"type": "T1", "metric": ["점포수"], "target": "한식", "space": ["삼도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동치킨집몇개", "tuple": {"type": "T1", "metric": ["점포수"], "target": "치킨", "space": ["동홍동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 카페 수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": ["한경면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동에 호프집 몇 군데 있어요?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "주점", "space": ["건입동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 카페 폐업률이 어느 정도야?", "tuple": {"type": "T1", "metric": ["폐업률"], "target": "카페", "space": ["이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 식당 3년 안에 문 닫는 비율은?", "tuple": {"type": "T1", "metric": ["폐업률"], "target": "음식점", "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월 카페 5년 버티는 비율", "tuple": {"type": "T1", "metric": ["5년생존율"], "target": "카페", "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동에서 한식집 5년 살아남을 확률이 얼마?", "tuple": {"type": "T1", "metric": ["5년생존율"], "target": "한식", "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동에 카페 새로 연 곳 몇 개예요", "tuple": {"type": "T1", "metric": ["개업수"], "target": "카페", "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 치킨집 폐업한 곳 몇 개", "tuple": {"type": "T1", "metric": ["폐업수"], "target": "치킨", "space": ["일도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 하루 평균 방문자 수", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍에 하루에 사람이 얼마나 오가?", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 버스 하루 이용객 몇 명이야", "tuple": {"type": "T1", "metric": ["버스일평균"], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서홍동 버스 이용 일평균", "tuple": {"type": "T1", "metric": ["버스일평균"], "target": null, "space": ["서홍동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자도에 60대 이상 비율 얼마인가요", "tuple": {"type": "T1", "metric": ["고령비중"], "target": null, "space": ["추자면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 20~30대 비중 알려줘", "tuple": {"type": "T1", "metric": ["청년비중"], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 카페 매출은 얼마나 돼?", "tuple": {"type": "T1", "metric": ["매출"], "target": "카페", "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동 음식점 카드 매출", "tuple": {"type": "T1", "metric": ["매출"], "target": "음식점", "space": ["중문동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍은 숙박이 얼마나 몰려 있어?", "tuple": {"type": "T1", "metric": ["특화계수"], "target": "숙박", "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍 카페 특화 정도", "tuple": {"type": "T1", "metric": ["특화계수"], "target": "카페", "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도는 사는 사람 대비 오는 사람이 얼마나 많아요", "tuple": {"type": "T1", "metric": ["방문거주비"], "target": null, "space": ["우도면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두동 일하러 오는 사람 비율 대비 거주", "tuple": {"type": "T1", "metric": ["근무거주비"], "target": null, "space": ["도두동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두 횟집 몇 군데", "tuple": {"type": "T1", "metric": ["점포수"], "target": "횟집", "space": ["도두동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원읍 한식당 요즘 몇 개야", "tuple": {"type": "T1", "metric": ["점포수"], "target": "한식", "space": ["남원읍"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선면 최근 1년 하루 평균 방문", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": ["표선면"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "작년부터 지금까지 대정읍 버스 하루 몇 명 타요", "tuple": {"type": "T1", "metric": ["버스일평균"], "target": null, "space": ["대정읍"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "봉개동 가게 몇 개", "tuple": {"type": "T1", "metric": ["점포수"], "target": "소매", "space": ["봉개동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "쇠소깍 있는 동네 카페 수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": ["효돈동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호동 식당 새로 낸 곳 수", "tuple": {"type": "T1", "metric": ["개업수"], "target": "음식점", "space": ["이호동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동이랑 이도2동 카페 수 비교해줘", "tuple": {"type": "T2", "metric": ["점포수"], "target": "카페", "space": ["아라동", "이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형이랑 연동 중에 식당 어디가 더 많아?", "tuple": {"type": "T2", "metric": ["점포수"], "target": "음식점", "space": ["노형동", "연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월이랑 한림 방문객 누가 더 많아요", "tuple": {"type": "T2", "metric": ["일평균방문"], "target": null, "space": ["애월읍", "한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 vs 이도1동 버스 이용", "tuple": {"type": "T2", "metric": ["버스일평균"], "target": null, "space": ["일도2동", "이도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 폐업률 노형동이랑 아라동 중 어디가 높아", "tuple": {"type": "T2", "metric": ["폐업률"], "target": "카페", "space": ["노형동", "아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도1동 삼도2동 음식점 수랑 폐업률 같이 비교", "tuple": {"type": "T2", "metric": ["점포수", "폐업률"], "target": "음식점", "space": ["삼도1동", "삼도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산이랑 함덕 카페 5년 생존율 차이", "tuple": {"type": "T2", "metric": ["5년생존율"], "target": "카페", "space": ["성산읍", "조천읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동과 예래동 중 숙박 특화가 더 큰 곳은", "tuple": {"type": "T2", "metric": ["특화계수"], "target": "숙박", "space": ["중문동", "예래동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 일도2동 아라동 청년 비중 비교", "tuple": {"type": "T2", "metric": ["청년비중"], "target": null, "space": ["이도2동", "일도2동", "아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍하고 우도 노인 비율 누가 높음?", "tuple": {"type": "T2", "metric": ["고령비중"], "target": null, "space": ["구좌읍", "우도면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동 서홍동 편의점 숫자 어디가 많아", "tuple": {"type": "T2", "metric": ["점포수"], "target": "편의점", "space": ["동홍동", "서홍동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍과 애월읍 카페 개업 비교해줘", "tuple": {"type": "T2", "metric": ["개업수"], "target": "카페", "space": ["한림읍", "애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 카페 매출이랑 노형동 카페 매출 비교", "tuple": {"type": "T2", "metric": ["매출"], "target": "카페", "space": ["연동", "노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "용담1동 용담2동 방문이랑 버스 이용 비교해줘", "tuple": {"type": "T2", "metric": ["일평균방문", "버스일평균"], "target": null, "space": ["용담1동", "용담2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두랑 이호 횟집 어디가 더 많아?", "tuple": {"type": "T2", "metric": ["점포수"], "target": "횟집", "space": ["도두동", "이호동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 표선면 방문 대비 거주 비교", "tuple": {"type": "T2", "metric": ["방문거주비"], "target": null, "space": ["성산읍", "표선면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 삼양동 치킨집 비교", "tuple": {"type": "T2", "metric": ["점포수"], "target": "치킨", "space": ["화북동", "삼양동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서귀포 시내 두 동네 방문자 비교", "tuple": {"type": "T2", "metric": ["일평균방문"], "target": null, "space": ["중앙동", "정방동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정읍이랑 안덕면 식당 폐업 건수 어디가 많은지", "tuple": {"type": "T2", "metric": ["폐업수"], "target": "음식점", "space": ["대정읍", "안덕면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "협재 숙박", "tuple": {"type": "T1", "metric": ["점포수"], "target": "숙박", "space": ["한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "제주대 쪽이랑 신제주 중에 젊은 사람 많은 곳은?", "tuple": {"type": "T2", "metric": ["청년비중"], "target": null, "space": ["아라동", "연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도1동과 이도2동의 한식당 수 차이는?", "tuple": {"type": "T2", "metric": ["점포수"], "target": "한식", "space": ["이도1동", "이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문이랑 성산 식당 매출 비교 부탁드립니다", "tuple": {"type": "T2", "metric": ["매출"], "target": "음식점", "space": ["중문동", "성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동과 연동 중 일하러 오는 사람이 더 많은 곳", "tuple": {"type": "T2", "metric": ["근무거주비"], "target": null, "space": ["노형동", "연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동 화북동 식당 5년 생존율", "tuple": {"type": "T2", "metric": ["5년생존율"], "target": "음식점", "space": ["건입동", "화북동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원과 표선 버스 하루 이용객 어디가 더 많음", "tuple": {"type": "T2", "metric": ["버스일평균"], "target": null, "space": ["남원읍", "표선면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페가 더 몰려 있는 곳 애월 vs 구좌", "tuple": {"type": "T2", "metric": ["특화계수"], "target": "카페", "space": ["애월읍", "구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동 대륜동 분식집 비교", "tuple": {"type": "T2", "metric": ["점포수"], "target": "분식", "space": ["동홍동", "대륜동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 쪽이랑 삼도1동 술집 수 비교", "tuple": {"type": "T2", "metric": ["점포수"], "target": "주점", "space": ["일도1동", "삼도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자랑 한경 어르신 비중 비교해줘", "tuple": {"type": "T2", "metric": ["고령비중"], "target": null, "space": ["추자면", "한경면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "봉개동 오라동 소매점 비교", "tuple": {"type": "T2", "metric": ["점포수"], "target": "소매", "space": ["봉개동", "오라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한식 폐업률 연동 노형 비교", "tuple": {"type": "T2", "metric": ["폐업률"], "target": "한식", "space": ["연동", "노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 아라동 카페 개업 폐업 둘 다 비교", "tuple": {"type": "T2", "metric": ["개업수", "폐업수"], "target": "카페", "space": ["이도2동", "아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "조천읍 구좌읍 중 사람 더 오는 데", "tuple": {"type": "T2", "metric": ["일평균방문"], "target": null, "space": ["조천읍", "구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정이랑 안덕 청년 비율", "tuple": {"type": "T2", "metric": ["청년비중"], "target": null, "space": ["대정읍", "안덕면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일식집은 노형이랑 연동 어디가 많아", "tuple": {"type": "T2", "metric": ["점포수"], "target": "일식", "space": ["노형동", "연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "송산동 vs 정방동 카페수", "tuple": {"type": "T2", "metric": ["점포수"], "target": "카페", "space": ["송산동", "정방동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두 외도 버스 이용 차이", "tuple": {"type": "T2", "metric": ["버스일평균"], "target": null, "space": ["도두동", "외도동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호랑 도두 중에 카페 많은 데는?", "tuple": {"type": "T2", "metric": ["점포수"], "target": "카페", "space": ["이호동", "도두동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동이랑 동문시장 쪽 하루 방문자 비교", "tuple": {"type": "T2", "metric": ["일평균방문"], "target": null, "space": ["건입동", "일도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 한경면 식당 수 누가 많죠", "tuple": {"type": "T2", "metric": ["점포수"], "target": "음식점", "space": ["한림읍", "한경면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북 삼양 중 젊은층 많은 곳", "tuple": {"type": "T2", "metric": ["청년비중"], "target": null, "space": ["화북동", "삼양동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍하고 중문동 숙박 매출", "tuple": {"type": "T2", "metric": ["매출"], "target": "숙박", "space": ["성산읍", "중문동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도랑 추자도 중 음식점이 몰린 곳은", "tuple": {"type": "T2", "metric": ["특화계수"], "target": "음식점", "space": ["우도면", "추자면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페가 가장 많은 동네는?", "tuple": {"type": "T3", "metric": ["점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박업소 제일 많은 곳 순위", "tuple": {"type": "T3", "metric": ["점포수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 폐업률 높은 동네 순위 알려줘", "tuple": {"type": "T3", "metric": ["폐업률"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 5년 생존율 높은 동네 top 5", "tuple": {"type": "T3", "metric": ["5년생존율"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "하루 방문자 가장 많은 동네 순위", "tuple": {"type": "T3", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 많이 타는 동네 상위 몇 곳이야", "tuple": {"type": "T3", "metric": ["버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 비율 높은 동네 순서대로", "tuple": {"type": "T3", "metric": ["고령비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년이 제일 많이 사는 동네는 어디예요", "tuple": {"type": "T3", "metric": ["청년비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박 특화가 큰 동네 순위", "tuple": {"type": "T3", "metric": ["특화계수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 몰려있는 동네 줄세워줘", "tuple": {"type": "T3", "metric": ["특화계수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "편의점 제일 많은 데", "tuple": {"type": "T3", "metric": ["점포수"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "치킨집 많은 동네 상위 3곳", "tuple": {"type": "T3", "metric": ["점포수"], "target": "치킨", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "횟집 많은 동네 어디?", "tuple": {"type": "T3", "metric": ["점포수"], "target": "횟집", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 새로 많이 생기는 동네 순위", "tuple": {"type": "T3", "metric": ["개업수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 가장 많이 문 닫은 동네", "tuple": {"type": "T3", "metric": ["폐업수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "사는 사람보다 오는 사람이 많은 동네 순위", "tuple": {"type": "T3", "metric": ["방문거주비"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일하러 오는 사람이 많은 동네 순위", "tuple": {"type": "T3", "metric": ["근무거주비"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 매출 높은 동네 top3", "tuple": {"type": "T3", "metric": ["매출"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 카드 매출 1등 동네", "tuple": {"type": "T3", "metric": ["매출"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한식당 제일 많은 동네 알려줘", "tuple": {"type": "T3", "metric": ["점포수"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "술집 많은 동네 순위가 궁금해요", "tuple": {"type": "T3", "metric": ["점포수"], "target": "주점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "분식집 많은곳", "tuple": {"type": "T3", "metric": ["점포수"], "target": "분식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 망하는 비율이 높은 동네 어디야", "tuple": {"type": "T3", "metric": ["폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 오래 가는 동네 순위", "tuple": {"type": "T3", "metric": ["5년생존율"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "최근 1년 사람 제일 많이 온 동네는?", "tuple": {"type": "T3", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "2030 많이 사는 동네 1위부터 5위까지", "tuple": {"type": "T3", "metric": ["청년비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노인 인구 비중 하위 동네", "tuple": {"type": "T3", "metric": ["고령비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "소매점 제일 적은 동네는?", "tuple": {"type": "T3", "metric": ["점포수"], "target": "소매", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일식집 많은 동네 순위 부탁드려요", "tuple": {"type": "T3", "metric": ["점포수"], "target": "일식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중국집 제일 많은 동네", "tuple": {"type": "T3", "metric": ["점포수"], "target": "중식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용 적은 동네 순위", "tuple": {"type": "T3", "metric": ["버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페하기 위험한 동네 순서", "tuple": {"type": "T3", "metric": ["폐업률"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "신규 식당 개업 많은 동네 상위", "tuple": {"type": "T3", "metric": ["개업수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "가장 카페 적은 동네", "tuple": {"type": "T3", "metric": ["점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "횟집 특화계수 높은 곳 5개", "tuple": {"type": "T3", "metric": ["특화계수"], "target": "횟집", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "유동인구 많은 동네 순서", "tuple": {"type": "T3", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "펜션 많은 동네 어디어디야", "tuple": {"type": "T3", "metric": ["점포수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 폐업 건수 많은 동네 순위", "tuple": {"type": "T3", "metric": ["폐업수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한식당이 5년 넘게 가는 비율 높은 동네", "tuple": {"type": "T3", "metric": ["5년생존율"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "치킨집 제일 많은 동네 순위 보여줘", "tuple": {"type": "T3", "metric": ["점포수"], "target": "치킨", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박 매출 상위 동네", "tuple": {"type": "T3", "metric": ["매출"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "할머니 할아버지 제일 많이 사는 데가 어디?", "tuple": {"type": "T3", "metric": ["고령비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "젊은 사람 제일 적은 동네", "tuple": {"type": "T3", "metric": ["청년비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 수 순위", "tuple": {"type": "T3", "metric": ["점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "관광객 몰리는 동네 순위", "tuple": {"type": "T3", "metric": ["방문거주비"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "하루 버스 이용 제일 많은 동네 3곳", "tuple": {"type": "T3", "metric": ["버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 카페 수가 최근 5년 어떻게 변했어?", "tuple": {"type": "T4", "metric": ["점포수"], "target": "카페", "space": ["노형동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 카페 개업이 줄고 있어?", "tuple": {"type": "T4", "metric": ["개업수"], "target": "카페", "space": ["노형동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월 식당 폐업 추세가 어때요", "tuple": {"type": "T4", "metric": ["폐업수"], "target": "음식점", "space": ["애월읍"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 방문객 요새 늘었나요?", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": ["성산읍"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 버스 이용 최근 몇 년 흐름", "tuple": {"type": "T4", "metric": ["버스일평균"], "target": null, "space": ["연동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문 숙박업소 수 추이", "tuple": {"type": "T4", "metric": ["점포수"], "target": "숙박", "space": ["중문동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 식당 새로 여는 곳이 늘고 있나", "tuple": {"type": "T4", "metric": ["개업수"], "target": "음식점", "space": ["이도2동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 카페 작년부터 문 닫는 곳이 많아졌어?", "tuple": {"type": "T4", "metric": ["폐업수"], "target": "카페", "space": ["아라동"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 편의점 늘어났냐", "tuple": {"type": "T4", "metric": ["점포수"], "target": "편의점", "space": ["일도2동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 청년 비율 변화", "tuple": {"type": "T4", "metric": ["청년비중"], "target": null, "space": ["아라동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정읍 어르신 비율 점점 늘어?", "tuple": {"type": "T4", "metric": ["고령비중"], "target": null, "space": ["대정읍"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍 작년 이후 방문객 추세", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": ["구좌읍"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 카페 매출 변화 추이 보여줘", "tuple": {"type": "T4", "metric": ["매출"], "target": "카페", "space": ["한림읍"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 치킨집 개업 흐름", "tuple": {"type": "T4", "metric": ["개업수"], "target": "치킨", "space": ["화북동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도1동 한식당 폐업 5년치 추이", "tuple": {"type": "T4", "metric": ["폐업수"], "target": "한식", "space": ["삼도1동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선면 가게 수 줄었어?", "tuple": {"type": "T4", "metric": ["점포수"], "target": "소매", "space": ["표선면"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼양동 버스 이용객 3년간 변화", "tuple": {"type": "T4", "metric": ["버스일평균"], "target": null, "space": ["삼양동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도 방문객 5년 추이", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": ["우도면"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "함덕 카페 늘고 있나요", "tuple": {"type": "T4", "metric": ["점포수"], "target": "카페", "space": ["조천읍"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "모슬포 식당 개업이 해마다 어떻게 돼", "tuple": {"type": "T4", "metric": ["개업수"], "target": "음식점", "space": ["대정읍"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 카페 폐업률 추세", "tuple": {"type": "T4", "metric": ["폐업률"], "target": "카페", "space": ["이도2동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원읍 식당 수 3년 변화", "tuple": {"type": "T4", "metric": ["점포수"], "target": "음식점", "space": ["남원읍"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 올해 사람 늘었어 줄었어?", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": ["노형동"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 버스 승객 몇년간 추세", "tuple": {"type": "T4", "metric": ["버스일평균"], "target": null, "space": ["한경면"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 술집 개업 추이가 궁금합니다", "tuple": {"type": "T4", "metric": ["개업수"], "target": "주점", "space": ["연동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 쪽 분식집 폐업 연도별 변화", "tuple": {"type": "T4", "metric": ["폐업수"], "target": "분식", "space": ["일도1동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두동 횟집 수 변화", "tuple": {"type": "T4", "metric": ["점포수"], "target": "횟집", "space": ["도두동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍 펜션 최근에 많이 생겼어?", "tuple": {"type": "T4", "metric": ["점포수"], "target": "숙박", "space": ["구좌읍"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 방문/거주 지수 추이", "tuple": {"type": "T4", "metric": ["방문거주비"], "target": null, "space": ["성산읍"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자면 노인 비중 변화", "tuple": {"type": "T4", "metric": ["고령비중"], "target": null, "space": ["추자면"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍 카페 지난해 신규 개업 추이", "tuple": {"type": "T4", "metric": ["개업수"], "target": "카페", "space": ["애월읍"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동 치킨 폐업 늘었나", "tuple": {"type": "T4", "metric": ["폐업수"], "target": "치킨", "space": ["동홍동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 청년 인구 줄고 있나요", "tuple": {"type": "T4", "metric": ["청년비중"], "target": null, "space": ["일도2동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "외도동 한식집 수 몇년간 흐름", "tuple": {"type": "T4", "metric": ["점포수"], "target": "한식", "space": ["외도동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서귀포 올레시장 동네 방문객 늘었어?", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": ["중앙동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 버스 승객 작년 대비 추이", "tuple": {"type": "T4", "metric": ["버스일평균"], "target": null, "space": ["아라동"], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "공항 근처 식당 폐업 추세", "tuple": {"type": "T4", "metric": ["폐업수"], "target": "음식점", "space": ["용담2동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 카페 개업 변화", "tuple": {"type": "T4", "metric": ["개업수"], "target": "카페", "space": ["한경면"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "안덕면 식당 수 늘고있음?", "tuple": {"type": "T4", "metric": ["점포수"], "target": "음식점", "space": ["안덕면"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 식당 매출 추이", "tuple": {"type": "T4", "metric": ["매출"], "target": "음식점", "space": ["노형동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동 술집 몇 년 새 줄었어", "tuple": {"type": "T4", "metric": ["점포수"], "target": "주점", "space": ["건입동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동 식당 폐업률 변화", "tuple": {"type": "T4", "metric": ["폐업률"], "target": "음식점", "space": ["중문동"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 하루 방문자 5년 변화", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": ["한림읍"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 사는 사람 연령 구성은?", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동에 오는 사람들 나이대는 어때?", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 방문객 나이 비율", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 주민 연령대 분포", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍 방문객 남녀 비율", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 주민 성별 구성 알려줘", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["일도2동"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 버스 이용자 구분별로 보여줘", "tuple": {"type": "T5", "metric": ["버스일평균"], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": "이용자구분", "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 버스 타는 사람 어르신 학생 일반 비율", "tuple": {"type": "T5", "metric": ["버스일평균"], "target": null, "space": ["이도2동"], "time": null, "time_year": null, "breakdown": "이용자구분", "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 식당 업종별 구성", "tuple": {"type": "T5", "metric": ["점포수"], "target": "음식점", "space": ["노형동"], "time": null, "time_year": null, "breakdown": "업종", "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍 음식점 종류별로 몇 개씩이야", "tuple": {"type": "T5", "metric": ["점포수"], "target": "음식점", "space": ["애월읍"], "time": null, "time_year": null, "breakdown": "업종", "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동 업종 비중 어떻게 돼?", "tuple": {"type": "T5", "metric": ["점포수"], "target": null, "space": ["중문동"], "time": null, "time_year": null, "breakdown": "업종", "cond": [], "form": null, "expect": "답함"}}
+{"q": "올레시장 동네 오는 사람들 연령대", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["중앙동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "함덕 방문자 성별 비중", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["조천읍"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자도 사는 사람들 나이 구성", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["추자면"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "월정리 오는 사람 몇 살이 많아요", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 버스 이용 유형별 비중", "tuple": {"type": "T5", "metric": ["버스일평균"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": "이용자구분", "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 연령대별로 어떻게 돼", "tuple": {"type": "T5", "metric": ["고령비중"], "target": null, "space": ["한경면"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정읍 거주 인구 남녀 구성", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["대정읍"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호동 오는 사람 나이대 비율 알려줘", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["이호동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "공항 근처 방문객 연령 분포", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["용담2동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도2동 주민 연령대 비중", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["삼도2동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도1동에 어떤 가게가 많아?", "tuple": {"type": "T5", "metric": ["점포수"], "target": null, "space": ["일도1동"], "time": null, "time_year": null, "breakdown": "업종", "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선면 남자 여자 방문 비율", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["표선면"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "서홍동 버스 누가 많이 타?", "tuple": {"type": "T5", "metric": ["버스일평균"], "target": null, "space": ["서홍동"], "time": null, "time_year": null, "breakdown": "이용자구분", "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동 사는 사람 나이 구성이 궁금해요", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["동홍동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 방문자 남녀 비율", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 업종별 점포 구성", "tuple": {"type": "T5", "metric": ["점포수"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": "업종", "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도 관광객 연령대", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["우도면"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원읍 주민 연령 비중 보여줘", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["남원읍"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동 방문 연령 구성", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["건입동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "안덕면 방문객 성별", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["안덕면"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 버스 이용자 구분", "tuple": {"type": "T5", "metric": ["버스일평균"], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": "이용자구분", "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 주민 몇 살이 많음?", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["한림읍"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도1동 음식점 종류 비중", "tuple": {"type": "T5", "metric": ["점포수"], "target": "음식점", "space": ["이도1동"], "time": null, "time_year": null, "breakdown": "업종", "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 방문 연령 분포", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "오라동 남녀 비율", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["오라동"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "정방동 오는 사람 나이대", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["정방동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "외도동 방문 연령별 비중", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["외도동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼양동 버스 이용 구분별 비율", "tuple": {"type": "T5", "metric": ["버스일평균"], "target": null, "space": ["삼양동"], "time": null, "time_year": null, "breakdown": "이용자구분", "cond": [], "form": null, "expect": "답함"}}
+{"q": "영천동 인구 연령 구성", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": ["영천동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "대륜동 방문 성비", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["대륜동"], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 가게 종류 구성", "tuple": {"type": "T5", "metric": ["점포수"], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": "업종", "cond": [], "form": null, "expect": "답함"}}
+{"q": "송산동 방문객 연령대는?", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["송산동"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "비 오는 주말 노형동 카페 손님은?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": "카페", "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비", "주말"], "form": null, "expect": "답함"}}
+{"q": "비 오는 날 아라동 방문은 어떻게 돼?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "비 오면 연동 버스 타는 사람 늘어요?", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "성산읍 비 올 때 사람 줄어?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "맑은 날 애월읍 방문객이 얼마나 더 많은지", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["맑음"], "form": null, "expect": "답함"}}
+{"q": "바람 센 날 함덕 쪽 사람 어때요", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["조천읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["강풍"], "form": null, "expect": "답함"}}
+{"q": "강풍 불 때 서홍동 버스 이용 변화", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": ["서홍동"], "time": null, "time_year": null, "breakdown": null, "cond": ["강풍"], "form": null, "expect": "답함"}}
+{"q": "구좌읍은 주말에 방문객이 평일보다 얼마나 늘지?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["주말"], "form": null, "expect": "답함"}}
+{"q": "중문동 성수기 때 방문 증가폭", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["중문동"], "time": null, "time_year": null, "breakdown": null, "cond": ["성수기"], "form": null, "expect": "답함"}}
+{"q": "중문동 비수기엔 사람이 얼마나 빠져요", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["중문동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비수기"], "form": null, "expect": "답함"}}
+{"q": "비 오는 날 한림읍 카페 매출 차이", "tuple": {"type": "T6", "metric": ["매출"], "target": "카페", "space": ["한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "주말에 이도2동 식당 매출이 평일보다 높아?", "tuple": {"type": "T6", "metric": ["매출"], "target": "음식점", "space": ["이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": ["주말"], "form": null, "expect": "답함"}}
+{"q": "우도 겨울에는 방문객이 어느 정도 줄어", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["우도면"], "time": null, "time_year": null, "breakdown": null, "cond": ["겨울"], "form": null, "expect": "답함"}}
+{"q": "표선면 여름 방문객 영향", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["표선면"], "time": null, "time_year": null, "breakdown": null, "cond": ["여름"], "form": null, "expect": "답함"}}
+{"q": "장마철에 화북동 버스 승객 변화", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "노형동 평일 방문객은 주말과 비교하면", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": ["평일"], "form": null, "expect": "답함"}}
+{"q": "비 오는 날 연동 시간대별 방문", "tuple": {"type": "T6", "metric": ["시간대방문"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "날씨 좋은 날 도두동 사람 많아지나", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["도두동"], "time": null, "time_year": null, "breakdown": null, "cond": ["맑음"], "form": null, "expect": "답함"}}
+{"q": "건입동 우천 시 방문객", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["건입동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "대정읍 봄철 방문 증가가 있어?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["대정읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["봄"], "form": null, "expect": "답함"}}
+{"q": "가을에 남원읍 방문객 늘어요?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["남원읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["가을"], "form": null, "expect": "답함"}}
+{"q": "비 오는 주말에 대정읍 버스 이용", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": ["대정읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["비", "주말"], "form": null, "expect": "답함"}}
+{"q": "성산읍 성수기 숙박 매출 차이", "tuple": {"type": "T6", "metric": ["매출"], "target": "숙박", "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["성수기"], "form": null, "expect": "답함"}}
+{"q": "중문 숙박 비수기엔 매출 얼마나 떨어져", "tuple": {"type": "T6", "metric": ["매출"], "target": "숙박", "space": ["중문동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비수기"], "form": null, "expect": "답함"}}
+{"q": "이호동 비 오는 날 방문 줄어드나요", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["이호동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "삼양동 겨울에 사람 얼마나 와", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["삼양동"], "time": null, "time_year": null, "breakdown": null, "cond": ["겨울"], "form": null, "expect": "답함"}}
+{"q": "애월 카페는 비 오면 손님이 줄어, 아니면 늘어?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": "카페", "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "동문시장 쪽 비 오는 날 방문객", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["일도1동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "서귀포 시내 주말에 사람 더 와?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["정방동"], "time": null, "time_year": null, "breakdown": null, "cond": ["주말"], "form": null, "expect": "답함"}}
+{"q": "안덕면 태풍 올 때 방문 변화", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["안덕면"], "time": null, "time_year": null, "breakdown": null, "cond": ["강풍"], "form": null, "expect": "답함"}}
+{"q": "한경면 비 올 때 방문객", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["한경면"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "일도2동 비오는날 버스", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": ["일도2동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "공항 근처 비 오는 날 사람 수", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["용담2동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "봉개동 여름에 방문 늘었어?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["봉개동"], "time": null, "time_year": null, "breakdown": null, "cond": ["여름"], "form": null, "expect": "답함"}}
+{"q": "동홍동 맑으면 사람 더 나와요?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["동홍동"], "time": null, "time_year": null, "breakdown": null, "cond": ["맑음"], "form": null, "expect": "답함"}}
+{"q": "외도동 비 영향 방문", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["외도동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "맑은 날 이도1동 버스 이용 증가?", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": ["이도1동"], "time": null, "time_year": null, "breakdown": null, "cond": ["맑음"], "form": null, "expect": "답함"}}
+{"q": "오라동 주말 방문 얼마나 달라", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["오라동"], "time": null, "time_year": null, "breakdown": null, "cond": ["주말"], "form": null, "expect": "답함"}}
+{"q": "송산동 비 오면 사람 줄어?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["송산동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "추자도 겨울에 오는 사람 얼마나 돼", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["추자면"], "time": null, "time_year": null, "breakdown": null, "cond": ["겨울"], "form": null, "expect": "답함"}}
+{"q": "삼도1동 비 오는 날 방문", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["삼도1동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "화북동 관광철 방문 변화", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": null, "cond": ["성수기"], "form": null, "expect": "답함"}}
+{"q": "노형동 비 오는 날 식당 카드 매출", "tuple": {"type": "T6", "metric": ["매출"], "target": "음식점", "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "효돈동 우천 방문", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["효돈동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "아라동 겨울철 버스 이용이 어떻게 달라져요", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": ["겨울"], "form": null, "expect": "답함"}}
+{"q": "비 오는 평일 대륜동 방문", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["대륜동"], "time": null, "time_year": null, "breakdown": null, "cond": ["비", "평일"], "form": null, "expect": "답함"}}
+{"q": "유동인구 많은 동네가 매출도 높아?", "tuple": {"type": "T7", "metric": ["방문거주비", "매출"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "사람 많이 오는 동네일수록 카페가 많은가요", "tuple": {"type": "T7", "metric": ["점포수", "일평균방문"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많은 동네는 카페 폐업률이 낮아?", "tuple": {"type": "T7", "metric": ["청년비중", "폐업률"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노인 많은 동네일수록 버스를 많이 타나", "tuple": {"type": "T7", "metric": ["고령비중", "버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객이 많으면 식당 폐업이 적어요?", "tuple": {"type": "T7", "metric": ["일평균방문", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 많은 동네는 오래 살아남아?", "tuple": {"type": "T7", "metric": ["점포수", "5년생존율"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용이랑 방문자 수 상관있어?", "tuple": {"type": "T7", "metric": ["버스일평균", "일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 비율과 카페 수 관계", "tuple": {"type": "T7", "metric": ["청년비중", "점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노인 많은 곳이 편의점 많은지 궁금", "tuple": {"type": "T7", "metric": ["고령비중", "점포수"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박 몰린 동네일수록 폐업이 많냐", "tuple": {"type": "T7", "metric": ["특화계수", "폐업률"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "관광객 많이 오는 곳에 숙박업소도 많지?", "tuple": {"type": "T7", "metric": ["방문거주비", "점포수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "유동인구랑 카페 매출 연관 있나요", "tuple": {"type": "T7", "metric": ["일평균방문", "매출"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 개업 많은 동네는 폐업도 많은가", "tuple": {"type": "T7", "metric": ["개업수", "폐업수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "젊은 사람 많은 동네에 방문객도 많아?", "tuple": {"type": "T7", "metric": ["청년비중", "일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "치킨집이 많을수록 폐업률도 높아요?", "tuple": {"type": "T7", "metric": ["점포수", "폐업률"], "target": "치킨", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일하러 오는 사람 많은 곳에 식당도 많나", "tuple": {"type": "T7", "metric": ["근무거주비", "점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노인 비중이 높으면 식당 폐업이 줄어?", "tuple": {"type": "T7", "metric": ["고령비중", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 많이 타는 동네는 식당이 많은가요", "tuple": {"type": "T7", "metric": ["버스일평균", "점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객 수와 식당 5년 생존율 관계", "tuple": {"type": "T7", "metric": ["일평균방문", "5년생존율"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많은 곳 식당 매출이 더 높아요?", "tuple": {"type": "T7", "metric": ["청년비중", "매출"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "가게 수가 많으면 매출이 오히려 낮아지나", "tuple": {"type": "T7", "metric": ["점포수", "매출"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "오는 사람 나이가 젊을수록 매출 높은지", "tuple": {"type": "T7", "metric": ["방문연령구성", "매출"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 특화된 동네가 생존율도 높아?", "tuple": {"type": "T7", "metric": ["특화계수", "5년생존율"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "사람 많이 오면 카페 개업도 늘어?", "tuple": {"type": "T7", "metric": ["일평균방문", "개업수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노인 비율하고 방문객 수 관계 있음?", "tuple": {"type": "T7", "metric": ["고령비중", "일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "소매점 많은 곳이 관광객 많이 오는 곳이야?", "tuple": {"type": "T7", "metric": ["점포수", "방문거주비"], "target": "소매", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용 많으면 식당 안 망해요?", "tuple": {"type": "T7", "metric": ["버스일평균", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많은 동네에 신규 식당 개업 많나", "tuple": {"type": "T7", "metric": ["청년비중", "개업수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "유동인구 vs 숙박업소 수", "tuple": {"type": "T7", "metric": ["일평균방문", "점포수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "오는 사람 많은 동네와 폐업률의 관계", "tuple": {"type": "T7", "metric": ["방문거주비", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "직장인 많은 동네는 카페 매출 높을까", "tuple": {"type": "T7", "metric": ["근무거주비", "매출"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "편의점 수와 유동인구 상관", "tuple": {"type": "T7", "metric": ["점포수", "일평균방문"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 많은 동네 한식당도 많아?", "tuple": {"type": "T7", "metric": ["고령비중", "점포수"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "사람 많이 오면 술집 폐업도 많아지나", "tuple": {"type": "T7", "metric": ["일평균방문", "폐업수"], "target": "주점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 승객과 식당 매출 관계", "tuple": {"type": "T7", "metric": ["버스일평균", "매출"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 개업이 몰린 동네의 5년 생존율", "tuple": {"type": "T7", "metric": ["개업수", "5년생존율"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 비중이랑 카페 특화 연관성", "tuple": {"type": "T7", "metric": ["청년비중", "특화계수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문 지수 높은 곳이 실제 방문자도 많나", "tuple": {"type": "T7", "metric": ["방문거주비", "일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "소매점이 많은 동네일수록 고령화?", "tuple": {"type": "T7", "metric": ["점포수", "고령비중"], "target": "소매", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "5년 생존율 높은 동네는 폐업률도 낮은가요", "tuple": {"type": "T7", "metric": ["5년생존율", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객 많은 동네일수록 식당 특화돼 있어?", "tuple": {"type": "T7", "metric": ["일평균방문", "특화계수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "젊은 동네가 버스도 많이 타?", "tuple": {"type": "T7", "metric": ["청년비중", "버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "다음 분기 애월읍 방문객 예상은?", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["애월읍"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "다음 분기 애월읍 버스 이용은 어떻게 될까요", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["애월읍"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "다음 달 노형동 사람 얼마나 올까", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["노형동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "담달 연동 버스 이용객 예측", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["연동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 다음 분기 방문 전망", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["성산읍"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동 다음달 방문객 몇 명쯤 될까요", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["중문동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 앞으로 3개월 버스 승객 전망", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["아라동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍 다음 달 유동인구 예측해줘", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["구좌읍"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 버스 다음달에 늘어날까", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["일도2동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 다음 분기에 방문 늘 것 같아?", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["한림읍"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 버스 다음 분기 예상 이용객", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["화북동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선면 담달 방문 예상", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["표선면"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도 다음 분기 방문객", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["우도면"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정읍 다음 달 버스 이용 수", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["대정읍"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 다음 달 방문객 어떻게 전망돼요", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["이도2동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼양동 버스 앞으로 어떻게 될까", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["삼양동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "함덕 다음 분기 방문객 예측", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["조천읍"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원읍 다음달 사람 얼마나 올 것 같아요", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["남원읍"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두동 다음달 방문객 예상치", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["도두동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서홍동 다음달 버스 얼마나 탈까", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["서홍동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 쪽 다음 분기 방문 예측", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["일도1동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동 다음 달 방문 전망", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["건입동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "안덕면 다음 분기 방문객", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["안덕면"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 다음 분기 버스 이용 예상", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["한경면"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동 담달 방문 예측해줘", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["동홍동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "공항 근처 다음달 방문객 수", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["용담2동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호동 다음 분기엔 사람이 늘까", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["이호동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "외도동 다음달 버스 이용객 얼마일까요", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["외도동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 카페 다음 분기 매출 전망", "tuple": {"type": "T8", "metric": ["매출"], "target": "카페", "space": ["연동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도2동 앞으로 방문객 예상", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["삼도2동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "봉개동 다음 달 방문", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["봉개동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도1동 버스 이용 예측값", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["이도1동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서귀포 올레시장 동네 다음 분기 방문 예상", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["중앙동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대륜동 다음 달에 얼마나 방문할까요", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["대륜동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "영천동 다음 분기 방문객", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["영천동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자도 다음달 방문객 전망", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["추자면"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "오라동 다음달 버스 승객 예측", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["오라동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "효돈동 방문객 다음 분기 예상", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["효돈동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "정방동 다음 달 방문객", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["정방동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "송산동 다음 분기 방문", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["송산동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 버스 다음 분기 예상 이용", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["성산읍"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 다음 분기 유동인구 전망은?", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["노형동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동이랑 비슷한 동네는?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍과 유사한 동네 어디예요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 같은 유형의 동네 알려줘", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍이랑 닮은 동네 있어?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "제주대 동네랑 비슷한 곳", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "신제주랑 비슷한 분위기 동네는?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동은 어떤 유형의 동네야", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["중문동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 닮은 동네 추천", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 있는 동네랑 비슷한 곳은 어디?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["일도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍하고 비슷한 곳이 또 있나요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동이랑 유사한 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선면 같은 동네 뭐가 있어요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["표선면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정읍은 어떤 동네 유형이에요?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["대정읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼양동이랑 비슷한 데", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["삼양동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동과 비슷한 동네를 찾고 싶어요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["동홍동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "함덕 쪽이랑 비슷한 동네는 어디", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["조천읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두동이 어떤 동네 유형인지 궁금", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["도두동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도랑 닮은 곳", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["우도면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "용담2동이랑 비슷한 동네 알려줘", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["용담2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동 비슷한 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["건입동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원읍과 같은 유형으로 묶이는 동네들", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["남원읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서홍동 유사 동네 보여줘", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["서홍동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호동이랑 비슷한 곳 어디 있어?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["이호동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "외도동하고 비슷한 동네가 있을까요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["외도동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "안덕면이랑 닮은 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["안덕면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도1동은 어떤 성격의 동네예요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["삼도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "봉개동 비슷한 동네는?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["봉개동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "오라동이랑 같은 유형 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["오라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동과 비슷한 곳 찾아줘", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["일도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "올레시장 동네랑 닮은 곳은?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["중앙동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 비슷한 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["한경면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대륜동이랑 비슷한 동네가 어디야", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["대륜동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "정방동은 어떤 유형이에요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["정방동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "영천동하고 유사한 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["영천동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자도랑 비슷한 곳도 있나요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["추자면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "효돈동 같은 느낌의 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["효돈동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도1동이랑 비슷한 동네 알려주세요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["이도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "송산동이랑 닮은 데", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["송산동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도2동 비슷한 곳", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["삼도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "천지동이랑 비슷한 동네는?", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["천지동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "강정동이랑 비슷한 곳 알려줘", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["대천동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "예래동 같은 동네 있나요", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["예래동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "용담1동과 비슷한 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["용담1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "우리 동네 노형이랑 비슷한 곳 어디야", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 생활 진단해 줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍 전반적으로 어떤지 한눈에 보여줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 종합 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 전체적으로 어때요?", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 종합적으로 알려줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 동네 진단 부탁해", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 한눈에 정리해줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동 전반 현황 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["중문동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 생활 진단서 뽑아줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["일도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍은 전체적으로 어떤 동네야", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선면 종합 현황", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["표선면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 진단해주세요", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "함덕 쪽 동네 종합 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["조천읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정읍 전체 상황 알려줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["대정읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동 한눈에 보기", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["동홍동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼양동 동네 상태 종합해서", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["삼양동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호동 전반적인 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["이호동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원읍 진단 좀", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["남원읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두동 종합 정리", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["도두동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동 어떤 동네인지 전체적으로", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["건입동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "용담2동 생활 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["용담2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "외도동 전체 진단 부탁", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["외도동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "안덕면 종합 진단해줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["안덕면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도 전반적으로 어떤지", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["우도면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서홍동 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["서홍동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 동네 전체적으로 진단해줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["일도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도1동 생활 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["이도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도1동 한눈에 현황", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["삼도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 종합 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["한경면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "오라동 전체적으로 보여줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["오라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "봉개동 종합 진단해 주세요", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["봉개동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서귀포 시내 올레시장 쪽 동네 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["중앙동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "정방동 한눈에 알려줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["정방동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "대륜동 동네 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["대륜동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "영천동 종합 현황", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["영천동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "송산동 전반 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["송산동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "효돈동 어떤 동네인지 종합적으로", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["효돈동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자도 전체적으로 어때?", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["추자면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도2동 생활 진단 부탁드립니다", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["삼도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "천지동 종합 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["천지동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "강정 쪽 동네 종합해서 알려줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["대천동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "예래동 진단해줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["예래동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "용담1동 전반 현황", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["용담1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형 동네 종합 점검", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "신제주 연동 한눈에 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "센터에 와이파이 자료도 있어?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어떤 데이터를 볼 수 있어요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 관련 자료 뭐 있나요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카드 매출 데이터는 어디서 봐?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "유동인구 자료 제공해요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "날씨 데이터도 있나요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이 프로그램에서 쓰는 자료 목록 보여줘", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "주차장 데이터 있어?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "관광객 수 자료 있습니까", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "센터에 어떤 자료가 있는지 알고 싶어요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "가게 폐업 관련 자료는 어떤 게 있어", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "인구 통계 데이터도 있니", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "택시 이용 자료 있나요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "시간대별 자료는 어디서 볼 수 있죠", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "CCTV 같은 영상 자료 있어?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "데이터 반출 가능한 자료가 뭐예요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "공공 와이파이 이용 자료도 제공해?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "렌터카 자료 있는지 궁금합니다", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "상권 관련해서 볼 수 있는 데이터가 뭐뭐 있어요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "쓰레기 배출 데이터 있어요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "전기 사용량 자료도 있나", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이 앱이 쓰는 데이터 출처가 어디야", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "따릉이 같은 자전거 이용 자료 있어?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "통신 데이터 있나요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "교통사고 자료는 없어요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "물가 데이터도 있는지 알려줘", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동네 인구 이동 자료 있음?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "센터에서 쓸 수 있는 자료 전체 알려주세요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "비 온 날 기록 데이터 어디서 구해", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "음식점 개업 폐업 자료는 어떤 파일이야", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박업소 자료가 있는지", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "무슨 자료들로 분석한 거예요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 정류장별 이용 자료 있어요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "의료기관 데이터도 있을까", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "학교 학생 수 자료 같은 것도 있나요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "농산물 가격 데이터 제공해?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이용 가능한 공공데이터 목록", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "연령별 방문 자료는 어디에 들어 있나", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "항공 승객 데이터 있나요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이 데이터 다운받을 수 있어?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "센터 PC에서만 볼 수 있는 자료가 뭐죠", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "지도 위에 표시할 수 있는 자료 뭐 있어", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "미세먼지 자료도 가지고 있어?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 관련 데이터 어떤 게 있나요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동네별로 볼 수 있는 자료가 어떤 거예요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "새 자료 추가되면 알려줘요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "자료 기준 시점이 언제까지야", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "도로 교통량 자료 있나요", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "축제 행사 자료도 있어요?", "tuple": {"type": "T11", "metric": ["자료목록"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 카페 손님이 가장 많은 시간은?", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "카페", "space": ["노형동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동에 사람이 제일 붐비는 시간대는 몇 시야", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동 버스 몇 시에 제일 많이 타요", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍은 몇 시쯤 사람이 많아?", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 쪽 식당 붐비는 때가 언제야", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "음식점", "space": ["일도1동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍 방문 피크 시간", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 버스 출퇴근 피크가 몇 시예요", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["화북동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "중문동 시간대별 방문자 보여줘", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["중문동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 카페 오후에 사람 제일 많은 시각", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "카페", "space": ["이도2동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "평일 이호동 몇 시에 붐벼", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["이호동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": ["평일"], "form": null, "expect": "답함"}}
+{"q": "주말 함덕 사람 몰리는 시간", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["조천읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": ["주말"], "form": null, "expect": "답함"}}
+{"q": "연동 버스 가장 붐비는 시간대", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "구좌읍은 하루 중 언제가 제일 한산해?", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 술집 손님 몰리는 시간대", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "주점", "space": ["연동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "한림읍 시간별 유동인구", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["한림읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 버스 시간대 패턴", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["일도2동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "공항 근처 몇 시에 사람이 가장 많아요", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["용담2동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도2동 낮밤 방문 패턴", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["삼도2동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 치킨집은 몇 시 이후에 사람이 많아?", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "치킨", "space": ["노형동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선면 시간대별 방문", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["표선면"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "건입동 피크 타임이 언제예요", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["건입동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "대정읍 버스 시간대별 이용객", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["대정읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 아침에 사람 많은 편이야 저녁에 많은 편이야", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "정방동 몇시가 가장 붐비나요", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["정방동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월 카페 가기 좋은 한산한 시간 언제야", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "카페", "space": ["애월읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "도두동 시간대 패턴", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["도두동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "서홍동 버스 몇 시에 사람이 몰려", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["서홍동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "우도 하루 중 방문 많은 시간대", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["우도면"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "남원읍 시간별 방문객 수", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["남원읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "올레시장 동네 식당 점심 저녁 중 언제 붐벼", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "음식점", "space": ["중앙동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼양동 몇 시에 사람 제일 많음", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["삼양동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "안덕면 피크 시간대", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["안덕면"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "동홍동 시간대별 사람 수", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["동홍동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 버스 시간대 가장 붐비는 때", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["이도2동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "외도동 몇 시에 사람이 많이 오가는지", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["외도동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "한경면 시간대 피크", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["한경면"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "함덕 카페 손님 제일 많은 시간대", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "카페", "space": ["조천읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "봉개동 시간대별 방문", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["봉개동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "오라동 사람 붐비는 시간", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["오라동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도1동 하루 중 피크 몇시?", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["이도1동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산읍 버스 몇 시에 많이 타요", "tuple": {"type": "T13", "metric": ["시간대버스"], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 시간대 패턴 알려줘", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["일도2동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자도 시간대별 방문", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["추자면"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "대륜동 가장 한산한 시간", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["대륜동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도1동 몇 시에 가장 붐벼요", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": ["삼도1동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "연동 편의점 손님 많은 시간대", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "편의점", "space": ["연동"], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 비중이 높고 카페 폐업이 낮은 동네 3곳", "tuple": {"type": "T14", "metric": ["청년비중", "폐업률"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 많고 한식당 적은 동네 찾아줘", "tuple": {"type": "T14", "metric": ["고령비중", "점포수"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객 많고 카페 5년 생존율 높은 동네 추천해줘", "tuple": {"type": "T14", "metric": ["일평균방문", "5년생존율"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 폐업률 낮고 가게 수 적은 곳 골라줘", "tuple": {"type": "T14", "metric": ["폐업률", "점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많은데 카페가 적은 동네는?", "tuple": {"type": "T14", "metric": ["청년비중", "점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "사람은 많이 오는데 편의점 적은 동네", "tuple": {"type": "T14", "metric": ["일평균방문", "점포수"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 생존율 높고 개업도 활발한 동네", "tuple": {"type": "T14", "metric": ["5년생존율", "개업수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용 많고 카페 적은 곳 알려줘", "tuple": {"type": "T14", "metric": ["버스일평균", "점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박 특화됐는데 폐업률은 낮은 동네", "tuple": {"type": "T14", "metric": ["특화계수", "폐업률"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년이 많고 식당 매출 높은 곳", "tuple": {"type": "T14", "metric": ["청년비중", "매출"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노인 많고 식당 폐업 낮은 동네 있어?", "tuple": {"type": "T14", "metric": ["고령비중", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "관광객 많이 오는데 숙박업소 적은 곳 찾아줘", "tuple": {"type": "T14", "metric": ["방문거주비", "점포수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많고 치킨집 폐업률 낮은 동네 어디", "tuple": {"type": "T14", "metric": ["청년비중", "폐업률"], "target": "치킨", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객이 많고 분식집 폐업이 적은 동네", "tuple": {"type": "T14", "metric": ["일평균방문", "폐업률"], "target": "분식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한식당 적은데 오래 가는 동네", "tuple": {"type": "T14", "metric": ["점포수", "5년생존율"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "직장인 많고 카페 없는 동네 골라줘", "tuple": {"type": "T14", "metric": ["근무거주비", "점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "젊은 사람 많고 유동인구도 많은 동네 3곳", "tuple": {"type": "T14", "metric": ["청년비중", "일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 많고 버스 이용 많은 동네", "tuple": {"type": "T14", "metric": ["고령비중", "버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 5년 생존율 높고 경쟁 적은 동네 추천", "tuple": {"type": "T14", "metric": ["5년생존율", "점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "폐업률 낮고 사람 많이 오는 곳 중에 식당 하기 좋은 데", "tuple": {"type": "T14", "metric": ["폐업률", "일평균방문"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 비중 높고 카페 특화 낮은 곳", "tuple": {"type": "T14", "metric": ["청년비중", "특화계수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객 많고 숙박 폐업 적은 동네", "tuple": {"type": "T14", "metric": ["방문거주비", "폐업률"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용 많고 편의점 문 닫는 비율 낮은 데", "tuple": {"type": "T14", "metric": ["버스일평균", "폐업률"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년이 많으면서 식당 5년 생존율 높은 곳", "tuple": {"type": "T14", "metric": ["청년비중", "5년생존율"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 많은데 소매점이 적은 동네", "tuple": {"type": "T14", "metric": ["고령비중", "점포수"], "target": "소매", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "유동인구 많고 카페 특화 낮은 동네 있나요", "tuple": {"type": "T14", "metric": ["일평균방문", "특화계수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "술집 적고 폐업률 낮은 동네", "tuple": {"type": "T14", "metric": ["점포수", "폐업률"], "target": "주점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많은 데 술집 적은 곳", "tuple": {"type": "T14", "metric": ["청년비중", "점포수"], "target": "주점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 매출 높고 가게 수 적은 동네", "tuple": {"type": "T14", "metric": ["매출", "점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "5년 생존율 좋고 방문객 많은 동네 카페 창업지 추천", "tuple": {"type": "T14", "metric": ["5년생존율", "일평균방문"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 많은 동네 중 한식 폐업률 낮은 곳", "tuple": {"type": "T14", "metric": ["고령비중", "폐업률"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "개업은 많고 폐업은 적은 카페 동네", "tuple": {"type": "T14", "metric": ["개업수", "폐업수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용 많고 청년 많은 동네 찾아줘", "tuple": {"type": "T14", "metric": ["버스일평균", "청년비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "치킨집 적고 방문객 많은 곳 골라줘", "tuple": {"type": "T14", "metric": ["점포수", "일평균방문"], "target": "치킨", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박 특화 낮고 방문객 많은 동네", "tuple": {"type": "T14", "metric": ["특화계수", "일평균방문"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일하러 오는 사람 많고 식당 폐업 낮은 데", "tuple": {"type": "T14", "metric": ["근무거주비", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많고 식당 폐업이 적은 동네 3군데", "tuple": {"type": "T14", "metric": ["청년비중", "폐업률"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노인도 많고 청년도 많은 동네", "tuple": {"type": "T14", "metric": ["고령비중", "청년비중"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "치킨 오래 버티고 점포 적은 동네", "tuple": {"type": "T14", "metric": ["5년생존율", "점포수"], "target": "치킨", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문 많고 식당 매출 큰 동네 찾아줘", "tuple": {"type": "T14", "metric": ["방문거주비", "매출"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 폐업률이 낮고 청년 비중이 높은 곳 순서대로", "tuple": {"type": "T14", "metric": ["폐업률", "청년비중"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "사람 많은데 한식당 부족한 동네", "tuple": {"type": "T14", "metric": ["일평균방문", "점포수"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 많이 타는데 식당 적은 곳", "tuple": {"type": "T14", "metric": ["버스일평균", "점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 많고 식당 매출도 높은 동네", "tuple": {"type": "T14", "metric": ["고령비중", "매출"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많은데 편의점 적은 동네 알려줘", "tuple": {"type": "T14", "metric": ["청년비중", "점포수"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박 적고 폐업률 낮은 곳 추천", "tuple": {"type": "T14", "metric": ["점포수", "폐업률"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "최근 1년 음식점 폐업이 급증한 동네는?", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "음식점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 폐업이 갑자기 늘어난 동네 있어?", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "카페", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 개업이 확 늘어난 동네 알려줘", "tuple": {"type": "T15", "metric": ["개업수"], "target": "카페", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "요새 방문객이 갑자기 늘어난 동네 어디예요", "tuple": {"type": "T15", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객이 급감한 동네 있어?", "tuple": {"type": "T15", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용이 이상하게 줄어든 동네", "tuple": {"type": "T15", "metric": ["버스일평균"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박업소 갑자기 늘어난 곳", "tuple": {"type": "T15", "metric": ["점포수"], "target": "숙박", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "치킨집 폐업 급증 동네", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "치킨", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 신규 개업이 이례적으로 많은 동네", "tuple": {"type": "T15", "metric": ["개업수"], "target": "음식점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "술집이 확 줄어든 동네 있나요", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "주점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한식당 폐업 폭증한 곳", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "한식", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "편의점이 급격히 늘어난 동네", "tuple": {"type": "T15", "metric": ["점포수"], "target": "편의점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "올해 식당 폐업률이 갑자기 오른 동네", "tuple": {"type": "T15", "metric": ["폐업률"], "target": "음식점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "3년 사이 방문객이 급변한 동네", "tuple": {"type": "T15", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 승객이 확 늘어난 동네 알려줘", "tuple": {"type": "T15", "metric": ["버스일평균"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 비중이 갑자기 달라진 동네", "tuple": {"type": "T15", "metric": ["청년비중"], "target": null, "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "어르신 비율 급증한 동네는?", "tuple": {"type": "T15", "metric": ["고령비중"], "target": null, "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "분식집 갑자기 많이 문 닫은 동네", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "분식", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "치킨집 개업이 폭발적으로 늘어난 곳", "tuple": {"type": "T15", "metric": ["개업수"], "target": "치킨", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "술집 신규 오픈 급증한 동네", "tuple": {"type": "T15", "metric": ["개업수"], "target": "주점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "작년 대비 사람이 확 줄어든 데가 어디야", "tuple": {"type": "T15", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "3년간 카페 폐업이 비정상적으로 늘어난 동네", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "카페", "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "음식점 수가 갑자기 줄어든 동네", "tuple": {"type": "T15", "metric": ["점포수"], "target": "음식점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 매출이 급락한 동네", "tuple": {"type": "T15", "metric": ["매출"], "target": "카페", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 매출이 갑자기 오른 곳", "tuple": {"type": "T15", "metric": ["매출"], "target": "음식점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "최근 몇 년 새 식당 폐업이 눈에 띄게 늘어난 동네", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "음식점", "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "한식당 개업이 이상하게 많은 동네", "tuple": {"type": "T15", "metric": ["개업수"], "target": "한식", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페가 급증한 곳이 어디죠", "tuple": {"type": "T15", "metric": ["점포수"], "target": "카페", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문 지수가 갑자기 뛴 동네", "tuple": {"type": "T15", "metric": ["방문거주비"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "유동인구 급변 동네 경보 보여줘", "tuple": {"type": "T15", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용 급감한 동네 있는지 봐줘", "tuple": {"type": "T15", "metric": ["버스일평균"], "target": null, "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일식집 폐업 갑자기 늘어난 곳", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "일식", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "분식집 신규 개업 확 늘었는데 어디야", "tuple": {"type": "T15", "metric": ["개업수"], "target": "분식", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "올해 카페 많이 망한 동네 있나요", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "카페", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "요새 식당 줄폐업하는 동네 어디예요", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "음식점", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "식당 개업이 3년 새 폭증한 동네", "tuple": {"type": "T15", "metric": ["개업수"], "target": "음식점", "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 폐업률이 이상하게 치솟은 동네", "tuple": {"type": "T15", "metric": ["폐업률"], "target": "카페", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "소매 가게가 갑자기 늘거나 줄어든 곳", "tuple": {"type": "T15", "metric": ["점포수"], "target": "소매", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "방문객이 이례적으로 늘어난 동네 알려주세요", "tuple": {"type": "T15", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "횟집 폐업 급증 지역", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "횟집", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "3년간 카페 개업이 급격히 늘어난 동네", "tuple": {"type": "T15", "metric": ["개업수"], "target": "카페", "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "올해 청년 비중 확 늘어난 동네", "tuple": {"type": "T15", "metric": ["청년비중"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 이용이 갑자기 몰린 동네 알려줘", "tuple": {"type": "T15", "metric": ["버스일평균"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "중국집 급하게 줄어든 동네 있어요?", "tuple": {"type": "T15", "metric": ["폐업수"], "target": "중식", "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "숙박업소가 3년 새 이상하게 늘어난 동네", "tuple": {"type": "T15", "metric": ["점포수"], "target": "숙박", "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "갑자기 한산해진 동네가 어디예요", "tuple": {"type": "T15", "metric": ["일평균방문"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 몇 개야?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "노형동에 가게 몇 개 있어요", "tuple": {"type": "T1", "metric": ["점포수"], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "하루에 사람이 얼마나 와요?", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "이도2동 폐업률이 어때요", "tuple": {"type": "T1", "metric": ["폐업률"], "target": null, "space": ["이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "5년 생존율 알려줘", "tuple": {"type": "T1", "metric": ["5년생존율"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "치킨집 몇 곳이에요?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "치킨", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "버스 이용객 얼마나 돼?", "tuple": {"type": "T1", "metric": ["버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "애월읍 새로 연 가게 몇 개야", "tuple": {"type": "T1", "metric": ["개업수"], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "연동 매출 얼마야?", "tuple": {"type": "T1", "metric": ["매출"], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "숙박업소 수가 궁금해요", "tuple": {"type": "T1", "metric": ["점포수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "문 닫은 가게 몇 개나 돼?", "tuple": {"type": "T1", "metric": ["폐업수"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "가게 수 알려줘", "tuple": {"type": "T1", "metric": ["점포수"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "노형동 장사 어때?", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "애월읍 요즘 어때요", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "성산읍은 장사할 만해?", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "장사 어때?", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "우리 동네 어때요?", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "창업하기 좋은 곳 알려줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "이도2동 어떤가요", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "가게 차리려는데 어디가 좋을까요", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "아라동 괜찮아?", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["아라동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "요즘 제주 상권 어때", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "연동 사업하기 좋은가요", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "뭐 하면 돈 될까요", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "카페 어디가 더 많아?", "tuple": {"type": "T2", "metric": ["점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "노형동이랑 비교해서 어디가 더 많이 와요", "tuple": {"type": "T2", "metric": ["일평균방문"], "target": null, "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "두 동네 식당 수 비교해줘", "tuple": {"type": "T2", "metric": ["점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "연동이랑 노형동 폐업률 비교", "tuple": {"type": "T2", "metric": ["폐업률"], "target": null, "space": ["연동", "노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "카페 개업이 줄고 있어?", "tuple": {"type": "T4", "metric": ["개업수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "방문객이 늘고 있어요?", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "일도2동 폐업 추이", "tuple": {"type": "T4", "metric": ["폐업수"], "target": null, "space": ["일도2동"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "가게 수가 어떻게 변했어", "tuple": {"type": "T4", "metric": ["점포수"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "비 오는 날 사람 줄어?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "되묻기"}}
+{"q": "주말에 방문객이 얼마나 늘어요", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": ["주말"], "form": null, "expect": "되묻기"}}
+{"q": "비 오면 카페 매출 어때", "tuple": {"type": "T6", "metric": ["매출"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "되묻기"}}
+{"q": "다음 달 방문객 예상은?", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": [], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "다음 분기 버스 이용 전망", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": [], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "비슷한 동네 알려줘", "tuple": {"type": "T9", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "우리 동네랑 비슷한 곳은?", "tuple": {"type": "T9", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "몇 시에 사람이 제일 많아?", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "카페 손님 많은 시간대는", "tuple": {"type": "T13", "metric": ["시간대방문"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": "시간대", "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "오는 사람들 나이대는?", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "남자 여자 비율 알려줘", "tuple": {"type": "T5", "metric": ["거주연령구성"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": "성별", "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "이도 카페 몇 개야", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "삼화 한식당 몇 군데야", "tuple": {"type": "T1", "metric": ["점포수"], "target": "한식", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "제주동 하루 방문자 얼마", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "수산리 편의점 수 알려줘", "tuple": {"type": "T1", "metric": ["점포수"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "제주시 식당 몇 개?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "서귀포 카페 몇 개야", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "제주도 식당 몇 곳이야?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "제주시 쪽 동네 진단해줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "산 쪽 동네 어때요", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "요즘 새로 생기는 가게가 늘고 있나요", "tuple": {"type": "T4", "metric": ["개업수"], "target": null, "space": [], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "폐업률 높은 동네 순위", "tuple": {"type": "T3", "metric": ["폐업률"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "오래 가는 동네는 어디야", "tuple": {"type": "T3", "metric": ["5년생존율"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "청년 많고 폐업 낮은 동네 찾아줘", "tuple": {"type": "T14", "metric": ["청년비중", "폐업률"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "사람 많고 가게 적은 곳 알려줘", "tuple": {"type": "T14", "metric": ["일평균방문", "점포수"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "사람 많으면 폐업 적어요?", "tuple": {"type": "T7", "metric": ["일평균방문", "폐업률"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "폐업 급증한 동네는", "tuple": {"type": "T15", "metric": ["폐업수"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "개업 확 늘어난 곳 있어?", "tuple": {"type": "T15", "metric": ["개업수"], "target": null, "space": [], "time": "최근1년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "여기 가게 많아요?", "tuple": {"type": "T1", "metric": ["점포수"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "대충 어떤지 알려줘", "tuple": {"type": "T10", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "매출 얼마나 나와요", "tuple": {"type": "T1", "metric": ["매출"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "비 오면 버스 많이 타요?", "tuple": {"type": "T6", "metric": ["버스일평균"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "되묻기"}}
+{"q": "어디가 더 많아", "tuple": {"type": "T2", "metric": ["점포수"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "되묻기"}}
+{"q": "노형동 상가 임대료 얼마예요?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "제주시 원룸 월세 시세 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "지금 이 시간 동문시장 혼잡해요?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "실시간 공항 대기시간 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "우리 가게 사장님 연락처 좀", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "제주 삼다수 주식 사도 될까요", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "소상공인 대출 금리 어디가 낮아?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "쏘나타 중고차 가격 얼마", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "애월 맛집 후기 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "다음 주 제주 날씨 예보 어때?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "배달 수수료 얼마나 내야 돼?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "노형동 땅값 많이 올랐어?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "성산읍 아파트 매매가 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "권리금 시세 알려주세요", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "내 월급으로 대출 얼마까지 가능해?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "올해 부가세 신고 어떻게 해?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "카페 하면 대박 날까요?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "이 동네 CCTV 영상 보여줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "옆집 사람 이름이 뭐야", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "비트코인 지금 얼마예요", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "내일 비 오는지 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "지금 연동 주차장 자리 있어?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "제주 렌터카 요금 비교해줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "제주행 항공권 제일 싼 날 언제야", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "맛집 별점 높은 곳 추천해줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "택시비 공항에서 중문까지 얼마", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "숙소 1박 가격 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "우리 가게 올해 순이익 얼마나 될까", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "경쟁 카페 사장님 소득이 얼마야", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "지금 버스 언제 와요", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "현재 한라산 입산 통제 중이야", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "상가 매매가 시세 궁금해요", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "코스피 오늘 어땠어", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "전세 사기 안 당하려면 어떻게 해?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "음식점 인허가 서류 뭐 필요해", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "2030년 제주 인구 몇 명일까", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "사장님 개인 번호 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "배달의민족 순위 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "오늘 점심 뭐 먹지", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "이 가게 확실히 성공할까?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "미용실 폐업률 알려줘", "tuple": {"type": "T12", "metric": ["폐업률"], "target": "미용실", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "약국 개업 몇 개 늘었어?", "tuple": {"type": "T12", "metric": ["개업수"], "target": "약국", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "노형동 학원 몇 개야", "tuple": {"type": "T1", "metric": ["점포수"], "target": "학원", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월읍에 병원 몇 곳 있어요", "tuple": {"type": "T1", "metric": ["점포수"], "target": "병원", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "부동산 중개업소 새로 생긴 곳 수", "tuple": {"type": "T12", "metric": ["개업수"], "target": "부동산중개", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "편의점 폐업률 높은 동네 알려줘", "tuple": {"type": "T12", "metric": ["폐업률"], "target": "편의점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "숙박업 5년 생존율은?", "tuple": {"type": "T12", "metric": ["5년생존율"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "소매점 폐업 몇 개나 돼", "tuple": {"type": "T12", "metric": ["폐업수"], "target": "소매", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "연동 미용실 몇 군데야", "tuple": {"type": "T1", "metric": ["점포수"], "target": "미용실", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "펜션 새로 생긴 곳 수 알려줘", "tuple": {"type": "T12", "metric": ["개업수"], "target": "숙박", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "학교 급식 메뉴 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "내 신용점수 올리는 법", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "무인 가게 창업 비용 얼마나 들어?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "우리 동네 선거 결과 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "통신사 요금제 추천해줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "작년 노형동 카페 사장님들 평균 월급", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "지금 제주공항 비행기 지연 있어?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "어제 교통사고 난 곳 어디야", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "자동차 보험료 비교해줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "인스타 인기 카페 후기 좋은 곳", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "농지 시세가 평당 얼마야", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "이번 주 로또 번호 뭐야", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "우리 아이 진학 어디가 좋을까", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "카페 많은 순서로 노형 애월 연동 비교해줘", "tuple": {"type": "T2", "metric": ["점포수"], "target": "카페", "space": ["노형동", "애월읍", "연동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "아라동이랑 일도2동 카페 오래가는 건 어디", "tuple": {"type": "T2", "metric": ["5년생존율"], "target": "카페", "space": ["아라동", "일도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호 외도 방문객", "tuple": {"type": "T2", "metric": ["일평균방문"], "target": null, "space": ["이호동", "외도동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "표선이랑 남원 중 숙박업소 더 많은 곳", "tuple": {"type": "T2", "metric": ["점포수"], "target": "숙박", "space": ["표선면", "남원읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 이도2동 버스 이용 누가 많아요?", "tuple": {"type": "T2", "metric": ["버스일평균"], "target": null, "space": ["노형동", "이도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "관광지 두 곳 중문 성산 식당 폐업률 차이", "tuple": {"type": "T2", "metric": ["폐업률"], "target": "음식점", "space": ["중문동", "성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도1동 이도1동 어르신 비중", "tuple": {"type": "T2", "metric": ["고령비중"], "target": null, "space": ["일도1동", "이도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "애월 한림 한식당 수", "tuple": {"type": "T2", "metric": ["점포수"], "target": "한식", "space": ["애월읍", "한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "버스 많이 타는 동네는 카페가 안 망하나요", "tuple": {"type": "T7", "metric": ["버스일평균", "폐업률"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "청년 많은 동네에 관광객도 많이 와?", "tuple": {"type": "T7", "metric": ["청년비중", "방문거주비"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "사람 많이 오는 곳엔 식당도 많은지 궁금", "tuple": {"type": "T7", "metric": ["점포수", "일평균방문"], "target": "음식점", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "유동인구랑 카페 5년 생존율 연관", "tuple": {"type": "T7", "metric": ["5년생존율", "일평균방문"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도2동 다음 분기 사람 많이 올까?", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["이도2동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "조천읍 담달 버스 승객 수 예상", "tuple": {"type": "T8", "metric": ["버스일평균"], "target": null, "space": ["조천읍"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "서홍동 앞으로 방문객 전망", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["서홍동"], "time": "다음분기", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼도2동 다음달 얼마나 올지 예측", "tuple": {"type": "T8", "metric": ["일평균방문"], "target": null, "space": ["삼도2동"], "time": "다음달", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "일도2동 떡볶이 분식집 갯수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "분식", "space": ["일도2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이도1동 커피집 몇곳", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": ["이도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형 포차 호프 몇개", "tuple": {"type": "T1", "metric": ["점포수"], "target": "주점", "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "화북동 고깃집 백반집 합쳐서 몇 개?", "tuple": {"type": "T1", "metric": ["점포수"], "target": "한식", "space": ["화북동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "세화 쪽 편의점 몇 개 있나요", "tuple": {"type": "T1", "metric": ["점포수"], "target": "편의점", "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "추자도 식당 수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "음식점", "space": ["추자면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "강정동 소매 상점 몇 개", "tuple": {"type": "T1", "metric": ["점포수"], "target": "소매", "space": ["대천동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "법환 펜션 호텔 몇 개", "tuple": {"type": "T1", "metric": ["점포수"], "target": "숙박", "space": ["대륜동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "삼화지구 카페 수", "tuple": {"type": "T1", "metric": ["점포수"], "target": "카페", "space": ["삼양동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "이호테우 있는 동네 하루 방문", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": ["이호동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "위미 쪽 하루 방문객", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": ["남원읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "산방산 있는 동네 하루 평균 방문자", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": ["안덕면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "고산 쪽 유동인구 하루 평균", "tuple": {"type": "T1", "metric": ["일평균방문"], "target": null, "space": ["한경면"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "성산 식당 5년 버틸 확률", "tuple": {"type": "T1", "metric": ["5년생존율"], "target": "음식점", "space": ["성산읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 치킨집 3년내 폐업 비율", "tuple": {"type": "T1", "metric": ["폐업률"], "target": "치킨", "space": ["노형동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "제주공항 있는 동네 버스 하루 승객", "tuple": {"type": "T1", "metric": ["버스일평균"], "target": null, "space": ["용담2동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "종달리 김녕 있는 구좌읍 60대 이상 비율", "tuple": {"type": "T1", "metric": ["고령비중"], "target": null, "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "동문시장 쪽 식당 매출이 어느 정도야", "tuple": {"type": "T1", "metric": ["매출"], "target": "음식점", "space": ["일도1동"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "카페 많은 곳 순위 좀 알려주세요", "tuple": {"type": "T3", "metric": ["점포수"], "target": "카페", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "오늘 말고 평소에 사람 많이 오는 동네 순위", "tuple": {"type": "T3", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "곽지 한담 있는 애월읍 5년간 방문 추이", "tuple": {"type": "T4", "metric": ["일평균방문"], "target": null, "space": ["애월읍"], "time": "최근5년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "협재 쪽 식당 새로 연 곳 추이", "tuple": {"type": "T4", "metric": ["개업수"], "target": "음식점", "space": ["한림읍"], "time": "최근3년", "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "산방산 쪽 방문 연령대", "tuple": {"type": "T5", "metric": ["방문연령구성"], "target": null, "space": ["안덕면"], "time": null, "time_year": null, "breakdown": "연령대", "cond": [], "form": null, "expect": "답함"}}
+{"q": "비오면 애월 사람 줄어요?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": ["애월읍"], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "답함"}}
+{"q": "협재 있는 한림읍이랑 비슷한 동네", "tuple": {"type": "T9", "metric": [], "target": null, "space": ["한림읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "월정리 세화 있는 구좌읍 진단", "tuple": {"type": "T10", "metric": [], "target": null, "space": ["구좌읍"], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "답함"}}
+{"q": "노형동 건물주 이름 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "제주 이사하면 이삿짐 비용 얼마", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "올해 최저임금 기준 알바 시급 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "지금 성산일출봉 입장 대기 줄 길어?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "우리 동네 맛집 리뷰 점수 순위", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "경매 나온 상가 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "테슬라 전기차 보조금 얼마나 나와?", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "3개월 뒤 정확한 일별 방문자 숫자 알려줘", "tuple": {"type": "T12", "metric": [], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "미용실 개업 요즘 많아?", "tuple": {"type": "T12", "metric": ["개업수"], "target": "미용실", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "학원 폐업 건수", "tuple": {"type": "T12", "metric": ["폐업수"], "target": "학원", "space": [], "time": null, "time_year": null, "breakdown": null, "cond": [], "form": null, "expect": "범위밖"}}
+{"q": "비 오면 제주시 사람 줄어요?", "tuple": {"type": "T6", "metric": ["일평균방문"], "target": null, "space": [], "time": null, "time_year": null, "breakdown": null, "cond": ["비"], "form": null, "expect": "되묻기"}}

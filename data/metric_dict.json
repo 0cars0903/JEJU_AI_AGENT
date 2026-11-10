@@ -1,0 +1,251 @@
+{
+ "점포수": {
+  "public": {
+   "table": "biz",
+   "column": "count",
+   "agg": "합계",
+   "space": "dong",
+   "time": "단면",
+   "axes": [
+    "major",
+    "middle",
+    "minor"
+   ]
+  },
+  "center": null,
+  "coverage": "793 전 업종"
+ },
+ "특화계수": {
+  "public": {
+   "table": "biz",
+   "column": "count",
+   "agg": "(동네 업종 비중) ÷ (제주 업종 비중)",
+   "space": "dong",
+   "time": "단면",
+   "axes": [
+    "major",
+    "minor"
+   ]
+  },
+  "center": null
+ },
+ "개업수": {
+  "public": {
+   "table": "rest_events",
+   "column": "count",
+   "agg": "합계(kind=open)",
+   "space": "dong",
+   "time": "year",
+   "axes": [
+    "category"
+   ]
+  },
+  "center": null,
+  "coverage": "음식점만"
+ },
+ "폐업수": {
+  "public": {
+   "table": "rest_events",
+   "column": "count",
+   "agg": "합계(kind=close)",
+   "space": "dong",
+   "time": "year",
+   "axes": [
+    "category"
+   ]
+  },
+  "center": null,
+  "coverage": "음식점만"
+ },
+ "폐업률": {
+  "public": {
+   "table": "close_3y",
+   "column": "rate_pct",
+   "agg": "값(구간 lo_pct·hi_pct)",
+   "space": "dong",
+   "time": "2022~2024 묶음",
+   "axes": []
+  },
+  "center": null,
+  "coverage": "음식점만"
+ },
+ "5년생존율": {
+  "public": {
+   "table": "km",
+   "column": "survival_pct",
+   "agg": "year=5 값(year는 경과 연수 1~5)",
+   "space": "dong",
+   "time": "코호트 2015-01~2020-08",
+   "axes": []
+  },
+  "center": null
+ },
+ "조건부생존": {
+  "public": {
+   "table": "km",
+   "column": "survival_pct",
+   "agg": "year=5 ÷ year=2",
+   "space": "dong",
+   "time": "코호트",
+   "axes": []
+  },
+  "center": null
+ },
+ "일평균방문": {
+  "public": {
+   "table": "pop_month",
+   "column": "visit",
+   "agg": "합계 ÷ days",
+   "space": "dong",
+   "time": "ym",
+   "axes": []
+  },
+  "center": "C4-11"
+ },
+ "방문거주비": {
+  "public": {
+   "table": "pop_month",
+   "column": "visit÷resd",
+   "agg": "비",
+   "space": "dong",
+   "time": "ym",
+   "axes": []
+  },
+  "center": "C4-11"
+ },
+ "근무거주비": {
+  "public": {
+   "table": "pop_month",
+   "column": "work÷resd",
+   "agg": "비",
+   "space": "dong",
+   "time": "ym",
+   "axes": []
+  },
+  "center": "C4-11"
+ },
+ "거주연령구성": {
+  "public": {
+   "table": "pop_age",
+   "column": "resd",
+   "agg": "비중",
+   "space": "dong",
+   "time": "year(2023·2025 부분 연도)",
+   "axes": [
+    "ageGroup",
+    "gender"
+   ]
+  },
+  "center": "C4-11"
+ },
+ "방문연령구성": {
+  "public": {
+   "table": "pop_age",
+   "column": "visit",
+   "agg": "비중",
+   "space": "dong",
+   "time": "year",
+   "axes": [
+    "ageGroup",
+    "gender"
+   ]
+  },
+  "center": "C4-11"
+ },
+ "고령비중": {
+  "public": {
+   "table": "pop_age",
+   "column": "resd",
+   "agg": "60대 이상 비중",
+   "space": "dong",
+   "time": "year",
+   "axes": []
+  },
+  "center": "C4-11"
+ },
+ "청년비중": {
+  "public": {
+   "table": "pop_age",
+   "column": "resd",
+   "agg": "20~30대 비중",
+   "space": "dong",
+   "time": "year",
+   "axes": []
+  },
+  "center": "C4-11"
+ },
+ "버스일평균": {
+  "public": {
+   "table": "bus_month",
+   "column": "n",
+   "agg": "합계 ÷ days",
+   "space": "dong",
+   "time": "ym",
+   "axes": [
+    "user_type"
+   ]
+  },
+  "center": "C3-04"
+ },
+ "경로비중": {
+  "public": {
+   "table": "bus_month",
+   "column": "n",
+   "agg": "user_type=경로 비중",
+   "space": "dong",
+   "time": "ym",
+   "axes": []
+  },
+  "center": "C3-04"
+ },
+ "경로일평균": {
+  "public": {
+   "table": "bus_month",
+   "column": "n",
+   "agg": "user_type=경로 합계 ÷ days",
+   "space": "dong",
+   "time": "ym",
+   "axes": []
+  },
+  "center": "C3-04"
+ },
+ "정류소일이용": {
+  "public": {
+   "table": "raw 743",
+   "column": "user_count",
+   "agg": "정류소별 합계 ÷ 일수",
+   "space": "station_name",
+   "time": "base_date",
+   "axes": [
+    "user_type"
+   ]
+  },
+  "center": "C3-04"
+ },
+ "시간대방문": {
+  "public": null,
+  "center": "C4-11",
+  "note": "센터에서만 가능"
+ },
+ "시간대버스": {
+  "public": null,
+  "center": "C3-04",
+  "note": "센터에서만 가능"
+ },
+ "매출": {
+  "public": null,
+  "center": "C1-07",
+  "note": "센터에서만 가능(반출 불가, 집계만)"
+ },
+ "자료목록": {
+  "public": {
+   "table": "catalog",
+   "column": "-",
+   "agg": "검색",
+   "space": "-",
+   "time": "-",
+   "axes": []
+  },
+  "center": null
+ }
+}
