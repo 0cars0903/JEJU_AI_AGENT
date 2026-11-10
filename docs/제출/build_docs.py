@@ -162,7 +162,8 @@ PLAN = f"""<!doctype html><html lang='ko'><meta charset='utf-8'><title>동네 �
 <tr><td>평가셋 21문항(기대값을 도구와 따로 계산)</td><td>LLM 없음 {rule_p}/{rule_n}, qwen3:1.7b {ol_p}/{ol_n}, Claude {cl_p}/{cl_n}(Q21 추가 전 측정)</td></tr>
 <tr><td>화면 자동 시험(개발 PC, 데스크톱·휴대폰 크기)</td><td>대표 질문 9건의 수치·화면 요소, 지도 선택, 오류·로딩 화면, A4 인쇄, 접근성 검사 통과</td></tr>
 <tr><td>설치 재현(개발 PC)</td><td>제출 zip을 새 폴더에 풀어 새 가상환경에 설치하고 시험 통과 확인</td></tr>
-<tr><td>아직 못 한 것</td><td>Windows·센터 PC 실행과 응답 시간 측정</td></tr></table>
+<tr><td>Windows 설치·실행(GitHub Actions windows-latest)</td><td>setup_windows.bat 설치, 단위 시험, 서버 실행·질문 응답 통과(2026-11-10)</td></tr>
+<tr><td>아직 못 한 것</td><td>센터 PC 실행과 응답 시간 측정</td></tr></table>
 <h3>생성형 AI와 오픈소스 사용</h3>
 <p>실행 중 LLM은 위 표와 같습니다. 개발에는 Anthropic Claude Code(구현)와 Google Gemini(설계·코드 교차 검토)를 썼습니다. 오픈소스는 Next.js, React, Tailwind CSS, shadcn/ui, Recharts, AnimateIcons, Pretendard, FastAPI, pandas, pyarrow, requests, anthropic SDK입니다. 화면 색과 크기는 KRDS(대한민국 정부 디자인 시스템) 디자인 토큰을 따랐습니다. 정부 사이트가 아닙니다. API 키는 환경 변수로만 받고 제출물에 넣지 않습니다.</p>
 <h3>센터 활용 방안</h3>
@@ -243,7 +244,7 @@ RESULT = f"""# 결과 설명자료
 - Claude 요약의 의미는 자동 채점하지 않습니다. 16건을 읽어 근거 없는 내용이 있는지 보았고, 일부를 도구 값과 대조했습니다.
 
 ## 한계
-- Windows와 센터 PC에서 아직 실행하지 않았습니다.{POP_NOTE}
+- Windows 설치·실행은 GitHub Actions(windows-latest)에서 확인했습니다. 센터 PC에서는 아직 실행하지 않았습니다.{POP_NOTE}
 - 예측을 하지 않으며, 매출·임대료·시간대 질문에는 답하지 않습니다.
 - 데이터별 한계는 데이터 활용 명세에 있습니다.
 
