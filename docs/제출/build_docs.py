@@ -1,11 +1,9 @@
 """제출 문서를 표준 테이블·평가 결과의 현재 값으로 다시 만든다. 수치를 손으로 옮기지 않는다.
 실행: .venv/bin/python docs/제출/build_docs.py
-출력: 기획서.html·기획서.pdf, 데이터활용명세.md, 결과설명자료.md
+출력: 기획서.html(내용 확인용), 데이터활용명세.md, 결과설명자료.md. 기획서 PPTX는 build_pptx.py
 """
 import html
 import json
-import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -256,6 +254,5 @@ RESULT = f"""# 결과 설명자료
 """
 (HERE / "결과설명자료.md").write_text(RESULT, encoding="utf-8")
 
-chrome = shutil.which("chromium") or "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-subprocess.run([chrome, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", f"--print-to-pdf={HERE / '기획서.pdf'}", (HERE / "기획서.html").as_uri()], check=True, capture_output=True, timeout=120)
+# 기획서 PDF는 build_pptx.py가 만든 기획서.pptx를 사용자가 PDF로 변환한다(2026-11-10 사용자 결정). 기획서.html은 내용 확인용으로 남긴다.
 print("생성 완료")
