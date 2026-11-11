@@ -48,14 +48,21 @@ def gen_one(r, typ):
     e = r.choice(ENDS)
     D, D2, B = dong_word(r, d), dong_word(r, d2), biz_word(r, b)
     if typ == "T1":
-        k = r.randrange(4)
+        k = r.randrange(6)
         if k == 0:
             return f"{D}에 {B} 몇 곳 있어? {e}", T("T1", metric=["점포수"], target=b, space=[d])
         if k == 1:
             return f"{D} {B} 많은 편이야?", T("T1", metric=["특화계수"], target=b, space=[d])
         if k == 2:
             return f"{D} 버스 하루에 몇 명 타? {e}", T("T1", metric=["버스일평균"], space=[d])
-        return f"{D} 음식점 폐업률 {e}", T("T1", metric=["폐업률"], target="음식점", space=[d])
+        if k == 3:
+            return f"{D} 음식점 폐업률 {e}", T("T1", metric=["폐업률"], target="음식점", space=[d])
+        # 업종 생존율(R4, 2026-11-11 보완: 템플릿에 생존 문형이 0개였음)
+        if r.random() < 0.7:
+            form = r.choice([f"{D} {B} 5년 생존율 {e}", f"{D}에서 {B} 차리면 5년 버틸 확률은?", f"{D} {B} 가게 5년 넘게 살아남는 비율 {e}",
+                             f"{D}에 {B} 열면 오래 가는 편이야?"])
+            return form, T("T1", metric=["5년생존율"], target=b, space=[d])
+        return f"{D} {B} 2년 버티면 5년까지 갈 확률 {e}", T("T1", metric=["조건부생존"], target=b, space=[d])
     if typ == "T2":
         m = r.choice([("점포수", "가게 수"), ("버스일평균", "버스 이용"), ("고령비중", "어르신 비율"), (None, "")])
         if m[0] is None:
@@ -99,6 +106,13 @@ def gen_one(r, typ):
                          (["일평균방문", "매출"], "사람 많이 다니는 동네가 매출도 높아?"), (["청년비중", "개업수"], f"젊은 사람 많은 동네에 {B} 개업도 많아?")])
         return pair[1], T("T7", metric=pair[0], target=b if "개업수" in pair[0] else None)
     if typ == "T8":
+        if r.random() < 0.5:  # 방문 예측(R1, 2026-11-11 보완: 템플릿의 T8이 모두 버스 질문이었음)
+            t = r.choice(["다음주", "다음주", "다음달", "다음분기"])
+            w = r.choice({"다음주": ["다음 주", "다음주", "담주"], "다음달": ["다음 달", "담달"], "다음분기": ["다음 분기"]}[t])
+            form = r.choice([f"{w} {D} 사람 얼마나 올까?", f"{D} {w} 방문객 예측해줘", f"{w} {D} 유동인구 예상 {e}", f"{D}에 {w} 사람 많을지 미리 알려줘",
+                             f"{w} {D} 방문 인원 전망 {e}", f"{D} {w} 방문 예측해줘", f"{D} {w} 유동인구 예측 {e}", f"{w} {D} 방문객 수 예측해 주세요",
+                             f"{D} 방문 {w} 예측", f"{D} 사람들 {w}에 얼마나 다닐지 예측해줘"])
+            return form, T("T8", metric=["일평균방문"], space=[d], time=t)
         t = r.choice(["다음분기", "다음달"])
         w = {"다음분기": "다음 분기", "다음달": "다음 달"}[t]
         return f"{w} {D} 버스 이용 얼마나 될까?", T("T8", metric=["버스일평균"], space=[d], time=t)
@@ -134,7 +148,9 @@ def gen_one(r, typ):
 def gen_clarify(r):
     b = r.choice(Q.TARGETS_BIZ[:10])
     B = biz_word(r, b)
-    k = r.randrange(6)
+    k = r.randrange(7)
+    if k == 6:  # 동네 없는 예측 질문(2026-11-11 보완)
+        return r.choice(["다음 주 사람 얼마나 올까?", "담달 방문객 예측해줘", "다음 달 유동인구 예상 알려줘"]), T("T8", metric=["일평균방문"], expect="되묻기")
     if k == 3:
         return r.choice(["우리 동네 요즘 어때?", "여기 장사 잘 돼?", "동네 분위기 좀 알려줘", "이 동네 살기 괜찮아?"]), T("T10", expect="되묻기")
     if k == 4:
@@ -151,7 +167,7 @@ def gen_clarify(r):
 def gen_out(r):
     d = r.choice(Q.DONGS)
     D = dong_word(r, d)
-    k = r.randrange(4)
+    k = r.randrange(4)  # 음식점 밖 업종의 생존율(범위 밖)은 planner 규칙이 맡는다. 분류기 예시로 넣으면 카페 생존율까지 범위 밖으로 끌려감(2026-11-11 실측)
     if k == 0:
         return f"{D} 상가 임대료 얼마야?", T("T12", space=[d], expect="범위밖")
     if k == 1:

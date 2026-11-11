@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import qtuple as Q  # noqa: E402
 import x1_methods as M  # noqa: E402
 
-GOLD = Q.ROOT / "data" / "x1" / ("test_std150c_gold.jsonl" if "--std150c" in sys.argv else "test_std150b_gold.jsonl" if "--std150b" in sys.argv else "test_std150_gold.jsonl" if "--std150" in sys.argv else "test_final_gold.jsonl" if "--final" in sys.argv else "test_gold.jsonl")
+GOLD = Q.ROOT / "data" / "x1" / ("test_std150d_gold.jsonl" if "--std150d" in sys.argv else "test_std150c_gold.jsonl" if "--std150c" in sys.argv else "test_std150b_gold.jsonl" if "--std150b" in sys.argv else "test_std150_gold.jsonl" if "--std150" in sys.argv else "test_final_gold.jsonl" if "--final" in sys.argv else "test_gold.jsonl")
 OUTD = Q.ROOT / "data" / "x1" / "results"
 
 

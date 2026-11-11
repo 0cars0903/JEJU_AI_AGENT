@@ -15,8 +15,9 @@ FINAL = "--final" in sys.argv  # 022 최종 시험 문항: Claude는 내용을 �
 STD = "--std150" in sys.argv  # 023 표준어 150문항(블라인드)
 STDB = "--std150b" in sys.argv  # 024 표준어 150문항(최종 블라인드)
 STDC = "--std150c" in sys.argv  # 025 표준어 150문항(보완 뒤 최종 확인)
-SRC = Q.ROOT / "interaction" / "gemini_work" / ("025/x1_test_std150c.jsonl" if STDC else "024/x1_test_std150b.jsonl" if STDB else "023/x1_test_std150.jsonl" if STD else "022/x1_test_final.jsonl" if FINAL else "021/x1_test.jsonl")
-OUT = Q.ROOT / "data" / "x1" / ("test_std150c_gold.jsonl" if STDC else "test_std150b_gold.jsonl" if STDB else "test_std150_gold.jsonl" if STD else "test_final_gold.jsonl" if FINAL else "test_gold.jsonl")
+STDD = "--std150d" in sys.argv  # 026 표준어 150문항(학습 자료 보완 뒤 재확인)
+SRC = Q.ROOT / "interaction" / "gemini_work" / ("026/x1_test_std150d.jsonl" if STDD else "025/x1_test_std150c.jsonl" if STDC else "024/x1_test_std150b.jsonl" if STDB else "023/x1_test_std150.jsonl" if STD else "022/x1_test_final.jsonl" if FINAL else "021/x1_test.jsonl")
+OUT = Q.ROOT / "data" / "x1" / ("test_std150d_gold.jsonl" if STDD else "test_std150c_gold.jsonl" if STDC else "test_std150b_gold.jsonl" if STDB else "test_std150_gold.jsonl" if STD else "test_final_gold.jsonl" if FINAL else "test_gold.jsonl")
 SKIP = None  # 채점하지 않는 칸
 METRIC = {"점포 수": {"점포수", "특화계수"}, "유동인구": {"일평균방문", "방문거주비"}, "방문인구": {"일평균방문", "방문거주비"}, "유동인구/방문": {"일평균방문", "방문거주비"},
           "거주인구": {"거주연령구성", "고령비중", "청년비중"}, "폐업률": {"폐업률"}, "고령인구 비중": {"고령비중"}, "버스 이용량": {"버스일평균"},
