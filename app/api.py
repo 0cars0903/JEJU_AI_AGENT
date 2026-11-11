@@ -104,6 +104,23 @@ def ask(body: Ask):
     return clean({**result, "question": question, "effective_question": effective, "carried_dongs": carried})
 
 
+_M1 = {}
+
+
+@app.post("/api/v2/ask")
+def ask_v2(body: Ask):
+    """W8 새 경로: M1 해석 → M2 계획 → M3 지시서 → 실행 → 검수(W7) → 결과 생성(W8). 응답: card·process·clarify·downloads."""
+    import m1
+    import result
+    question = body.question.strip()
+    if not question:
+        raise HTTPException(422, "질문을 입력해 주세요.")
+    if "m" not in _M1:
+        _M1["m"] = m1.M1()
+    on = llm.backend() != "rule" and llm._ollama_alive()
+    return clean(result.respond(question, {"center_db": False}, llm_on=on, interpret=_M1["m"].interpret))
+
+
 @app.get("/api/meta")
 def meta():
     be = llm.backend()
