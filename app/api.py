@@ -10,6 +10,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -48,6 +49,12 @@ def clean(x):
     if isinstance(x, (pd.Timestamp,)):
         return x.isoformat()
     return x
+
+
+@app.exception_handler(RequestValidationError)
+async def _invalid(_: Request, exc: RequestValidationError):
+    """입력 형식 오류도 detail을 문자열 하나로 돌려준다(화면이 오류 문구를 한 가지 방식으로 읽게, 028 대조)."""
+    return JSONResponse({"detail": "입력 형식이 맞지 않습니다. 질문은 200자 이하로 써 주세요."}, status_code=422)
 
 
 @app.exception_handler(Exception)

@@ -22,16 +22,18 @@ TOPICS = [
     {"id": "openclose", "label": "가게 개업·폐업", "base": {"type": "T4", "metric": ["개업수", "폐업수"], "time": "최근3년", "target": "음식점"},
      "need": ["space"], "optional": ["target", "variant"], "options": {"target": FOOD},
      "variants": {"flow": {"label": "최근 3년 개업·폐업 흐름"}, "survival": {"label": "5년 생존율", "base": {"type": "T1", "metric": ["5년생존율"], "time": None}}}},
-    {"id": "visit", "label": "오가는 사람", "base": {"type": "T1", "metric": ["일평균방문"]}, "need": ["space"]},  # 연령 구성(T5)은 나눔 기준 미구현이라 뺐다
+    {"id": "visit", "label": "오가는 사람", "base": {"type": "T1", "metric": ["일평균방문"]}, "need": ["space"], "optional": ["variant"],
+     "variants": {"amount": {"label": "하루 평균 방문"}, "age": {"label": "사는 사람 연령대", "base": {"type": "T5", "metric": ["거주연령구성"]}}}},
     {"id": "bus", "label": "버스 이용", "base": {"type": "T1", "metric": ["버스일평균"]},
      "need": ["space"], "optional": ["target"], "options": {"target": ["어르신"]}},
-    {"id": "rain", "label": "비 오는 날 손님 변화", "base": {"type": "T6", "metric": ["일평균방문"], "cond": ["비"]}, "need": ["space"]},
+    {"id": "rain", "label": "비 오는 날 오가는 사람 변화", "base": {"type": "T6", "metric": ["일평균방문"], "cond": ["비"]}, "need": ["space"]},
     {"id": "forecast", "label": "다음 주 방문 예상", "base": {"type": "T8", "metric": ["일평균방문"], "time": "다음주"}, "need": ["space"]},
-    {"id": "similar", "label": "비슷한 동네", "base": {"type": "T9"}, "need": ["space"]},
-    {"id": "compare", "label": "동네 비교", "base": {"type": "T2"}, "need": ["space"], "min_space": 2},
-    {"id": "diagnose", "label": "동네 한눈에 보기", "base": {"type": "T10"}, "need": ["space"]},
+    {"id": "similar", "label": "비슷한 동네 추천받기", "base": {"type": "T9"}, "need": ["space"]},
+    {"id": "compare", "label": "동네 2곳 이상 비교", "base": {"type": "T2"}, "need": ["space"], "min_space": 2},
+    {"id": "diagnose", "label": "동네 종합 진단", "base": {"type": "T10"}, "need": ["space"]},
+    {"id": "hourly", "label": "시간대별 오가는 사람(센터 전용)", "base": {"type": "T13", "metric": ["시간대방문"]}, "need": ["space"], "center_only": True},
     {"id": "rank", "label": "동네 순위", "base": {"type": "T3"}, "need": ["metric"], "options": {"metric": list(RANK_METRICS)}},
-    {"id": "catalog", "label": "센터 자료 찾기", "base": {"type": "T11", "metric": ["자료목록"]}, "need": ["keyword"], "options": {"keyword": KEYWORDS}},
+    {"id": "catalog", "label": "빅데이터센터 자료 찾기", "base": {"type": "T11", "metric": ["자료목록"]}, "need": ["keyword"], "options": {"keyword": KEYWORDS}},
 ]
 TOPIC = {x["id"]: x for x in TOPICS}
 
@@ -39,6 +41,7 @@ TOPIC = {x["id"]: x for x in TOPICS}
 REPRESENTATIVE = [
     {"use_case": "U1 예비 창업자", "slots": {"topic": "stores", "space": ["노형동"], "target": "카페"}},
     {"use_case": "U1 예비 창업자", "slots": {"topic": "openclose", "space": ["노형동"], "target": "카페"}},
+    {"use_case": "U1 예비 창업자", "slots": {"topic": "openclose", "space": ["노형동"], "target": "카페", "variant": "survival"}},
     {"use_case": "U2 소상공인", "slots": {"topic": "rain", "space": ["아라동"]}},
     {"use_case": "U3 생활 도민", "slots": {"topic": "similar", "space": ["노형동"]}},
     {"use_case": "U4 상담 직원", "slots": {"topic": "bus", "space": ["애월읍"], "target": "어르신"}},
@@ -55,13 +58,14 @@ def sentence(slots):
     s = {
         "stores": f"{d} {tgt + ' ' if tgt else ''}가게는 몇 곳이야?",
         "openclose": f"{d} {tgt or '음식점'} 5년 생존율은?" if v == "survival" else f"{d} {tgt or '음식점'} 개업·폐업은 최근 3년 어땠어?",
-        "visit": f"{d} 하루 평균 방문은?",
+        "hourly": f"{d} 시간대별로 오가는 사람은?",
+        "visit": f"{d}에 사는 사람 연령대는?" if v == "age" else f"{d} 하루 평균 방문은?",
         "bus": f"{d} {'어르신 ' if tgt == '어르신' else ''}버스 이용은?",
         "rain": f"비 오는 날 {d} 방문은 얼마나 달라져?",
         "forecast": f"{d} 다음 주 방문 예상은?",
         "similar": f"{d}이랑 비슷한 동네는?",
         "compare": f"{' · '.join(slots.get('space') or [])} 비교해줘",
-        "diagnose": f"{d} 한눈에 보여줘",
+        "diagnose": f"{d} 종합 진단해줘",
         "rank": f"{RANK_METRICS.get(slots.get('metric'), '')} 동네 순위는?",
         "catalog": f"센터에 {slots.get('keyword', '')} 자료 있어?",
     }[tp["id"]]
@@ -77,6 +81,16 @@ def missing(slots):
     if "space" not in out and len(slots.get("space") or []) < tp.get("min_space", 1) and "space" in tp.get("need", []):
         out.append("space")
     return out
+
+
+STEP_MESSAGE = {"topic": "궁금한 것을 골라 주세요.", "space": "동네를 골라 주세요.", "metric": "순위 기준을 골라 주세요.", "keyword": "찾을 자료를 골라 주세요."}
+
+
+def missing_message(slots, step):
+    """빠진 칸을 고르라는 안내(자유 입력의 예외 안내와 같은 말투)."""
+    if step == "space" and slots.get("topic") == "compare" and slots.get("space"):
+        return "비교할 동네를 하나 더 골라 주세요."
+    return STEP_MESSAGE.get(step, "이어서 골라 주세요.")
 
 
 def to_tuple(slots):
@@ -111,8 +125,8 @@ def to_tuple(slots):
     return t
 
 
-TYPE_TOPIC = {"T2": "compare", "T1": "stores", "T4": "openclose", "T5": "visit", "T6": "rain", "T8": "forecast", "T9": "similar", "T10": "diagnose", "T3": "rank", "T11": "catalog"}
-METRIC_TOPIC = {"점포수": "stores", "개업수": "openclose", "폐업수": "openclose", "5년생존율": "openclose", "일평균방문": "visit", "버스일평균": "bus", "경로일평균": "bus"}
+TYPE_TOPIC = {"T13": "hourly", "T2": "compare", "T1": "stores", "T4": "openclose", "T5": "visit", "T6": "rain", "T8": "forecast", "T9": "similar", "T10": "diagnose", "T3": "rank", "T11": "catalog"}
+METRIC_TOPIC = {"거주연령구성": "visit", "점포수": "stores", "개업수": "openclose", "폐업수": "openclose", "5년생존율": "openclose", "일평균방문": "visit", "버스일평균": "bus", "경로일평균": "bus"}
 
 
 def to_slots(t):
@@ -129,6 +143,8 @@ def to_slots(t):
         out["target"] = t["target"]
     if topic == "openclose" and m == "5년생존율":
         out["variant"] = "survival"
+    if topic == "visit" and m == "거주연령구성":
+        out["variant"] = "age"
     if topic == "rank" and m in RANK_METRICS:
         out["metric"] = m
     return {k: v for k, v in out.items() if v}
@@ -154,7 +170,7 @@ def catalog_view():
     """화면용 /api/guide 응답: 주제 목록, 칸별 선택지, 대표 질문."""
     topics = []
     for tp in TOPICS:
-        topics.append({"id": tp["id"], "label": tp["label"], "need": tp.get("need", []), "optional": tp.get("optional", []), "min_space": tp.get("min_space", 1),
+        topics.append({"id": tp["id"], "label": tp["label"], "need": tp.get("need", []), "optional": tp.get("optional", []), "min_space": tp.get("min_space", 1), "center_only": tp.get("center_only", False),
                        "options": {k: [{"value": v, "label": RANK_METRICS.get(v, v)} for v in vs] for k, vs in tp.get("options", {}).items()},
                        "variants": [{"value": k, "label": v["label"]} for k, v in tp.get("variants", {}).items()]})
     return {"topics": topics, "dongs": Q.DONGS, "representative": representative()}

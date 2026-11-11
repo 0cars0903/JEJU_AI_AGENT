@@ -105,6 +105,25 @@ class Understood(unittest.TestCase):
         nxt = R.respond(None, {"center_db": False}, llm_on=False, slots=dict(r["choose"]["preset"], space=["노형동"]))
         self.assertEqual(nxt["status"], "성공")  # 고른 뒤에는 다시 묻지 않는다
 
+    def test_low_confidence_goes_to_topic_choice(self):  # A: 확신도가 낮으면 추정하지 않는다
+        low = lambda q: dict(RULE(q), confidence=0.3)  # noqa: E731
+        r = R.respond("노형동 카페 몇 개야?", None, llm_on=False, interpret=low)
+        self.assertEqual((r["status"], r["choose"]["step"]), ("선택필요", "topic"))
+        self.assertEqual(r["choose"]["preset"]["space"], ["노형동"])
+
+    def test_unsupported_axis_blocked(self):  # A: 시간대·매출은 다른 지표로 바꿔 답하지 않는다
+        for q, word in [("노형동 카페 언제 잘 돼?", "시간대"), ("노형동 카페 몇 시에 붐벼?", "시간대"), ("노형동 카페 장사 잘 돼?", "매출")]:
+            r = ask(q)
+            self.assertEqual(r["status"], "범위밖", q)
+            self.assertIn(word, r["card"]["conclusion"], q)
+            self.assertTrue(all(x["slots"].get("space") == ["노형동"] for x in r["suggestions"]), q)
+
+    def test_dong_only_is_diagnosis(self):  # B: 동네 이름만 넣으면 종합 진단
+        for q in ["노형동", "노형동 어때?", "탑동"]:
+            r = ask(q)
+            self.assertEqual(r["tuple"]["type"], "T10", q)
+            self.assertTrue(r["understood"]["assumed"], q)
+
     def test_out_of_scope_blocked(self):
         r = ask("노형동 임대료 얼마야?")
         self.assertEqual(r["status"], "범위밖")

@@ -66,6 +66,12 @@ export function StepPicker({ guide, preset, notice, onSubmit, onClose }: {
         </div>
       </div>
 
+      {topic?.center_only && (
+        <p data-testid="center-only" className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
+          이 주제는 빅데이터센터 PC의 센터 자료로만 볼 수 있어요. 센터 밖에서는 대신 볼 수 있는 질문을 안내해 드려요.
+        </p>
+      )}
+
       {topic &&
         fields.map((f, i) => (
           <div key={f}>

@@ -107,7 +107,7 @@ export function Process({ r }: { r: AskResult }) {
 }
 
 export function Downloads({ r }: { r: AskResult }) {
-  const files = (r.downloads ?? []).filter((d) => d.csv);
+  const files = (r.downloads ?? []).filter((d) => d.kind === "csv" && d.csv);
   if (!files.length) return null;
   const save = (name: string, csv: string) => {
     const url = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));

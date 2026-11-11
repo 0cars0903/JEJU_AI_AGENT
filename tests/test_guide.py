@@ -31,6 +31,10 @@ class Slots(unittest.TestCase):
             if tp["id"] == "catalog":
                 s["keyword"] = "버스"
             r = run(s)
+            if tp.get("center_only"):  # 센터 전용 주제는 센터 밖에서 차단하고 대신 볼 질문을 준다
+                self.assertEqual(r["status"], "범위밖", s)
+                self.assertEqual(len(r["suggestions"]), 2, s)
+                continue
             self.assertIn(r["status"], OK, s)
             self.assertEqual(r["understood"]["by"], "버튼 선택", s)
             self.assertNotIn("choose", r, s)
@@ -49,6 +53,16 @@ class Slots(unittest.TestCase):
         r = run({"topic": "compare", "space": ["노형동"]})
         self.assertEqual(r["choose"]["step"], "space")
 
+    def test_missing_messages(self):  # C: 빠진 칸마다 알맞은 안내
+        self.assertEqual(run({"topic": "compare", "space": ["노형동"]})["choose"]["message"], "비교할 동네를 하나 더 골라 주세요.")
+        self.assertEqual(run({"topic": "rank"})["choose"]["message"], "순위 기준을 골라 주세요.")
+        self.assertEqual(run({"topic": "stores"})["choose"]["message"], "동네를 골라 주세요.")
+
+    def test_visit_age_variant(self):  # E: 사는 사람 연령대
+        r = run({"topic": "visit", "space": ["노형동"], "variant": "age"})
+        self.assertIn(r["status"], OK)
+        self.assertIn("연령대", r["card"]["evidence"][0]["text"])
+
     def test_bad_values_rejected(self):
         for s in [{"topic": "없는주제"}, {"topic": "stores", "space": ["없는동"]}, {"topic": "stores", "space": ["노형동"], "target": "어르신"},
                   {"topic": "rank", "metric": "폐업률"}]:
@@ -62,6 +76,7 @@ class Slots(unittest.TestCase):
 
     def test_slots_round_trip(self):
         for s in [{"topic": "stores", "space": ["노형동"], "target": "카페"}, {"topic": "openclose", "space": ["아라동"], "target": "카페", "variant": "survival"},
+                  {"topic": "visit", "space": ["노형동"], "variant": "age"},
                   {"topic": "rank", "metric": "버스일평균"}]:
             self.assertEqual(G.to_slots(G.to_tuple(s)), s)
 
@@ -83,6 +98,9 @@ class Api(unittest.TestCase):
         self.assertEqual(r.json()["status"], "성공")
         self.assertEqual(self.c.post("/api/ask", json={"slots": {"topic": "stores", "space": ["없는동"]}}).status_code, 422)
         self.assertEqual(self.c.post("/api/ask", json={}).status_code, 422)
+        bad = self.c.post("/api/ask", json={"question": "가" * 201})  # F: 형식 오류도 detail은 문자열
+        self.assertEqual(bad.status_code, 422)
+        self.assertIsInstance(bad.json()["detail"], str)
 
 
 if __name__ == "__main__":

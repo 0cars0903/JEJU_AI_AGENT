@@ -244,10 +244,10 @@ def downloads(order, res):
     for t in order["tasks"]:
         v = res["store"].get(t["out"])
         if v is not None and "table" in v and len(v["table"]):
-            out.append({"name": f"{t['id']}_{t.get('metric') or 'catalog'}.csv", "rows": int(len(v["table"])), "export": v.get("export", "가능"),
+            out.append({"kind": "csv", "name": f"{t['id']}_{t.get('metric') or 'catalog'}.csv", "rows": int(len(v["table"])), "export": v.get("export", "가능"),
                         "csv": v["table"].to_csv(index=False)})
         if t["sub"] == "S4" and v:
-            out.append({"name": f"{t['id']}_chart.json", "chart": v.get("chart")})
+            out.append({"kind": "chart", "name": f"{t['id']}_chart.json", "chart": v.get("chart")})
     return out
 
 
@@ -255,6 +255,44 @@ def downloads(order, res):
 def _choose(question, t, slots, message, step, candidates=None, sec=0.0):
     return {"question": question, "status": "선택필요", "tuple": t,
             "choose": {"message": message, "step": step, "candidates": candidates or [], "preset": slots}, "sec": round(sec, 3)}
+
+
+LOW_CONF = 0.5  # 이보다 확신도가 낮으면 추정하지 않는다(X1 024: 0.5 미만 유형 정답 26/39, 0.8 이상 58/58)
+TIME_WORDS = re.compile(r"언제|몇\s*시|시간대|붐비|붐벼|한산|출근|퇴근|점심\s*때|저녁\s*때")
+SALES_WORDS = re.compile(r"매출|잘\s*(되|돼)|장사|수익|벌이|벌어")
+ONLY_DONG_REST = re.compile(r"[\s?!.,~]|동네|은|는|이|가|도|어때요?|어떤가요|알려\s*줘|보여\s*줘|궁금해|진단해?\s*줘?|좀|요")
+
+
+def _blocked(question, t, message, alts):
+    """답할 수 없는 질문은 답을 만들지 않고 이유와 대신 볼 수 있는 질문(버튼 값)을 준다(범위 확장 없음·차단, 2026-11-11 17:25)."""
+    sug = [{"text": G.sentence(a), "slots": a} for a in alts] or [{"text": x["text"], "slots": x["slots"]} for x in G.representative()[:3]]
+    return {"question": question, "status": "범위밖", "tuple": t,
+            "card": {"conclusion": message, "evidence": [], "intervals": [], "limits": [], "next_questions": [x["text"] for x in sug]}, "suggestions": sug}
+
+
+def _unsupported(question, t, env):
+    """질문에 지금 자료로 답할 수 없는 축(시간대·매출)이 있으면 점포 수 같은 다른 지표로 바꿔 답하지 않는다(028 대조)."""
+    d = (t.get("space") or [])[:1]
+    tgt = t.get("target") if t.get("target") in G.FOOD else None
+    if (t.get("type") == "T13" or TIME_WORDS.search(question or "")) and not (env or {}).get("center_db"):
+        alts = [{"topic": "visit", "space": d}, {"topic": "rain", "space": d}] if d else []
+        return _blocked(question, t, "시간대별 흐름은 빅데이터센터 PC의 센터 자료로만 볼 수 있어요. 지금은 하루 평균 방문을 대신 볼 수 있어요.", alts)
+    if SALES_WORDS.search(question or ""):
+        alts = [dict({"topic": "openclose", "space": d}, **({"target": tgt} if tgt else {})),
+                dict({"topic": "openclose", "space": d, "variant": "survival"}, **({"target": tgt} if tgt else {}))] if d else []
+        return _blocked(question, t, "매출이나 장사 형편은 카드 매출 자료(빅데이터센터 전용)가 있어야 볼 수 있어요. 대신 개업·폐업 흐름과 5년 생존율을 볼 수 있어요.", alts)
+    return None
+
+
+def _dong_only(question, t):
+    """동네 이름만 입력한 질문인가('노형동', '노형동 어때?')."""
+    if not t.get("space"):
+        return False
+    rest = question
+    for n in sorted({*Q.DONGS, *Q.DONG_ALIAS, *qparse.PLACES}, key=len, reverse=True):
+        if n in rest:
+            rest = rest.replace(n, " ")
+    return ONLY_DONG_REST.sub("", rest) == ""
 
 
 def _exception(question, t):
@@ -281,25 +319,42 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
     if slots:  # ②③④ 버튼 값: 해석하지 않는다
         miss = G.missing(slots)
         if miss:
-            return _choose(question, None, slots, "이어서 골라 주세요.", miss[0], sec=time.perf_counter() - t0)
+            return _choose(question, None, slots, G.missing_message(slots, miss[0]), miss[0], sec=time.perf_counter() - t0)
         t = G.to_tuple(slots)
         question = question or G.sentence(slots)
         it = {"tuple": t, "card": qparse.card(t), "path": "버튼 선택", "confidence": None, "sec": 0.0}
+        un = _unsupported(question, t, env) if t["type"] == "T13" else None
+        if un:
+            return dict(un, sec=round(time.perf_counter() - t0, 3))
     else:  # ① 자유 입력
         if interpret is None:
             import m1
             interpret = m1.M1().interpret
         it = interpret(question)
         t = it["tuple"]
-        if t["expect"] == "되묻기":
-            ex = _exception(question, t)
-            if ex:
-                ex["interpret"] = {k: it.get(k) for k in ("path", "confidence", "card", "sec")}
-                ex["sec"] = round(time.perf_counter() - t0, 3)
-                return ex
-            t = dict(t, expect="답함")  # 추정해서 답하고 "이렇게 이해했어요"로 보여 준다
+        meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec")}
+
+        def stop(r):
+            return dict(r, interpret=meta, sec=round(time.perf_counter() - t0, 3))
+        if t["expect"] != "범위밖" and _dong_only(question, t):  # 동네 이름만 → 동네 종합 진단
+            t = dict(Q.empty(), type="T10", space=t["space"][:1], form=Q.DEFAULT_FORM["T10"], expect="답함")
             it = dict(it, tuple=t, card=qparse.card(t))
             assumed = True
+        elif t["expect"] != "범위밖":
+            un = _unsupported(question, t, env)
+            if un:
+                return stop(un)
+            if t["expect"] == "되묻기":
+                ex = _exception(question, t)
+                if ex:
+                    return stop(ex)
+            conf = it.get("confidence")
+            if conf is not None and conf < LOW_CONF:  # 추정할 근거가 약하면 답하지 않고 고르게 한다
+                return stop(_choose(question, t, G.to_slots(t), "질문을 정확히 이해하지 못했어요. 궁금한 것을 골라 주세요.", "topic"))
+            if t["expect"] == "되묻기":
+                t = dict(t, expect="답함")  # 추정해서 답하고 "이렇게 이해했어요"로 보여 준다
+                it = dict(it, tuple=t, card=qparse.card(t))
+                assumed = True
     rv = V.review(question, env, interpret=lambda q: it, **review_kw)
     t = rv["tuple"]
     out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec")}}

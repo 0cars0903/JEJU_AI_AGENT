@@ -15,7 +15,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
 
   test("④ 대표 질문을 누르면 해석 없이 답한다", async ({ page }) => {
     const rep = page.getByTestId("representative");
-    await expect(rep.getByRole("button")).toHaveCount(6);
+    await expect(rep.getByRole("button")).toHaveCount(7);
     await rep.getByRole("button", { name: "노형동 카페 가게는 몇 곳이야?" }).click();
     await expect(await conclusion(page)).toContainText("노형동");
     await expect(page.getByTestId("understood")).toContainText("이렇게 이해했어요");
@@ -67,6 +67,13 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await first.click();
     await expect(page.getByTestId("asked")).toContainText(label.trim());
     await expect(await conclusion(page)).toBeVisible();
+  });
+
+  test("시간대 질문은 점포 수로 바꿔 답하지 않고 센터 전용임을 알린다", async ({ page }) => {
+    await page.getByTestId("question-input").fill("노형동 카페 몇 시에 붐벼?");
+    await page.getByTestId("ask-submit").click();
+    await expect(page.getByText("센터 자료로만 볼 수 있어요")).toBeVisible();
+    await expect(page.getByTestId("suggestions")).toContainText("노형동 하루 평균 방문은?");
   });
 
   test("범위 밖 질문은 답하지 않고 대신 물을 수 있는 질문을 보여 준다", async ({ page }) => {

@@ -10,7 +10,7 @@ export type Slots = {
 };
 
 export type Option = { value: string; label: string };
-export type Topic = { id: string; label: string; need: string[]; optional: string[]; min_space: number; options: Record<string, Option[]>; variants: Option[] };
+export type Topic = { id: string; label: string; need: string[]; optional: string[]; min_space: number; center_only: boolean; options: Record<string, Option[]>; variants: Option[] };
 export type Representative = { use_case: string; slots: Slots; text: string };
 export type Guide = { topics: Topic[]; dongs: string[]; representative: Representative[] };
 
@@ -26,7 +26,7 @@ export type AskResult = {
   suggestions?: Suggestion[];
   choose?: { message: string; step: string; candidates: string[]; preset: Slots };
   process?: { type?: string; steps: Step[]; data: Record<string, string>; explain?: { text: string; by: string }; relaxed: string[]; unused: string[] };
-  downloads?: { name: string; rows?: number; export?: string; csv?: string }[];
+  downloads?: { kind: "csv" | "chart"; name: string; rows?: number; export?: string; csv?: string }[];
   sec?: number;
 };
 
