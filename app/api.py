@@ -33,6 +33,14 @@ CATEGORIES = ["카페", "한식", "일식", "중식", "치킨", "분식", "횟�
 app = FastAPI(title="동네 생활 진단 API")
 
 
+@app.on_event("startup")
+def _warm_recipes():
+    """R1 레시피 캐시를 별도 스레드에서 미리 채운다. 서버는 기다리지 않고 바로 뜬다(상태는 /api/health)."""
+    import threading
+    import recipes
+    threading.Thread(target=recipes.warm, daemon=True).start()
+
+
 def clean(x):
     """numpy 값과 NaN을 JSON에 넣을 수 있게 바꾼다."""
     if isinstance(x, dict):
@@ -175,7 +183,8 @@ def catalog(q: str = Query(default="", max_length=50)):
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "web_built": OUT.exists()}
+    import recipes
+    return {"status": "ok", "web_built": OUT.exists(), "recipes": recipes.WARM}
 
 
 if OUT.exists():

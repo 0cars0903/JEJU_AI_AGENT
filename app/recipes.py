@@ -285,6 +285,21 @@ def r7(flt, chk, kind="close"):
     return {"anomaly": rows, "kind": "폐업" if kind == "close" else "개업", "note": f"관측 종료 {end.date()}, 마지막 완전 연도 {year}년 기준"}
 
 
+WARM = {"R1": "대기"}
+
+
+def warm():
+    """서버 시작 때 R1 캐시를 미리 채운다(첫 예측 답변이 전체 답변 5초 기준을 넘지 않도록, 05 문서 17절). 캐시가 있으면 바로 끝난다."""
+    t0 = time.perf_counter()
+    WARM["R1"] = "학습 중"
+    try:
+        r = r1(None)
+        WARM["R1"] = f"준비됨(cache {r['cache']}, {time.perf_counter() - t0:.1f}초)"
+    except Exception as e:  # 캐시를 못 채워도 서버는 뜬다(질문 때 학습)
+        WARM["R1"] = f"실패: {type(e).__name__}"
+    return WARM["R1"]
+
+
 def run(rid, flt, tables=(), chk=None, metric=None):
     """S3 진입점. chk는 S2 점검 결과(없으면 여기서 점검)."""
     if rid in CENTER_ONLY:

@@ -2,7 +2,7 @@
 
 핵심 정답 = type(되묻기 문항은 제외) · expect · space(집합 일치) · target(허용 집합, 채점 대상일 때) 모두 맞음.
 보조: 칸별 적중, metric 허용 집합 교집합, JSON 형식 성공률, 응답 시간 중앙값. 방식 간 비교는 같은 문항 짝 비교(McNemar 정확 검정).
-실행: .venv/bin/python app/x1_eval.py A AB [L:qwen3:1.7b] [AL:qwen3:1.7b] [C]
+실행: .venv/bin/python app/x1_eval.py A AB [L:qwen3:1.7b] [AL:qwen3:1.7b] [C] [LR(LoRA, app/x1_lora_eval.py 먼저)]
 """
 import json
 import statistics
@@ -41,8 +41,16 @@ def mcnemar(a, b):
     return n10, n01, round(p, 4)
 
 
+def _lora_raw():
+    """LoRA 원출력(app/x1_lora_eval.py가 LoRA 가상환경에서 저장) → id별 {text, sec}."""
+    test = GOLD.name[len("test_"):-len("_gold.jsonl")]
+    f = OUTD / f"LR_{test}_raw.jsonl"
+    return {r["id"]: r for r in map(json.loads, f.read_text(encoding="utf-8").splitlines()) if r}
+
+
 def run(name, gold):
     bank = M.Bank() if name == "AB" else None
+    lraw = _lora_raw() if name == "LR" else None
     emb = None
     if name.startswith("E"):
         import x1_embed
@@ -75,9 +83,17 @@ def run(name, gold):
             t = M.schema_parse(g["q"], model or "qwen3:1.7b")
         elif kind == "C":
             t = M.plan_parse(g["q"])
+        elif kind == "LR":  # LoRA: 저장된 원출력을 같은 규칙(coerce)으로 Tuple로 바꾸고, 시간은 추론 때 잰 값을 쓴다
+            r = lraw[g["id"]]
+            try:
+                o, ok = json.loads(r["text"]), True
+            except ValueError:
+                o, ok = {}, False
+            t = M.coerce(o)
+            t["_json_ok"], t["_sec"] = ok and isinstance(o, dict), r["sec"]
         else:
             raise ValueError(name)
-        t["_wall"] = round(time.perf_counter() - _t0, 4)  # 질의 해석 1건 처리 시간(초). 시간 기준: 0.5초 이하(사용자 결정 2026-11-11)
+        t["_wall"] = t["_sec"] if kind == "LR" else round(time.perf_counter() - _t0, 4)  # 질의 해석 1건 처리 시간(초). 시간 기준: 0.5초 이하(사용자 결정 2026-11-11)
         out.append({"id": g["id"], "pred": {k: v for k, v in t.items()}, "score": score(t, g)})
     return out
 
