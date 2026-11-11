@@ -309,7 +309,7 @@ def _exception(question, t):
         msg = "비교할 동네를 하나 더 골라 주세요." if preset["topic"] == "compare" and preset.get("space") else "질문에서 동네를 찾지 못했어요. 동네를 골라 주세요."
         return _choose(question, t, preset, msg, "space")
     if miss:
-        return _choose(question, t, preset, "질문에서 빠진 칸이 있어요. 이어서 골라 주세요.", miss[0])
+        return _choose(question, t, preset, G.missing_message(preset, miss[0]), miss[0])
     return None
 
 

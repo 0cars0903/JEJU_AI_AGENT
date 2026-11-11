@@ -56,7 +56,7 @@ TRUSTED = set(json.loads((LEX / "places_trusted.json").read_text(encoding="utf-8
 
 
 def place_ok(q, k):
-    """③ 지명 정밀도: 행정동·법정동·리 이름과 별칭은 그대로 인정. 그 밖의(정류소에서 나온) 이름은 3글자 이상이고 뒤에 조사·띄어쓰기가 올 때만 인정."""
+    """③ 지명 정밀도(기존 방식 'old'): 행정동·법정동·리 이름과 별칭은 그대로 인정. 그 밖의(정류소에서 나온) 이름은 3글자 이상이고 뒤에 조사·띄어쓰기가 올 때만 인정."""
     if k in Q.DONGS or k in Q.DONG_ALIAS or ADMIN_SUFFIX.search(k) or k in TRUSTED:
         return True
     if len(k) < 3:
@@ -65,17 +65,82 @@ def place_ok(q, k):
     return i >= 0 and bool(BOUNDARY.match(q[i + len(k):]))
 
 
-def find_places(q):
-    found, amb, used = [], {}, q
+# ---------- 지명 오해석 수정(2026-11-11, docs/조사/15_지명해석_실험.md) ----------
+# 원인: 법정동·리 이름(접미어 없는 2글자 324개 포함)을 경계 검사 없이 인정해 '상대적으로'·'고성장'·'내도 될까'·'대포 집'을 지명으로 읽었다.
+STRONG = set(Q.DONGS) | set(Q.DONG_ALIAS)  # 행정동 이름과 주민이 접미어 없이 부르는 별칭
+NOT_PLACE_AFTER = re.compile(r"^\s*(될|돼|되|됐|해|했|집|업종|브랜드|기간)")  # ③ 보조: 뒤가 동사·일반어면 지명이 아님
+# ① 접미어 없는 짧은 마을 이름 가운데 일상어·상표이거나 도 밖 지명과 표기가 같은 것(Claude 선별, 2026-11-11). 제주에서 흔히 부르는 마을 이름(고산·사계·화순 등)은 넣지 않았다. 이 이름은 '리'·'동'을 붙여야 인정한다.
+# 형태소 분석기로 자동 선별을 시험했으나 처음 보는 마을 이름(강정·세화·김녕)도 일반명사로 분류해 쓰지 않았다(15 문서).
+SHORT_STOP = set("""상가 대포 회수 상대 동일 하원 가시 대기 대신 사장 시민 자연 체육 국제 공업 평화 남성 연대 연수 세기 신비 향기 소란 부록 전원 양지 하천 화산 수산 인성
+어음 조수 감귤 높은 밝은 정든 이도 일도 오도 하도 더럭 하모 신도 상도 일과 인다 아름 으뜸 알밤 장구 문예 반석 화랑 제대 옹기 극락 염통 생이 넋이 원님
+삼아 대서 내도 서문 신흥 수원 시흥 안성 보성 영주 광양 삼성 신협 부영 세미 사라 이화 인화 우진 백구 서해 동남 남문 명신 GM LH""".split())
+COMPARE = re.compile(r"비교|이랑|랑|하고|[와과]\s|vs|대비|차이|중에|보다|어디가")
+PLACE_MODE = "rule"
+
+
+def _left_ok(q, i):
+    return i == 0 or not (("가" <= q[i - 1] <= "힣") or q[i - 1].isalnum())
+
+
+def place_ok_rule(q, k, i):
+    """규칙 방식: ① 짧은 지명 제한 ② 앞뒤 경계 ③ 뒤 문맥."""
+    admin = bool(ADMIN_SUFFIX.search(k)) and len(k) >= 3  # 노형동·고내리·애월읍처럼 접미어까지 쓴 이름
+    if not _left_ok(q, i):  # ② 단어 중간(서귀포시의 '서귀'처럼 앞뒤가 붙은 경우 포함)
+        return False
+    if not (k in STRONG or admin) and k in SHORT_STOP:  # ① 일상어와 표기가 같은 짧은 이름은 '리'·'동'을 붙여야 인정
+        return False
+    rest = q[i + len(k):]
+    if not admin and not BOUNDARY.match(rest):  # ② 뒤 경계(접미어까지 쓴 행정 이름은 붙여 써도 인정)
+        return False
+    if not (k in Q.DONGS or admin) and NOT_PLACE_AFTER.match(rest):  # ③
+        return False
+    return True
+
+
+_KIWI = []
+
+
+def _kiwi():
+    if not _KIWI:
+        from kiwipiepy import Kiwi  # 실험용(requirements.txt 밖)
+        _KIWI.append(Kiwi())
+    return _KIWI[0]
+
+
+def place_ok_kiwi(q, k, i, toks):
+    """형태소 방식: 지명이 형태소 하나와 정확히 겹치고, 그 형태소가 고유명사(일반명사는 행정 이름·별칭일 때만)여야 인정."""
+    admin = bool(ADMIN_SUFFIX.search(k)) and len(k) >= 3
+    for t in toks:
+        if t.start == i and t.start + t.len == i + len(k):
+            return t.tag == "NNP" or (t.tag == "NNG" and (k in STRONG or admin))
+    return admin and _left_ok(q, i)  # 형태소가 더 잘게 나뉜 행정 이름(예: '이도2동')은 앞 경계만 본다
+
+
+def find_places(q, mode=None):
+    mode = mode or PLACE_MODE
+    found, strong, amb, used = [], set(), {}, q
+    toks = _kiwi().tokenize(q) if mode == "kiwi" else None
     for k in PLACE_KEYS:
-        if k in used and place_ok(used, k):
-            v = PLACES[k]
-            if "dong" in v:
-                if v["dong"] not in found:
-                    found.append(v["dong"])
-            else:
-                amb[k] = v["candidates"]
-            used = used.replace(k, " ")
+        start = 0
+        while True:
+            i = used.find(k, start)
+            if i < 0:
+                break
+            ok = place_ok(used, k) if mode == "old" else place_ok_rule(used, k, i) if mode == "rule" else place_ok_kiwi(used, k, i, toks)
+            if ok:
+                v = PLACES[k]
+                if "dong" in v:
+                    if v["dong"] not in found:
+                        found.append(v["dong"])
+                    if k in STRONG or (ADMIN_SUFFIX.search(k) and len(k) >= 3):
+                        strong.add(v["dong"])
+                else:
+                    amb[k] = v["candidates"]
+                used = used[:i] + " " * len(k) + used[i + len(k):]  # 글자 위치를 유지해 형태소 위치와 맞춘다
+                break
+            start = i + 1
+    if mode != "old" and len(found) >= 2 and strong and not COMPARE.search(q):  # ④ 비교 표현 없이 두 동네가 잡히면 강한 근거만 남긴다
+        found = [d for d in found if d in strong]
     return found, amb
 
 
@@ -99,8 +164,19 @@ def find_target(q):
 
 
 def has(q, w):
-    """띄어쓰기 차이를 무시하고 포함 여부를 본다(예: '몇시' = '몇 시')."""
-    return w in q or w.replace(" ", "") in q.replace(" ", "")
+    """띄어쓰기 차이를 무시하고 포함 여부를 본다(예: '몇시' = '몇 시'). 단, 붙여 읽은 일치는 원래 문장의 단어 첫 글자에서
+    시작할 때만 인정한다('제주 전체에서 점포'를 붙여 읽은 '서점'처럼 단어 중간에서 시작하는 일치는 버림, 2026-11-11)."""
+    if w in q:
+        return True
+    pos = [i for i, c in enumerate(q) if c != " "]
+    s, ws = "".join(q[i] for i in pos), w.replace(" ", "")
+    j = s.find(ws)
+    while j >= 0:
+        i = pos[j]
+        if i == 0 or q[i - 1] == " ":
+            return True
+        j = s.find(ws, j + 1)
+    return False
 
 
 def hits(q, table):
