@@ -82,11 +82,15 @@ class M1:
                 t["type"], conf = self._predict("type", v)
                 t["expect"], _ = self._predict("expect", v)
                 path = "B3(임베딩 + 분류기)"
-                if t["expect"] == "범위밖":
+                if t["expect"] == "범위밖" and base["expect"] == "답함" and {"매출성장", "시장추이", "업종비교"} & set(base["metric"]):
+                    # v3 묶음 지표가 사전에 명시적으로 잡히면 사전 해석을 따른다(예문이 적어 분류기가 '요즘 ~ 어디야'를 범위 밖으로 봄, 2026-11-11)
+                    t["type"], t["expect"] = base["type"], "답함"
+                    t["_why"] = list(base.get("_why") or []) + ["v3 묶음 지표는 사전 해석 우선"]
+                elif t["expect"] == "범위밖":
                     t["type"] = "T12"
                 elif base["_amb"] and not base["space"]:
                     t["expect"] = "되묻기"
-                elif t["type"] in qparse.NEED_DONG and not base["space"] and t["expect"] == "답함":
+                elif t["type"] in qparse.NEED_DONG and not base["space"] and t["expect"] == "답함" and not {"시장추이", "매출성장"} & set(t.get("metric") or []):
                     t["expect"] = "되묻기"
             except Exception as e:  # Ollama가 없거나 실패하면 규칙 경로로 대체
                 t["_fallback_reason"] = type(e).__name__
@@ -94,7 +98,7 @@ class M1:
         low = conf is not None and conf < self.low_conf and t["expect"] == "답함"
         if low:
             card["text"] += " (확인이 필요해요)"
-        return {"tuple": {k: v for k, v in t.items() if not k.startswith("_")}, "card": card, "confidence": conf, "needs_confirm": low or t["expect"] != "답함",
+        return {"tuple": {k: v for k, v in t.items() if not k.startswith("_")}, "card": card, "confidence": conf, "needs_confirm": low or t["expect"] != "답함", "rule_type": base["type"],
                 "path": path, "why": t.get("_why", []), "sec": round(time.perf_counter() - t0, 4)}
 
 

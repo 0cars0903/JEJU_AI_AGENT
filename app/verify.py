@@ -29,7 +29,7 @@ ROUTE = {"해석": "M1", "계획": "M2·M3", "실행": "Sub", "계산": "Sub", "
 LIMIT = {"sub": 1, "main": 1, "total": 2}
 NO_EFFECT = ("판단 불가", "작음 확인", "실패(fallback)", "유의하지 않음")
 CLAIM = re.compile(r"늘었|줄었|증가|감소|차이가?\s*(있|크)|많아졌|적어졌|효과가?\s*있")
-AGG_COLS = {"dong", "ym", "year", "value", "ageGroup", "name", "source", "space", "time", "period", "export"}  # 집계표에 허용하는 열
+AGG_COLS = {"dong", "ym", "year", "value", "ageGroup", "name", "source", "space", "time", "period", "export", "biz", "gain", "pct", "hour", "origin"}  # 집계표에 허용하는 열
 PCT_UNITS = {"%"}
 
 
@@ -40,7 +40,7 @@ def _f(kind, detail, task=None, sub=None):
 # ---------- 해석·계획 ----------
 def check_tuple(t):
     out = [_f("해석", f"목록 밖 칸: {b}") for b in Q.validate(t)]
-    if t.get("expect") == "답함" and t.get("type") in qparse.NEED_DONG and not t.get("space"):
+    if t.get("expect") == "답함" and t.get("type") in qparse.NEED_DONG and not t.get("space") and not {"시장추이", "매출성장"} & set(t.get("metric") or []):
         out.append(_f("해석", "필수 칸 누락: 동네"))
     return out
 
@@ -70,7 +70,7 @@ def _bad_values(v, unit):
         return "결측·무한 값"
     if unit in PCT_UNITS and ((a < 0) | (a > 100)).any():
         return "비율 0~100% 밖"
-    if unit != "배" and (a < 0).any():
+    if unit not in ("배", "증감률(%)") and (a < 0).any():  # 증감률은 음수가 정상(v3 뜨는 곳)
         return "음수 값"
     return None
 

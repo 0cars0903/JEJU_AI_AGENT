@@ -26,7 +26,7 @@ REGISTRY = Q.ROOT / "models" / "registry.json"
 PANEL = Q.ROOT / "data" / "interim" / "gates" / "panel_v2.parquet"
 TAB = Q.ROOT / "data" / "tables"
 CENTER_ONLY = {"R8", "R9"}
-NO_CHECK = {"R3", "R8", "R9"}
+NO_CHECK = {"R3", "R8", "R9", "R10", "R11"}
 
 
 class RecipeError(Exception):
@@ -216,7 +216,9 @@ def _cohort(target):
     from places import REST_MAP
     rest = pd.read_parquet(IN / "restaurants.parquet")
     end = rest[["open_date", "close_date"]].max().max()
-    co = rest[(rest["open_date"] >= KM_START) & (rest["open_date"] <= KM_END)].copy()
+    km_end = KM_END or str((end - pd.DateOffset(years=5)).date())  # v3: 관측 끝 − 5년(build_dong_tables와 같은 규칙)
+    co = rest[(rest["open_date"] >= KM_START) & (rest["open_date"] <= km_end)].copy()
+    co.attrs["cohort"] = f"{KM_START[:7]}~{km_end[:7]}"
     if target and REST_MAP.get(target):
         co = co[co["업종구분소분류"].isin(REST_MAP[target])]
     co["event"] = co["close_date"].notna()
@@ -232,7 +234,7 @@ def r4(flt, chk):
     s5, se5, n = km_at(co["y"].to_numpy(), co["event"].to_numpy(), 5)
     s2, _, _ = km_at(co["y"].to_numpy(), co["event"].to_numpy(), 2)
     return {"survival": {"group": use or "음식점 전체", "n": int(len(co)), "surv5_pct": round(s5 * 100, 1), "ci95_pp": round(1.96 * se5 * 100, 1),
-                         "cond_2to5_pct": round(s5 / s2 * 100, 1) if s2 > 0 else None, "space": "제주 전체(동네별 표본이 작아 업종 묶음 단위)"},
+                         "cond_2to5_pct": round(s5 / s2 * 100, 1) if s2 > 0 else None, "space": "제주 전체(동네별 표본이 작아 업종 묶음 단위)", "cohort": co.attrs.get("cohort")},
             "fallback": None if use == tgt else f"{tgt} 표본 부족 → 음식점 전체"}
 
 
@@ -304,6 +306,16 @@ def run(rid, flt, tables=(), chk=None, metric=None):
     """S3 진입점. chk는 S2 점검 결과(없으면 여기서 점검)."""
     if rid in CENTER_ONLY:
         raise RecipeError(f"{rid}는 센터 DB 경로 전용(미연결)")
+    if rid in ("R10", "R11"):  # v3 카드 매출 레시피(app/v3.py). 관문 판정은 S6
+        import v3
+        f = flt or {}
+        dong = (f.get("dong") or [None])[0] if isinstance(f.get("dong"), list) else None
+        biz, _ = v3.biz5_of(f.get("target"))
+        try:
+            out = v3.r10(dong, biz or "음식점업") if rid == "R10" else v3.r11(dong, biz, v3.BIZ42.get(f.get("target")))
+        except ValueError as e:
+            raise RecipeError(str(e))
+        return {"recipe": rid, "trained": True, **out}
     chk = chk or check(rid, flt, tables)
     if not chk["pass"] and rid != "R4":
         return {"recipe": rid, "check": chk, "fallback": REG[rid]["fallback"], "trained": False}

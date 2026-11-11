@@ -63,7 +63,7 @@
    "column": "rate_pct",
    "agg": "값(구간 lo_pct·hi_pct)",
    "space": "dong",
-   "time": "2022~2024 묶음",
+   "time": "2023~2025 묶음",
    "axes": []
   },
   "center": null,
@@ -75,7 +75,7 @@
    "column": "survival_pct",
    "agg": "year=5 값(year는 경과 연수 1~5)",
    "space": "dong",
-   "time": "코호트 2015-01~2020-08",
+   "time": "코호트 2015-01~2021-11",
    "axes": []
   },
   "center": null
@@ -233,9 +233,156 @@
   "note": "센터에서만 가능"
  },
  "매출": {
-  "public": null,
+  "public": {
+   "table": "card_month",
+   "column": "amt",
+   "agg": "합계",
+   "space": "dong",
+   "time": "ym",
+   "axes": [
+    "biz",
+    "cust"
+   ]
+  },
+  "center": "C1-08",
+  "coverage": "업종 대분류 5(소매·숙박·음식점·기타서비스·예술스포츠여가). 세부 업종은 746(~2021-05)·센터 1-08"
+ },
+ "이용건수": {
+  "public": {
+   "table": "card_month",
+   "column": "cnt",
+   "agg": "합계",
+   "space": "dong",
+   "time": "ym",
+   "axes": [
+    "biz",
+    "cust"
+   ]
+  },
+  "center": "C1-08"
+ },
+ "건당금액": {
+  "public": {
+   "table": "card_month",
+   "column": "amt÷cnt",
+   "agg": "비",
+   "space": "dong",
+   "time": "ym",
+   "axes": [
+    "biz",
+    "cust"
+   ]
+  },
+  "center": "C1-08"
+ },
+ "관광객비중": {
+  "public": {
+   "table": "card_month",
+   "column": "amt",
+   "agg": "내국인 관광객 ÷ 전체",
+   "space": "dong",
+   "time": "ym",
+   "axes": [
+    "biz"
+   ]
+  },
+  "center": "C1-08",
+  "coverage": "도민·내국인 관광객만(외국인은 시간대 표에 2024-10~)"
+ },
+ "시간대매출": {
+  "public": {
+   "table": "card_hour",
+   "column": "amt",
+   "agg": "시간대 비중",
+   "space": "dong",
+   "time": "hour",
+   "axes": [
+    "biz",
+    "cust"
+   ]
+  },
+  "center": "C1-14",
+  "coverage": "2024-10~ 최근 12개월"
+ },
+ "외국인매출": {
+  "public": {
+   "table": "card_foreign",
+   "column": "amt",
+   "agg": "합계",
+   "space": "제주 전체",
+   "time": "ym",
+   "axes": [
+    "biz",
+    "origin"
+   ]
+  },
+  "center": null
+ },
+ "과거매출": {
+  "public": {
+   "table": "card746_month",
+   "column": "amt",
+   "agg": "합계",
+   "space": "dong",
+   "time": "ym",
+   "axes": [
+    "biz42",
+    "cust"
+   ]
+  },
   "center": "C1-07",
-  "note": "센터에서만 가능(반출 불가, 집계만)"
+  "coverage": "세부 업종 42, 2017-01~2021-05(비씨카드)"
+ },
+ "시장추이": {
+  "public": {
+   "table": "card_month + card746_month + rest_events + card_foreign",
+   "column": "amt",
+   "agg": "업종 월 합계, 지수(겹치는 17개월 평균 = 100)",
+   "space": "제주 전체·동네",
+   "time": "ym",
+   "axes": [
+    "biz",
+    "cust"
+   ]
+  },
+  "center": null
+ },
+ "업종비교": {
+  "public": {
+   "table": "card_month + biz",
+   "column": "amt",
+   "agg": "동네의 업종 대분류별 최근 12개월 합",
+   "space": "dong",
+   "time": "최근 12개월",
+   "axes": [
+    "biz"
+   ]
+  },
+  "center": null
+ },
+ "매출성장": {
+  "public": {
+   "table": "card_month",
+   "column": "amt",
+   "agg": "최근 12개월 ÷ 그 전 12개월(중간값 이상 조합)",
+   "space": "dong × biz",
+   "time": "최근 24개월",
+   "axes": [
+    "biz"
+   ]
+  },
+  "center": null
+ },
+ "판단재료": {
+  "public": {
+   "table": "pop_month + card_month + biz + km",
+   "column": "-",
+   "agg": "43개 동네 중 위치",
+   "space": "dong",
+   "time": "자료별 최신",
+   "axes": []
+  },
+  "center": null
  },
  "자료목록": {
   "public": {

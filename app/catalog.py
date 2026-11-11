@@ -73,7 +73,7 @@ def center_rows():
             "time": first(TIME_RULES, cols, "단면") if cols else ("월" if "월 기준" in desc else "일" if "일일" in desc or "일 기준" in desc else "미확인(명세에 열 없음)"),
             "domain": dom, "breakdown": sorted({v for p, v in BREAK_RULES if re.search(p, cols)}),
             "period": period.group(1).strip() if period else None, "export": r["반출"], "columns": cols or None,
-            "access": "센터 DB(SQL, 파티션 pt_year·pt_month) — 명세 기준, 실행 미검증", "subs": ["S1", "S5", "S2"] + (["S3"] if dom in RECIPES else []),
+            "access": "이용자가 센터 조회 화면에서 받은 CSV를 불러옴(F9, v3). 불러오기 구현은 1-07·1-08만", "subs": ["S1", "S5", "S2"] + (["S3"] if dom in RECIPES else []),
             "recipes": RECIPES.get(dom, []), "facet_source": "명세 열 이름·설명에서 규칙으로 추출"})
     return rows
 
@@ -92,18 +92,29 @@ def public_rows():
          "breakdown": ["업종"], "period": f"1960~{meta.get('rest_last')}", "export": "가능", "recipes": ["R4", "R7"], "access": "data/tables/rest_events.parquet·close_3y.parquet·km.parquet"},
         {"id": "P793", "no": "793", "name": "상가(상권) 정보", "source": "공개(데이터허브·공공데이터포털)", "space": "읍면동", "time": "단면", "domain": "점포 수",
          "breakdown": ["업종"], "period": "2025-09 단면", "export": "가능", "recipes": ["R5"], "access": "data/tables/biz.parquet"},
+        {"id": "P746", "no": "746", "name": "업종별 카드 매출과 매장수(비씨카드)", "source": "공개(데이터허브 파일)", "space": "법정동→읍면동", "time": "월", "domain": "카드 매출",
+         "breakdown": ["업종", "이용자구분", "관광객 구분", "연령대", "성별"], "period": f"{meta.get('card746_first')}~{meta.get('card746_last')}", "export": "가능",
+         "recipes": [], "access": "data/tables/card746_month.parquet"},
+        {"id": "PKTO", "no": "관광공사", "name": "카드 관광 읍면동 월별·시간대 통계(제주관광공사)", "source": "외부 공개(제주관광빅데이터플랫폼)", "space": "읍면동",
+         "time": "월", "domain": "카드 매출", "breakdown": ["업종", "관광객 구분", "시간대"],
+         "period": f"{meta.get('card_first')}~{meta.get('card_last')}(시간대 {meta.get('card_hour_first')}~)", "export": "가능(이용 조건 미확인)",
+         "recipes": [], "access": "data/tables/card_month.parquet·card_hour.parquet"},
+        {"id": "PKTOF", "no": "관광공사", "name": "외국인 관광객 출신지역별 카드 소비(제주관광공사)", "source": "외부 공개(제주관광빅데이터플랫폼)", "space": "제주 전체",
+         "time": "월", "domain": "카드 매출", "breakdown": ["업종", "국적"], "period": f"~{meta.get('card_foreign_last')}", "export": "가능(이용 조건 미확인)",
+         "recipes": [], "access": "data/tables/card_foreign.parquet"},
         {"id": "P579", "no": "579/ASOS", "name": "일별 기상", "source": "공개(데이터허브 API·기상청)", "space": "관측소→섬 중앙값", "time": "일", "domain": "날씨",
          "breakdown": [], "period": "2023-04-01~2026-11-09", "export": "가능", "recipes": ["R1", "R3"], "access": "data/interim/api/579, data/interim/api/asos"},
     ]
 
 
+meta0 = json.loads((ROOT / "data" / "tables" / "meta.json").read_text(encoding="utf-8"))
 METRICS = {  # 05 문서 14절(지표 사전). public: 공개 경로 표·열·집계·축 / center: 센터 경로 자료(명세 기준)
     "점포수": {"public": {"table": "biz", "column": "count", "agg": "합계", "space": "dong", "time": "단면", "axes": ["major", "middle", "minor"]}, "center": None, "coverage": "793 전 업종"},
     "특화계수": {"public": {"table": "biz", "column": "count", "agg": "(동네 업종 비중) ÷ (제주 업종 비중)", "space": "dong", "time": "단면", "axes": ["major", "minor"]}, "center": None},
     "개업수": {"public": {"table": "rest_events", "column": "count", "agg": "합계(kind=open)", "space": "dong", "time": "year", "axes": ["category"]}, "center": None, "coverage": "음식점만"},
     "폐업수": {"public": {"table": "rest_events", "column": "count", "agg": "합계(kind=close)", "space": "dong", "time": "year", "axes": ["category"]}, "center": None, "coverage": "음식점만"},
-    "폐업률": {"public": {"table": "close_3y", "column": "rate_pct", "agg": "값(구간 lo_pct·hi_pct)", "space": "dong", "time": "2022~2024 묶음", "axes": []}, "center": None, "coverage": "음식점만"},
-    "5년생존율": {"public": {"table": "km", "column": "survival_pct", "agg": "year=5 값(year는 경과 연수 1~5)", "space": "dong", "time": "코호트 2015-01~2020-08", "axes": []}, "center": None},
+    "폐업률": {"public": {"table": "close_3y", "column": "rate_pct", "agg": "값(구간 lo_pct·hi_pct)", "space": "dong", "time": f"{meta0.get('close_years')} 묶음", "axes": []}, "center": None, "coverage": "음식점만"},
+    "5년생존율": {"public": {"table": "km", "column": "survival_pct", "agg": "year=5 값(year는 경과 연수 1~5)", "space": "dong", "time": f"코호트 {meta0.get('km_cohort')}", "axes": []}, "center": None},
     "조건부생존": {"public": {"table": "km", "column": "survival_pct", "agg": "year=5 ÷ year=2", "space": "dong", "time": "코호트", "axes": []}, "center": None},
     "일평균방문": {"public": {"table": "pop_month", "column": "visit", "agg": "합계 ÷ days", "space": "dong", "time": "ym", "axes": []}, "center": "C4-11"},
     "방문거주비": {"public": {"table": "pop_month", "column": "visit÷resd", "agg": "비", "space": "dong", "time": "ym", "axes": []}, "center": "C4-11"},
@@ -118,7 +129,22 @@ METRICS = {  # 05 문서 14절(지표 사전). public: 공개 경로 표·열·�
     "정류소일이용": {"public": {"table": "raw 743", "column": "user_count", "agg": "정류소별 합계 ÷ 일수", "space": "station_name", "time": "base_date", "axes": ["user_type"]}, "center": "C3-04"},
     "시간대방문": {"public": None, "center": "C4-11", "note": "센터에서만 가능"},
     "시간대버스": {"public": None, "center": "C3-04", "note": "센터에서만 가능"},
-    "매출": {"public": None, "center": "C1-07", "note": "센터에서만 가능(반출 불가, 집계만)"},
+    # v3(2026-11-11): 카드 매출 공개 경로 = 제주관광공사(업종 대분류 5, 2020-01~). 세부 업종 과거는 746, 세부 업종 최신은 센터 1-08(F9)
+    "매출": {"public": {"table": "card_month", "column": "amt", "agg": "합계", "space": "dong", "time": "ym", "axes": ["biz", "cust"]}, "center": "C1-08",
+             "coverage": "업종 대분류 5(소매·숙박·음식점·기타서비스·예술스포츠여가). 세부 업종은 746(~2021-05)·센터 1-08"},
+    "이용건수": {"public": {"table": "card_month", "column": "cnt", "agg": "합계", "space": "dong", "time": "ym", "axes": ["biz", "cust"]}, "center": "C1-08"},
+    "건당금액": {"public": {"table": "card_month", "column": "amt÷cnt", "agg": "비", "space": "dong", "time": "ym", "axes": ["biz", "cust"]}, "center": "C1-08"},
+    "관광객비중": {"public": {"table": "card_month", "column": "amt", "agg": "내국인 관광객 ÷ 전체", "space": "dong", "time": "ym", "axes": ["biz"]}, "center": "C1-08",
+               "coverage": "도민·내국인 관광객만(외국인은 시간대 표에 2024-10~)"},
+    "시간대매출": {"public": {"table": "card_hour", "column": "amt", "agg": "시간대 비중", "space": "dong", "time": "hour", "axes": ["biz", "cust"]}, "center": "C1-14",
+               "coverage": "2024-10~ 최근 12개월"},
+    "외국인매출": {"public": {"table": "card_foreign", "column": "amt", "agg": "합계", "space": "제주 전체", "time": "ym", "axes": ["biz", "origin"]}, "center": None},
+    "과거매출": {"public": {"table": "card746_month", "column": "amt", "agg": "합계", "space": "dong", "time": "ym", "axes": ["biz42", "cust"]}, "center": "C1-07",
+             "coverage": "세부 업종 42, 2017-01~2021-05(비씨카드)"},
+    "시장추이": {"public": {"table": "card_month + card746_month + rest_events + card_foreign", "column": "amt", "agg": "업종 월 합계, 지수(겹치는 17개월 평균 = 100)", "space": "제주 전체·동네", "time": "ym", "axes": ["biz", "cust"]}, "center": None},
+    "업종비교": {"public": {"table": "card_month + biz", "column": "amt", "agg": "동네의 업종 대분류별 최근 12개월 합", "space": "dong", "time": "최근 12개월", "axes": ["biz"]}, "center": None},
+    "매출성장": {"public": {"table": "card_month", "column": "amt", "agg": "최근 12개월 ÷ 그 전 12개월(중간값 이상 조합)", "space": "dong × biz", "time": "최근 24개월", "axes": ["biz"]}, "center": None},
+    "판단재료": {"public": {"table": "pop_month + card_month + biz + km", "column": "-", "agg": "43개 동네 중 위치", "space": "dong", "time": "자료별 최신", "axes": []}, "center": None},
     "자료목록": {"public": {"table": "catalog", "column": "-", "agg": "검색", "space": "-", "time": "-", "axes": []}, "center": None},
 }
 
@@ -130,7 +156,7 @@ def main():
            "C1-07": {"space": "읍면동", "time": "월"}, "C1-14": {"space": "법정동", "time": "월"}, "C5-02": {"space": "관측소", "time": "일"}}
     for r in cat:
         r.update(fix.get(r["id"], {}))
-    assert len(cat) == 79 and all(r["space"] and r["time"] for r in cat)
+    assert len(cat) == 82 and all(r["space"] and r["time"] for r in cat)
     OUT_CAT.write_text(json.dumps(cat, ensure_ascii=False, indent=1), encoding="utf-8")
     bad = [m for m in METRICS if m not in Q.METRICS]
     missing = [m for m in Q.METRICS if m not in METRICS]

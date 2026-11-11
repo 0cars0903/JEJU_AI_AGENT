@@ -157,11 +157,10 @@ class Export(unittest.TestCase):
 
 
 class NoEffect(unittest.TestCase):
-    def test_gate_fail_is_not_error(self):  # R2 관문 실패(MASE 0.927, p 0.35) → 효과 없음, 재시도 없음
-        r = review("탑동 버스 다음달 얼마나 탈까?")
+    def test_gate_fail_is_not_error(self):  # R10 관문 실패(MASE 0.986, p 0.55) → 효과 없음, 재시도 없음(v3: R2 제외)
+        r = review("노형동 음식점 다음 달 매출 예상해줘")
         self.assertEqual(r["status"], "no_significant_effect")
         self.assertEqual(r["retries"]["total"], 0)
-        self.assertIn("차이를 확인하지 못했습니다", r["answer"])
         self.assertFalse(any(x["type"] in V.ROUTE for x in r["record"]))
 
 

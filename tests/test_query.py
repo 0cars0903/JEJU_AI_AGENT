@@ -12,10 +12,10 @@ import qtuple as Q  # noqa: E402
 
 
 class Catalog(unittest.TestCase):
-    def test_catalog_79_unique(self):
+    def test_catalog_82_unique(self):  # 센터 73 + 공개 6 + v3 카드 매출 3(746, 관광공사 2)
         rows = json.loads((ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(rows), 79)
-        self.assertEqual(len({r["id"] for r in rows}), 79)
+        self.assertEqual(len(rows), 82)
+        self.assertEqual(len({r["id"] for r in rows}), 82)
         self.assertTrue(all(r["space"] and r["time"] for r in rows))
 
     def test_metric_dict_covers_schema(self):
@@ -88,22 +88,21 @@ class Planner(unittest.TestCase):
         import planner
         return planner.plan(qparse.parse(q), {"center_db": center})
 
-    def test_time_of_day_relaxed_on_public(self):
-        p = self._p("노형동 카페 손님 가장 붐비는 시간이 언제야?", False)
-        self.assertEqual(p["status"], "ok")
-        self.assertTrue(any("시간대 → 일 단위" in r for r in p["relaxed"]))
-        self.assertEqual(self._p("노형동 카페 손님 가장 붐비는 시간이 언제야?", True)["steps"][0]["metric"], "시간대방문")
+    def test_time_of_day_uses_card_hour(self):  # v3: 상권의 '몇 시'는 공개 시간대 카드 매출로 답한다
+        for env in (False, True):
+            p = self._p("노형동 카페 손님 가장 붐비는 시간이 언제야?", env)
+            self.assertEqual(p["status"], "ok")
+            self.assertEqual([s["metric"] for s in p["steps"] if s["sub"] == "S1"], ["시간대매출"])
 
     def test_bus_hour_maps_to_bus(self):
         self.assertEqual(self._p("탑동 버스 몇시에 제일 많이 타?", True)["steps"][0]["metric"], "시간대버스")
 
-    def test_sales_center_only(self):  # 완화 답: 공개 지표로 대신 답하고 안내(2026-11-11 결정)
-        p = self._p("노형동 매출 어때?", False)
+    def test_sales_public_route(self):  # v3: 매출은 공개 경로(제주관광공사), 센터 자료를 불러오면 센터 경로
+        p = self._p("노형동 카페 매출은?", False)
         self.assertEqual(p["status"], "ok")
-        self.assertTrue(any("대신 답함" in r for r in p["relaxed"]))
-        self.assertTrue(all(s.get("metric") != "매출" for s in p["steps"]))
-        self.assertTrue(any(s.get("metric") == "매출" for s in self._p("노형동 매출 어때?", True)["steps"]))
-        self.assertEqual(self._p("노형동 매출 어때?", True)["steps"][0]["route"], "center")
+        s1 = [s for s in p["steps"] if s["sub"] == "S1"]
+        self.assertEqual((s1[0]["metric"], s1[0]["route"]), ("매출", "public"))
+        self.assertEqual(self._p("노형동 카페 매출은?", True)["steps"][0]["route"], "center")
 
     def test_recipe_steps(self):
         p = self._p("비 오는 날 아라동 방문은?", False)
@@ -177,7 +176,7 @@ class RecipesW5(unittest.TestCase):
 
     def test_registry_has_r1_to_r9(self):
         import recipes
-        self.assertEqual(sorted(k for k in recipes.REG if k.startswith("R")), [f"R{i}" for i in range(1, 10)])
+        self.assertEqual(sorted(k for k in recipes.REG if k.startswith("R")), sorted(f"R{i}" for i in range(1, 12)))  # v3: R10·R11 추가
         for k in ("answers", "target", "family", "pass", "fallback"):
             self.assertIn(k, recipes.REG["R1"])
 
@@ -219,9 +218,9 @@ class RecipesW5(unittest.TestCase):
         self.assertEqual(len(out["neighbors"]["노형동"]), 5)
         self.assertNotIn("노형동", out["neighbors"]["노형동"])
 
-    def test_r2_gate_judged_by_s6(self):  # 관문 판정은 S6(s6.gate)이 하고 결과에 사용 여부를 붙인다
+    def test_r10_gate_judged_by_s6(self):  # 관문 판정은 S6(s6.gate)이 하고 결과에 사용 여부를 붙인다(v3: R2 제외 → R10)
         import runner
-        r = runner.run(runner.build_order(self._plan("노형동 버스 다음달 얼마나 탈까?")), {})
+        r = runner.run(runner.build_order(self._plan("노형동 음식점 다음 달 매출 예상해줘")), {})
         g = [x for v in r["store"].values() if "judgement" in v for x in v["judgement"] if x["name"].startswith("관문")]
         self.assertEqual(len(g), 1)
         self.assertIn("use_forecast", g[0])

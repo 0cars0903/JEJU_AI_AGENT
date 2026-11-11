@@ -16,10 +16,10 @@ from stats import bh, effect, km_at, loglog_ci, two_sided_p, wilson
 ROOT = Path(__file__).resolve().parents[1]
 IN, OUT = ROOT / "data" / "interim", ROOT / "data" / "tables"
 Q = 0.10
-TREND_START, TREND_END = "2023-11", "2025-10"
+TREND_START, TREND_END = "2023-11", None  # v3: 끝은 583의 마지막 완전한 달(자료를 받는 대로 따라감)
 WX_START, WX_END = pd.Timestamp("2023-11-01"), pd.Timestamp("2025-03-31")
-CLOSE_YEARS = [2022, 2023, 2024]
-KM_START, KM_END = "2015-01-01", "2020-08-30"  # 5년 추적이 가능한 개업 코호트(관측 종료 2025-08-30)
+CLOSE_YEARS = None  # v3: 관측 끝 직전 완전한 3년(예: 관측 2026-11 → 2023~2025)
+KM_START, KM_END = "2015-01-01", None  # v3: 5년 추적이 가능한 개업 코호트 = 관측 끝 − 5년
 MOUNTAIN = {"어리목", "삼각봉", "사제비", "영실", "윗세오름", "한라산남벽", "진달래밭", "성판악", "한라생태숲"}
 
 
@@ -41,6 +41,9 @@ def build_biz(stores):
 
 
 def build_restaurants(rest, dongs):
+    end0 = rest[["open_date", "close_date"]].max().max()
+    close_years = CLOSE_YEARS or [end0.year - 3, end0.year - 2, end0.year - 1]
+    km_end = KM_END or str((end0 - pd.DateOffset(years=5)).date())
     r = rest[rest["admin_dong"].isin(dongs)]
     o = r.dropna(subset=["open_date"]).assign(year=lambda x: x["open_date"].dt.year, kind="open")
     c = r.dropna(subset=["close_date"]).assign(year=lambda x: x["close_date"].dt.year, kind="close")
@@ -49,7 +52,7 @@ def build_restaurants(rest, dongs):
     ev.to_parquet(OUT / "rest_events.parquet", index=False)
     # 3년 묶음 폐업률
     k, n = pd.Series(0.0, index=dongs), pd.Series(0.0, index=dongs)
-    for y in CLOSE_YEARS:
+    for y in close_years:
         s, e = pd.Timestamp(f"{y}-01-01"), pd.Timestamp(f"{y}-12-31")
         alive = r[(r["open_date"] < s) & (r["close_date"].isna() | (r["close_date"] >= s))]
         n += alive.groupby("admin_dong").size().reindex(dongs).fillna(0)
@@ -66,7 +69,7 @@ def build_restaurants(rest, dongs):
     close.to_parquet(OUT / "close_3y.parquet", index=False)
     # 영업 지속 곡선
     end = rest[["open_date", "close_date"]].max().max()
-    co = r[(r["open_date"] >= KM_START) & (r["open_date"] <= KM_END)].copy()
+    co = r[(r["open_date"] >= KM_START) & (r["open_date"] <= km_end)].copy()
     co["event"] = co["close_date"].notna()
     co["y"] = ((co["close_date"].fillna(end) - co["open_date"]).dt.days / 365.25).clip(lower=0)
     du, ev_ = co["y"].to_numpy(), co["event"].to_numpy()
@@ -86,7 +89,8 @@ def build_restaurants(rest, dongs):
     km["label"] = [label(d, sig5, five[d], jeju5 * 100) if d != "제주 전체" else "" for d in km["dong"]]
     km.to_parquet(OUT / "km.parquet", index=False)
     return {"close_base_pct": round(base * 100, 2), "km5_jeju_pct": round(jeju5 * 100, 1), "km_cohort_n": int(len(co)),
-            "close_sig": sorted(sig), "km_sig": sorted(sig5), "rest_last": str(end.date())}
+            "close_sig": sorted(sig), "km_sig": sorted(sig5), "rest_last": str(end.date()),
+            "close_years": f"{close_years[0]}~{close_years[-1]}", "km_cohort": f"{KM_START[:7]}~{km_end[:7]}"}
 
 
 def build_pop(pop):
@@ -94,7 +98,10 @@ def build_pop(pop):
     pop["ym"] = pop["date"].dt.strftime("%Y-%m")
     for c in ["resdPop", "workPop", "visitPop"]:
         pop[c] = pd.to_numeric(pop[c], errors="coerce")
-    t = pop[pop["ym"].between(TREND_START, TREND_END)]
+    full = pop.groupby("ym")["date"].nunique()
+    full = full[[d == pd.Period(m).days_in_month for m, d in full.items()]]
+    trend_end = TREND_END or full.index.max()  # 날짜가 다 있는 마지막 달
+    t = pop[pop["ym"].between(TREND_START, trend_end)]
     m = t.groupby(["emd", "ym"]).agg(resd=("resdPop", "sum"), work=("workPop", "sum"), visit=("visitPop", "sum"), days=("date", "nunique")).reset_index()
     m = m.rename(columns={"emd": "dong"})
     m.to_parquet(OUT / "pop_month.parquet", index=False)
@@ -102,7 +109,7 @@ def build_pop(pop):
     a = a.rename(columns={"emd": "dong"})
     a.to_parquet(OUT / "pop_age.parquet", index=False)
     by_year = pop.groupby(pop["date"].dt.year)["date"].nunique()
-    return {"pop_days": int(pop["date"].nunique()), "pop_days_by_year": {str(k): int(v) for k, v in by_year.items()}, "pop_first": str(pop["date"].min().date()), "pop_last": str(pop["date"].max().date())}
+    return {"pop_trend_end": trend_end, "pop_days": int(pop["date"].nunique()), "pop_days_by_year": {str(k): int(v) for k, v in by_year.items()}, "pop_first": str(pop["date"].min().date()), "pop_last": str(pop["date"].max().date())}
 
 
 BUS_FILES = ["2019", "2020", "2021", "2022", "2023", "2024", "2025"]
@@ -191,6 +198,8 @@ def main():
     one = sd.drop_duplicates("station_name")
     meta["bus_mapped_pct_2024"] = round(one.loc[one["dong"].notna(), "users_2024"].sum() / one["users_2024"].sum() * 100, 2)
     meta["dongs"] = dongs
+    old = json.loads((OUT / "meta.json").read_text(encoding="utf-8")) if (OUT / "meta.json").exists() else {}
+    meta = {**{k: v for k, v in old.items() if k.startswith("card")}, **meta}  # v3 카드 키(build_v3_tables.py)는 남긴다
     (OUT / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
     print({k: v for k, v in meta.items() if k != "dongs"})
 

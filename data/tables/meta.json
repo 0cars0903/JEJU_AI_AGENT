@@ -1,32 +1,41 @@
 {
- "close_base_pct": 7.15,
- "km5_jeju_pct": 61.7,
- "km_cohort_n": 12530,
+ "card_first": "2020-01",
+ "card_last": "2026-09",
+ "card_hour_first": "2024-10",
+ "card_hour_last": "2026-09",
+ "card_foreign_last": "2026-08",
+ "card746_first": "2017-01",
+ "card746_last": "2021-05",
+ "card_crosscheck_pass": false,
+ "close_base_pct": 7.38,
+ "km5_jeju_pct": 61.1,
+ "km_cohort_n": 15389,
  "close_sig": [
   "구좌읍",
   "송산동",
-  "연동",
-  "예래동",
   "일도1동"
  ],
  "km_sig": [
-  "노형동",
+  "구좌읍",
   "송산동",
   "애월읍",
   "영천동",
   "우도면",
-  "이호동",
-  "일도2동"
+  "이호동"
  ],
- "rest_last": "2025-08-30",
- "pop_days": 731,
+ "rest_last": "2026-11-07",
+ "close_years": "2023~2025",
+ "km_cohort": "2015-01~2021-11",
+ "pop_trend_end": "2026-07",
+ "pop_days": 1015,
  "pop_days_by_year": {
   "2023": 58,
   "2024": 366,
-  "2025": 307
+  "2025": 365,
+  "2026": 226
  },
  "pop_first": "2023-11-04",
- "pop_last": "2025-11-03",
+ "pop_last": "2026-08-31",
  "bus_last": "2025-10-25",
  "wx_days": 516,
  "wx_wet_days": 159,

@@ -17,13 +17,13 @@ import qtuple as Q  # noqa: E402
 MD = json.loads((Q.ROOT / "data" / "metric_dict.json").read_text(encoding="utf-8"))
 CAT = {r["id"]: r for r in json.loads((Q.ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))}
 # 센터 전용 지표 → 공개 자료로 대신 답할 지표(완화 답, 사용자 결정 2026-11-11). 대신한 내용은 relaxed에 적는다.
-CENTER_SUBSTITUTE = {"매출": ["일평균방문", "점포수"], "시간대방문": ["일평균방문"], "시간대버스": ["버스일평균"]}
-NO_CHECK = {"R3", "R8", "R9"}  # 미리 계산한 검정 결과(R3)·센터 전용(R8·R9)은 점검하지 않는다
+CENTER_SUBSTITUTE = {"시간대방문": ["일평균방문"], "시간대버스": ["버스일평균"]}  # v3: 매출은 공개 경로(제주관광공사)가 생겨 대체하지 않는다
+NO_CHECK = {"R3", "R8", "R9", "R10", "R11"}  # 미리 계산한 검정 결과(R3)·센터 전용(R8·R9)은 점검하지 않는다
 FOOD = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점", "편의점", "음식점"}
 
 # 유형별 기본 지표(질문에 지표가 없을 때)
 DEFAULT_METRIC = {"T1": "점포수", "T2": None, "T3": "점포수", "T4": "개업수", "T5": "거주연령구성", "T6": "일평균방문", "T8": "일평균방문",
-                  "T13": "시간대방문", "T14": None, "T15": "폐업수"}
+                  "T13": "시간대매출", "T14": None, "T15": "폐업수"}
 # 유형 → (담당 Sub 흐름, 레시피)
 TYPE_PLAN = {
     "T1": (["S1"], None), "T2": (["S1", "S4"], None), "T3": (["S1", "S4"], None), "T4": (["S1", "S2", "S6", "S4"], None),
@@ -34,7 +34,10 @@ TYPE_PLAN = {
 
 
 def pick_source(metric, env):
-    """지표 → (경로, 자료 설명). 센터 DB가 있으면 센터 경로 우선(센터 자료가 본체)."""
+    """지표 → (경로, 자료 설명). 센터 DB가 있으면 센터 경로 우선(센터 자료가 본체).
+    v3 F9: 이용자가 센터 카드 CSV(1-07·1-08)를 불러왔으면 매출은 그 자료로 계산한다(route center_csv)."""
+    if env.get("center_card") and metric in ("매출", "과거매출"):
+        return "center_csv", {"dataset": env["center_card"]}
     m = MD.get(metric)
     if not m:
         return None, None
@@ -57,11 +60,12 @@ def plan(t, env=None):
     if t["type"] == "T11":
         out["steps"].append({"sub": "S0", "op": "자료 목록 검색", "dataset": "catalog"})
         return out
-    if t["type"] == "T10":  # 묶음 템플릿
-        for sub_t in ["T1", "T4", "T5"]:
-            p = plan(dict(t, type=sub_t, metric=[]), env)
-            out["steps"] += p["steps"]
-            out["notes"] += p["notes"]
+    if t["type"] == "T10":  # v3 F2 상권 묶음 진단: 판단 재료(수요·경쟁·생존) + 매출 흐름 + 손님 구성 + 가게 수
+        flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}
+        biz_ok = not t.get("target") or t["target"] in FOOD or t["target"] in ("숙박", "소매", "편의점")
+        for m in ["판단재료", "매출", "관광객비중", "점포수"] if biz_ok else ["판단재료", "점포수"]:
+            out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": "public", "source": pick_source(m, env)[1], "filter": flt, "breakdown": None})
+        out["steps"] += [{"sub": "S2", "op": "기술 통계·추세·상관"}, {"sub": "S6", "op": "판정(차이·동등성·짝 비교)"}, {"sub": "S4", "op": "차트·지도"}]
         return out
     metrics = list(t["metric"]) or ([DEFAULT_METRIC.get(t["type"])] if DEFAULT_METRIC.get(t["type"]) else [])
     if t["type"] == "T8" and not t["metric"] and ("버스" in str(t.get("target")) or t.get("target") == "어르신"):
@@ -76,12 +80,25 @@ def plan(t, env=None):
         out["notes"].append(f"{t['target']}은 개업·폐업 자료(음식점 인허가)에 없음")
         return out
     subs, recipe = TYPE_PLAN.get(t["type"], (["S1"], None))
-    if t["type"] == "T8" and metrics == ["버스일평균"]:
-        recipe = "R2"
+    if t["type"] == "T8" and (metrics == ["버스일평균"] or "버스" in str(t.get("target"))):  # v3: 버스 예상(R2) 제외
+        out["status"] = "범위밖"
+        out["notes"].append("버스 이용 예상은 하지 않습니다(v3 상권 분석 범위 밖, 모델이 단순 기준보다 낫지 않음)")
+        return out
+    if t["type"] == "T8" and "매출" in metrics:  # v3: 업종 월 매출 예상
+        metrics, recipe = ["매출"], "R10"
+    if t["type"] == "T8" and "과거매출" in metrics:  # v3: R11 제외 → R10(최근 검증 기록)으로 답한다
+        metrics, recipe = ["매출"], "R10"
     if any(m in ("5년생존율", "조건부생존") for m in metrics) and t.get("target"):
         subs, recipe = ["S1", "S3", "S4"], "R4"  # 업종 생존은 업종 묶음 카플란-마이어(동네별 표에는 업종 구분이 없다)
     breakdown = t.get("breakdown")
-    if t["type"] == "T13" or any(m in ("시간대방문", "시간대버스") for m in metrics):
+    hourly = t["type"] == "T13" or any(m in ("시간대방문", "시간대버스", "시간대매출") for m in metrics) or breakdown == "시간대"
+    bus = any(m in ("버스일평균", "경로일평균", "정류소일이용", "시간대버스") for m in metrics) or "버스" in str(t.get("target"))
+    if hourly and not bus:  # v3: 상권의 '몇 시'는 공개 시간대 카드 매출(제주관광공사, 2024-10~)로 답한다
+        if "시간대방문" in metrics and not t.get("target"):
+            out["relaxed"].append("오가는 사람의 시간대 자료는 센터에만 있어 카드 매출의 시간대 비중으로 답함")
+        metrics, breakdown, hourly = ["시간대매출"], None, False
+        subs, recipe = ["S1", "S4"], None
+    if hourly:
         breakdown = "시간대"  # 시간대 패턴은 질문에 '시간대'라는 말이 없어도 시간대 세분이다
         if any(m in ("버스일평균", "경로일평균", "정류소일이용") for m in metrics):  # 버스 질문의 '몇 시'는 버스 시간대
             metrics = ["시간대버스" if m == "시간대방문" else m for m in metrics]
@@ -106,6 +123,10 @@ def plan(t, env=None):
             breakdown = None
             if t["type"] == "T13":
                 recipe = None
+        if route == "center_csv":
+            out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route, "source": src,
+                                 "filter": {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}, "breakdown": breakdown})
+            continue
         if route == "center_only":  # 완화 답: 공개 대체 지표로 답하고, 원래 지표는 센터에서 볼 수 있다고 안내한다
             subs_m = [x for x in CENTER_SUBSTITUTE.get(m, []) if pick_source(x, env)[0] == "public"]
             if not subs_m:

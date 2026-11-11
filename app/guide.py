@@ -1,9 +1,9 @@
-"""질문 유도 (사용자 결정 2026-11-11 17:25, docs/기획/06_남은과제.md 1절).
+"""질문 유도 (사용자 결정 2026-11-11 17:25; v3 주제 목록 2026-11-11 23:20, docs/기획/v3_설계.md 2절).
 
 화면의 네 진입로 가운데 ②추천 질문 ③단계별 선택 ④대표 질문은 버튼 값(slots)으로 질문 Tuple을 바로 채운다.
 해석(M1)을 거치지 않으므로 해석 오류가 생기지 않는다. ①자유 입력만 M1이 해석한다.
 
-slots 형식: {"topic": 주제 id, "space": [동네], "target": 업종·인구, "variant": 보기 id, "metric": 순위 지표, "keyword": 자료 검색어}
+slots 형식: {"topic": 주제 id, "space": [동네], "target": 업종·인구, "variant": 보기 id, "metric": 순위 지표}
 단계별 선택의 첫 단계는 '궁금한 것'(주제)이고, 그 주제에 필요한 칸만 이어서 고른다.
 """
 import copy
@@ -12,8 +12,9 @@ import qtuple as Q
 
 FOOD = ["음식점", "카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점"]  # 개업·폐업·생존은 음식점 인허가(780)만 있음
 # 순위 지표: 폐업·생존은 순위를 내지 않는다(docs/조사/06_EDA_H1H3.md 사용자 확정). 고령·청년 비중은 공개 경로 조회 미구현이라 뺐다.
-RANK_METRICS = {"점포수": "가게 수", "일평균방문": "일평균 방문", "버스일평균": "버스 일평균 이용"}
-KEYWORDS = ["버스", "유동인구", "카드 매출", "날씨", "상가", "와이파이"]
+RANK_METRICS = {"매출": "카드 매출", "매출성장": "요즘 매출이 많이 는 곳", "관광객비중": "관광객 매출 비중", "점포수": "가게 수", "일평균방문": "일평균 방문"}
+# 카드 매출(제주관광공사)은 업종 대분류만 있다. 세부 업종을 고르면 대분류(음식점업 등) 기준으로 답하고 한계에 적는다.
+CARD_TARGETS = ["음식점", "카페", "한식", "치킨", "횟집", "숙박", "소매"]
 
 # 주제: id → 이름, 기본 Tuple, 이어서 고를 칸(필수 / 선택), 칸별 선택지, 보기(variant)
 TOPICS = [
@@ -24,28 +25,38 @@ TOPICS = [
      "variants": {"flow": {"label": "최근 3년 개업·폐업 흐름"}, "survival": {"label": "5년 생존율", "base": {"type": "T1", "metric": ["5년생존율"], "time": None}}}},
     {"id": "visit", "label": "오가는 사람", "base": {"type": "T1", "metric": ["일평균방문"]}, "need": ["space"], "optional": ["variant"],
      "variants": {"amount": {"label": "하루 평균 방문"}, "age": {"label": "사는 사람 연령대", "base": {"type": "T5", "metric": ["거주연령구성"]}}}},
-    {"id": "bus", "label": "버스 이용", "base": {"type": "T1", "metric": ["버스일평균"]},
-     "need": ["space"], "optional": ["target"], "options": {"target": ["어르신"]}},
+    {"id": "sales", "label": "카드 매출", "base": {"type": "T4", "metric": ["매출"], "time": "최근3년"}, "need": ["space"], "optional": ["target", "variant"],
+     "options": {"target": CARD_TARGETS},
+     "variants": {"trend": {"label": "월 매출 흐름"}, "now": {"label": "최근 월 매출", "base": {"type": "T1", "time": None}},
+                  "unit": {"label": "결제 1건당 금액", "base": {"type": "T1", "metric": ["건당금액"], "time": None}}}},
+    {"id": "customers", "label": "손님 구성(도민·관광객)", "base": {"type": "T5", "metric": ["관광객비중"]}, "need": ["space"], "optional": ["target"],
+     "options": {"target": CARD_TARGETS}},
+    {"id": "hourly", "label": "몇 시에 손님이 많은지", "base": {"type": "T13", "metric": ["시간대매출"]}, "need": ["space"], "optional": ["target"],
+     "options": {"target": CARD_TARGETS}},
+    {"id": "market", "label": "업종 시장 추이", "base": {"type": "T4", "metric": ["시장추이"]}, "need": ["target"], "optional": ["space"],
+     "options": {"target": CARD_TARGETS}},
+    {"id": "bizcompare", "label": "같은 동네 업종끼리 비교", "base": {"type": "T5", "metric": ["업종비교"]}, "need": ["space"]},
     {"id": "rain", "label": "비 오는 날 오가는 사람 변화", "base": {"type": "T6", "metric": ["일평균방문"], "cond": ["비"]}, "need": ["space"]},
-    {"id": "forecast", "label": "다음 주 방문 예상", "base": {"type": "T8", "metric": ["일평균방문"], "time": "다음주"}, "need": ["space"]},
+    {"id": "forecast", "label": "예상해 보기", "base": {"type": "T8", "metric": ["일평균방문"], "time": "다음주"}, "need": ["space"], "optional": ["variant", "target"],
+     "options": {"target": CARD_TARGETS},
+     "variants": {"visit": {"label": "다음 주 방문 예상"}, "sales": {"label": "다음 달 업종 매출 예상", "base": {"metric": ["매출"], "time": "다음달"}},
+                  }},
     {"id": "similar", "label": "비슷한 동네 추천받기", "base": {"type": "T9"}, "need": ["space"]},
     {"id": "compare", "label": "동네 2곳 이상 비교", "base": {"type": "T2"}, "need": ["space"], "min_space": 2},
-    {"id": "diagnose", "label": "동네 종합 진단", "base": {"type": "T10"}, "need": ["space"]},
-    {"id": "hourly", "label": "시간대별 오가는 사람(센터 전용)", "base": {"type": "T13", "metric": ["시간대방문"]}, "need": ["space"], "center_only": True},
-    {"id": "rank", "label": "동네 순위", "base": {"type": "T3"}, "need": ["metric"], "options": {"metric": list(RANK_METRICS)}},
-    {"id": "catalog", "label": "빅데이터센터 자료 찾기", "base": {"type": "T11", "metric": ["자료목록"]}, "need": ["keyword"], "options": {"keyword": KEYWORDS}},
+    {"id": "diagnose", "label": "상권 종합 진단", "base": {"type": "T10"}, "need": ["space"]},
+    {"id": "rank", "label": "동네 순위", "base": {"type": "T3"}, "need": ["metric"], "optional": ["target"], "options": {"metric": list(RANK_METRICS), "target": CARD_TARGETS}},
 ]
 TOPIC = {x["id"]: x for x in TOPICS}
 
 # ④ 대표 질문: 이용 사례 U1~U6에서 고른 설계 목록(질문 기록을 쌓아 고른 것이 아님)
-REPRESENTATIVE = [
-    {"use_case": "U1 예비 창업자", "slots": {"topic": "stores", "space": ["노형동"], "target": "카페"}},
-    {"use_case": "U1 예비 창업자", "slots": {"topic": "openclose", "space": ["노형동"], "target": "카페"}},
-    {"use_case": "U1 예비 창업자", "slots": {"topic": "openclose", "space": ["노형동"], "target": "카페", "variant": "survival"}},
-    {"use_case": "U2 소상공인", "slots": {"topic": "rain", "space": ["아라동"]}},
-    {"use_case": "U3 생활 도민", "slots": {"topic": "similar", "space": ["노형동"]}},
-    {"use_case": "U4 상담 직원", "slots": {"topic": "bus", "space": ["애월읍"], "target": "어르신"}},
-    {"use_case": "U5 자료 탐색", "slots": {"topic": "catalog", "keyword": "버스"}},
+REPRESENTATIVE = [  # v3 사용자 3유형(docs/기획/v3_설계.md 1절)
+    {"use_case": "예비창업자", "slots": {"topic": "stores", "space": ["노형동"], "target": "카페"}},
+    {"use_case": "예비창업자", "slots": {"topic": "openclose", "space": ["노형동"], "target": "카페", "variant": "survival"}},
+    {"use_case": "예비창업자", "slots": {"topic": "sales", "space": ["노형동"], "target": "음식점"}},
+    {"use_case": "소상공인", "slots": {"topic": "hourly", "space": ["애월읍"], "target": "음식점"}},
+    {"use_case": "소상공인", "slots": {"topic": "customers", "space": ["성산읍"], "target": "숙박"}},
+    {"use_case": "소상공인", "slots": {"topic": "rain", "space": ["아라동"]}},
+    {"use_case": "중소기업", "slots": {"topic": "rank", "metric": "매출", "target": "숙박"}},
 ]
 
 
@@ -58,16 +69,18 @@ def sentence(slots):
     s = {
         "stores": f"{d} {tgt + ' ' if tgt else ''}가게는 몇 곳이야?",
         "openclose": f"{d} {tgt or '음식점'} 5년 생존율은?" if v == "survival" else f"{d} {tgt or '음식점'} 개업·폐업은 최근 3년 어땠어?",
-        "hourly": f"{d} 시간대별로 오가는 사람은?",
+        "hourly": f"{d} {tgt + ' ' if tgt else ''}몇 시에 손님이 많아?",
+        "sales": f"{d} {tgt + ' ' if tgt else ''}" + {"unit": "결제 1건당 금액은?", "now": "최근 카드 매출은?"}.get(v, "카드 매출 흐름은?"),
+        "customers": f"{d} {tgt + ' ' if tgt else ''}손님 중 관광객 비중은?",
         "visit": f"{d}에 사는 사람 연령대는?" if v == "age" else f"{d} 하루 평균 방문은?",
-        "bus": f"{d} {'어르신 ' if tgt == '어르신' else ''}버스 이용은?",
         "rain": f"비 오는 날 {d} 방문은 얼마나 달라져?",
-        "forecast": f"{d} 다음 주 방문 예상은?",
+        "forecast": {"sales": f"{d} {tgt or '음식점'} 다음 달 카드 매출 예상은?"}.get(v, f"{d} 다음 주 방문 예상은?"),
+        "market": f"{d + ' ' if d else '제주 '}{tgt or ''} 시장이 커지고 있어?",
+        "bizcompare": f"{d}에서 업종별 카드 매출 비교해줘",
         "similar": f"{d}이랑 비슷한 동네는?",
         "compare": f"{' · '.join(slots.get('space') or [])} 비교해줘",
-        "diagnose": f"{d} 종합 진단해줘",
-        "rank": f"{RANK_METRICS.get(slots.get('metric'), '')} 동네 순위는?",
-        "catalog": f"센터에 {slots.get('keyword', '')} 자료 있어?",
+        "diagnose": f"{d} 상권 종합 진단해줘",
+        "rank": f"{tgt + ' ' if tgt else ''}{RANK_METRICS.get(slots.get('metric'), '')} 동네 순위는?",
     }[tp["id"]]
     return " ".join(s.split())
 
@@ -83,7 +96,7 @@ def missing(slots):
     return out
 
 
-STEP_MESSAGE = {"topic": "궁금한 것을 골라 주세요.", "space": "동네를 골라 주세요.", "metric": "순위 기준을 골라 주세요.", "keyword": "찾을 자료를 골라 주세요."}
+STEP_MESSAGE = {"topic": "궁금한 것을 골라 주세요.", "space": "동네를 골라 주세요.", "metric": "순위 기준을 골라 주세요."}
 
 
 def missing_message(slots, step):
@@ -114,8 +127,6 @@ def to_tuple(slots):
         if slots["target"] not in tp.get("options", {}).get("target", []):
             raise ValueError(f"이 주제에서 고를 수 없는 대상: {slots['target']}")
         t["target"] = slots["target"]
-        if tp["id"] == "bus" and slots["target"] == "어르신":
-            t["metric"] = ["버스일평균", "경로일평균"]
     if tp["id"] == "rank":
         if slots.get("metric") not in RANK_METRICS:
             raise ValueError(f"고를 수 없는 순위 지표: {slots.get('metric')}")
@@ -125,15 +136,16 @@ def to_tuple(slots):
     return t
 
 
-TYPE_TOPIC = {"T13": "hourly", "T2": "compare", "T1": "stores", "T4": "openclose", "T5": "visit", "T6": "rain", "T8": "forecast", "T9": "similar", "T10": "diagnose", "T3": "rank", "T11": "catalog"}
-METRIC_TOPIC = {"거주연령구성": "visit", "점포수": "stores", "개업수": "openclose", "폐업수": "openclose", "5년생존율": "openclose", "일평균방문": "visit", "버스일평균": "bus", "경로일평균": "bus"}
+TYPE_TOPIC = {"T13": "hourly", "T2": "compare", "T1": "stores", "T4": "openclose", "T5": "visit", "T6": "rain", "T8": "forecast", "T9": "similar", "T10": "diagnose", "T3": "rank"}
+METRIC_TOPIC = {"거주연령구성": "visit", "점포수": "stores", "개업수": "openclose", "폐업수": "openclose", "5년생존율": "openclose", "일평균방문": "visit",
+                "매출": "sales", "이용건수": "sales", "건당금액": "sales", "관광객비중": "customers", "시간대매출": "hourly", "시장추이": "market", "업종비교": "bizcompare"}
 
 
 def to_slots(t):
     """질문 Tuple → 화면이 [바꾸기]에서 미리 골라 둘 버튼 값. 대응하는 주제가 없으면 topic 없이 돌려준다."""
     m = (t.get("metric") or [None])[0]
     topic = TYPE_TOPIC.get(t.get("type"))
-    if t.get("type") in ("T1", "T5") and m in METRIC_TOPIC:
+    if t.get("type") in ("T1", "T4", "T5") and m in METRIC_TOPIC:
         topic = METRIC_TOPIC[m]
     if t.get("type") == "T3":
         topic = "rank"
@@ -143,6 +155,12 @@ def to_slots(t):
         out["target"] = t["target"]
     if topic == "openclose" and m == "5년생존율":
         out["variant"] = "survival"
+    if t.get("type") == "T8" and m in ("매출", "과거매출"):
+        out["variant"] = "sales"
+    if topic == "sales" and m == "건당금액":
+        out["variant"] = "unit"
+    elif topic == "sales" and t.get("type") == "T1":
+        out["variant"] = "now"
     if topic == "visit" and m == "거주연령구성":
         out["variant"] = "age"
     if topic == "rank" and m in RANK_METRICS:
@@ -155,9 +173,10 @@ def suggestions(t, n=3):
     d = (t.get("space") or ["노형동"])[:1]
     tgt = t.get("target") if t.get("target") in FOOD else "카페"
     here = to_slots(t).get("topic")
-    pool = [{"topic": "openclose", "space": d, "target": tgt}, {"topic": "rain", "space": d}, {"topic": "forecast", "space": d},
-            {"topic": "similar", "space": d}, {"topic": "stores", "space": d, "target": tgt}, {"topic": "diagnose", "space": d},
-            {"topic": "openclose", "space": d, "target": tgt, "variant": "survival"}]
+    ctgt = t.get("target") if t.get("target") in CARD_TARGETS else "음식점"
+    pool = [{"topic": "sales", "space": d, "target": ctgt}, {"topic": "openclose", "space": d, "target": tgt}, {"topic": "customers", "space": d, "target": ctgt},
+            {"topic": "hourly", "space": d, "target": ctgt}, {"topic": "stores", "space": d, "target": tgt}, {"topic": "diagnose", "space": d},
+            {"topic": "openclose", "space": d, "target": tgt, "variant": "survival"}, {"topic": "rain", "space": d}, {"topic": "similar", "space": d}]
     out = [s for s in pool if s["topic"] != here][:n]
     return [{"text": sentence(s), "slots": s} for s in out]
 

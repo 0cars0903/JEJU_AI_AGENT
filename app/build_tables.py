@@ -32,9 +32,49 @@ def say(*a):
     print(line); REPORT.append(line)
 
 
+API = OUT / "api"
+# v3(2026-11-11): 최신 자료 우선. 공공데이터포털 API로 받은 상가(stdrYm)·음식점(행안부 인허가)이 있으면 원본 CSV 대신 쓴다.
+STORE_COLS = {"bizesNm": "상호명", "indsLclsNm": "상권업종대분류명", "indsMclsNm": "상권업종중분류명", "indsSclsNm": "상권업종소분류명", "ksicNm": "표준산업분류명",
+              "ctprvnNm": "시도명", "signguNm": "시군구명", "adongNm": "행정동명", "ldongNm": "법정동명", "adongCd": "행정동코드", "ldongCd": "법정동코드",
+              "lnoAdr": "지번주소", "rdnmAdr": "도로명주소", "newZipcd": "신우편번호", "lon": "경도", "lat": "위도"}
+FOOD_COLS = {"BPLC_NM": "사업장명", "BZSTAT_SE_NM": "업종구분소분류", "LCPMT_YMD": "인허가일자", "SALS_STTS_NM": "영업상태명", "DTL_SALS_STTS_NM": "상세영업상태명",
+             "CLSBIZ_YMD": "폐업일자", "LOTNO_ADDR": "소재지전체주소", "ROAD_NM_ADDR": "도로명전체주소", "ROAD_NM_ZIP": "도로명우편번호", "DAT_UPDT_PNT": "데이터갱신일자"}
+SOURCE = {}
+
+
+def _api_files(sub):
+    return sorted((API / sub).rglob("*.parquet")) if (API / sub).exists() else []
+
+
+def load_stores():
+    fs = _api_files("store")
+    if fs:
+        a = pd.concat([pd.read_parquet(f) for f in fs], ignore_index=True).drop_duplicates("bizesId")
+        SOURCE["stores"] = f"상가 API(기준 {a['stdrYm'].iloc[0]})"
+        return a.rename(columns=STORE_COLS)[list(STORE_COLS.values())].astype(str)
+    SOURCE["stores"] = "793 CSV"
+    return pd.read_csv(F793, encoding="cp949", dtype=str)
+
+
+def load_restaurants():
+    parts = []
+    for sub, kind in (("general_restaurants", "일반음식점"), ("rest_cafes", "휴게음식점")):
+        fs = [f for f in _api_files("food") if f.parent.name.startswith(sub)]
+        if fs:
+            parts.append(pd.concat([pd.read_parquet(f) for f in fs], ignore_index=True).assign(업종구분대분류=kind))
+    if len(parts) == 2:
+        a = pd.concat(parts, ignore_index=True).drop_duplicates("MNG_NO", keep="last").rename(columns=FOOD_COLS)  # 갱신분(since_*)이 뒤에 와서 최신을 남긴다
+        for c in ("인허가일자", "폐업일자"):
+            a[c] = a[c].fillna("").str.replace("-", "", regex=False).replace("", None)
+        SOURCE["restaurants"] = f"행안부 음식점 API(갱신 ~{a['데이터갱신일자'].max()[:10]})"
+        return a[["사업장명", "업종구분대분류"] + [c for c in FOOD_COLS.values() if c != "사업장명"]].astype(object)
+    SOURCE["restaurants"] = "780 CSV"
+    return pd.read_csv(F780, encoding="cp949", dtype=str)
+
+
 # ---------- 793 상가 ----------
 def build_stores():
-    s = pd.read_csv(F793, encoding="cp949", dtype=str)
+    s = load_stores()
     s["경도"], s["위도"] = s["경도"].astype(float), s["위도"].astype(float)
     s.to_parquet(OUT / "stores.parquet", index=False)
     say(f"[793] 점포 {len(s):,} · 행정동 {s['행정동명'].nunique()} · 법정동 {s['법정동명'].nunique()}")
@@ -43,7 +83,7 @@ def build_stores():
 
 # ---------- 780 음식점 → 행정동 ----------
 def build_restaurants(stores):
-    r = pd.read_csv(F780, encoding="cp949", dtype=str)
+    r = load_restaurants()
     r["open_date"] = pd.to_datetime(r["인허가일자"], format="%Y%m%d", errors="coerce")
     r["close_date"] = pd.to_datetime(r["폐업일자"].str.replace(r"\.0$", "", regex=True), format="%Y%m%d", errors="coerce")
     r["legal_dong"] = r["소재지전체주소"].fillna("").str.split().str[2]

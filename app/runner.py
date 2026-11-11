@@ -21,6 +21,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import qtuple as Q  # noqa: E402
 import recipes  # noqa: E402
+import v3  # noqa: E402
 import s6  # noqa: E402
 from places import REST_MAP  # noqa: E402
 
@@ -87,6 +88,29 @@ def _foods(target):
 def s1_query(task, store, env):
     if task.get("route") == "center":
         raise TaskError("실행", "센터 DB 미연결(W9 어댑터 전)")
+    if task.get("route") == "center_csv":  # F9: 이용자가 불러온 센터 카드 CSV(1-07·1-08)
+        import center_csv
+        did = (task.get("source") or {}).get("dataset")
+        meta = center_csv.get(did)
+        if not meta:
+            raise TaskError("계획", "불러온 센터 자료 없음")
+        f0 = task.get("filter") or {}
+        c = center_csv.table(did)
+        dl = f0.get("dong") if isinstance(f0.get("dong"), list) else None
+        if dl:
+            c = c[c["dong"].isin(dl)]
+        tg = f0.get("target")
+        word = v3.BIZ42.get(tg) if tg else None
+        if word:
+            c = c[c["biz"].str.contains(word, na=False, regex=False)]
+        elif tg:
+            biz5, _ = v3.biz5_of(tg)
+            raise TaskError("실행", f"{tg}에 대응하는 센터 업종명을 정하지 못함(대분류 {biz5})")
+        if c.empty:
+            raise TaskError("실행", "불러온 센터 자료에 요청한 동네·업종이 없음")
+        g = c.groupby(["dong", "ym"], as_index=False)["amt"].sum().rename(columns={"amt": "value"})
+        return {"table": g, "dataset": f"{meta['label']}(이용자 불러옴, {meta['file']})", "unit": "원",
+                "note": f"{meta['label']} 기준입니다. 손님 구분 전체(도민·내국인·외국인·법인) 합계이고, 세부 업종 '{word or '전체'}' 값입니다."}
     m, f = task["metric"], task.get("filter") or {}
     dongs = f.get("dong") if isinstance(f.get("dong"), list) else None
     tgt = f.get("target")
@@ -130,7 +154,94 @@ def s1_query(task, store, env):
         a = by_dong(pd.read_parquet(TAB / "pop_age.parquet"))
         a = a[a["year"] == a["year"].max()].groupby(["dong", "ageGroup"])["resd"].sum().rename("value").reset_index()
         return {"table": a, "dataset": "583 유동인구(연령)", "unit": "지수"}
+    if m in CARD_METRICS:
+        return _card(m, tgt, dongs)
     raise TaskError("실행", f"지표 {m}의 공개 경로 조회 미구현")
+
+
+# v3 카드 매출(docs/기획/v3_설계.md 3절). 관광공사는 업종 대분류 5개뿐이라 세부 업종은 대분류로 올려 답하고 그 사실을 note로 남긴다.
+CARD_METRICS = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "외국인매출", "과거매출", "시장추이", "업종비교", "매출성장", "판단재료"}
+MONTHLY_CARD = {"매출", "이용건수", "건당금액", "관광객비중", "과거매출", "시장추이"}
+BIZ5 = ["소매업", "숙박업", "음식점업", "기타서비스업", "예술스포츠여가업"]
+BIZ_UP = {"숙박": "숙박업", "소매": "소매업", "편의점": "소매업"}  # 음식 업종(FOOD)은 음식점업
+KTO = "제주관광공사 카드 소비"
+
+
+def _biz5(tgt):
+    """질문 업종 → (관광공사 대분류, 한계 문구). 대분류가 아니면 위로 올린다(app/v3.py)."""
+    biz, note = v3.biz5_of(tgt)
+    if tgt and biz is None:
+        raise TaskError("실행", f"{tgt}은 카드 매출 업종(대분류 5개)에 대응하지 않음")
+    return biz, note
+
+
+def _card(m, tgt, dongs):
+    def by_dong(df):
+        return df[df["dong"].isin(dongs)] if dongs else df
+    if m == "시장추이":  # F3: 수요·공급·손님 구성·기여 동네·지수(app/v3.py)
+        biz, note = _biz5(tgt)
+        mk = v3.market(biz, dongs)
+        tab = mk["series"].rename("value").reset_index().assign(dong=mk["where"])[["dong", "ym", "value"]]
+        extra = {k: v for k, v in mk.items() if k != "series"}
+        return {"table": tab, "dataset": KTO, "unit": "원", "note": note or mk.get("note"), "extra": {"kind": "market", **extra}}
+    if m == "업종비교":  # F4: 같은 동네의 업종 대분류 5개
+        if not dongs:
+            raise TaskError("실행", "업종 비교는 동네가 필요함")
+        bc = v3.biz_compare(dongs[0])
+        tab = pd.DataFrame([{"dong": bc["dong"], "biz": r["biz"], "value": r["cur"]} for r in bc["rows"]])
+        return {"table": tab, "dataset": f"{KTO}(최근 12개월, ~{bc['end']})", "unit": "원",
+                "note": "매출 비교는 업종 대분류 5개 기준입니다. 카페·한식 같은 세부 업종끼리는 가게 수·개업·폐업으로 비교합니다.", "extra": {"kind": "bizcompare", **bc}}
+    if m == "매출성장":  # 뜨는 동네·업종
+        biz, note = _biz5(tgt)
+        rs = v3.rising(biz)
+        tab = pd.DataFrame([{"dong": r["dong"], "biz": r["biz"], "value": r["growth_pct"], "gain": r["gain"]} for r in rs["rows"]])
+        return {"table": tab, "dataset": f"{KTO}(최근 12개월 대비 그 전 12개월, ~{rs['end']})", "unit": "증감률(%)", "note": note,
+                "extra": {"kind": "rising", **rs}}
+    if m == "판단재료":  # F2: 수요·경쟁·생존 신호
+        if not dongs:
+            raise TaskError("실행", "판단 재료는 동네가 필요함")
+        biz, _ = v3.biz5_of(tgt)
+        sg = v3.signals(dongs[0], tgt, biz)
+        tab = pd.DataFrame([{"dong": sg["dong"], "name": x["name"], "value": x["value"], "pct": x["pct"]} for x in sg["items"]])
+        return {"table": tab, "dataset": "여러 자료(판단 재료)", "unit": "-", "extra": {"kind": "signals", **sg}}
+    if m == "외국인매출":  # 제주 전체 × 업종 × 출신지역
+        f = pd.read_parquet(TAB / "card_foreign.parquet")
+        biz, note = _biz5(tgt)
+        if biz:
+            f = f[f["biz"] == biz]
+        g = f.groupby(["ym", "origin"], as_index=False)["amt"].sum().rename(columns={"amt": "value"})
+        return {"table": g, "dataset": f"{KTO}(외국인, 제주 전체)", "unit": "원", "note": note}
+    if m == "과거매출":  # 746 세부 업종(비씨카드, ~2021-05)
+        c = by_dong(pd.read_parquet(TAB / "card746_month.parquet"))
+        if tgt:
+            words = {"카페": "비알콜 음료점업", "한식": "한식 음식점업", "일식": "일식 음식점업", "중식": "중식 음식점업", "숙박": "숙박", "소매": "소매업"}
+            c = c[c["biz42"].str.contains(words.get(tgt, tgt), na=False) | (c["biz"] == tgt)]
+        if not len(c):
+            raise TaskError("실행", f"746에 {tgt} 업종 없음")
+        g = c.groupby(["dong", "ym"], as_index=False)["amt"].sum().rename(columns={"amt": "value"})
+        return {"table": g, "dataset": "746 업종별 카드 매출(비씨카드)", "unit": "원"}
+    biz, note = _biz5(tgt)
+    if m == "시간대매출":
+        h = by_dong(pd.read_parquet(TAB / "card_hour.parquet"))
+        h = h[h["ym"] > sorted(h["ym"].unique())[-13]]  # 최근 12개월
+        if biz:
+            h = h[h["biz"] == biz]
+        g = h.groupby(["dong", "hour"])["amt"].sum()
+        share = (g / g.groupby(level="dong").transform("sum") * 100).rename("value").reset_index()
+        return {"table": share, "dataset": f"{KTO}(시간대, 최근 12개월 {h['ym'].min()}~{h['ym'].max()})", "unit": "%", "note": note}
+    c = by_dong(pd.read_parquet(TAB / "card_month.parquet"))
+    if biz:
+        c = c[c["biz"] == biz]
+    if m == "관광객비중":
+        g = c.groupby(["dong", "ym", "cust"])["amt"].sum().unstack("cust").fillna(0)
+        v = (g.get("내국인 관광객", 0) / g.sum(axis=1) * 100).rename("value").reset_index()
+        return {"table": v, "dataset": KTO, "unit": "%", "note": note}
+    g = c.groupby(["dong", "ym"], as_index=False)[["amt", "cnt"]].sum()
+    if m == "건당금액":
+        g["value"] = g["amt"] / g["cnt"]
+    else:
+        g["value"] = g["amt"] if m == "매출" else g["cnt"]
+    return {"table": g[["dong", "ym", "value"]], "dataset": KTO, "unit": {"매출": "원", "이용건수": "건", "건당금액": "원"}[m], "note": note}
 
 
 def s0_catalog(task, store, env):
@@ -150,6 +261,14 @@ def s2_describe(task, store, env):
             raise TaskError("계산", str(e))
     if not tabs:
         raise TaskError("계산", "입력 표 없음")
+    card_m = next((store[k] for k in task["in"] if k in store and store[k].get("metric") in MONTHLY_CARD and "table" in store[k]), None)
+    if card_m is not None and "ym" in card_m["table"]:  # v3: 월 카드 계열은 작년 같은 달 대비(계절 제거)로 추세를 본다
+        ser = card_m["table"].groupby("ym")["value"].sum() if card_m["metric"] != "관광객비중" else card_m["table"].groupby("ym")["value"].mean()
+        tt = v3.yoy_test(ser, log=card_m["metric"] != "관광객비중")
+        out = {"rows": int(len(card_m["table"])), "trend_kind": "yoy"}
+        if tt:
+            out.update(slope=tt["mean"], slope_se=tt["se"], slope_dof=tt["dof"], yoy_pct=round(tt["pct"], 1), yoy_n=tt["n"])
+        return {"summary": out}
     timed = [x for x in tabs if "year" in x or "ym" in x]  # 추세를 볼 수 있는 표를 먼저
     t = (timed or tabs)[-1]
     tcol = "year" if "year" in t else "ym" if "ym" in t else None

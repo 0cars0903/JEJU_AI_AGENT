@@ -219,6 +219,12 @@ def parse(q):
     t["target"] = ts[0] if ts else None
     t["_targets"] = ts
     t["metric"] = hits(q, METRIC_W)[:3]
+    # v3: 카드 매출 계열 지표가 있으면 '손님'만으로 잡힌 방문 인구는 뺀다("관광객 손님 비중"의 손님은 매출 손님)
+    CARD = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "외국인매출"}
+    if "일평균방문" in t["metric"] and CARD & set(t["metric"]) and not re.search(r"방문|유동인구|오가는|인파|붐비|북적", q):
+        t["metric"] = [m for m in t["metric"] if m != "일평균방문"]
+    if {"업종비교", "시장추이", "매출성장"} & set(t["metric"]):  # 묶음 지표가 있으면 같이 잡힌 '매출'은 그 안에 들어 있다
+        t["metric"] = [m for m in t["metric"] if m != "매출"]
     t["cond"] = [c for c in hits(q, COND_W) if c in Q.CONDS][:2]
     tm = hits(q, TIME_W)
     t["time"] = next((x for x in tm if x in Q.TIMES), None)
@@ -258,7 +264,7 @@ def parse(q):
     if amb and not t["space"]:
         t["expect"] = "되묻기"
         t["_why"].append(f"여러 동네로 읽히는 지명: {', '.join(amb)}")
-    elif t["type"] in NEED_DONG and not t["space"]:
+    elif t["type"] in NEED_DONG and not t["space"] and not {"시장추이", "매출성장"} & set(t["metric"]):  # 시장 추이·뜨는 곳은 제주 전체로 답함
         t["expect"] = "되묻기"
         t["_why"].append("동네가 필요함")
     elif vague:

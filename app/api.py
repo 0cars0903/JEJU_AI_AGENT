@@ -65,6 +65,22 @@ async def _unexpected(_: Request, exc: Exception):
 class Ask(BaseModel):
     question: Optional[str] = Field(default=None, max_length=200)
     slots: Optional[dict] = None  # 추천 질문·단계별 선택·대표 질문의 버튼 값(app/guide.py). 있으면 해석하지 않는다
+    dataset_id: Optional[str] = Field(default=None, max_length=32)  # F9: /api/dataset로 불러온 센터 CSV
+
+
+@app.post("/api/dataset")
+async def dataset(request: Request, check_dong: Optional[str] = None, check_biz: Optional[str] = None):
+    """F9 센터 자료 불러오기: 요청 본문이 CSV 파일 그대로(파일 이름은 X-Filename 머리글). 칸 이름으로 자료를 알아보고 집계해 둔다.
+    응답: id·자료 이름·줄 수·기간·동네·업종·요청 조건과 맞지 않는 점(problems). 알아보지 못하면 422와 다시 받을 방법."""
+    import center_csv
+    from urllib.parse import unquote
+    raw = await request.body()
+    name = unquote(request.headers.get("x-filename", "upload.csv"))
+    try:
+        meta = center_csv.load(raw, name)
+    except center_csv.CsvError as e:
+        raise HTTPException(422, str(e))
+    return clean({**meta, "problems": center_csv.check_request(meta, check_dong, check_biz)})
 
 
 _M1 = {}
@@ -80,14 +96,20 @@ def ask(body: Ask):
     if not question and not body.slots:
         raise HTTPException(422, "질문을 입력하거나 고를 항목을 골라 주세요.")
     on = llm.backend() != "rule" and llm._ollama_alive()
+    env = {"center_db": False}
+    if body.dataset_id:
+        import center_csv
+        if not center_csv.get(body.dataset_id):
+            raise HTTPException(422, "불러온 센터 자료를 찾지 못했습니다(하루가 지나 지워졌을 수 있어요). 파일을 다시 넣어 주세요.")
+        env["center_card"] = body.dataset_id
     if body.slots:
         try:
-            return clean(result.respond(question or None, {"center_db": False}, llm_on=on, slots=body.slots))
+            return clean(result.respond(question or None, env, llm_on=on, slots=body.slots))
         except ValueError as e:
             raise HTTPException(422, str(e))
     if "m" not in _M1:
         _M1["m"] = m1.M1()
-    return clean(result.respond(question, {"center_db": False}, llm_on=on, interpret=_M1["m"].interpret))
+    return clean(result.respond(question, env, llm_on=on, interpret=_M1["m"].interpret))
 
 
 @app.get("/api/guide")

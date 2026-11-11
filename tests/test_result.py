@@ -35,7 +35,7 @@ class Card(unittest.TestCase):
 
     def test_card_fields_and_number_check(self):
         for q, r in self.out.items():
-            if "card" not in r:
+            if "card" not in r or r["status"] == "범위밖":  # 범위 밖은 답을 만들지 않는다(v3: 버스 예상)
                 continue
             c = r["card"]
             for k in ("conclusion", "evidence", "intervals", "limits", "next_questions"):
@@ -47,12 +47,15 @@ class Card(unittest.TestCase):
     def test_evidence_has_dataset_and_as_of(self):
         for q, r in self.out.items():
             for e in r.get("card", {}).get("evidence", []):
-                self.assertTrue(e.get("dataset") and e.get("as_of"), (q, e))
+                if e.get("layer") in (None, "L1"):  # v3: 과거 기록 줄은 자료와 기준 시점을 단다(판정·예상 줄은 근거 출처만)
+                    self.assertTrue(e.get("dataset") and e.get("as_of"), (q, e))
+                else:
+                    self.assertTrue(e.get("dataset"), (q, e))
 
-    def test_failed_gate_hides_forecast(self):  # R2 관문 실패 → 예측 수치를 쓰지 않음(15-6)
-        c = self.out["탑동 버스 다음달 얼마나 탈까?"]["card"]
-        self.assertFalse(any(e.get("kind") == "forecast" for e in c["evidence"]))
-        self.assertIn("낫지 않아", c["conclusion"])
+    def test_bus_forecast_excluded(self):  # v3: 버스 예상(R2)은 제외하고 범위 밖으로 안내(문서 18)
+        r = self.out["탑동 버스 다음달 얼마나 탈까?"]
+        self.assertEqual(r["status"], "범위밖")
+        self.assertIn("버스 이용 예상은 하지 않아요", r["card"]["conclusion"])
 
     def test_passed_gate_shows_forecast_and_interval(self):
         c = self.out["노형동 다음주 방문 예측해줘"]["card"]
@@ -62,10 +65,12 @@ class Card(unittest.TestCase):
 
     def test_conclusions_by_type(self):
         self.assertIn("보다 많습니다", self.out["노형동이랑 연동 버스 이용 비교해줘"]["card"]["conclusion"])
-        self.assertIn("의미 있는 변화는 확인하지 못했습니다", self.out["노형동 카페 개업 최근 3년 늘었어?"]["card"]["conclusion"])
+        self.assertIn("카페 개업 수", self.out["노형동 카페 개업 최근 3년 늘었어?"]["card"]["conclusion"])  # 판정 결과는 자료 갱신에 따라 바뀜
         self.assertIn("비슷한 동네", self.out["노형동이랑 비슷한 동네는?"]["card"]["conclusion"])
         self.assertTrue(self.out["노형동 카페 5년 생존율은?"]["card"]["conclusion"].startswith("카페 5년 생존율"))
-        self.assertIn("개업 수", self.out["노형동 생활 진단해줘"]["card"]["conclusion"])  # 추세 판정은 개업 수에 대한 것
+        d = self.out["노형동 생활 진단해줘"]  # v3: 상권 종합 진단은 판단 재료(수요·경쟁·생존) 요약이 결론
+        self.assertIn("판단 재료", d["card"]["conclusion"])
+        self.assertIn("guide", [b["id"] for b in d["answer"]["blocks"]])
         self.assertIn("차이", self.out["비 오는 날 아라동 방문은?"]["card"]["conclusion"])
 
     def test_process(self):
@@ -111,12 +116,17 @@ class Understood(unittest.TestCase):
         self.assertEqual((r["status"], r["choose"]["step"]), ("선택필요", "topic"))
         self.assertEqual(r["choose"]["preset"]["space"], ["노형동"])
 
-    def test_unsupported_axis_blocked(self):  # A: 시간대·매출은 다른 지표로 바꿔 답하지 않는다
-        for q, word in [("노형동 카페 언제 잘 돼?", "시간대"), ("노형동 카페 몇 시에 붐벼?", "시간대"), ("노형동 카페 장사 잘 돼?", "매출")]:
+    def test_unsupported_axis_blocked(self):  # A: 답할 수 없는 축(버스 시간대)은 다른 지표로 바꿔 답하지 않는다
+        r = ask("노형동 버스 몇 시에 붐벼?")
+        self.assertEqual(r["status"], "범위밖")
+        self.assertIn("시간대", r["card"]["conclusion"])
+
+    def test_sales_and_hour_answered(self):  # v3: 매출·상권 시간대는 카드 자료로 답한다
+        for q in ["노형동 카페 매출은?", "노형동 카페 몇 시에 손님 많아?"]:
             r = ask(q)
-            self.assertEqual(r["status"], "범위밖", q)
-            self.assertIn(word, r["card"]["conclusion"], q)
-            self.assertTrue(all(x["slots"].get("space") == ["노형동"] for x in r["suggestions"]), q)
+            self.assertIn(r["status"], ("성공", "no_significant_effect", "부분 결과"), q)
+            self.assertTrue(any("제주관광공사" in str(e.get("dataset")) for e in r["card"]["evidence"]), q)
+            self.assertTrue(any("음식점업 전체 기준" in x for x in r["card"]["limits"]), q)
 
     def test_dong_only_is_diagnosis(self):  # B: 동네 이름만 넣으면 종합 진단
         for q in ["노형동", "노형동 어때?", "탑동"]:
@@ -167,3 +177,44 @@ class Api(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LayersV3(unittest.TestCase):  # v3 답 구조(docs/기획/v3_설계.md 6절)
+    @classmethod
+    def setUpClass(cls):
+        cls.value = ask("노형동에 카페 차려도 될까?")
+        cls.market = R.respond(slots={"topic": "market", "target": "음식점"}, llm_on=False)
+        cls.sales_fc = R.respond(slots={"topic": "forecast", "space": ["노형동"], "target": "음식점", "variant": "sales"}, llm_on=False)
+
+    def test_value_question_gives_materials_not_refusal(self):  # L5: 첫 문장이 거절이 아니고 신호를 먼저, 판단은 직접
+        a = self.value["answer"]
+        self.assertEqual(a["conclusion"]["layer"], "L5")
+        self.assertFalse(a["conclusion"]["text"].startswith(("판단하지", "답할 수")))
+        g = next(b for b in a["blocks"] if b["id"] == "guide")
+        self.assertIn("직접 판단", g["closing"])
+        self.assertTrue(any("43곳 중" in x["text"] for x in g["lines"]))
+
+    def test_money_is_readable_and_checked(self):  # 금액은 억 원, 수치 대조 통과
+        txt = " ".join(x["text"] for b in self.market["answer"]["blocks"] for x in b["lines"])
+        self.assertIn("억 원", txt)
+        self.assertEqual(self.market["card"]["number_check"], [])
+
+    def test_market_views_default_three_plus_more(self):
+        v = [x["id"] for x in self.market["answer"]["views"]]
+        self.assertGreaterEqual(len(v), 4)
+        self.assertIn("index", v)  # 두 자료 지수(겹치는 17개월 평균 = 100)
+        self.assertEqual(self.market["answer"]["default_views"], 3)
+
+    def test_failed_gate_shows_reference_not_forecast(self):  # R10 관문 실패: 예상 수치 없음, 작년 같은 달 비교 값·최근 검증 기록·갱신 요청
+        a = self.sales_fc["answer"]
+        lines = [x for b in a["blocks"] for x in b["lines"]]
+        self.assertFalse(any(x.get("kind") == "forecast" for x in lines))
+        self.assertTrue(any(x.get("kind") == "reference" and "예상 아님" in x["text"] for x in lines))
+        self.assertTrue(any(x["tag"] == "검증 기록" for x in lines))
+        self.assertIn("validation", [v["id"] for v in a["views"]])
+        self.assertTrue(any(r["kind"] == "update" for r in a["requests"]))
+        self.assertEqual(self.sales_fc["card"]["number_check"], [])
+
+    def test_freshness_listed(self):
+        self.assertTrue(all("months_old" in f for f in self.market["answer"]["freshness"]))
+

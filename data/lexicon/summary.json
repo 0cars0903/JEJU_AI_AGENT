@@ -12,11 +12,11 @@
   "categories": 283,
   "colloquial_groups": 16
  },
- "metrics": 80,
+ "metrics": 118,
  "population": 16,
  "conditions": 43,
  "time": 23,
  "intent": 82,
- "out_of_scope": 29,
+ "out_of_scope": 30,
  "datasets": 79
 }

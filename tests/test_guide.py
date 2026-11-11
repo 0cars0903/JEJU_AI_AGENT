@@ -26,10 +26,10 @@ class Slots(unittest.TestCase):
             s = {"topic": tp["id"]}
             if "space" in tp.get("need", []):
                 s["space"] = ["노형동", "연동"] if tp.get("min_space") == 2 else ["노형동"]
+            if "target" in tp.get("need", []):
+                s["target"] = tp["options"]["target"][0]
             if tp["id"] == "rank":
                 s["metric"] = "점포수"
-            if tp["id"] == "catalog":
-                s["keyword"] = "버스"
             r = run(s)
             if tp.get("center_only"):  # 센터 전용 주제는 센터 밖에서 차단하고 대신 볼 질문을 준다
                 self.assertEqual(r["status"], "범위밖", s)
@@ -77,7 +77,9 @@ class Slots(unittest.TestCase):
     def test_slots_round_trip(self):
         for s in [{"topic": "stores", "space": ["노형동"], "target": "카페"}, {"topic": "openclose", "space": ["아라동"], "target": "카페", "variant": "survival"},
                   {"topic": "visit", "space": ["노형동"], "variant": "age"},
-                  {"topic": "rank", "metric": "버스일평균"}]:
+                  {"topic": "rank", "metric": "매출", "target": "숙박"}, {"topic": "sales", "space": ["노형동"], "target": "카페", "variant": "unit"},
+                  {"topic": "sales", "space": ["연동"], "target": "음식점"}, {"topic": "customers", "space": ["성산읍"], "target": "숙박"},
+                  {"topic": "hourly", "space": ["애월읍"], "target": "음식점"}]:
             self.assertEqual(G.to_slots(G.to_tuple(s)), s)
 
 

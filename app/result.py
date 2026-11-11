@@ -20,6 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import guide as G  # noqa: E402
+import layers  # noqa: E402
 import llm  # noqa: E402
 import qparse  # noqa: E402
 import qtuple as Q  # noqa: E402
@@ -102,6 +103,17 @@ def _evidence(order, res):
                     order_ = g.sort_values("value", ascending=False)["ageGroup"].astype(str).head(3).tolist()
                     ev.append({"metric": m, "text": f"{d} 거주 인구 많은 연령대: {', '.join(order_)}", "dataset": v.get("dataset"), "as_of": when})
                 continue
+            if "hour" in cur:  # 시간대 비중: 동네마다 비중이 큰 시간 3개
+                for d, g in cur.groupby("dong"):
+                    top = g.sort_values("value", ascending=False).head(3)
+                    ev.append({"metric": m, "dong": d, "text": f"{d} 매출이 많은 시간: " + ", ".join(f"{int(h)}시 {_num(x)}%" for h, x in zip(top["hour"], top["value"])),
+                               "dataset": v.get("dataset"), "as_of": when})
+                continue
+            if "origin" in cur:  # 외국인 출신지역 구성(제주 전체)
+                top = cur.sort_values("value", ascending=False).head(4)
+                ev.append({"metric": m, "text": "외국인 관광객 카드 매출(제주 전체) 많은 출신지역: " + ", ".join(f"{o} {_num(x)}원" for o, x in zip(top["origin"], top["value"])),
+                           "dataset": v.get("dataset"), "as_of": when})
+                continue
             if "dong" in cur and cur["dong"].nunique() > 6:  # 여러 동네(순위·전체 조회)는 값이 큰 순서로 보여 준다
                 cur = cur.sort_values("value", ascending=False)
             for r in cur.head(6).to_dict(orient="records"):
@@ -110,7 +122,7 @@ def _evidence(order, res):
                            "dataset": v.get("dataset"), "as_of": when})
         if v.get("survival"):
             s = v["survival"]
-            ev.append({"metric": "업종 5년생존율", "text": f"{s['group']} 5년 생존율 {_num(s['surv5_pct'])}% (표본 {s['n']:,}곳, 제주 전체)", "dataset": "780 음식점 인허가", "as_of": "개업 2015-01~2020-08 코호트"})
+            ev.append({"metric": "업종 5년생존율", "text": f"{s['group']} 5년 생존율 {_num(s['surv5_pct'])}% (표본 {s['n']:,}곳, 제주 전체)", "dataset": "780 음식점 인허가", "as_of": f"개업 {s.get('cohort') or '2015-01~2020-08'} 코호트"})
             intervals.append(f"{s['group']} 5년 생존율 95% 구간 ±{_num(s['ci95_pp'])}%p")
         if v.get("forecast") and any(j.get("use_forecast") for j in V._judgements(res["store"]) if j["name"] == f"관문 {v.get('recipe')}"):  # 관문 통과한 예측만 쓴다(15-6)
             fc = v["forecast"]
@@ -184,6 +196,7 @@ def _conclusion(t, order, res, ev, review):
 def card(t, review, ev, intervals):
     order, res = review["order"], review["run"]
     limits = list(res.get("relaxed", []))
+    limits += sorted({v["note"] for v in res["store"].values() if isinstance(v, dict) and v.get("note") and "table" in v})  # 조회 결과의 자료 범위 한계만(판정 단계 메모 제외)  # 자료 범위 한계(예: 카드 매출 업종 대분류)
     limits += [UNIT_NOTE[u] for u in {e.get("unit") for e in ev} if u in UNIT_NOTE]
     limits += [f"계산하지 못함: {SUB_KO.get(x.get('sub'), '')} {x.get('error')}" for x in _failed(order, res)]
     if any("업종 구분 없음" in str(e.get("dataset")) for e in ev) and any(e["metric"] == "업종 5년생존율" for e in ev):
@@ -271,16 +284,14 @@ def _blocked(question, t, message, alts):
 
 
 def _unsupported(question, t, env):
-    """질문에 지금 자료로 답할 수 없는 축(시간대·매출)이 있으면 점포 수 같은 다른 지표로 바꿔 답하지 않는다(028 대조)."""
+    """질문에 지금 자료로 답할 수 없는 축이 있으면 다른 지표로 바꿔 답하지 않는다(028 대조).
+    v3(2026-11-11): 매출과 상권의 시간대는 제주관광공사 카드 자료로 답하므로 막지 않는다. 버스의 시간대만 센터 전용으로 남는다."""
     d = (t.get("space") or [])[:1]
-    tgt = t.get("target") if t.get("target") in G.FOOD else None
-    if (t.get("type") == "T13" or TIME_WORDS.search(question or "")) and not (env or {}).get("center_db"):
-        alts = [{"topic": "visit", "space": d}, {"topic": "rain", "space": d}] if d else []
-        return _blocked(question, t, "시간대별 흐름은 빅데이터센터 PC의 센터 자료로만 볼 수 있어요. 지금은 하루 평균 방문을 대신 볼 수 있어요.", alts)
-    if SALES_WORDS.search(question or ""):
-        alts = [dict({"topic": "openclose", "space": d}, **({"target": tgt} if tgt else {})),
-                dict({"topic": "openclose", "space": d, "variant": "survival"}, **({"target": tgt} if tgt else {}))] if d else []
-        return _blocked(question, t, "매출이나 장사 형편은 카드 매출 자료(빅데이터센터 전용)가 있어야 볼 수 있어요. 대신 개업·폐업 흐름과 5년 생존율을 볼 수 있어요.", alts)
+    if t.get("type") == "T8" and "버스" in (question or ""):  # v3: 버스 예상(R2) 제외(문서 18)
+        return _blocked(question, t, "버스 이용 예상은 하지 않아요. 상권 분석 범위 밖이고, 예측 모델이 단순 기준보다 정확하지 않았어요.", [{"topic": "visit", "space": d}] if d else [])
+    if TIME_WORDS.search(question or "") and "버스" in (question or "") and not (env or {}).get("center_db"):
+        alts = [{"topic": "visit", "space": d}] if d else []
+        return _blocked(question, t, "버스의 시간대별 이용은 빅데이터센터 PC의 센터 자료로만 볼 수 있어요.", alts)
     return None
 
 
@@ -316,6 +327,7 @@ def _exception(question, t):
 def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **review_kw):
     t0 = time.perf_counter()
     assumed = False
+    value_q = bool(slots and slots.get("topic") == "diagnose")
     if slots:  # ②③④ 버튼 값: 해석하지 않는다
         miss = G.missing(slots)
         if miss:
@@ -340,6 +352,11 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
             t = dict(Q.empty(), type="T10", space=t["space"][:1], form=Q.DEFAULT_FORM["T10"], expect="답함")
             it = dict(it, tuple=t, card=qparse.card(t))
             assumed = True
+        elif t["space"] and layers.VALUE_WORDS.search(question or "") and len(t["space"]) == 1:
+            # 가치 판단 질문(L5)은 확신도 검사보다 먼저: 판단 재료(상권 묶음 진단)로 답한다(08 문서 0절 합성안)
+            t = dict(Q.empty(), type="T10", space=t["space"][:1], target=t.get("target"), form=Q.DEFAULT_FORM["T10"], expect="답함")
+            it = dict(it, tuple=t, card=qparse.card(t))
+            assumed, value_q = True, True
         elif t["expect"] != "범위밖":
             un = _unsupported(question, t, env)
             if un:
@@ -349,7 +366,8 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
                 if ex:
                     return stop(ex)
             conf = it.get("confidence")
-            if conf is not None and conf < LOW_CONF:  # 추정할 근거가 약하면 답하지 않고 고르게 한다
+            agree = it.get("rule_type") == t["type"]  # 분류기와 사전 해석기가 같은 유형: 블라인드 4묶음에서 확신도 0.5 미만이어도 29/30 정답(불일치 9/27), 2026-11-11 측정
+            if conf is not None and conf < LOW_CONF and not agree:  # 추정할 근거가 약하면 답하지 않고 고르게 한다
                 return stop(_choose(question, t, G.to_slots(t), "질문을 정확히 이해하지 못했어요. 궁금한 것을 골라 주세요.", "topic"))
             if t["expect"] == "되묻기":
                 t = dict(t, expect="답함")  # 추정해서 답하고 "이렇게 이해했어요"로 보여 준다
@@ -372,10 +390,18 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
         out["suggestions"] = G.suggestions(t)
         ev, intervals, as_of = _evidence(rv["order"], rv["run"])
         c = card(t, rv, ev, intervals)
+        ans = layers.build(t, rv, ev, value_q or t.get("type") == "T10")
+        rv["run"]["store"]["_display"] = {"numbers": ans.pop("numbers")}  # 코드가 만든 표시값(억·만 원, 배수, 순위)과 정책 상수
+        c = dict(c, conclusion=ans["conclusion"]["text"],
+                 evidence=[{"text": x["text"], "tag": x["tag"], "layer": x["layer"], "dataset": x.get("source"), "as_of": x.get("as_of"), "kind": x.get("kind")} for b in ans["blocks"] for x in b["lines"]])
         probs = card_problems(c, rv["run"])
         if probs:  # 카드 수치가 결과와 어긋나면 검수 템플릿 문장으로 바꾼다
             c = dict(c, conclusion="수치 대조에 실패해 확인된 값만 보여 드립니다.", evidence=[{"text": x} for x in V.template_answer(rv["order"], rv["run"]).splitlines()])
         out["card"] = dict(c, number_check=probs)
+        if probs:
+            ans["conclusion"] = {"text": c["conclusion"], "layer": None, "tag": None}
+            ans["blocks"] = [{"id": "facts", "title": layers.BLOCK_TITLE["facts"], "lines": [{"layer": "L1", "block": "facts", "tag": "검수 템플릿", "text": e["text"]} for e in c["evidence"]]}]
+        out["answer"] = ans
         out["process"] = {
             "tuple": t, "type": TYPE_KO.get(t["type"]),
             "steps": [{"id": x["id"], "sub": x["sub"], "name": SUB_KO[x["sub"]], "op": x.get("op"), "metric": x.get("metric"), "recipe": x.get("recipe"),
