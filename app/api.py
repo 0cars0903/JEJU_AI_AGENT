@@ -5,6 +5,7 @@ import math
 import re
 import sys
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -55,7 +56,8 @@ async def _unexpected(_: Request, exc: Exception):
 
 
 class Ask(BaseModel):
-    question: str = Field(min_length=1, max_length=200)
+    question: Optional[str] = Field(default=None, max_length=200)
+    slots: Optional[dict] = None  # 추천 질문·단계별 선택·대표 질문의 버튼 값(app/guide.py). 있으면 해석하지 않는다
 
 
 _M1 = {}
@@ -63,16 +65,29 @@ _M1 = {}
 
 @app.post("/api/ask")
 def ask(body: Ask):
-    """M1 해석 → M2 계획 → M3 지시서 → 실행 → 검수 → 결과 생성. 응답: card·process·clarify·downloads."""
+    """자유 입력(question) 또는 버튼 값(slots) → 해석 → 계획 → 지시서 → 실행 → 검수 → 결과 생성.
+    응답: understood·card·suggestions·process·downloads, 추정할 수 없으면 status '선택필요'와 choose. 명세 docs/기획/07_화면API명세.md"""
     import m1
     import result
-    question = body.question.strip()
-    if not question:
-        raise HTTPException(422, "질문을 입력해 주세요.")
+    question = (body.question or "").strip()
+    if not question and not body.slots:
+        raise HTTPException(422, "질문을 입력하거나 고를 항목을 골라 주세요.")
+    on = llm.backend() != "rule" and llm._ollama_alive()
+    if body.slots:
+        try:
+            return clean(result.respond(question or None, {"center_db": False}, llm_on=on, slots=body.slots))
+        except ValueError as e:
+            raise HTTPException(422, str(e))
     if "m" not in _M1:
         _M1["m"] = m1.M1()
-    on = llm.backend() != "rule" and llm._ollama_alive()
     return clean(result.respond(question, {"center_db": False}, llm_on=on, interpret=_M1["m"].interpret))
+
+
+@app.get("/api/guide")
+def guide_view():
+    """질문 유도 목록: 단계별 선택의 주제와 칸별 선택지, 동네 목록, 대표 질문(버튼 값 포함)."""
+    import guide
+    return guide.catalog_view()
 
 
 class Interpret(BaseModel):

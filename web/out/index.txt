@@ -1,23 +1,26 @@
 1:"$Sreact.fragment"
 2:"/_next/static/chunks/08mika-44sn50.js"
-3:"/_next/static/chunks/2bsn55xtfiw-3.js"
-4:I[44636,["$2","$3"],"Providers"]
-5:I[3020,["$2","$3"],"SiteHeader"]
-6:I[39756,["$2","$3"],"default"]
-7:I[37457,["$2","$3"],"default"]
-8:I[22016,["$2","$3"],""]
-a:I[97367,["$2","$3"],"OutletBoundary"]
-b:"$Sreact.suspense"
-d:"ViewportBoundary"
-e:I[97367,["$2","$3"],"$d"]
-10:"MetadataBoundary"
-11:I[97367,["$2","$3"],"$10"]
-13:I[68027,["$2","$3"],"default",1]
-:HL["/_next/static/chunks/2ucxwo7plr10z.css","style"]
+3:"/_next/static/chunks/1emagcy_nu6x3.js"
+4:"/_next/static/chunks/3t-1zkisg8rgq.js"
+5:I[44636,["$2","$3","$4"],"Providers"]
+6:I[3020,["$2","$3","$4"],"SiteHeader"]
+7:I[39756,["$2","$3","$4"],"default"]
+8:I[37457,["$2","$3","$4"],"default"]
+9:I[22016,["$2","$3","$4"],""]
+b:"/_next/static/chunks/2x8x41lkvqr6e.js"
+c:I[98786,["$2","$3","$4","$b"],"AskPage"]
+d:I[97367,["$2","$3","$4"],"OutletBoundary"]
+e:"$Sreact.suspense"
+10:"ViewportBoundary"
+11:I[97367,["$2","$3","$4"],"$10"]
+13:"MetadataBoundary"
+14:I[97367,["$2","$3","$4"],"$13"]
+16:I[68027,["$2","$3","$4"],"default",1]
+:HL["/_next/static/chunks/29utuaw1_1ksh.css","style"]
 :HC["/",""]
-9:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","section",null,{"data-testid":"$undefined","className":"print-avoid rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) bg-card p-4 md:p-6","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-start justify-between gap-2","children":[["$","div",null,{"children":[["$","h3",null,{"children":"질문하기"}],"$undefined"]}],"$undefined"]}],["$","p",null,{"children":"동네에 대해 묻는 화면을 준비하고 있습니다."}]]}],null,["$","$La",null,{"children":["$","$b",null,{"name":"Next.MetadataOutlet","children":"$@c"}]}]]}],"p":false,"v":null}}]]
-0:{"P":null,"c":["",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2ucxwo7plr10z.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/_next/static/chunks/08mika-44sn50.js","async":true,"nonce":"$undefined"}],["$","script","script-1",{"src":"/_next/static/chunks/2bsn55xtfiw-3.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"ko","suppressHydrationWarning":true,"children":[["$","head",null,{"children":["$","script",null,{"dangerouslySetInnerHTML":{"__html":"try{var s=JSON.parse(localStorage.getItem(\"display-settings\")||\"{}\");if(s.size)document.documentElement.style.fontSize=s.size+\"%\";if(s.contrast===\"high\")document.documentElement.dataset.contrast=\"high\"}catch(e){}"}}]}],["$","body",null,{"className":"flex min-h-dvh flex-col antialiased","children":[["$","a",null,{"href":"#main","className":"sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-(--radius) focus:bg-background focus:p-3","children":"본문 바로가기"}],["$","$L4",null,{"children":[["$","$L5",null,{}],["$","main",null,{"id":"main","tabIndex":-1,"className":"mx-auto w-full max-w-[75rem] flex-1 px-4 py-6 outline-none md:px-6 md:py-10","children":["$","$L6",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","div",null,{"className":"flex flex-col gap-3 py-10","children":[["$","h1",null,{"children":"페이지를 찾지 못했습니다"}],["$","p",null,{"className":"text-(--krds-text-subtle)","children":"주소를 확인하거나 첫 화면에서 다시 시작해 주세요."}],["$","$L8",null,{"href":"/","children":"첫 화면으로"}]]}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}],["$","footer",null,{"className":"border-t border-(--krds-border-gray-light) bg-muted text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle) print:break-inside-avoid print:bg-transparent print:text-black","children":["$","div",null,{"className":"mx-auto flex w-full max-w-[75rem] flex-col gap-1 px-4 py-6 md:px-6 print:px-0 print:py-3","children":["$","p",null,{"children":"자료 출처: 제주데이터허브 상가, 음식점, 유동인구, 버스, 기상. 수치 문장은 LLM이 아니라 코드가 씁니다."}]}]}]]}]]}]]}]]}],"p":false,"v":null},"c":"$Q9"},"h":{"r":["$","$1","h",{"children":[null,["$","$Le",null,{"children":"$Lf"}],["$","$L11",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$b",null,{"name":"Next.Metadata","children":"$L12"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$13",[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2ucxwo7plr10z.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"9p3XlU3qtM-f4eTme9eM5"}
-f:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#ffffff"}]]
-14:I[27201,["$2","$3"],"IconMark"]
-c:null
-12:[["$","title","0",{"children":"동네 생활 진단"}],["$","meta","1",{"name":"description","content":"제주 43개 읍면동의 상가·음식점·유동인구·버스·기상 자료로 동네에 대한 질문에 답합니다."}],["$","link","2",{"rel":"icon","href":"/icon.svg?icon.2nfo0byxd619z.svg","sizes":"any","type":"image/svg+xml"}],["$","$L14","3",{}]]
+a:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","$Lc",null,{}],[["$","script","script-0",{"src":"/_next/static/chunks/2x8x41lkvqr6e.js","async":true,"nonce":"$undefined"}]],["$","$Ld",null,{"children":["$","$e",null,{"name":"Next.MetadataOutlet","children":"$@f"}]}]]}],"p":false,"v":null}}]]
+0:{"P":null,"c":["",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/29utuaw1_1ksh.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/_next/static/chunks/08mika-44sn50.js","async":true,"nonce":"$undefined"}],["$","script","script-1",{"src":"/_next/static/chunks/1emagcy_nu6x3.js","async":true,"nonce":"$undefined"}],["$","script","script-2",{"src":"/_next/static/chunks/3t-1zkisg8rgq.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"ko","suppressHydrationWarning":true,"children":[["$","head",null,{"children":["$","script",null,{"dangerouslySetInnerHTML":{"__html":"try{var s=JSON.parse(localStorage.getItem(\"display-settings\")||\"{}\");if(s.size)document.documentElement.style.fontSize=s.size+\"%\";if(s.contrast===\"high\")document.documentElement.dataset.contrast=\"high\"}catch(e){}"}}]}],["$","body",null,{"className":"flex min-h-dvh flex-col antialiased","children":[["$","a",null,{"href":"#main","className":"sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-(--radius) focus:bg-background focus:p-3","children":"본문 바로가기"}],["$","$L5",null,{"children":[["$","$L6",null,{}],["$","main",null,{"id":"main","tabIndex":-1,"className":"mx-auto w-full max-w-[75rem] flex-1 px-4 py-6 outline-none md:px-6 md:py-10","children":["$","$L7",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L8",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","div",null,{"className":"flex flex-col gap-3 py-10","children":[["$","h1",null,{"children":"페이지를 찾지 못했습니다"}],["$","p",null,{"className":"text-(--krds-text-subtle)","children":"주소를 확인하거나 첫 화면에서 다시 시작해 주세요."}],["$","$L9",null,{"href":"/","children":"첫 화면으로"}]]}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}],["$","footer",null,{"className":"border-t border-(--krds-border-gray-light) bg-muted text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle) print:break-inside-avoid print:bg-transparent print:text-black","children":["$","div",null,{"className":"mx-auto flex w-full max-w-[75rem] flex-col gap-1 px-4 py-6 md:px-6 print:px-0 print:py-3","children":["$","p",null,{"children":"자료 출처: 제주데이터허브 상가, 음식점, 유동인구, 버스, 기상. 수치 문장은 LLM이 아니라 코드가 씁니다."}]}]}]]}]]}]]}]]}],"p":false,"v":null},"c":"$Qa"},"h":{"r":["$","$1","h",{"children":[null,["$","$L11",null,{"children":"$L12"}],["$","$L14",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$e",null,{"name":"Next.Metadata","children":"$L15"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$16",[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/29utuaw1_1ksh.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"TmjGBB5ogJxLvPrTyTzkR"}
+12:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#ffffff"}]]
+17:I[27201,["$2","$3","$4"],"IconMark"]
+f:null
+15:[["$","title","0",{"children":"동네 생활 진단"}],["$","meta","1",{"name":"description","content":"제주 43개 읍면동의 상가·음식점·유동인구·버스·기상 자료로 동네에 대한 질문에 답합니다."}],["$","link","2",{"rel":"icon","href":"/icon.svg?icon.2nfo0byxd619z.svg","sizes":"any","type":"image/svg+xml"}],["$","$L17","3",{}]]

@@ -1,5 +1,5 @@
 """W8 결과 생성 측정 (2026-11-11). 질문 10개(x2_run.QS, 블라인드 문항 아님), 실제 M1(B3), LLM(Ollama qwen3:1.7b) 켬·끔.
-지표: 카드 수치 대조 통과, 답 카드 칸 채움, M3-b·M1-b LLM 채택(대체 사유), 전체 응답 시간(Mac, 3회 중앙값).
+지표: 카드 수치 대조 통과, 답 카드 칸 채움, M3-b LLM 채택(대체 사유), 전체 응답 시간(Mac, 3회 중앙값).
 결과: data/interim/w8/w8_result.json (카드·해설 원문 포함)
 실행: .venv/bin/python app/w8_run.py
 """
@@ -40,13 +40,13 @@ def main(n=3):
                 rec["filled"] = {k: bool(c.get(k)) for k in ("conclusion", "evidence", "intervals", "limits", "next_questions")} if c else None
                 rec["conclusion"] = c.get("conclusion")
                 ex = (last.get("process") or {}).get("explain") or {}
-                cl = last.get("clarify") or {}
-                rec["llm_part"] = "M3-b" if ex else "M1-b" if cl else None
-                rec["llm_by"] = ex.get("by") or cl.get("by")
+                rec["choose"] = (last.get("choose") or {}).get("message")  # 추정할 수 없는 예외(선택필요), LLM 없음
+                rec["llm_part"] = "M3-b" if ex else None
+                rec["llm_by"] = ex.get("by")
                 rec["llm_problems"] = ex.get("problems")
-                rec["llm_text"] = ex.get("text") or (cl.get("ask"), cl.get("buttons"))
-                rec["llm_raw"] = ex.get("llm_raw") or cl.get("llm_raw")
-                rec["llm_sec"] = ex.get("sec") or cl.get("sec")
+                rec["llm_text"] = ex.get("text")
+                rec["llm_raw"] = ex.get("llm_raw")
+                rec["llm_sec"] = ex.get("sec")
         rows.append(rec)
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "w8_result.json").write_text(json.dumps({"n": n, "rows": rows, "at": time.strftime("%Y-%m-%d %H:%M")}, ensure_ascii=False, indent=1, default=str), encoding="utf-8")

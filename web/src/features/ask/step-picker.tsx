@@ -1,0 +1,121 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { cn } from "cn";
+import { Button } from "@/components/ui/button";
+import { type Guide, type Slots, ready } from "@/lib/api";
+
+const FIELD_LABEL: Record<string, string> = { space: "동네", target: "업종·대상", variant: "보고 싶은 것", metric: "순위 기준", keyword: "찾을 자료" };
+
+function Chip({ on, children, onClick, testId }: { on: boolean; children: React.ReactNode; onClick: () => void; testId?: string }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      data-testid={testId}
+      onClick={onClick}
+      className={cn(
+        "min-h-11 rounded-(--radius) border px-3 text-[length:var(--krds-fs-body-medium)]",
+        on
+          ? "border-(--krds-border-primary) bg-(--krds-surface-primary-subtler) font-semibold text-(--krds-text-primary)"
+          : "border-(--krds-border-gray-light) bg-background hover:bg-muted",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** ③ 단계별 선택: 궁금한 것 → 그 주제에 필요한 칸만 이어서 고른다. 고른 값은 해석 없이 그대로 답에 쓴다. */
+export function StepPicker({ guide, preset, notice, onSubmit, onClose }: {
+  guide: Guide;
+  preset?: Slots;
+  notice?: string;
+  onSubmit: (s: Slots) => void;
+  onClose: () => void;
+}) {
+  const [s, setS] = useState<Slots>(preset ?? {});
+  const [query, setQuery] = useState("");
+  const topic = guide.topics.find((t) => t.id === s.topic);
+  const fields = topic ? [...topic.need, ...topic.optional] : [];
+  const dongs = useMemo(() => guide.dongs.filter((d) => d.includes(query.trim())), [guide.dongs, query]);
+  const multi = (topic?.min_space ?? 1) > 1;
+
+  const toggleDong = (d: string) =>
+    setS((p) => {
+      const cur = p.space ?? [];
+      if (!multi) return { ...p, space: [d] };
+      return { ...p, space: cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].slice(0, 4) };
+    });
+
+  return (
+    <section data-testid="step-picker" aria-label="하나씩 골라서 묻기" className="flex flex-col gap-5 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) bg-card p-4 md:p-6">
+      {notice && (
+        <p role="status" data-testid="choose-notice" className="rounded-(--radius) bg-(--krds-surface-primary-subtler) p-3 font-semibold">
+          {notice}
+        </p>
+      )}
+      <div>
+        <h3 className="mb-2">1. 무엇이 궁금하세요?</h3>
+        <div className="flex flex-wrap gap-2">
+          {guide.topics.map((t) => (
+            <Chip key={t.id} on={s.topic === t.id} testId={`topic-${t.id}`} onClick={() => setS((p) => ({ space: p.space?.slice(0, t.min_space > 1 ? 4 : 1), topic: t.id }))}>
+              {t.label}
+            </Chip>
+          ))}
+        </div>
+      </div>
+
+      {topic &&
+        fields.map((f, i) => (
+          <div key={f}>
+            <h3 className="mb-2">
+              {i + 2}. {FIELD_LABEL[f]}
+              {topic.optional.includes(f) ? <span className="ml-1 font-normal text-(--krds-text-subtle)">(고르지 않아도 돼요)</span> : null}
+              {f === "space" && multi ? <span className="ml-1 font-normal text-(--krds-text-subtle)">(2곳 이상, 최대 4곳)</span> : null}
+            </h3>
+            {f === "space" ? (
+              <div className="flex flex-col gap-2">
+                <input
+                  aria-label="동네 이름으로 찾기"
+                  placeholder="동네 이름으로 찾기 (예: 노형)"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="h-11 rounded-(--radius) border border-(--krds-border-gray) px-3"
+                />
+                <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto">
+                  {dongs.map((d) => (
+                    <Chip key={d} on={s.space?.includes(d) ?? false} testId={`dong-${d}`} onClick={() => toggleDong(d)}>
+                      {d}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {(f === "variant" ? topic.variants : topic.options[f] ?? []).map((o) => (
+                  <Chip
+                    key={o.value}
+                    on={s[f as keyof Slots] === o.value}
+                    testId={`${f}-${o.value}`}
+                    onClick={() => setS((p) => ({ ...p, [f]: p[f as keyof Slots] === o.value && topic.optional.includes(f) ? undefined : o.value }))}
+                  >
+                    {o.label}
+                  </Chip>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+      <div className="flex flex-wrap gap-2">
+        <Button data-testid="picker-submit" disabled={!ready(topic, s)} onClick={() => onSubmit(s)}>
+          이대로 답 보기
+        </Button>
+        <Button variant="outline" onClick={onClose}>
+          닫기
+        </Button>
+      </div>
+    </section>
+  );
+}

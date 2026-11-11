@@ -88,24 +88,28 @@ class Card(unittest.TestCase):
         self.assertTrue(r["process"]["unused"])
 
 
-class Clarify(unittest.TestCase):
-    def test_template_buttons(self):
+class Understood(unittest.TestCase):
+    """되묻기 Loop 방지(2026-11-11 17:25): 추정해서 답하고 '이렇게 이해했어요'를 붙인다. 추정할 수 없을 때만 선택필요."""
+
+    def test_assumes_instead_of_asking(self):
+        r = ask("노형동 카페 몇 개야?")
+        self.assertEqual(r["status"], "성공")
+        self.assertIn("노형동", r["understood"]["text"])
+        self.assertEqual(r["understood"]["slots"]["topic"], "stores")
+
+    def test_no_dong_goes_to_choice(self):
         r = ask("카페 몇 개야?")
-        self.assertEqual(r["status"], "되묻기")
-        self.assertEqual(len(r["clarify"]["buttons"]), 3)
+        self.assertEqual(r["status"], "선택필요")
+        self.assertEqual(r["choose"]["step"], "space")
+        self.assertIn("동네", r["choose"]["message"])
+        nxt = R.respond(None, {"center_db": False}, llm_on=False, slots=dict(r["choose"]["preset"], space=["노형동"]))
+        self.assertEqual(nxt["status"], "성공")  # 고른 뒤에는 다시 묻지 않는다
 
-    def test_llm_buttons_used_when_valid(self):
-        with fake_llm('{"ask": "어느 동네 카페를 볼까요?", "buttons": ["노형동 카페 보기", "연동 카페 보기", "아라동 카페 보기"]}'):
-            r = ask("카페 몇 개야?", llm_on=True)
-        self.assertEqual(r["clarify"]["by"], "LLM")
-
-    def test_llm_buttons_rejected(self):
-        for bad in ['{"ask": "동네를 골라 주세요.", "buttons": ["노형동", "애월읍", "아라동"]}',  # 후보 밖 값
-                    '{"ask": "카페 몇 개야", "buttons": ["노형동", "연동", "아라동"]}',  # 질문 되풀이
-                    "노형동 연동 아라동"]:  # JSON 아님
-            with fake_llm(bad):
-                r = ask("카페 몇 개야?", llm_on=True)
-            self.assertEqual(r["clarify"]["by"], "템플릿(LLM 대체)", bad)
+    def test_out_of_scope_blocked(self):
+        r = ask("노형동 임대료 얼마야?")
+        self.assertEqual(r["status"], "범위밖")
+        self.assertNotIn("understood", r)
+        self.assertEqual(len(r["suggestions"]), 3)
 
 
 class Explain(unittest.TestCase):

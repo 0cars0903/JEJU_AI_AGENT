@@ -1,12 +1,16 @@
 """W8 결과 생성 Agent (docs/기획/05_Agent구조_v2.md 4-5절, 2026-11-11 구현).
 
 입력: 검수(verify.review)를 거친 결과. 출력: 응답 JSON
-  card     답 카드 — 결론 한 줄 → 근거 수치(자료별 기준일) → 구간 → 한계 → 다음 질문 3개. 수치 문장은 코드 템플릿이다.
-  process  판단 과정 — 질문 Tuple, 고른 자료와 이유(M3-b 해설), 완화한 축, 쓰지 못한 자료와 이유, 검수 기록
-  clarify  되묻기 — 의도 확인 문장과 버튼 3개(M1-b)
-  downloads 집계표 CSV(반출 불가 자료는 검수에서 집계만 남김)와 차트 명세
-LLM은 M1-b(되묻기 버튼 문구)와 M3-b(계획 해설 1~2문장) 두 곳만 쓴다. 숫자를 쓰면 버리고 템플릿으로 대체한다.
-진입점: respond(question, env, llm_on=True)
+  understood  "이렇게 이해했어요" — 해석한 칸, 추정 여부, [바꾸기]에서 미리 골라 둘 버튼 값(slots)
+  card        답 카드 — 결론 한 줄 → 근거 수치(자료별 기준일) → 구간 → 한계 → 다음 질문 3개. 수치 문장은 코드 템플릿이다.
+  suggestions 추천 질문 3개(버튼 값 포함, 해석 없이 바로 답함)
+  process     판단 과정 — 질문 Tuple, 고른 자료와 이유(M3-b 해설), 완화한 축, 쓰지 못한 자료와 이유, 검수 기록
+  choose      예외(추정할 수 없음) — 상황 안내 문장과 다음에 고를 칸(동네·주제), 미리 골라 둔 값
+  downloads   집계표 CSV(반출 불가 자료는 검수에서 집계만 남김)와 차트 명세
+되묻기 Loop 방지(사용자 결정 2026-11-11 17:25): 되묻지 않고 가장 가능성 높은 해석으로 답한다. 동네가 없거나 여러 동네로 읽히는 등
+추정할 수 없을 때만 status '선택필요'로 상황을 알리고 단계별 선택으로 넘긴다. 버튼 값(slots)으로 온 질문은 해석하지 않는다.
+LLM은 M3-b(계획 해설 1~2문장) 한 곳만 쓴다. 숫자를 쓰면 버리고 템플릿으로 대체한다.
+진입점: respond(question, env, llm_on=True, slots=None)
 """
 import json
 import re
@@ -15,7 +19,9 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import guide as G  # noqa: E402
 import llm  # noqa: E402
+import qparse  # noqa: E402
 import qtuple as Q  # noqa: E402
 import recipes  # noqa: E402
 import verify as V  # noqa: E402
@@ -31,11 +37,6 @@ M3B_SYSTEM = ("너는 제주 동네 자료 안내원이다. 시스템이 고른 
               "규칙: 숫자를 한 글자도 쓰지 않는다. 주어진 자료 이름과 단계만 말한다. 결과나 결론을 말하지 않는다. '~했습니다'체로 쓴다.\n"
               "예시) 질문: 아라동 카페 개업 늘었어? / 고른 자료: 개업 수(음식점 인허가) / 계산 순서: 조회 → 통계·점검 → 판정 → 차트\n"
               "답: 음식점 인허가 자료에서 아라동 카페 개업 수를 연도별로 모으고, 최근 흐름이 우연인지 판정한 뒤 그래프로 정리했습니다.")
-M1B_SYSTEM = ("너는 제주 동네 자료 안내원이다. 질문에 빈 칸이 있어 사용자에게 고르게 한다. "
-              "주어진 후보마다 버튼 문구를 하나씩, 후보 이름을 그대로 넣어 짧게 쓴다. 숫자를 쓰지 않는다. "
-              'JSON으로만 답한다: {"ask": "묻는 문장", "buttons": ["...", "...", "..."]}')
-EXAMPLE_DONGS = ["노형동", "연동", "아라동"]
-
 
 # ---------- 공통 ----------
 def _label(m):
@@ -101,6 +102,8 @@ def _evidence(order, res):
                     order_ = g.sort_values("value", ascending=False)["ageGroup"].astype(str).head(3).tolist()
                     ev.append({"metric": m, "text": f"{d} 거주 인구 많은 연령대: {', '.join(order_)}", "dataset": v.get("dataset"), "as_of": when})
                 continue
+            if "dong" in cur and cur["dong"].nunique() > 6:  # 여러 동네(순위·전체 조회)는 값이 큰 순서로 보여 준다
+                cur = cur.sort_values("value", ascending=False)
             for r in cur.head(6).to_dict(orient="records"):
                 ev.append({"metric": m, "dong": r.get("dong"), "value": r["value"], "unit": v.get("unit"),
                            "text": f"{r.get('dong', '')} {_label(m)} {_num(r['value'])}{'' if v.get('unit') in ('-', None) else ' ' + v['unit']}",
@@ -178,21 +181,6 @@ def _conclusion(t, order, res, ev, review):
     return "확인된 결과가 없습니다."
 
 
-def next_questions(t):
-    d = (t.get("space") or ["노형동"])[0]
-    tgt = t.get("target") or "카페"
-    pool = {
-        "T1": [f"{d} {tgt} 개업 최근 3년 늘었어?", f"{d} {tgt} 5년 생존율은?", f"{d}이랑 비슷한 동네는?"],
-        "T4": [f"{d} {tgt} 5년 생존율은?", f"비 오는 날 {d} 방문은?", f"{d} 생활 진단해줘"],
-        "T6": [f"{d} 다음주 방문 예측해줘", f"{d} 생활 진단해줘", f"{d}이랑 비슷한 동네는?"],
-        "T8": [f"비 오는 날 {d} 방문은?", f"{d} 생활 진단해줘", f"{d}이랑 비슷한 동네는?"],
-        "T9": [f"{d} 생활 진단해줘", f"{d} {tgt} 몇 개야?", f"{d} 다음주 방문 예측해줘"],
-        "T10": [f"{d} {tgt} 개업 최근 3년 늘었어?", f"비 오는 날 {d} 방문은?", f"{d}이랑 비슷한 동네는?"],
-        "T11": ["센터에 카드 매출 자료 있어?", "센터에 버스 자료 있어?", f"{d} 생활 진단해줘"],
-    }
-    return pool.get(t.get("type"), [f"{d} 생활 진단해줘", f"{d} {tgt} 몇 개야?", f"{d}이랑 비슷한 동네는?"])
-
-
 def card(t, review, ev, intervals):
     order, res = review["order"], review["run"]
     limits = list(res.get("relaxed", []))
@@ -207,7 +195,7 @@ def card(t, review, ev, intervals):
         if r["type"] == "효과 없음" and "관문" in r["detail"]:
             rid = r["detail"].split()[1].rstrip(":")
             limits.append(f"{recipes.REG[rid]['name']}: 모델이 단순 기준보다 낫지 않아 예측값을 쓰지 않고 최근 값으로 답함")
-    return {"conclusion": _conclusion(t, order, res, ev, review), "evidence": ev, "intervals": intervals, "limits": limits, "next_questions": next_questions(t)}
+    return {"conclusion": _conclusion(t, order, res, ev, review), "evidence": ev, "intervals": intervals, "limits": limits, "next_questions": [x["text"] for x in G.suggestions(t)]}
 
 
 def _failed(order, res):
@@ -250,31 +238,6 @@ def explain_plan(question, t, order, res, llm_on=True):
     return {"text": out, "by": "LLM", "sec": round(sec, 3)}
 
 
-# ---------- M1-b 되묻기 ----------
-def clarify(question, it, llm_on=True):
-    t = it["tuple"]
-    amb = it.get("amb") or {}
-    cands = [c for cs in amb.values() for c in cs][:3]
-    slot = "동네"
-    if not cands:
-        cands = EXAMPLE_DONGS if not t.get("space") else [TYPE_KO["T1"], TYPE_KO["T4"], TYPE_KO["T8"]]
-        slot = "동네" if not t.get("space") else "질문 종류"
-    base = re.sub(r"[?？]$", "", question)
-    tpl = {"ask": f"어느 {slot}인지 골라 주세요.", "buttons": [f"{c}" for c in cands], "slot": slot, "by": "템플릿", "card": it.get("card")}
-    if not llm_on:
-        return tpl
-    out, err, sec = _ask_llm(M1B_SYSTEM, f"질문: {base}\n빈 칸: {slot}\n후보: {', '.join(cands)}")
-    try:
-        js = json.loads(re.search(r"\{.*\}", out or "", re.S).group(0))
-        btn = [str(b) for b in js["buttons"]][:3]
-        ok = len(btn) == len(cands) and all(c in b for c, b in zip(cands, btn)) and not any(llm_text_ok(x) for x in [js["ask"], *btn] if re.search(r"\d", DONG_NUM.sub(" ", x)))
-        if ok and not llm_text_ok(js["ask"]) and base not in js["ask"]:
-            return {"ask": js["ask"], "buttons": btn, "slot": slot, "values": cands, "by": "LLM", "sec": round(sec, 3), "card": it.get("card")}
-    except Exception:
-        pass
-    return dict(tpl, by="템플릿(LLM 대체)", values=cands, llm_raw=out, sec=round(sec, 3))
-
-
 # ---------- 내려받기 ----------
 def downloads(order, res):
     out = []
@@ -289,28 +252,69 @@ def downloads(order, res):
 
 
 # ---------- 진입점 ----------
-def respond(question, env=None, llm_on=True, interpret=None, **review_kw):
-    t0 = time.perf_counter()
-    seen = {}
-    if interpret is None:
-        import m1
-        interpret = m1.M1().interpret
+def _choose(question, t, slots, message, step, candidates=None, sec=0.0):
+    return {"question": question, "status": "선택필요", "tuple": t,
+            "choose": {"message": message, "step": step, "candidates": candidates or [], "preset": slots}, "sec": round(sec, 3)}
 
-    def capture(q):
-        it = interpret(q)
-        seen["it"] = it
-        return it
-    rv = V.review(question, env, interpret=capture, **review_kw)
-    it = seen["it"]
+
+def _exception(question, t):
+    """M1이 되묻기로 본 질문 가운데 추정할 수 없는 경우를 고른다. 추정할 수 있으면 None."""
+    preset = G.to_slots(t)
+    amb = qparse.parse(question).get("_amb") or {}
+    if amb and not t.get("space"):
+        name, cands = next(iter(amb.items()))
+        return _choose(question, t, preset, f"'{name}'이(가) 여러 동네로 읽혀요. 어느 동네인지 골라 주세요.", "space", list(cands))
+    if not preset.get("topic"):
+        return _choose(question, t, preset, "무엇을 알고 싶은지 찾지 못했어요. 궁금한 것을 골라 주세요.", "topic")
+    miss = G.missing(preset)
+    if "space" in miss:
+        msg = "비교할 동네를 하나 더 골라 주세요." if preset["topic"] == "compare" and preset.get("space") else "질문에서 동네를 찾지 못했어요. 동네를 골라 주세요."
+        return _choose(question, t, preset, msg, "space")
+    if miss:
+        return _choose(question, t, preset, "질문에서 빠진 칸이 있어요. 이어서 골라 주세요.", miss[0])
+    return None
+
+
+def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **review_kw):
+    t0 = time.perf_counter()
+    assumed = False
+    if slots:  # ②③④ 버튼 값: 해석하지 않는다
+        miss = G.missing(slots)
+        if miss:
+            return _choose(question, None, slots, "이어서 골라 주세요.", miss[0], sec=time.perf_counter() - t0)
+        t = G.to_tuple(slots)
+        question = question or G.sentence(slots)
+        it = {"tuple": t, "card": qparse.card(t), "path": "버튼 선택", "confidence": None, "sec": 0.0}
+    else:  # ① 자유 입력
+        if interpret is None:
+            import m1
+            interpret = m1.M1().interpret
+        it = interpret(question)
+        t = it["tuple"]
+        if t["expect"] == "되묻기":
+            ex = _exception(question, t)
+            if ex:
+                ex["interpret"] = {k: it.get(k) for k in ("path", "confidence", "card", "sec")}
+                ex["sec"] = round(time.perf_counter() - t0, 3)
+                return ex
+            t = dict(t, expect="답함")  # 추정해서 답하고 "이렇게 이해했어요"로 보여 준다
+            it = dict(it, tuple=t, card=qparse.card(t))
+            assumed = True
+    rv = V.review(question, env, interpret=lambda q: it, **review_kw)
     t = rv["tuple"]
     out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec")}}
-    if rv["status"] in ("되묻기",):
-        import qparse
-        amb = qparse.parse(question).get("_amb") or {}
-        out["clarify"] = clarify(question, dict(it, amb=amb), llm_on)
-    elif rv["status"] in ("범위밖",) or rv.get("run") is None:
-        out["card"] = {"conclusion": (it.get("card") or {}).get("text") or "지금 자료로 답할 수 없는 질문입니다.", "evidence": [], "intervals": [], "limits": [], "next_questions": next_questions(t)}
+    if rv["status"] == "되묻기":  # 검수 단계에서 칸을 채우지 못한 경우
+        ex = _exception(question, t) or _choose(question, t, G.to_slots(t), "질문을 이해하지 못했어요. 궁금한 것을 골라 주세요.", "topic")
+        ex["sec"] = round(time.perf_counter() - t0, 3)
+        return ex
+    if rv["status"] == "범위밖" or rv.get("run") is None:  # 범위 밖은 답하지 않는다(차단)
+        out["card"] = {"conclusion": (it.get("card") or {}).get("text") or "지금 자료로 답할 수 없는 질문입니다.", "evidence": [], "intervals": [], "limits": [],
+                       "next_questions": [x["text"] for x in G.representative()[:3]]}
+        out["suggestions"] = [{"text": x["text"], "slots": x["slots"]} for x in G.representative()[:3]]
     else:
+        out["understood"] = {"text": (it.get("card") or {}).get("text"), "by": it.get("path"), "assumed": assumed or bool(it.get("needs_confirm")),
+                             "slots": slots or G.to_slots(t)}
+        out["suggestions"] = G.suggestions(t)
         ev, intervals, as_of = _evidence(rv["order"], rv["run"])
         c = card(t, rv, ev, intervals)
         probs = card_problems(c, rv["run"])
@@ -330,12 +334,14 @@ def respond(question, env=None, llm_on=True, interpret=None, **review_kw):
 
 
 if __name__ == "__main__":
-    off = "--no-llm" in sys.argv
+    off = "--no-llm" in sys.argv or llm.backend() == "rule"  # LLM_BACKEND=rule도 LLM을 끈다
     for q in [a for a in sys.argv[1:] if not a.startswith("--")]:
         r = respond(q, llm_on=not off)
         print("■", q, "|", r["status"], f"{r['sec']}초")
-        if "clarify" in r:
-            print("  되묻기:", r["clarify"]["ask"], r["clarify"]["buttons"], r["clarify"]["by"])
+        if "choose" in r:
+            print("  선택:", r["choose"]["message"], r["choose"]["step"], r["choose"]["candidates"], r["choose"]["preset"])
+        if "understood" in r:
+            print("  이해:", r["understood"]["text"], "| 추정" if r["understood"]["assumed"] else "", r["understood"]["slots"])
         if "card" in r:
             c = r["card"]
             print("  결론:", c["conclusion"])

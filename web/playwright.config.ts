@@ -12,7 +12,7 @@ export default defineConfig({
   // Claude 경로는 답변에 4.6~11.7초가 걸린다(2026-11-07 실측). 기본 대기 5초로는 답변 전에 실패한다.
   ...(process.env.LLM_BACKEND === "claude" ? { timeout: 90_000, expect: { timeout: 30_000 } } : {}),
   reporter: [["list"]],
-  use: { baseURL: `http://localhost:${PORT}`, trace: "retain-on-failure", screenshot: "only-on-failure", locale: "ko-KR" },
+  use: { baseURL: `http://localhost:${PORT}`, trace: "retain-on-failure", screenshot: "only-on-failure", locale: "ko-KR", video: process.env.RECORD ? "on" : "off" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], channel: "chrome", viewport: { width: 1280, height: 900 } } },
     { name: "mobile", use: { ...devices["Pixel 7"], channel: "chrome" } },
