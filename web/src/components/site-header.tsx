@@ -38,7 +38,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-(--krds-border-gray-light) bg-background print:hidden">
       <div className="mx-auto flex w-full max-w-[75rem] flex-wrap items-center gap-x-6 px-4 md:px-6">
         <Link href="/" className="py-3 text-[length:var(--krds-fs-heading-xsmall)] font-bold text-(--krds-text-bolder) no-underline hover:text-(--krds-text-bolder)">
-          동네 생활 진단
+          제주 상권 EDA
         </Link>
         <div className="ml-auto flex items-center gap-1 md:order-last">
           <DisplaySettings />

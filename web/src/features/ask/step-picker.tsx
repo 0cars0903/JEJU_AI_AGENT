@@ -5,7 +5,9 @@ import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { type Guide, type Slots, ready } from "@/lib/api";
 
-const FIELD_LABEL: Record<string, string> = { space: "동네", target: "업종·대상", variant: "보고 싶은 것", metric: "순위 기준", keyword: "찾을 자료" };
+const FIELD_LABEL: Record<string, string> = { space: "동네", target: "업종", variant: "보고 싶은 것", metric: "순위 기준", keyword: "찾을 자료" };
+// Stageshow 지적 6: 동네 43곳을 한꺼번에 늘어놓지 않고 자주 찾는 곳을 먼저, 나머지는 '더 보기'(상가 수가 많은 동네 기준)
+const FREQUENT = ["노형동", "연동", "이도2동", "아라동", "애월읍", "조천읍", "한림읍", "중문동", "성산읍", "구좌읍", "대정읍", "표선면"];
 
 function Chip({ on, children, onClick, testId }: { on: boolean; children: React.ReactNode; onClick: () => void; testId?: string }) {
   return (
@@ -16,9 +18,9 @@ function Chip({ on, children, onClick, testId }: { on: boolean; children: React.
       onClick={onClick}
       className={cn(
         "min-h-11 rounded-(--radius) border px-3 text-[length:var(--krds-fs-body-medium)]",
-        on
-          ? "border-(--krds-border-primary) bg-(--krds-surface-primary-subtler) font-semibold text-(--krds-text-primary)"
-          : "border-(--krds-border-gray-light) bg-background hover:bg-muted",
+        on // Stageshow 지적 7: 고른 칩은 강조색 채움 + 흰 글자
+          ? "border-(--krds-border-primary) bg-primary font-semibold text-primary-foreground"
+          : "border-(--krds-border-gray) bg-background hover:bg-muted",
       )}
     >
       {children}
@@ -36,9 +38,20 @@ export function StepPicker({ guide, preset, notice, onSubmit, onClose }: {
 }) {
   const [s, setS] = useState<Slots>(preset ?? {});
   const [query, setQuery] = useState("");
+  const [allDongs, setAllDongs] = useState(false);
   const topic = guide.topics.find((t) => t.id === s.topic);
   const fields = topic ? [...topic.need, ...topic.optional] : [];
-  const dongs = useMemo(() => guide.dongs.filter((d) => d.includes(query.trim())), [guide.dongs, query]);
+  const dongs = useMemo(() => {
+    const q = query.trim();
+    if (q) return guide.dongs.filter((d) => d.includes(q));
+    if (allDongs) return guide.dongs;
+    const picked = s.space ?? [];
+    return [...picked.filter((d) => !FREQUENT.includes(d)), ...FREQUENT.filter((d) => guide.dongs.includes(d))];
+  }, [guide.dongs, query, allDongs, s.space]);
+  // Stageshow 지적 8: 버튼이 꺼진 이유를 보여 준다
+  const missingMsg = !topic
+    ? "궁금한 것을 골라 주세요."
+    : topic.need.map((k) => (k === "space" ? ((s.space?.length ?? 0) < topic.min_space ? (topic.min_space > 1 ? `동네를 ${topic.min_space}곳 이상 골라 주세요.` : "동네를 골라 주세요.") : null) : !s[k as keyof Slots] ? `${FIELD_LABEL[k] ?? k}을(를) 골라 주세요.` : null)).find(Boolean);
   const multi = (topic?.min_space ?? 1) > 1;
 
   const toggleDong = (d: string) =>
@@ -89,12 +102,17 @@ export function StepPicker({ guide, preset, notice, onSubmit, onClose }: {
                   onChange={(e) => setQuery(e.target.value)}
                   className="h-11 rounded-(--radius) border border-(--krds-border-gray) px-3"
                 />
-                <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto">
+                <div className="flex flex-wrap gap-2">
                   {dongs.map((d) => (
                     <Chip key={d} on={s.space?.includes(d) ?? false} testId={`dong-${d}`} onClick={() => toggleDong(d)}>
                       {d}
                     </Chip>
                   ))}
+                  {!query.trim() && (
+                    <button type="button" data-testid="dongs-more" className="min-h-11 px-2 underline" onClick={() => setAllDongs(!allDongs)}>
+                      {allDongs ? "자주 찾는 동네만" : `동네 더 보기(전체 ${guide.dongs.length}곳)`}
+                    </button>
+                  )}
                 </div>
               </div>
             ) : (
@@ -114,10 +132,15 @@ export function StepPicker({ guide, preset, notice, onSubmit, onClose }: {
           </div>
         ))}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button data-testid="picker-submit" disabled={!ready(topic, s)} onClick={() => onSubmit(s)}>
           이대로 답 보기
         </Button>
+        {!ready(topic, s) && missingMsg && (
+          <span data-testid="picker-missing" className="font-semibold text-(--krds-text-bolder)">
+            {missingMsg}
+          </span>
+        )}
         <Button variant="outline" onClick={onClose}>
           닫기
         </Button>

@@ -141,3 +141,17 @@
   a { color: inherit; text-decoration: none; }
   .print-avoid { break-inside: avoid; }
 }
+
+
+/* F7 보고서: 화면에서는 숨기고, 인쇄할 때는 보고서만 보인다(v3 설계 2절) */
+.print-only { display: none; }
+@media print {
+  body * { visibility: hidden; }
+  .print-only, .print-only * { visibility: visible; }
+  .print-only { display: block; position: absolute; inset: 0 auto auto 0; width: 100%; padding: 12mm; font-size: 12pt; color: #000; background: #fff; }
+  .print-only h1 { font-size: 18pt; margin-bottom: 6pt; }
+  .print-only h2 { font-size: 14pt; margin-top: 10pt; }
+  .print-only h3 { font-size: 12pt; }
+  .print-only ul { padding-left: 14pt; list-style: disc; }
+  .print-only .report-chart { break-inside: avoid; margin-top: 8pt; }
+}

@@ -13,67 +13,105 @@ export function Understood({ r, onChange, sample }: { r: AskResult; onChange: (s
   if (!r.understood) return null;
   const u = r.understood;
   const strong = u.assumed && !ok;
+  // Stageshow 지적 5: 문장과 버튼을 두 줄로 나누고, [맞아요]는 채운 버튼 · [바꾸기]는 윤곽 버튼으로 구분
   return (
     <div
       data-testid={sample ? undefined : "understood"}
       className={
         strong
-          ? "flex flex-wrap items-center gap-3 rounded-(--radius) border border-(--krds-border-primary) bg-(--krds-surface-primary-subtler) p-3"
-          : "flex flex-wrap items-center gap-3 rounded-(--radius) border border-(--krds-border-gray-light) p-3"
+          ? "flex flex-col gap-3 rounded-(--radius) border-2 border-(--krds-border-primary) bg-(--krds-surface-primary-subtler) p-4"
+          : "flex flex-col gap-3 rounded-(--radius) border border-(--krds-border-gray) p-4"
       }
     >
-      <p className="font-semibold">{u.text}</p>
-      {strong && <Badge variant="outline">질문을 읽고 추정했어요</Badge>}
-      <div className="ml-auto flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="text-[length:var(--krds-fs-body-large)] font-semibold">{u.text}</p>
+        {strong && <Badge variant="outline" className="h-auto py-1 text-[length:var(--krds-fs-label-medium)]">질문을 읽고 추정했어요</Badge>}
+      </div>
+      <div className="flex flex-wrap gap-2">
         {!ok && (
-          <Button size="sm" variant="outline" onClick={() => setOk(true)} data-testid="understood-ok">
+          <Button onClick={() => setOk(true)} data-testid="understood-ok">
             맞아요
           </Button>
         )}
-        <Button size="sm" variant="secondary" onClick={() => onChange(u.slots)} data-testid="understood-change">
-          바꾸기
+        <Button variant="outline" onClick={() => onChange(u.slots)} data-testid="understood-change">
+          바꾸기(하나씩 고르기)
         </Button>
       </div>
     </div>
   );
 }
 
+function Tag({ text, layer }: { text: string; layer: string | null }) {
+  // 판단 층(L3·L4)은 강조색 윤곽, 사실(L1·L2)·판단 재료(L5)는 회색
+  const strong = layer === "L3" || layer === "L4";
+  return (
+    <span
+      className={
+        strong
+          ? "inline-block w-fit rounded-(--radius) border border-(--krds-border-primary) px-2 py-0.5 text-[length:var(--krds-fs-label-medium)] font-semibold text-(--krds-text-primary)"
+          : "inline-block w-fit rounded-(--radius) bg-muted px-2 py-0.5 text-[length:var(--krds-fs-label-medium)] text-(--krds-text-bolder)"
+      }
+    >
+      {text}
+    </span>
+  );
+}
+
+/** v3 답 카드: 결론 한 줄(층 꼬리표) → 3블록(① 사실·비교 ② Agent 분석·예상 ③ 판단 재료) → 한계. answer가 없으면 card를 그대로 보여 준다. */
 export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
   const c = r.card;
-  if (!c) return null;
+  const a = r.answer;
+  if (!c && !a) return null;
+  const t = (id: string) => (sample ? undefined : id);
   return (
-    <article data-testid={sample ? undefined : "answer-card"} className="flex flex-col gap-4 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) bg-card p-4 md:p-6">
-      <p data-testid={sample ? undefined : "conclusion"} className="text-[length:var(--krds-fs-heading-small)] font-bold">
-        {c.conclusion}
-      </p>
-      {c.evidence.length > 0 && (
-        <div>
-          <h3 className="mb-1">근거</h3>
-          <ul className="flex flex-col gap-1" data-testid="evidence">
-            {c.evidence.map((e, i) => (
+    <article data-testid={t("answer-card")} className="flex flex-col gap-5 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) bg-card p-4 md:p-6">
+      <div className="flex flex-col gap-2">
+        {a?.conclusion.tag && <Tag text={a.conclusion.tag} layer={a.conclusion.layer} />}
+        {/* Stageshow 지적 4: 결론은 28px 이상으로 다른 글보다 확실히 크게 */}
+        <p data-testid={t("conclusion")} className="text-[length:max(1.75rem,var(--krds-fs-heading-medium))] leading-snug font-bold">
+          {a?.conclusion.text ?? c?.conclusion}
+        </p>
+      </div>
+      {a ? (
+        <div data-testid={t("evidence")} className="flex flex-col gap-5">
+          {a.blocks.map((b) => (
+            <section key={b.id} data-testid={t(`block-${b.id}`)} className="flex flex-col gap-2">
+              <h3 className="border-b border-(--krds-border-gray-light) pb-1">{b.title}</h3>
+              <ul className="flex flex-col gap-3">
+                {b.lines.map((l, i) => (
+                  <li key={i} className="flex flex-col gap-1">
+                    <Tag text={l.tag} layer={l.layer} />
+                    <span className="text-[length:var(--krds-fs-body-large)]">{l.text}</span>
+                    {l.source && <span className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">출처: {l.source}</span>}
+                  </li>
+                ))}
+              </ul>
+              {b.closing && <p className="rounded-(--radius) bg-(--krds-surface-gray-subtler) p-3 font-semibold">{b.closing}</p>}
+            </section>
+          ))}
+        </div>
+      ) : (
+        c!.evidence.length > 0 && (
+          <ul className="flex flex-col gap-1" data-testid={t("evidence")}>
+            {c!.evidence.map((e, i) => (
               <li key={i}>
                 {e.text}
-                {e.dataset && (
-                  <span className="ml-2 text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
-                    [{e.dataset}
-                    {e.as_of ? `, ${e.as_of}` : ""}]
-                  </span>
-                )}
+                {e.dataset && <span className="ml-2 text-(--krds-text-bolder)">[{e.dataset}{e.as_of ? `, ${e.as_of}` : ""}]</span>}
               </li>
             ))}
           </ul>
-        </div>
+        )
       )}
-      {c.intervals.length > 0 && (
+      {c && c.intervals.length > 0 && (
         <div>
           <h3 className="mb-1">구간</h3>
           <ul>{c.intervals.map((x, i) => <li key={i}>{x}</li>)}</ul>
         </div>
       )}
-      {c.limits.length > 0 && (
-        <div data-testid="limits">
+      {c && c.limits.length > 0 && (
+        <div data-testid={t("limits")}>
           <h3 className="mb-1">한계</h3>
-          <ul className="text-(--krds-text-subtle)">{c.limits.map((x, i) => <li key={i}>{x}</li>)}</ul>
+          <ul className="flex list-disc flex-col gap-1 pl-5 text-(--krds-text-bolder)">{c.limits.map((x, i) => <li key={i}>{x}</li>)}</ul>
         </div>
       )}
     </article>
@@ -96,11 +134,23 @@ export function Process({ r }: { r: AskResult }) {
           ))}
         </ol>
         {Object.keys(p.data ?? {}).length > 0 && (
-          <p className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
+          <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
             자료 기준: {Object.entries(p.data).map(([k, v]) => `${k} ${v}`).join(" · ")}
           </p>
         )}
         {p.unused.length > 0 && <p className="text-[length:var(--krds-fs-body-small)]">쓰지 못한 것: {p.unused.join(" / ")}</p>}
+        {(r.answer?.freshness?.length ?? 0) > 0 && (
+          <div data-testid="freshness">
+            <p className="font-semibold">자료 기준 시점</p>
+            <ul className="list-disc pl-5">
+              {r.answer!.freshness.map((f) => (
+                <li key={f.source}>
+                  {f.source}: {f.as_of} ({f.months_old}개월 전){f.stale ? " — 오래된 자료" : ""}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </details>
   );
@@ -134,9 +184,9 @@ export function SuggestionList({ items, title, onPick, testId }: { items: Sugges
   return (
     <div data-testid={testId}>
       <h3 className="mb-2">{title}</h3>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-2 md:flex-row md:flex-wrap">
         {items.map((x) => (
-          <Button key={x.text} variant="outline" className="h-auto min-h-11 whitespace-normal py-2 text-left" onClick={() => onPick(x)}>
+          <Button key={x.text} variant="outline" className="h-auto min-h-12 w-full justify-start whitespace-normal py-2 text-left text-[length:var(--krds-fs-body-large)] md:w-auto" onClick={() => onPick(x)}>
             {x.text}
           </Button>
         ))}
@@ -160,7 +210,7 @@ export function Waiting() {
         <LoaderCircleIcon size={20} className="animate-spin" aria-hidden />
         {slow ? "자료가 많아 조금 더 걸리고 있어요. 잠시만 기다려 주세요." : "자료를 찾아 계산하고 있어요."}
       </p>
-      <p className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">처리 순서: {STAGES.join(" → ")}</p>
+      <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">처리 순서: {STAGES.join(" → ")}</p>
     </div>
   );
 }

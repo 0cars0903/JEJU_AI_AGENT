@@ -5,8 +5,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
-  title: "동네 생활 진단",
-  description: "제주 43개 읍면동의 상가·음식점·유동인구·버스·기상 자료로 동네에 대한 질문에 답합니다.",
+  title: "제주 상권 EDA",
+  description: "제주빅데이터센터를 찾는 소상공인·예비창업자·중소기업의 상권 질문에 공공 자료로 계산한 답과 보고서를 드립니다.",
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#ffffff" };
