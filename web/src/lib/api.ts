@@ -21,7 +21,14 @@ export type Suggestion = { text: string; slots: Slots };
 export type Line = { layer: "L1" | "L2" | "L3" | "L4" | "L5"; block: string; tag: string; text: string; source?: string | null; as_of?: string | null; kind?: string | null };
 export type Block = { id: "facts" | "analysis" | "guide"; title: string; lines: Line[]; closing?: string };
 export type ViewSeries = { name: string; points: [string | number, number | null][] };
-export type View = { id: string; label: string; kind: "line" | "bar"; x: string; series: ViewSeries[]; summary: string };
+export type View = {
+  id: string; label: string; kind: "line" | "bar" | "map"; x: string; series: ViewSeries[]; summary: string; definition?: string | null;
+  values?: Record<string, number>; unit?: string; highlight?: string[];
+};
+export type FooterItem = { source: string; as_of: string; next: string };
+export type JejuMapData = { viewBox: [number, number, number, number]; dongs: { dong: string; d: string; cx: number; cy: number; area: number }[]; inset: { x: number; y: number; w: number; h: number; label: string }; attribution: string };
+export type SummaryCard = { kind: string; question: string; value: number; unit: string; as_of: string; median: number; rank: number; of: number; slots: Slots; values: Record<string, number> };
+export type DongSummary = { dong: string; cards: SummaryCard[] };
 export type Freshness = { source: string; as_of: string; months_old: number; stale: boolean };
 export type QueryField = { field: string; value: string };
 export type DataRequest = { kind: "update" | "center"; title: string; data: string; why: string; where: string; now?: string; steps?: string[]; query?: QueryField[] };
@@ -33,18 +40,19 @@ export type Answer = {
   value_question: boolean;
   freshness: Freshness[];
   requests: DataRequest[];
+  footer?: FooterItem[];
 };
 export type Step = { id: string; sub: string; name: string; status: string; metric?: string | null; recipe?: string | null };
 export type AskResult = {
   question: string | null;
   status: string;
-  understood?: { text: string; by: string; assumed: boolean; slots: Slots };
+  understood?: { text: string; by: string; assumed: boolean; slots: Slots; notes?: string[] };
   card?: Card;
   answer?: Answer;
   suggestions?: Suggestion[];
   choose?: { message: string; step: string; candidates: string[]; preset: Slots };
   process?: { type?: string; steps: Step[]; data: Record<string, string>; explain?: { text: string; by: string }; relaxed: string[]; unused: string[] };
-  downloads?: { kind: "csv" | "chart"; name: string; rows?: number; export?: string; csv?: string }[];
+  downloads?: { kind: "csv" | "chart" | "bundle"; name: string; rows?: number; export?: string; csv?: string }[];
   sec?: number;
 };
 
@@ -70,10 +78,13 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const getGuide = () => call<Guide>("/api/guide");
-export const ask = (body: { question?: string; slots?: Slots; dataset_id?: string }) => call<AskResult>("/api/ask", { method: "POST", body: JSON.stringify(body) });
+export const getMap = () => call<JejuMapData>("/api/map");
+export const getSummary = (dong: string) => call<DongSummary>(`/api/summary?dong=${encodeURIComponent(dong)}`);
+export type AskBody = { question?: string; slots?: Slots; dataset_id?: string; dataset_key?: string };
+export const ask = (body: AskBody) => call<AskResult>("/api/ask", { method: "POST", body: JSON.stringify(body) });
 
 /** F9: 센터에서 받은 CSV를 그대로 보낸다(본문 = 파일, 파일 이름은 머리글). 서버가 칸 이름으로 자료를 알아본다. */
-export type DatasetMeta = { id: string; dataset: string; label: string; file: string; rows: number; period: [string, string]; dongs: string[]; biz: string[]; problems: string[] };
+export type DatasetMeta = { id: string; key?: string; dataset: string; label: string; file: string; rows: number; period: [string, string]; dongs: string[]; biz: string[]; problems: string[] };
 export async function uploadDataset(file: File, check: { dong?: string; biz?: string }) {
   const q = new URLSearchParams();
   if (check.dong) q.set("check_dong", check.dong);
@@ -88,4 +99,24 @@ export function ready(topic: Topic | undefined, s: Slots) {
     if (k === "space") return (s.space?.length ?? 0) >= topic.min_space;
     return Boolean(s[k as keyof Slots]);
   });
+}
+
+/** A7: 센터 파일 열쇠. 파일 번호·열쇠·이름은 이 탭의 sessionStorage에만 둔다(주소에는 번호만). [처음 화면]에서 지운다. */
+export type CenterFile = { id: string; key: string; file: string; label: string };
+const DS_KEY = "jeju.center";
+export function readCenter(): CenterFile | null {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(DS_KEY) ?? "null");
+    return v && v.id ? (v as CenterFile) : null;
+  } catch {
+    return null;
+  }
+}
+export function writeCenter(c: CenterFile | null) {
+  try {
+    if (c) sessionStorage.setItem(DS_KEY, JSON.stringify(c));
+    else sessionStorage.removeItem(DS_KEY);
+  } catch {
+    /* 저장이 막혀도 이번 화면에서는 그대로 쓴다 */
+  }
 }

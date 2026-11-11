@@ -53,8 +53,8 @@ def _read(raw):
         except UnicodeDecodeError:
             continue
         except pd.errors.ParserError as e:
-            raise CsvError(f"CSV 형식을 읽지 못했습니다: {e}") from e
-    raise CsvError("파일 인코딩을 알 수 없습니다(UTF-8 또는 CP949 CSV를 넣어 주세요).")
+            raise CsvError(f"CSV 형식을 읽지 못했어요: {e}") from e
+    raise CsvError("파일 인코딩을 알 수 없어요(UTF-8 또는 CP949 CSV를 넣어 주세요).")
 
 
 def identify(columns):
@@ -67,15 +67,15 @@ def identify(columns):
 def load(raw, filename="upload.csv"):
     """CSV 바이트 → 저장 후 요약. 자료를 알아보지 못하면 CsvError(이유와 다시 받을 방법)."""
     if len(raw) > MAX_BYTES:
-        raise CsvError("파일이 300MB보다 큽니다. 센터 조회 화면에서 동네·업종·기간 조건을 좁혀 다시 받아 주세요.")
+        raise CsvError("파일이 300MB보다 커요. 센터 조회 화면에서 동네·업종·기간 조건을 좁혀 다시 받아 주세요.")
     if not filename.lower().endswith(".csv"):
-        raise CsvError("CSV 파일만 넣을 수 있습니다.")
+        raise CsvError("CSV 파일만 넣을 수 있어요.")
     _cleanup()
     d = _read(raw)
     m, miss = identify(d.columns)
     if miss:
-        names = {"ym": "년월(base_year_month)", "bdong": "법정동(bjd)", "biz": "업종명(biz_nm)", "amt": "이용금액(use_amt)"}
-        raise CsvError("카드 이용 현황(읍면동) 자료가 아닙니다. 빠진 칸: " + ", ".join(names[k] for k in miss)
+        names = {"ym": "년월", "bdong": "법정동", "biz": "업종명", "amt": "이용금액"}  # 화면 안내는 한글 칸 이름만(문서 20 A10)
+        raise CsvError("카드 이용 현황(읍면동) 자료가 아니에요. 빠진 칸: " + ", ".join(names[k] for k in miss)
                        + ". 센터 조회 화면에서 '카드 이용 현황(읍면동)_v02'를 골라 다시 받아 주세요.")
     t = pd.DataFrame({k: d[c] for k, c in m.items() if c})
     t["ym"] = t["ym"].str.replace(r"\D", "", regex=True).str[:6]
@@ -84,7 +84,7 @@ def load(raw, filename="upload.csv"):
     t["amt"] = pd.to_numeric(t["amt"], errors="coerce")
     t = t.dropna(subset=["amt"])
     if t.empty:
-        raise CsvError("이용금액 값이 비어 있습니다. 검색 결과가 있는 조건으로 다시 받아 주세요.")
+        raise CsvError("이용금액 값이 비어 있어요. 검색 결과가 있는 조건으로 다시 받아 주세요.")
     t["cust"] = t["user"].map(lambda u: "전체" if pd.isna(u) else CUST.get(str(u).strip(), "외국인 관광객")) if "user" in t else "전체"
     import build_v3_tables as B  # 법정동 → 행정동 비율(상가 자료)
     w = B.dong_weights()
@@ -95,7 +95,7 @@ def load(raw, filename="upload.csv"):
     kind = "P746" if "매장수" in d.columns else ("C1-08" if out["ym"].max() >= "2025-05" else "C1-07")
     did = uuid.uuid4().hex[:12]
     out.to_parquet(UP / f"{did}.parquet", index=False)
-    meta = {"id": did, "dataset": kind, "label": LABEL[kind], "file": filename, "rows": int(len(d)), "agg_rows": int(len(out)),
+    meta = {"id": did, "key": uuid.uuid4().hex, "dataset": kind, "label": LABEL[kind], "file": filename, "rows": int(len(d)), "agg_rows": int(len(out)),
             "period": [out["ym"].min(), out["ym"].max()], "dongs": sorted(out["dong"].unique()), "bdongs": sorted(t["bdong"].unique())[:20],
             "biz": sorted(out["biz"].unique())[:50], "unmapped_bdong": unmapped, "columns": {k: v for k, v in m.items() if v}}
     (UP / f"{did}.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
@@ -109,6 +109,12 @@ def get(did):
     return json.loads(f.read_text(encoding="utf-8"))
 
 
+def allowed(meta, key):
+    """파일을 넣은 브라우저만 그 결과를 본다(문서 20 A7). 번호(id)는 주소에 남지만 열쇠(key)는 넣은 브라우저에만 있다."""
+    import hmac
+    return bool(meta and meta.get("key") and key and hmac.compare_digest(str(meta["key"]), str(key)))
+
+
 def table(did):
     return pd.read_parquet(UP / f"{did}.parquet")
 
@@ -117,7 +123,7 @@ def check_request(meta, dong=None, biz42=None):
     """요청한 조건(동네·업종)이 들어 있는지. 없으면 다시 받을 조건을 안내한다."""
     probs = []
     if dong and dong not in meta["dongs"]:
-        probs.append(f"{dong} 자료가 없습니다(들어 있는 동네: {', '.join(meta['dongs'][:5])}{' 등' if len(meta['dongs']) > 5 else ''}). 법정동 조건을 넣어 다시 받아 주세요.")
+        probs.append(f"{dong} 자료가 없어요(들어 있는 동네: {', '.join(meta['dongs'][:5])}{' 등' if len(meta['dongs']) > 5 else ''}). 법정동 조건을 넣어 다시 받아 주세요.")
     if biz42 and not any(biz42 in b for b in meta["biz"]):
-        probs.append(f"업종 '{biz42}'가 없습니다. 업종명 조건을 넣어 다시 받아 주세요.")
+        probs.append(f"업종 '{biz42}'가 없어요. 업종명 조건을 넣어 다시 받아 주세요.")
     return probs

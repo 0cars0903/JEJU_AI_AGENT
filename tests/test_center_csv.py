@@ -1,5 +1,6 @@
 """F9 센터 자료 불러오기(app/center_csv.py, /api/dataset, dataset_id로 다시 계산). 746 일부로 칸 구성을 시험한다(센터 실자료 아님)."""
 import glob
+import json
 import io
 import sys
 import unittest
@@ -57,7 +58,7 @@ class Api(unittest.TestCase):
         c = TestClient(api.app, raise_server_exceptions=False)
         r = c.post("/api/dataset", content=sample(), headers={"X-Filename": "746.csv"})
         self.assertEqual(r.status_code, 200)
-        q = c.post("/api/ask", json={"slots": {"topic": "sales", "space": ["노형동"], "target": "카페"}, "dataset_id": r.json()["id"]}).json()
+        q = c.post("/api/ask", json={"slots": {"topic": "sales", "space": ["노형동"], "target": "카페"}, "dataset_id": r.json()["id"], "dataset_key": r.json()["key"]}).json()
         lines = [x for b in q["answer"]["blocks"] for x in b["lines"]]
         self.assertTrue(any("이용자 불러옴" in str(x["source"]) for x in lines))
         self.assertTrue(any("비알콜 음료점업" in x["text"] for x in lines))
@@ -65,6 +66,21 @@ class Api(unittest.TestCase):
         self.assertEqual(q["card"]["number_check"], [])
         bad = c.post("/api/ask", json={"slots": {"topic": "sales", "space": ["노형동"]}, "dataset_id": "nope0000"})
         self.assertEqual(bad.status_code, 422)
+        for key in (None, "wrong"):  # 번호만 아는 다른 브라우저는 결과를 보지 못한다(문서 20 A7)
+            other = c.post("/api/ask", json={"slots": {"topic": "sales", "space": ["노형동"], "target": "카페"}, "dataset_id": r.json()["id"], "dataset_key": key})
+            self.assertEqual(other.status_code, 422)
+            self.assertIn("다시 넣어", other.json()["detail"])
+        self.assertNotIn(r.json()["key"], json.dumps(q, ensure_ascii=False))  # 답에는 열쇠를 싣지 않는다
+
+    def test_flow_question_compares_first_and_last_month(self):  # 문서 20 A6: 센터 자료로 '흐름'을 물으면 넣은 기간의 처음과 끝을 견준 줄이 결론이다
+        from fastapi.testclient import TestClient
+        import api
+        c = TestClient(api.app, raise_server_exceptions=False)
+        r = c.post("/api/dataset", content=sample(), headers={"X-Filename": "746.csv"}).json()
+        q = c.post("/api/ask", json={"question": "노형동 카페 카드 매출 흐름은?", "dataset_id": r["id"], "dataset_key": r["key"]}).json()
+        self.assertEqual(q["question"], "노형동 카페 카드 매출 흐름은?")
+        self.assertRegex(q["answer"]["conclusion"]["text"], r"에서 .+(늘었어요|줄었어요|변화가 없어요)\(넣은 자료 \d+개월\)")
+        self.assertEqual(q["card"]["number_check"], [])
 
 
 if __name__ == "__main__":

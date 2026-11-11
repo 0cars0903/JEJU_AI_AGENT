@@ -103,14 +103,29 @@ def s1_query(task, store, env):
         word = v3.BIZ42.get(tg) if tg else None
         if word:
             c = c[c["biz"].str.contains(word, na=False, regex=False)]
-        elif tg:
-            biz5, _ = v3.biz5_of(tg)
-            raise TaskError("실행", f"{tg}에 대응하는 센터 업종명을 정하지 못함(대분류 {biz5})")
-        if c.empty:
-            raise TaskError("실행", "불러온 센터 자료에 요청한 동네·업종이 없음")
-        g = c.groupby(["dong", "ym"], as_index=False)["amt"].sum().rename(columns={"amt": "value"})
-        return {"table": g, "dataset": f"{meta['label']}(이용자 불러옴, {meta['file']})", "unit": "원",
-                "note": f"{meta['label']} 기준입니다. 손님 구분 전체(도민·내국인·외국인·법인) 합계이고, 세부 업종 '{word or '전체'}' 값입니다."}
+        # 넣은 파일로 답할 수 없는 질문(파일에 없는 동네·업종, 센터 업종 이름을 정하지 못한 업종)은 공개 자료로 답하고 그 이유를 남긴다.
+        # 화면은 파일을 넣은 뒤의 질문에도 같은 파일 번호를 계속 보낸다(문서 20 A6). 그래서 오류로 끝내지 않는다.
+        why = None
+        foreign = task["metric"] == "외국인매출"
+        if tg and not word:
+            why = f"넣은 센터 파일에서 '{tg}'에 맞는 업종 이름을 정하지 못해"
+        elif c.empty:
+            why = "넣은 센터 파일에 이 동네·업종이 없어"
+        elif foreign:  # 동네별 외국인 매출: 공개 자료에는 없고 센터 파일의 이용자구분(중국·일본·동남아·기타 외국)으로만 낼 수 있다
+            c = c[c["cust"] == "외국인 관광객"]
+            if c.empty:
+                why = "넣은 센터 파일에 외국인 손님 구분(이용자구분 칸)이 없어"
+        if why is None and foreign:
+            g = c.groupby(["dong", "ym"], as_index=False)["amt"].sum().rename(columns={"amt": "value"})
+            return {"table": g, "dataset": f"{meta['label']}(이용자 불러옴, {meta['file']})", "unit": "원",
+                    "note": f"{meta['label']} 기준이에요. 손님 구분 가운데 외국인(중국·일본·동남아·기타 외국) 합계이고, 업종은 '{word or '전체'}' 값이에요."}
+        if why is None:
+            g = c.groupby(["dong", "ym"], as_index=False)["amt"].sum().rename(columns={"amt": "value"})
+            return {"table": g, "dataset": f"{meta['label']}(이용자 불러옴, {meta['file']})", "unit": "원",
+                    "note": f"{meta['label']} 기준이에요. 손님 구분 전체(도민·내국인·외국인·법인) 합계이고, 세부 업종 '{word or '전체'}' 값이에요."}
+        r = _card(task["metric"], tg, dl, f0.get("detail"), f0.get("details"))
+        r["note"] = " ".join(x for x in [f"{why} 이 값은 공개 자료({KTO})로 계산했어요.", r.get("note")] if x)
+        return r
     m, f = task["metric"], task.get("filter") or {}
     dongs = f.get("dong") if isinstance(f.get("dong"), list) else None
     tgt = f.get("target")
@@ -119,13 +134,22 @@ def s1_query(task, store, env):
         return df[df["dong"].isin(dongs)] if dongs else df
     if m in ("점포수", "특화계수"):
         b = pd.read_parquet(TAB / "biz.parquet")
-        sub = b[b["minor"].str.contains(tgt, na=False) | b["middle"].str.contains(tgt, na=False) | b["major"].str.contains(tgt, na=False)] if tgt and tgt not in ("음식점",) else (b[b["major"] == "음식"] if tgt == "음식점" else b)
+        sub = v3.biz_rows(b, tgt) if tgt and tgt not in ("음식점",) else (b[b["major"] == "음식"] if tgt == "음식점" else b)
+        det, dnote = f.get("detail"), None
+        if det:  # 세부 업종(국수·꽃집 …)은 상가 정보 소분류 이름으로 센다(문서 20 A3)
+            import qparse
+            names = qparse.DETAIL.get(det, {}).get("names") or []
+            if names:
+                sub = b[b["minor"].isin(names)]
+                dnote = f"'{det}' 가게 수는 {qparse.detail_desc(det)}로 셌어요."
+            else:
+                det = None
         out = by_dong(sub).groupby("dong")["count"].sum().rename("value").reset_index()
         if m == "특화계수":
             tot = b.groupby("dong")["count"].sum()
             share = sub.groupby("dong")["count"].sum() / tot
             out = by_dong((share / (sub["count"].sum() / b["count"].sum())).rename("value").reset_index().rename(columns={"index": "dong"}))
-        return {"table": out, "dataset": "793 상가", "unit": "곳" if m == "점포수" else "배"}
+        return {"table": out, "dataset": "793 상가", "unit": "곳" if m == "점포수" else "배", **({"detail": det, "note": dnote} if dnote else {})}
     if m in ("개업수", "폐업수"):
         e = pd.read_parquet(TAB / "rest_events.parquet")
         e = e[e["kind"] == ("open" if m == "개업수" else "close")]
@@ -155,7 +179,7 @@ def s1_query(task, store, env):
         a = a[a["year"] == a["year"].max()].groupby(["dong", "ageGroup"])["resd"].sum().rename("value").reset_index()
         return {"table": a, "dataset": "583 유동인구(연령)", "unit": "지수"}
     if m in CARD_METRICS:
-        return _card(m, tgt, dongs)
+        return _card(m, tgt, dongs, f.get("detail"), f.get("details"))
     raise TaskError("실행", f"지표 {m}의 공개 경로 조회 미구현")
 
 
@@ -175,7 +199,7 @@ def _biz5(tgt):
     return biz, note
 
 
-def _card(m, tgt, dongs):
+def _card(m, tgt, dongs, det=None, details=None):
     def by_dong(df):
         return df[df["dong"].isin(dongs)] if dongs else df
     if m == "시장추이":  # F3: 수요·공급·손님 구성·기여 동네·지수(app/v3.py)
@@ -187,10 +211,15 @@ def _card(m, tgt, dongs):
     if m == "업종비교":  # F4: 같은 동네의 업종 대분류 5개
         if not dongs:
             raise TaskError("실행", "업종 비교는 동네가 필요함")
+        if len(details or []) >= 2:  # 세부 업종끼리는 상가 정보 소분류의 가게 수로 견준다(문서 20 A9)
+            import qparse
+            dc = v3.detail_compare(dongs[0], [{"word": w, "names": qparse.DETAIL.get(w, {}).get("names")} for w in details])
+            tab = pd.DataFrame([{"dong": dc["dong"], "biz": r["word"], "value": r["value"]} for r in dc["rows"]])
+            return {"table": tab, "dataset": "793 상가", "unit": "곳", "extra": {"kind": "detailcompare", **dc}}
         bc = v3.biz_compare(dongs[0])
         tab = pd.DataFrame([{"dong": bc["dong"], "biz": r["biz"], "value": r["cur"]} for r in bc["rows"]])
         return {"table": tab, "dataset": f"{KTO}(최근 12개월, ~{bc['end']})", "unit": "원",
-                "note": "매출 비교는 업종 대분류 5개 기준입니다. 카페·한식 같은 세부 업종끼리는 가게 수·개업·폐업으로 비교합니다.", "extra": {"kind": "bizcompare", **bc}}
+                "note": "매출 비교는 업종 대분류 5개 기준이에요. 카페·한식 같은 세부 업종끼리는 가게 수·개업·폐업으로 비교해요.", "extra": {"kind": "bizcompare", **bc}}
     if m == "매출성장":  # 뜨는 동네·업종
         biz, note = _biz5(tgt)
         rs = v3.rising(biz)
@@ -201,7 +230,11 @@ def _card(m, tgt, dongs):
         if not dongs:
             raise TaskError("실행", "판단 재료는 동네가 필요함")
         biz, _ = v3.biz5_of(tgt)
-        sg = v3.signals(dongs[0], tgt, biz)
+        if det:
+            import qparse
+        names = qparse.DETAIL.get(det, {}).get("names") if det else None
+        sg = v3.signals(dongs[0], tgt, biz, detail=det if names else None, names=names)
+        sg["detail"] = det if names else None
         tab = pd.DataFrame([{"dong": sg["dong"], "name": x["name"], "value": x["value"], "pct": x["pct"]} for x in sg["items"]])
         return {"table": tab, "dataset": "여러 자료(판단 재료)", "unit": "-", "extra": {"kind": "signals", **sg}}
     if m == "외국인매출":  # 제주 전체 × 업종 × 출신지역

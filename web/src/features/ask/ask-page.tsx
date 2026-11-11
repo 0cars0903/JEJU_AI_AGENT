@@ -1,36 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "skullet/react";
+import { ChevronLeft, ChevronRight, ExternalLink, House, Link2, Printer, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorState } from "@/components/states";
 import { SendIcon } from "@/components/icons";
-import { type AskResult, type Slots, ask, getGuide } from "@/lib/api";
+import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMeta, type Slots, ask, getGuide, readCenter, writeCenter } from "@/lib/api";
 import { StepPicker } from "./step-picker";
-import { Report, Requests, Views } from "./views";
-import {
-  AnswerCard,
-  Downloads,
-  Process,
-  SuggestionList,
-  Understood,
-  Waiting,
-} from "./answer";
+import { CenterUpload, Report, Requests, Views, copyText } from "./views";
+import { DongHome } from "./dong-home";
+import { AnswerCard, Downloads, Process, SuggestionList, Understood, Waiting } from "./answer";
 
 // 로딩 뼈대의 모양을 그리기 위한 예시 답(화면에 보이지 않는다).
 const SAMPLE: AskResult = {
   question: "노형동 카페 가게는 몇 곳이야?",
   status: "성공",
   card: {
-    conclusion: "노형동 카페 점포 수를 정리했습니다.",
+    conclusion: "노형동 카페 가게 수를 정리했어요.",
     evidence: [
-      {
-        text: "노형동 점포 수 000 곳",
-        dataset: "793 상가",
-        as_of: "최신 단면",
-      },
+      { text: "노형동 카페 가게 수는 000 곳이에요.", dataset: "상가 정보", as_of: "2025-09-18 기준" },
       { text: "근거 한 줄 더", dataset: "자료", as_of: "기준일" },
     ],
     intervals: [],
@@ -38,218 +30,404 @@ const SAMPLE: AskResult = {
     next_questions: [],
   },
 };
+const MAX = 200;
+const PANEL_KEY = "jeju.panel";
 
 type Picker = { preset?: Slots; notice?: string };
+type Body = AskBody;
+const PICK_LABEL = "고른 항목으로 묻기";
 
-/** 질문 화면: ① 자유 입력 ② 추천 질문 ③ 단계별 선택 ④ 대표 질문. v3: 3블록 답·나눠 보기·자료 요청·보고서(docs/기획/v3_설계.md 2·6절). */
+/** A6·A7: 센터 파일을 한 번 넣었으면 그 뒤 질문에도 번호와 열쇠를 함께 보낸다. 열쇠는 주소에 넣지 않는다. */
+function withCenter(body: Body): Body {
+  const c = readCenter();
+  if (!c) return body;
+  if (!body.dataset_id) return { ...body, dataset_id: c.id, dataset_key: c.key };
+  if (body.dataset_id === c.id) return { ...body, dataset_key: c.key };
+  return body;
+}
+
+/** 결과 주소: 같은 탭에서 열고(뒤로 가기로 첫 화면), 같은 주소를 [새 탭으로 열기]로도 연다(사용자 결정 2026-11-12). */
+function toUrl(body: Body, label: string) {
+  const p = new URLSearchParams();
+  if (body.question) p.set("q", body.question);
+  if (body.slots) p.set("s", JSON.stringify(body.slots));
+  if (body.dataset_id) p.set("d", body.dataset_id);
+  if (label && label !== body.question) p.set("l", label);
+  return `/?${p}`;
+}
+
+function fromParams(sp: URLSearchParams): { body: Body; label: string } | null {
+  const q = sp.get("q");
+  const s = sp.get("s");
+  if (!q && !s) return null;
+  let slots: Slots | undefined;
+  try {
+    slots = s ? (JSON.parse(s) as Slots) : undefined;
+  } catch {
+    slots = undefined;
+  }
+  const body: Body = { question: q ?? undefined, slots, dataset_id: sp.get("d") ?? undefined };
+  return { body, label: sp.get("l") ?? q ?? PICK_LABEL };
+}
+
+/** 질문 화면. 첫 화면 = 왼쪽 조건 패널 + 입력 + 동네 한눈에(스플릿). 결과 화면 = 같은 탭의 결과 주소, 패널은 접어 두고 [<]·[조건으로 묻기]로 연다. */
 export function AskPage() {
-  const guide = useQuery({
-    queryKey: ["guide"],
-    queryFn: getGuide,
-    staleTime: Infinity,
-  });
+  const router = useRouter();
+  const sp = useSearchParams();
+  const req = useMemo(() => fromParams(new URLSearchParams(sp.toString())), [sp]);
+  const guide = useQuery({ queryKey: ["guide"], queryFn: getGuide, staleTime: Infinity });
   const [text, setText] = useState("");
   const [picker, setPicker] = useState<Picker | null>(null);
-  const [asked, setAsked] = useState<string | null>(null);
+  const [panel, setPanel] = useState(true);
+  const [moreRep, setMoreRep] = useState(false);
+  const [center, setCenterState] = useState<CenterFile | null>(null);
+  const [emptyHint, setEmptyHint] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
-  const pickerRef = useRef<HTMLDivElement>(null);
-  // 단계별 선택이 열리면(선택필요 안내·[바꾸기]) 그 자리로 옮긴다. 결과 쪽에 머물면 안내가 화면 밖에 남는다(모바일 캡처 점검).
-  useEffect(() => {
-    if (picker)
-      pickerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [picker]);
+  // B2·B7: 답이 펼쳐지는 동안 누른 바로 가기의 목적지. 펼침이 끝나면 한 번 더 맞춘다.
+  const jumpRef = useRef<string | null>(null);
+  const pickerRef = useRef<HTMLElement>(null);
 
   const m = useMutation({
     mutationFn: ask,
     onSuccess: (r) => {
-      if (r.status === "선택필요" && r.choose)
-        setPicker({ preset: r.choose.preset, notice: r.choose.message });
+      if (r.status === "선택필요" && r.choose) setPicker({ preset: r.choose.preset, notice: r.choose.message });
     },
   });
 
-  const run = (body: { question?: string; slots?: Slots; dataset_id?: string }, label: string) => {
-    setAsked(label);
+  // 패널은 사용자가 접고 편 상태를 기억한다. 답이 나와도 저절로 접거나 펴지 않는다(C7).
+  useEffect(() => {
+    setCenterState(readCenter());
+    try {
+      setPanel(localStorage.getItem(PANEL_KEY) !== "closed");
+    } catch {
+      setPanel(true);
+    }
+  }, []);
+
+  // 주소가 바뀌면(질문·뒤로 가기) 그 질문으로 답을 받는다. 입력 칸 글을 '질문:' 줄과 맞춘다(C4).
+  const key = sp.toString();
+  useEffect(() => {
+    if (req) {
+      m.mutate(withCenter(req.body));
+      setText(req.body.question ?? (req.label !== PICK_LABEL ? req.label : ""));
+      requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    } else {
+      m.reset();
+      setText("");
+    }
     setPicker(null);
-    m.mutate(body);
-    requestAnimationFrame(() =>
-      resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
-    );
+    setEmptyHint(false);
+    jumpRef.current = null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+
+  // 조건 패널이 열리면 패널로 이동하고 초점도 첫 칸으로 옮긴다(B4·C3).
+  useEffect(() => {
+    if (picker) {
+      pickerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      requestAnimationFrame(() => pickerRef.current?.querySelector<HTMLElement>("[data-testid^='topic-']")?.focus({ preventScroll: true }));
+    }
+  }, [picker]);
+
+  // 답이 나온 뒤 눌렀던 버튼이 사라져 초점이 없어졌으면 입력 칸으로 돌려준다(C3).
+  useEffect(() => {
+    const d = m.data;
+    if (!d || d.status === "선택필요") return;
+    const a = document.activeElement;
+    const lost = !a || a === document.body || !document.body.contains(a);
+    if (lost || (a as HTMLElement).dataset?.testid === "ask-submit") inputRef.current?.focus({ preventScroll: true });
+  }, [m.data]);
+
+  const togglePanel = (open: boolean) => {
+    setPanel(open);
+    try {
+      localStorage.setItem(PANEL_KEY, open ? "open" : "closed");
+    } catch {
+      /* 저장이 막혀도 동작은 그대로 */
+    }
   };
+  const run = (body: Body, label: string) => router.push(toUrl(withCenter(body), label));
   const submitText = () => {
     const q = text.trim();
-    if (q) run({ question: q }, q);
+    if (!q) return setEmptyHint(true);
+    if (m.isPending) return;
+    run({ question: q }, q);
+  };
+  const adoptCenter = (meta: DatasetMeta) => {
+    const c = { id: meta.id, key: meta.key ?? "", file: meta.file, label: meta.label };
+    writeCenter(c);
+    setCenterState(c);
+    return c;
+  };
+  const dropCenter = () => {
+    writeCenter(null);
+    setCenterState(null);
+    if (req?.body.dataset_id) router.push(toUrl({ ...req.body, dataset_id: undefined, dataset_key: undefined }, req.label));
+  };
+  const goHome = (e: React.MouseEvent) => {
+    // [처음 화면]: 센터 파일 열쇠를 지우고, 이 답을 뒤로 가기 기록에서 빼기 위해 현재 기록을 바꿔 치기한다(A7).
+    e.preventDefault();
+    writeCenter(null);
+    window.location.replace("/");
+  };
+  const copyLink = async () => {
+    if (await copyText(window.location.href)) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
   };
 
   const r = m.data;
   const answered = r && r.status !== "선택필요";
+  const asked = req?.label ?? null;
+  const showPanel = panel || Boolean(picker);
+  const needFile = m.isError && m.error instanceof ApiError && m.error.status === 422 && Boolean(req?.body.dataset_id);
 
   return (
-    <div className="flex flex-col gap-6">
-      <section className="flex flex-col gap-3" aria-label="질문하기">
-        <h1>제주 상권, 자료로 물어보세요</h1>
-        <p className="text-[length:var(--krds-fs-body-large)] text-(--krds-text-bolder)">
-          창업할 동네·업종, 손님 변화, 업종 시장 흐름을 공공 자료로 계산해 근거와 함께 보여 드려요.
-        </p>
-        <form
-          className="flex flex-col gap-2 md:flex-row"
-          onSubmit={(e) => {
-            e.preventDefault();
-            submitText();
-          }}
-        >
-          <Textarea
-            data-testid="question-input"
-            aria-label="질문"
-            placeholder="예: 노형동에 카페 차려도 될까?"
-            value={text}
-            maxLength={200}
-            rows={2}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (
-                e.key === "Enter" &&
-                !e.shiftKey &&
-                !e.nativeEvent.isComposing
-              ) {
-                e.preventDefault();
-                submitText();
-              }
+    <div className={"flex flex-col gap-6 lg:grid lg:items-start lg:gap-6 " + (showPanel ? "lg:grid-cols-[minmax(300px,360px)_1fr]" : "lg:grid-cols-[auto_1fr]")}>
+      {/* 화면 순서와 Tab 순서를 맞추려고 질문 칸(main)을 먼저 두고, 큰 화면에서만 패널을 왼쪽으로 보낸다(B5). */}
+      <div className="flex min-w-0 flex-col gap-4 lg:order-2">
+        <section className="flex flex-col gap-2" aria-label="질문하기">
+          {req ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <a href="/" onClick={goHome} data-testid="go-home" className="inline-flex min-h-11 items-center gap-1 rounded-(--radius) border border-(--krds-border-gray) px-3 font-semibold hover:bg-muted">
+                <House size={18} aria-hidden /> 처음 화면
+              </a>
+              <Button variant="outline" data-testid="copy-link" onClick={copyLink} className="gap-1">
+                <Link2 size={18} aria-hidden /> 링크 복사
+              </Button>
+              <a
+                href={toUrl(req.body, req.label)}
+                target="_blank"
+                rel="noopener"
+                data-testid="open-new-tab"
+                className="inline-flex min-h-11 items-center gap-1 rounded-(--radius) border border-(--krds-border-gray) px-3 hover:bg-muted"
+              >
+                <ExternalLink size={18} aria-hidden /> 새 탭으로 열기<span className="sr-only">(새 탭에서 열려요)</span>
+              </a>
+              {r?.answer?.requests?.some((q) => q.kind === "center") && (
+                <a href="#request-center" data-testid="go-center" className="inline-flex min-h-11 items-center gap-1 rounded-(--radius) border border-(--krds-border-gray) px-3 hover:bg-muted">
+                  센터 자료 넣기
+                </a>
+              )}
+              {r?.answer && (
+                <Button variant="outline" data-testid="print-report" onClick={() => window.print()} className="gap-1">
+                  <Printer size={18} aria-hidden /> 보고서 인쇄(PDF 저장)
+                </Button>
+              )}
+              <span role="status" data-testid="copied" className="font-semibold text-(--krds-text-primary)">
+                {copied ? "복사했어요" : ""}
+              </span>
+            </div>
+          ) : (
+            <h1 className="text-[length:var(--krds-fs-heading-medium)]">제주 상권, 자료로 물어보세요</h1>
+          )}
+          {/* 입력창(Notion '입력창 디자인' 기준): 라벨 · 입력 · 도움말 또는 오류 문구 */}
+          <form
+            className="flex flex-col gap-1"
+            onSubmit={(e) => {
+              e.preventDefault();
+              submitText();
             }}
-            className="min-h-14 flex-1 text-[length:var(--krds-fs-body-large)]"
-          />
-          <Button
-            type="submit"
-            size="lg"
-            data-testid="ask-submit"
-            disabled={!text.trim() || m.isPending}
-            className="md:h-auto"
           >
-            <SendIcon size={20} aria-hidden />
-            묻기
-          </Button>
-        </form>
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Stageshow 지적 2: 입력 전에도 눈 갈 곳이 있도록 강조색 윤곽 버튼 */}
+            <label htmlFor="question" className="sr-only">
+              질문
+            </label>
+            <div className="flex flex-col gap-2 md:flex-row">
+              <Textarea
+                id="question"
+                ref={inputRef}
+                data-testid="question-input"
+                aria-describedby="question-help"
+                placeholder="예: 노형동에 카페 차려도 될까?"
+                value={text}
+                maxLength={MAX}
+                rows={1}
+                onChange={(e) => {
+                  setText(e.target.value);
+                  setEmptyHint(false);
+                }}
+                // 앞 질문이 남아 있으면 글 전체를 골라 두어, 바로 치면 새 질문으로 바뀐다(C4)
+                onFocus={(e) => e.currentTarget.select()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) {
+                    e.preventDefault();
+                    submitText();
+                  }
+                }}
+                className="min-h-12 flex-1 text-[length:var(--krds-fs-body-large)] md:text-[length:var(--krds-fs-body-large)]"
+              />
+              <Button type="submit" size="lg" data-testid="ask-submit" disabled={!text.trim()} aria-busy={m.isPending} className="md:h-auto">
+                <SendIcon size={20} aria-hidden />
+                묻기
+              </Button>
+            </div>
+            <p
+              id="question-help"
+              role={emptyHint ? "alert" : undefined}
+              data-testid="question-help"
+              className={"text-[length:var(--krds-fs-body-medium)] " + (text.length >= MAX || emptyHint ? "font-semibold text-(--krds-text-danger)" : "text-(--krds-text-bolder)")}
+            >
+              {emptyHint ? "질문을 먼저 적어 주세요." : text.length >= MAX ? `질문은 ${MAX}자까지 쓸 수 있어요. 조금 줄여 주세요.` : "동네와 업종을 함께 쓰면 더 정확해요."} ({text.length}/{MAX})
+            </p>
+          </form>
+          {center && (
+            <p data-testid="center-using" className="flex flex-wrap items-center gap-2 rounded-(--radius) bg-(--krds-surface-primary-subtler) px-3 py-1 font-semibold">
+              센터 자료 {center.label}({center.file}) 사용 중
+              <button type="button" data-testid="center-drop-file" onClick={dropCenter} className="inline-flex min-h-11 items-center gap-1 rounded-(--radius) border border-(--krds-border-gray) bg-background px-3 font-normal hover:bg-muted">
+                <X size={16} aria-hidden /> 빼기
+              </button>
+            </p>
+          )}
           <Button
             variant="outline"
-            size="lg"
             data-testid="open-picker"
             onClick={() => setPicker({})}
             disabled={!guide.data}
-            className="border-2 border-(--krds-border-primary) font-semibold text-(--krds-text-primary)"
+            className="w-fit border-2 border-(--krds-border-primary) font-semibold text-(--krds-text-primary) lg:hidden"
           >
-            하나씩 골라서 묻기
+            조건으로 묻기
           </Button>
-          <span className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
-            질문을 쓰기 어려우면 궁금한 것과 동네를 골라 주세요.
-          </span>
-        </div>
-      </section>
-
-      {picker && guide.data && (
-        <div ref={pickerRef} className="scroll-mt-24">
-          <StepPicker
-            key={JSON.stringify(picker)}
-            guide={guide.data}
-            preset={picker.preset}
-            notice={picker.notice}
-            onSubmit={(s) => run({ slots: s }, "고른 항목으로 묻기")}
-            onClose={() => setPicker(null)}
-          />
-        </div>
-      )}
-
-      {!asked && guide.data && (
-        <SuggestionList
-          testId="representative"
-          title="이런 걸 물어볼 수 있어요"
-          items={guide.data.representative.map((x) => ({
-            text: x.text,
-            slots: x.slots,
-          }))}
-          onPick={(x) => run({ slots: x.slots }, x.text)}
-        />
-      )}
-      {/* Stageshow 지적 1: 첫 화면 아래가 비지 않도록 처음 쓰는 방법 3단계 */}
-      {!asked && (
-        <section data-testid="howto" aria-label="처음이면 이렇게" className="grid gap-3 md:grid-cols-3">
-          {[
-            ["1. 묻기", "궁금한 것을 쓰거나 위의 질문을 누르세요. 쓰기 어려우면 '하나씩 골라서 묻기'."],
-            ["2. 확인", "'이렇게 이해했어요'를 보고 다르면 [바꾸기]로 고치세요."],
-            ["3. 보고서", "답과 그래프를 보고 [보고서 인쇄]로 PDF를 저장해 상담에 쓰세요."],
-          ].map(([h, b]) => (
-            <div key={h} className="rounded-(--radius) border border-(--krds-border-gray-light) p-4">
-              <p className="font-bold">{h}</p>
-              <p className="text-[length:var(--krds-fs-body-medium)]">{b}</p>
-            </div>
-          ))}
         </section>
-      )}
-      {guide.isError && (
-        <ErrorState error={guide.error} onRetry={() => guide.refetch()} />
-      )}
 
-      <div
-        ref={resultRef}
-        className="flex flex-col gap-4 scroll-mt-24"
-        aria-live="polite"
-      >
-        {asked && (
-          <p className="text-(--krds-text-subtle)" data-testid="asked">
-            질문: {r?.question ?? asked}
-          </p>
-        )}
-        {m.isPending && <Waiting />}
-        {m.isError && <ErrorState error={m.error} onRetry={() => m.reset()} />}
-        {asked && !m.isError && (m.isPending || answered) && (
-          <Skeleton
-            data={m.isPending ? null : r}
-            sample={SAMPLE}
-            label="답을 만들고 있어요"
-          >
-            {(res: AskResult) => (
-              <div className="flex flex-col gap-4">
-                <Understood
-                  key={JSON.stringify(res.understood)}
-                  r={res}
-                  sample={res === SAMPLE}
-                  onChange={(s) => setPicker({ preset: s })}
-                />
-                <AnswerCard r={res} sample={res === SAMPLE} />
-                {res !== SAMPLE && res.answer && <Views key={res.question ?? ""} views={res.answer.views} n={res.answer.default_views} />}
-                {res !== SAMPLE && res.answer && (
-                  <Requests
-                    items={res.answer.requests}
-                    onCenter={res.understood ? (id) => run({ slots: res.understood!.slots, dataset_id: id }, "센터 자료로 다시 계산") : undefined}
-                  />
-                )}
-                <Process r={res} />
-                <div className="flex flex-wrap items-center gap-2">
-                  <Downloads r={res} />
-                  {res !== SAMPLE && res.answer && (
-                    <Button variant="outline" data-testid="print-report" onClick={() => window.print()}>
-                      보고서 인쇄(PDF 저장)
-                    </Button>
-                  )}
-                </div>
-                {res !== SAMPLE && <Report r={res} />}
-              </div>
+        {!req && guide.data && (
+          <section data-testid="representative" aria-label="이런 걸 물어볼 수 있어요" className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold">이런 걸 물어볼 수 있어요</span>
+            {guide.data.representative.slice(0, moreRep ? undefined : 3).map((x) => (
+              <Button key={x.text} variant="outline" className="h-auto min-h-11 whitespace-normal py-2 text-left" onClick={() => run({ slots: x.slots }, x.text)}>
+                {x.text}
+              </Button>
+            ))}
+            {guide.data.representative.length > 3 && (
+              <button type="button" data-testid="rep-more" className="min-h-11 rounded-(--radius) px-3 underline hover:bg-muted" onClick={() => setMoreRep(!moreRep)}>
+                {moreRep ? "접기" : `더 보기(${guide.data.representative.length - 3})`}
+              </button>
             )}
-          </Skeleton>
+          </section>
         )}
-        {answered && r?.suggestions && (
-          <SuggestionList
-            testId="suggestions"
-            title={
-              r.status === "범위밖"
-                ? "대신 이런 걸 물어볼 수 있어요"
-                : "이어서 물어보기"
-            }
-            items={r.suggestions}
-            onPick={(x) => run({ slots: x.slots }, x.text)}
-          />
-        )}
+        {!req && guide.data && <DongHome dongs={guide.data.dongs} onAsk={(s, t) => run({ slots: s }, t)} />}
+        {guide.isError && <ErrorState error={guide.error} onRetry={() => guide.refetch()} />}
+
+        <div
+          ref={resultRef}
+          className="flex flex-col gap-4 scroll-mt-24"
+          aria-live="polite"
+          onClickCapture={(e) => {
+            const a = (e.target as HTMLElement).closest('a[href^="#"]');
+            if (a) jumpRef.current = a.getAttribute("href")!.slice(1);
+          }}
+        >
+          {asked && (
+            <p className="text-(--krds-text-bolder)" data-testid="asked">
+              질문: {r?.question ?? req?.body.question ?? asked}
+            </p>
+          )}
+          {m.isPending && <Waiting />}
+          {m.isError && <ErrorState error={m.error} onRetry={needFile ? undefined : () => req && m.mutate(withCenter(req.body))} />}
+          {needFile && req && (
+            <div data-testid="need-file" className="flex flex-col gap-2 rounded-(--radius) border border-(--krds-border-gray) p-4">
+              <h3>센터 파일을 다시 넣어 주세요</h3>
+              <CenterUpload
+                onUse={(meta) => {
+                  const c = adoptCenter(meta);
+                  run({ ...req.body, dataset_id: c.id, dataset_key: c.key }, req.label);
+                }}
+              />
+            </div>
+          )}
+          {req && !m.isError && (m.isPending || answered) && (
+            <Skeleton
+              data={m.isPending ? null : r}
+              sample={SAMPLE}
+              label="답을 만들고 있어요"
+              // 대기 뼈대 높이에서 답 높이로 늘어나는 동안에는 문서가 아직 짧아, 그때 누른 바로 가기가 목적지에 못 미친다.
+              onReveal={() => {
+                const id = jumpRef.current;
+                jumpRef.current = null;
+                if (id) document.getElementById(id)?.scrollIntoView();
+              }}
+            >
+              {(res: AskResult) => (
+                <div className="flex flex-col gap-4">
+                  <Understood key={JSON.stringify(res.understood)} r={res} sample={res === SAMPLE} onChange={(s) => setPicker({ preset: s })} />
+                  <AnswerCard r={res} sample={res === SAMPLE} />
+                  {res !== SAMPLE && res.answer && <Views key={res.question ?? ""} views={res.answer.views} n={res.answer.default_views} />}
+                  {/* 이어서 물어보기는 자료 요청·내려받기보다 앞에 둔다(B2) */}
+                  {res !== SAMPLE && res.suggestions && (
+                    <SuggestionList
+                      testId="suggestions"
+                      title={res.status === "범위밖" ? "대신 이런 걸 물어볼 수 있어요" : "이어서 물어보기"}
+                      items={res.suggestions}
+                      onPick={(x) => run({ slots: x.slots }, x.text)}
+                    />
+                  )}
+                  {res !== SAMPLE && res.answer && (
+                    <Requests
+                      items={res.answer.requests}
+                      onCenter={
+                        res.understood
+                          ? (meta) => {
+                              const c = adoptCenter(meta);
+                              // A6: 원래 질문 문장과 이해한 칸을 함께 보내 '질문:' 줄이 그대로 남게 한다
+                              const original = req.body.question ?? (req.label !== PICK_LABEL ? req.label : (res.question ?? undefined));
+                              run({ question: original, slots: res.understood!.slots, dataset_id: c.id, dataset_key: c.key }, req.label);
+                            }
+                          : undefined
+                      }
+                    />
+                  )}
+                  <Process r={res} />
+                  <Downloads r={res} />
+                  {res !== SAMPLE && <Report r={res} />}
+                </div>
+              )}
+            </Skeleton>
+          )}
+        </div>
       </div>
+
+      <aside
+        ref={pickerRef}
+        aria-label="조건으로 묻기"
+        className={(picker ? "order-first block" : "hidden") + " scroll-mt-4 lg:order-1 lg:block lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"}
+      >
+        {showPanel ? (
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              data-testid="panel-close"
+              onClick={() => (picker ? setPicker(null) : togglePanel(false))}
+              className="hidden min-h-11 items-center gap-1 self-end rounded-(--radius) px-3 text-(--krds-text-bolder) hover:bg-muted lg:flex"
+              aria-label="조건 패널 접기"
+            >
+              <ChevronLeft size={18} aria-hidden /> 접기
+            </button>
+            {guide.data && (
+              <StepPicker
+                key={JSON.stringify(picker ?? {})}
+                guide={guide.data}
+                preset={picker?.preset}
+                notice={picker?.notice}
+                onSubmit={(s) => run({ slots: s }, PICK_LABEL)}
+                onClose={() => setPicker(null)}
+              />
+            )}
+          </div>
+        ) : (
+          <button
+            type="button"
+            data-testid="panel-open"
+            onClick={() => togglePanel(true)}
+            className="hidden min-h-11 items-center gap-2 rounded-(--radius) border border-(--krds-border-gray) bg-card px-3 font-semibold hover:bg-muted lg:flex"
+            aria-label="조건 패널 펼치기: 조건으로 묻기"
+          >
+            <ChevronRight size={18} aria-hidden />
+            <span>조건으로 묻기</span>
+          </button>
+        )}
+      </aside>
     </div>
   );
 }

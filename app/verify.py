@@ -165,12 +165,12 @@ def template_answer(order, res, no_eff=(), short=()):
     for j in _judgements(res["store"]):
         lines.append(f"판정 {j['name']}: {j['claim']}")
     if no_eff:
-        lines.append("효과 없음: 차이를 확인하지 못했습니다(" + ", ".join(j["name"] for j in no_eff[:3]) + ").")
+        lines.append("효과 없음: 차이를 확인하지 못했어요(" + ", ".join(j["name"] for j in no_eff[:3]) + ").")
     for s in short:
         lines.append(f"표본 부족: {s['recipe']} {', '.join(s['fail'])}")
     lines += [f"한계: {r}" for r in res.get("relaxed", [])]
     lines += [f"계산하지 못함: {x['task_id']}({x.get('error_type')}: {x.get('error')})" for x in res.get("log", []) if x["status"] == "실패"]
-    return "\n".join(lines) or "확인된 결과가 없습니다."
+    return "\n".join(lines) or "확인된 결과가 없어요."
 
 
 def check_answer(text, res):

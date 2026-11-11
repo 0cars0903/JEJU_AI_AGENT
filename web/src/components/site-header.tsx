@@ -35,19 +35,19 @@ function NavItem({ href, label, Icon, active }: (typeof NAV)[number] & { active:
 export function SiteHeader() {
   const path = usePathname();
   return (
-    <header className="sticky top-0 z-40 border-b border-(--krds-border-gray-light) bg-background print:hidden">
-      <div className="mx-auto flex w-full max-w-[75rem] flex-wrap items-center gap-x-6 px-4 md:px-6">
+    <header className="border-b border-(--krds-border-gray-light) bg-background print:hidden md:sticky md:top-0 md:z-40">
+      <div className="mx-auto flex w-full max-w-[100rem] flex-wrap items-center gap-x-6 px-4 md:px-6">
         <Link href="/" className="py-3 text-[length:var(--krds-fs-heading-xsmall)] font-bold text-(--krds-text-bolder) no-underline hover:text-(--krds-text-bolder)">
           제주 상권 EDA
         </Link>
-        <div className="ml-auto flex items-center gap-1 md:order-last">
-          <DisplaySettings />
-        </div>
-        <nav aria-label="주요 메뉴" className="order-last flex w-full flex-wrap gap-x-1 md:order-none md:w-auto">
+        <nav aria-label="주요 메뉴" className="flex flex-wrap gap-x-1">
           {NAV.map((n) => (
             <NavItem key={n.href} {...n} active={n.href === "/" ? path === "/" : path.startsWith(n.href.slice(0, -1))} />
           ))}
         </nav>
+        <div className="ml-auto flex items-center gap-1">
+          <DisplaySettings />
+        </div>
       </div>
     </header>
   );

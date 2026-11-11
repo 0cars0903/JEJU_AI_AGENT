@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "제주 상권 EDA",
@@ -29,10 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <Providers>
           <SiteHeader />
-          <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[75rem] flex-1 px-4 py-6 outline-none md:px-6 md:py-10">
+          <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[100rem] flex-1 px-4 py-4 outline-none md:px-6 md:py-4">
             {children}
           </main>
-          <SiteFooter />
         </Providers>
       </body>
     </html>

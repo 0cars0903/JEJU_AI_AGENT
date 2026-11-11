@@ -23,12 +23,34 @@ KTO = "제주관광공사 카드 소비"
 SRC746 = "허브 746 카드 매출(비씨카드)"
 OVERLAP = ("2020-01", "2021-05")
 MAJOR = {"소매업": "소매", "숙박업": "숙박", "음식점업": "음식", "예술스포츠여가업": "예술·스포츠"}  # 793 상가 대분류
-CROSS_FAIL = {"숙박업": "숙박업 도민 계열은 746과의 대조 기준에 미달해(문서 17) 두 자료를 이어 보지 않는 것이 좋습니다."}
+CROSS_FAIL = {"숙박업": "숙박업의 도민 매출은 2017~2021년 비씨카드 자료와 흐름이 맞지 않아, 두 자료를 이어 보지 않는 것이 좋아요."}
 
 
 FOOD = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점", "음식점"}
 BIZ_UP = {"숙박": "숙박업", "소매": "소매업", "편의점": "소매업"}
 BIZ42 = {"카페": "비알콜 음료점업", "한식": "한식 음식점업", "일식": "일식 음식점업", "중식": "중식 음식점업", "치킨": "피자, 햄버거", "주점": "주점업"}
+
+
+def biz_rows(b, target):
+    """상가 정보 표에서 업종 낱말에 해당하는 줄. 분류 이름의 일부로 찾는다.
+    '카페'는 음식 분류 안에서만 찾는다('독서실/스터디 카페'는 예술·스포츠 분류라 카페 가게 수에 넣지 않는다)."""
+    m = b["minor"].str.contains(target, na=False) | b["middle"].str.contains(target, na=False) | b["major"].str.contains(target, na=False)
+    if target == "카페":
+        m &= b["major"] == "음식"
+    return b[m]
+
+
+def detail_compare(dong, items):
+    """한 동네 안에서 세부 업종끼리 가게 수 비교(문서 20 A9). items: [{"word", "names"(상가 정보 소분류 이름) 또는 None(업종 낱말로 찾음)}]."""
+    b = pd.read_parquet(TAB / "biz.parquet")
+    every = sorted(b["dong"].unique())
+    rows = []
+    for it in items:
+        sub = b[b["minor"].isin(it["names"])] if it.get("names") else biz_rows(b, it["word"])
+        by = sub.groupby("dong")["count"].sum().reindex(every, fill_value=0)
+        val = int(by.get(dong, 0))
+        rows.append({"word": it["word"], "names": sorted(sub["minor"].unique()), "value": val, "rank": int((by > val).sum() + 1), "of": len(every)})
+    return {"dong": dong, "rows": sorted(rows, key=lambda r: -r["value"])}
 
 
 def biz5_of(tgt):
@@ -42,7 +64,7 @@ def biz5_of(tgt):
         return None, None
     if tgt in ("음식점", "숙박", "소매"):
         return up, None
-    return up, f"카드 매출은 업종 대분류만 있어 {tgt} 대신 {up} 전체 기준입니다. {tgt}만의 최신 매출은 센터 1-08 자료로 볼 수 있습니다."
+    return up, f"카드 매출은 업종 대분류만 있어서 {tgt} 대신 {up} 전체 기준이에요. {tgt}만의 최신 매출은 빅데이터센터 카드 자료로 볼 수 있어요."
 
 
 # ---------- 표시 ----------
@@ -50,6 +72,9 @@ def money(v):
     """원 → '105억 원'·'2.8만 원'. (문장, 표시한 숫자) 반환."""
     v = float(v)
     a = abs(v)
+    if a >= 1e12:  # 1조 이상: '1조 8,241억 원'
+        jo, eok = divmod(round(v / 1e8), 10000)
+        return (f"{jo:,}조 {eok:,}억 원" if eok else f"{jo:,}조 원"), float(jo)
     if a >= 1e10:
         n = round(v / 1e8)
         return f"{n:,}억 원", float(n)
@@ -81,6 +106,10 @@ def fmt(v, unit):
 
 
 # ---------- 공통 자료 ----------
+# 793 상가(상권) 정보의 기준일(docs/조사/04_데이터허브_메타데이터_조사.md 17줄). 화면에는 날짜 없는 '최신 단면' 대신 이 날짜를 쓴다(문서 20 A10)
+BIZ_ASOF = "2025-09-18 기준"
+
+
 def meta():
     return json.loads((TAB / "meta.json").read_text(encoding="utf-8"))
 
@@ -130,10 +159,10 @@ def yoy_test(series, log=True):
 def claim(test, unit_word="늘었", down_word="줄었"):
     """검정 → (층 꼬리표, 문장 꼬리). 유의수준 0.05."""
     if not test:
-        return "구분 못 함", "자료가 짧아 판정하지 못했습니다"
+        return "자료로 가릴 수 없음", "자료가 짧아 판정하지 못했어요"
     if test["p"] < 0.05:
-        return "자료로 확인됨", f"{unit_word}습니다" if test["mean"] > 0 else f"{down_word}습니다"
-    return "구분 못 함", "늘었는지 줄었는지 자료로 구분할 수 없습니다"
+        return "자료로 확인됨", f"{unit_word}어요" if test["mean"] > 0 else f"{down_word}어요"
+    return "자료로 가릴 수 없음", "늘었는지 줄었는지는 자료로 가릴 수 없어요"
 
 
 # ---------- F3 업종 시장 추이 ----------
@@ -186,9 +215,78 @@ def market(biz=None, dongs=None):
         f = f[f["biz"] == biz]
     fend = f["ym"].max()
     fo = f[f["ym"] > _months_back(fend, 12)].groupby("origin")["amt"].sum().sort_values(ascending=False)
+    # 패턴 D: 연도별 업종 비교(12개월이 다 있는 해), 전년 대비 3지표(최근 12개월 vs 그 전 12개월)
+    call = card()
+    if dongs:
+        call = call[call["dong"].isin(dongs)]
+    yb = call.assign(year=call["ym"].str[:4]).groupby(["year", "biz"])["amt"].sum().unstack("biz")
+    full = call.assign(year=call["ym"].str[:4]).groupby("year")["ym"].nunique()
+    yb = yb.loc[full[full == 12].index]
+    biz_yearly = {b: [[y, float(v)] for y, v in yb[b].items()] for b in yb.columns}
+    sel = c
+    w12 = sel["ym"] > _months_back(end, 12)
+    w24 = (sel["ym"] > _months_back(end, 24)) & ~w12
+    def tshare(d):
+        t = d.groupby("cust")["amt"].sum()
+        return float(t.get("내국인 관광객", 0) / t.sum() * 100) if t.sum() > 0 else None
+    yoy3 = []
+    for name, a0, a1, unit in (("카드 매출", sel[w24]["amt"].sum(), sel[w12]["amt"].sum(), "%"), ("결제 건수", sel[w24]["cnt"].sum(), sel[w12]["cnt"].sum(), "%")):
+        if a0 > 0:
+            yoy3.append({"name": name, "change": float((a1 / a0 - 1) * 100), "unit": unit})
+    s0, s1 = tshare(sel[w24]), tshare(sel[w12])
+    if s0 is not None and s1 is not None:
+        yoy3.append({"name": "관광객 비중", "change": s1 - s0, "unit": "%p"})
+    contrib_all = {}
+    if not dongs:
+        ca = c[(c["ym"] > _months_back(end, 12))].groupby("dong")["amt"].sum() - c[(c["ym"] > _months_back(end, 24)) & (c["ym"] <= _months_back(end, 12))].groupby("dong")["amt"].sum()
+        contrib_all = {k: float(v) for k, v in ca.items()}
     return {"where": where, "biz": biz or "전 업종", "series": s, "cur": cur, "prev": prev, "end": end, "test": test, "index": idx,
+            "biz_yearly": biz_yearly, "yoy3": yoy3, "contrib_all": contrib_all,
             "share_by_year": share.to_dict(), "contrib": contrib, "supply": supply,
             "foreign": [{"origin": k, "value": float(v)} for k, v in fo.items()], "foreign_end": fend, "note": CROSS_FAIL.get(biz)}
+
+
+# ---------- 지도·동네 요약(v3 UI 패턴 A·지도) ----------
+def dong_values(kind, biz=None, target=None, names=None):
+    """43개 동네의 값(지도 색칠용). kind: visit(하루 방문, 최근 12개월) | sales(카드 매출, 최근 12개월) | stores(가게 수) | survival(음식점 5년 생존율)."""
+    if kind == "visit":
+        p = pd.read_parquet(TAB / "pop_month.parquet")
+        pm = p[p["ym"] > _months_back(p["ym"].max(), 12)]
+        return (pm.groupby("dong")["visit"].sum() / pm.groupby("dong")["days"].sum()), "지수", p["ym"].max()
+    if kind == "sales":
+        c = card()
+        if biz:
+            c = c[c["biz"] == biz]
+        end = c["ym"].max()
+        return c[c["ym"] > _months_back(end, 12)].groupby("dong")["amt"].sum(), "원", end
+    if kind == "stores":
+        b = pd.read_parquet(TAB / "biz.parquet")
+        if names:  # 세부 업종(국수·꽃집 …): 상가 정보 소분류 이름으로 센다
+            b = b[b["minor"].isin(names)]
+        elif target and target != "음식점":
+            b = biz_rows(b, target)
+        elif target == "음식점":
+            b = b[b["major"] == "음식"]
+        return b.groupby("dong")["count"].sum(), "곳", BIZ_ASOF
+    if kind == "survival":
+        k = pd.read_parquet(TAB / "km.parquet")
+        dongs = meta()["dongs"]
+        return k[(k["year"] == 5) & k["dong"].isin(dongs)].set_index("dong")["survival_pct"], "%", f"개업 {meta().get('km_cohort')}"
+    raise ValueError(kind)
+
+
+def summary(dong):
+    """첫 화면 '동네 한눈에': 질문형 카드 3장(값·기준·제주 43곳 중간값 비교·순위) + 지도 색칠 값."""
+    cards = []
+    for kind, q, unit_word, slots in (("visit", "하루 방문 인구는?", "지수", {"topic": "visit", "space": [dong]}),
+                                      ("sales", "카드 매출은?(최근 12개월)", "원", {"topic": "bizcompare", "space": [dong]}),
+                                      ("stores", "가게 수는?", "곳", {"topic": "stores", "space": [dong]})):
+        s, unit, asof = dong_values(kind)
+        v = float(s.get(dong, np.nan))
+        med = float(s.median())
+        cards.append({"kind": kind, "question": q, "value": v, "unit": unit, "as_of": asof, "median": med, "rank": int((s > v).sum() + 1), "of": int(len(s)),
+                      "slots": slots, "values": {k: float(x) for k, x in s.items()}})
+    return {"dong": dong, "cards": cards}
 
 
 # ---------- F4 업종 간 비교 ----------
@@ -224,8 +322,9 @@ def rising(biz=None, n=10):
         d = d[d.index.get_level_values("biz") == biz]
     d["growth_pct"] = (d["cur"] / d["prev"] - 1) * 100
     d["gain"] = d["cur"] - d["prev"]
+    by_dong = d.reset_index().sort_values("growth_pct", ascending=False).drop_duplicates("dong").set_index("dong")["growth_pct"]  # 지도: 동네마다 가장 많이 는 업종의 증가율
     d = d.sort_values("growth_pct", ascending=False).head(n).reset_index()
-    return {"end": end, "median": med, "rows": d.to_dict(orient="records"), "combos": int(len(cur))}
+    return {"end": end, "median": med, "rows": d.to_dict(orient="records"), "combos": int(len(cur)), "map": {k: float(v) for k, v in by_dong.items()}}
 
 
 # ---------- F2 판단 재료 ----------
@@ -238,7 +337,7 @@ def _pos(series, dong):
     return {"value": float(s[dong]), "pct": round(pct), "rank": int((s > s[dong]).sum() + 1), "of": int(len(s)), "level": level}
 
 
-def signals(dong, target=None, biz5=None):
+def signals(dong, target=None, biz5=None, detail=None, names=None):
     out = []
     p = pd.read_parquet(TAB / "pop_month.parquet")
     pm = p[p["ym"] > _months_back(p["ym"].max(), 12)]
@@ -254,11 +353,17 @@ def signals(dong, target=None, biz5=None):
     if v:
         out.append({"kind": "수요", "short": "매출", "name": f"{biz5 or '전 업종'} 카드 매출(최근 12개월)", "source": KTO, "as_of": c["ym"].max(), "unit": "원", **v})
     b = pd.read_parquet(TAB / "biz.parquet")
-    if target:
-        b = b[b["minor"].str.contains(target, na=False) | b["middle"].str.contains(target, na=False) | b["major"].str.contains(target, na=False)]
-    v = _pos(b.groupby("dong")["count"].sum(), dong)
+    every = sorted(b["dong"].unique())
+    if detail and names:  # 세부 업종(국수·꽃집 …)은 소분류 이름으로 세고, 그 업종 가게가 없는 동네는 0곳으로 둔다
+        b = b[b["minor"].isin(names)]
+    elif target == "음식점":
+        b = b[b["major"] == "음식"]
+    elif target:
+        b = biz_rows(b, target)
+    cnt = b.groupby("dong")["count"].sum()
+    v = _pos(cnt.reindex(every, fill_value=0) if detail and names else cnt, dong)
     if v:
-        out.append({"kind": "경쟁", "short": "가게 수(경쟁)", "name": f"{target or '전 업종'} 가게 수", "source": "793 상가(상권) 정보", "as_of": "최신 단면", "unit": "곳", **v})
+        out.append({"kind": "경쟁", "short": "가게 수(경쟁)", "name": f"{(detail if detail and names else target) or '전 업종'} 가게 수", "source": "793 상가(상권) 정보", "as_of": BIZ_ASOF, "unit": "곳", **v})
     k = pd.read_parquet(TAB / "km.parquet")
     dongs = json.loads((TAB / "meta.json").read_text(encoding="utf-8"))["dongs"]
     k5 = k[(k["year"] == 5) & k["dong"].isin(dongs)].set_index("dong")["survival_pct"]
@@ -266,7 +371,7 @@ def signals(dong, target=None, biz5=None):
     if v:
         v["level"] = {"많음": "높음", "적음": "낮음", "보통": "보통"}[v["level"]]
         out.append({"kind": "생존", "short": "생존율", "name": "음식점 5년 생존율(업종 구분 없음)", "source": "780 음식점 인허가", "as_of": f"개업 {meta().get('km_cohort', '2015-01~2020-08')}", "unit": "%", **v})
-    return {"dong": dong, "rule": "43개 동네 가운데 위치: 위 25% 안이면 '많음·높음', 아래 25%면 '적음·낮음', 그 사이는 '보통'", "items": out}
+    return {"dong": dong, "rule": "기준: 제주 43개 동네 가운데 위 25% 안이면 '많은(높은) 편', 아래 25%면 '적은(낮은) 편', 그 사이는 '보통'으로 봐요.", "items": out}
 
 
 # ---------- R10 업종 월 매출 예상 ----------

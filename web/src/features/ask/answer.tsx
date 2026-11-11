@@ -1,40 +1,60 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoaderCircleIcon } from "@/components/icons";
 import type { AskResult, Slots, Suggestion } from "@/lib/api";
 
-/** "이렇게 이해했어요": 해석한 칸을 먼저 보여 주고 [맞아요] [바꾸기]. [바꾸기]는 단계별 선택을 연다(되묻기 Loop 없음). */
+/** "이렇게 이해했어요": 해석한 칸과 주석을 보여 주고 [맞아요] [조건 바꾸기]. 답은 이미 이 내용으로 계산한 것이라 결론보다 약하게 둔다(B2). [조건 바꾸기]는 단계별 선택을 연다. */
 /** sample: 로딩 뼈대용 예시 답(보이지 않음). 시험 표시(data-testid)를 붙이지 않는다. */
 export function Understood({ r, onChange, sample }: { r: AskResult; onChange: (s: Slots) => void; sample?: boolean }) {
   const [ok, setOk] = useState(false);
+  const doneRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (ok) doneRef.current?.focus({ preventScroll: true });
+  }, [ok]);
   if (!r.understood) return null;
   const u = r.understood;
   const strong = u.assumed && !ok;
-  // Stageshow 지적 5: 문장과 버튼을 두 줄로 나누고, [맞아요]는 채운 버튼 · [바꾸기]는 윤곽 버튼으로 구분
+  const notes = (u.notes ?? []).filter(Boolean);
   return (
     <div
       data-testid={sample ? undefined : "understood"}
       className={
         strong
-          ? "flex flex-col gap-3 rounded-(--radius) border-2 border-(--krds-border-primary) bg-(--krds-surface-primary-subtler) p-4"
-          : "flex flex-col gap-3 rounded-(--radius) border border-(--krds-border-gray) p-4"
+          ? "flex flex-col gap-2 rounded-(--radius) border-2 border-(--krds-border-primary) bg-(--krds-surface-primary-subtler) p-3"
+          : "flex flex-col gap-2 rounded-(--radius) border border-(--krds-border-gray) p-3"
       }
     >
       <div className="flex flex-wrap items-center gap-2">
-        <p className="text-[length:var(--krds-fs-body-large)] font-semibold">{u.text}</p>
+        <p className="text-[length:var(--krds-fs-body-medium)] font-semibold">{u.text}</p>
         {strong && <Badge variant="outline" className="h-auto py-1 text-[length:var(--krds-fs-label-medium)]">질문을 읽고 추정했어요</Badge>}
       </div>
-      <div className="flex flex-wrap gap-2">
+      {notes.length > 0 && (
+        <ul data-testid="understood-notes" className="flex list-disc flex-col gap-1 pl-5 text-[length:var(--krds-fs-body-medium)]">
+          {notes.map((n) => (
+            <li key={n}>{n}</li>
+          ))}
+        </ul>
+      )}
+      {ok && (
+        <p ref={doneRef} tabIndex={-1} role="status" data-testid="understood-done" className="flex items-center gap-1 font-semibold text-(--krds-text-primary) outline-none">
+          <Check size={18} aria-hidden /> 확인했어요. 아래 답은 이 내용으로 계산했어요.
+        </p>
+      )}
+      <div className="flex flex-wrap items-center gap-2">
         {!ok && (
-          <Button onClick={() => setOk(true)} data-testid="understood-ok">
-            맞아요
-          </Button>
+          <>
+            <span className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">아래 답은 이 내용으로 계산했어요. 다르면 고쳐 주세요.</span>
+            <Button variant="outline" size="sm" onClick={() => setOk(true)} data-testid="understood-ok">
+              맞아요
+            </Button>
+          </>
         )}
-        <Button variant="outline" onClick={() => onChange(u.slots)} data-testid="understood-change">
-          바꾸기(하나씩 고르기)
+        <Button variant="outline" size="sm" onClick={() => onChange(u.slots)} data-testid="understood-change">
+          조건 바꾸기
         </Button>
       </div>
     </div>
@@ -71,6 +91,30 @@ export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
         <p data-testid={t("conclusion")} className="text-[length:max(1.75rem,var(--krds-fs-heading-medium))] leading-snug font-bold">
           {a?.conclusion.text ?? c?.conclusion}
         </p>
+        {/* B2·B7: 답이 길어도 결론 가까이에서 출처·내려받기·센터 자료 칸으로 바로 간다(순서는 그대로) */}
+        {a && !sample && (
+          <nav aria-label="이 답의 아래쪽 바로 가기" data-testid="answer-shortcuts" className="flex flex-wrap items-center gap-x-1 gap-y-0 text-[length:var(--krds-fs-body-medium)]">
+            <span className="text-(--krds-text-bolder)">바로 가기:</span>
+            {(a.footer?.length ?? 0) > 0 && (
+              <a href="#answer-source" className="inline-flex min-h-11 items-center px-2 underline">
+                출처 보기
+              </a>
+            )}
+            {(r.downloads?.length ?? 0) > 0 && (
+              <a href="#answer-downloads" className="inline-flex min-h-11 items-center px-2 underline">
+                내려받기
+              </a>
+            )}
+            <button type="button" data-testid="shortcut-print" onClick={() => window.print()} className="inline-flex min-h-11 items-center px-2 underline">
+              인쇄(PDF 저장)
+            </button>
+            {a.requests?.some((q) => q.kind === "center") && (
+              <a href="#request-center" className="inline-flex min-h-11 items-center px-2 underline">
+                센터 자료 넣기
+              </a>
+            )}
+          </nav>
+        )}
       </div>
       {a ? (
         <div data-testid={t("evidence")} className="flex flex-col gap-5">
@@ -104,8 +148,18 @@ export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
       )}
       {c && c.intervals.length > 0 && (
         <div>
-          <h3 className="mb-1">구간</h3>
+          <h3 className="mb-1">값이 달라질 수 있는 폭</h3>
           <ul>{c.intervals.map((x, i) => <li key={i}>{x}</li>)}</ul>
+        </div>
+      )}
+      {/* 패턴 G: 바닥 줄 — 자료·기준 시점·다음 갱신(OWID 방식) */}
+      {a?.footer && a.footer.length > 0 && (
+        <div id={sample ? undefined : "answer-source"} data-testid={t("answer-footer")} className="scroll-mt-24 order-last flex flex-col gap-1 border-t border-(--krds-border-gray-light) pt-3 text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
+          {a.footer.map((f) => (
+            <p key={f.source}>
+              자료: {f.source} · 기준 {f.as_of} · 다음 갱신: {f.next}
+            </p>
+          ))}
         </div>
       )}
       {c && c.limits.length > 0 && (
@@ -122,8 +176,8 @@ export function Process({ r }: { r: AskResult }) {
   const p = r.process;
   if (!p) return null;
   return (
-    <details data-testid="process" className="rounded-(--radius) border border-(--krds-border-gray-light) p-3">
-      <summary className="cursor-pointer font-semibold">판단 과정 보기</summary>
+    <details data-testid="process" className="rounded-(--radius) border border-(--krds-border-gray-light) px-3 py-1">
+      <summary className="flex min-h-11 cursor-pointer items-center font-semibold">판단 과정 보기</summary>
       <div className="mt-3 flex flex-col gap-2">
         {p.explain?.text && <p>{p.explain.text}</p>}
         <ol className="flex flex-wrap gap-2">
@@ -158,7 +212,8 @@ export function Process({ r }: { r: AskResult }) {
 
 export function Downloads({ r }: { r: AskResult }) {
   const files = (r.downloads ?? []).filter((d) => d.kind === "csv" && d.csv);
-  if (!files.length) return null;
+  const bundle = (r.downloads ?? []).find((d) => d.kind === "bundle" && d.csv);
+  if (!files.length && !bundle) return null;
   const save = (name: string, csv: string) => {
     const url = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
@@ -168,13 +223,25 @@ export function Downloads({ r }: { r: AskResult }) {
     URL.revokeObjectURL(url);
   };
   return (
-    <div className="flex flex-wrap items-center gap-2" data-testid="downloads">
-      <span className="font-semibold">내려받기</span>
-      {files.map((d) => (
-        <Button key={d.name} size="sm" variant="outline" onClick={() => save(d.name, d.csv!)}>
-          {d.name} ({d.rows}줄)
+    <div id="answer-downloads" className="flex scroll-mt-24 flex-wrap items-center gap-2" data-testid="downloads">
+      {/* 패턴 I: 이 답의 자료를 한 파일로, 자료별 파일은 접어 둔다 */}
+      {bundle && (
+        <Button variant="outline" data-testid="download-bundle" onClick={() => save(bundle.name, bundle.csv!)}>
+          이 답의 자료 내려받기(CSV, {bundle.rows}줄)
         </Button>
-      ))}
+      )}
+      {files.length > 0 && (
+        <details>
+          <summary className="flex min-h-11 cursor-pointer items-center px-2">자료별로 받기({files.length})</summary>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {files.map((d) => (
+              <Button key={d.name} size="sm" variant="outline" onClick={() => save(d.name, d.csv!)}>
+                {d.name} ({d.rows}줄)
+              </Button>
+            ))}
+          </div>
+        </details>
+      )}
     </div>
   );
 }

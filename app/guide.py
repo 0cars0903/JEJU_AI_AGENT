@@ -7,6 +7,7 @@ slots 형식: {"topic": 주제 id, "space": [동네], "target": 업종·인구, 
 단계별 선택의 첫 단계는 '궁금한 것'(주제)이고, 그 주제에 필요한 칸만 이어서 고른다.
 """
 import copy
+import re
 
 import qtuple as Q
 
@@ -15,6 +16,8 @@ FOOD = ["음식점", "카페", "한식", "일식", "횟집", "중식", "치킨",
 RANK_METRICS = {"매출": "카드 매출", "매출성장": "요즘 매출이 많이 는 곳", "관광객비중": "관광객 매출 비중", "점포수": "가게 수", "일평균방문": "일평균 방문"}
 # 카드 매출(제주관광공사)은 업종 대분류만 있다. 세부 업종을 고르면 대분류(음식점업 등) 기준으로 답하고 한계에 적는다.
 CARD_TARGETS = ["음식점", "카페", "한식", "치킨", "횟집", "숙박", "소매"]
+
+DIAG_TARGETS = FOOD + ["숙박", "소매", "편의점"]  # 종합 진단에서 고를 수 있는 업종(문서 20 A6: 업종을 버리지 않는다)
 
 # 주제: id → 이름, 기본 Tuple, 이어서 고를 칸(필수 / 선택), 칸별 선택지, 보기(variant)
 TOPICS = [
@@ -35,15 +38,15 @@ TOPICS = [
      "options": {"target": CARD_TARGETS}},
     {"id": "market", "label": "업종 시장 추이", "base": {"type": "T4", "metric": ["시장추이"]}, "need": ["target"], "optional": ["space"],
      "options": {"target": CARD_TARGETS}},
-    {"id": "bizcompare", "label": "같은 동네 업종끼리 비교", "base": {"type": "T5", "metric": ["업종비교"]}, "need": ["space"]},
+    {"id": "bizcompare", "label": "한 동네 안에서 업종끼리 비교", "base": {"type": "T5", "metric": ["업종비교"]}, "need": ["space"]},
     {"id": "rain", "label": "비 오는 날 오가는 사람 변화", "base": {"type": "T6", "metric": ["일평균방문"], "cond": ["비"]}, "need": ["space"]},
     {"id": "forecast", "label": "예상해 보기", "base": {"type": "T8", "metric": ["일평균방문"], "time": "다음주"}, "need": ["space"], "optional": ["variant", "target"],
      "options": {"target": CARD_TARGETS},
      "variants": {"visit": {"label": "다음 주 방문 예상"}, "sales": {"label": "다음 달 업종 매출 예상", "base": {"metric": ["매출"], "time": "다음달"}},
                   }},
     {"id": "similar", "label": "비슷한 동네 추천받기", "base": {"type": "T9"}, "need": ["space"]},
-    {"id": "compare", "label": "동네 2곳 이상 비교", "base": {"type": "T2"}, "need": ["space"], "min_space": 2},
-    {"id": "diagnose", "label": "상권 종합 진단", "base": {"type": "T10"}, "need": ["space"]},
+    {"id": "compare", "label": "동네끼리 비교(2곳 이상)", "base": {"type": "T2"}, "need": ["space"], "min_space": 2, "optional": ["target"], "options": {"target": Q.TARGETS_BIZ}},
+    {"id": "diagnose", "label": "상권 종합 진단", "base": {"type": "T10"}, "need": ["space"], "optional": ["target"], "options": {"target": DIAG_TARGETS}},
     {"id": "rank", "label": "동네 순위", "base": {"type": "T3"}, "need": ["metric"], "optional": ["target"], "options": {"metric": list(RANK_METRICS), "target": CARD_TARGETS}},
 ]
 TOPIC = {x["id"]: x for x in TOPICS}
@@ -65,9 +68,10 @@ def sentence(slots):
     tp = TOPIC[slots["topic"]]
     d = "·".join(slots.get("space") or [])
     tgt = slots.get("target")
+    det = slots.get("detail") or tgt  # 세부 업종(국수·꽃집 …)은 가게 수를 세는 주제의 문장에만 쓴다
     v = slots.get("variant")
     s = {
-        "stores": f"{d} {tgt + ' ' if tgt else ''}가게는 몇 곳이야?",
+        "stores": f"{d} {det + ' ' if det else ''}가게는 몇 곳이야?",
         "openclose": f"{d} {tgt or '음식점'} 5년 생존율은?" if v == "survival" else f"{d} {tgt or '음식점'} 개업·폐업은 최근 3년 어땠어?",
         "hourly": f"{d} {tgt + ' ' if tgt else ''}몇 시에 손님이 많아?",
         "sales": f"{d} {tgt + ' ' if tgt else ''}" + {"unit": "결제 1건당 금액은?", "now": "최근 카드 매출은?"}.get(v, "카드 매출 흐름은?"),
@@ -76,13 +80,35 @@ def sentence(slots):
         "rain": f"비 오는 날 {d} 방문은 얼마나 달라져?",
         "forecast": {"sales": f"{d} {tgt or '음식점'} 다음 달 카드 매출 예상은?"}.get(v, f"{d} 다음 주 방문 예상은?"),
         "market": f"{d + ' ' if d else '제주 '}{tgt or ''} 시장이 커지고 있어?",
-        "bizcompare": f"{d}에서 업종별 카드 매출 비교해줘",
+        "bizcompare": f"{d}에서 {'·'.join(slots['details'])} 점포 수 비교해줘" if len(slots.get("details") or []) >= 2 else f"{d}에서 업종별 카드 매출 비교해줘",
         "similar": f"{d}이랑 비슷한 동네는?",
-        "compare": f"{' · '.join(slots.get('space') or [])} 비교해줘",
-        "diagnose": f"{d} 상권 종합 진단해줘",
+        "compare": f"{' · '.join(slots.get('space') or [])} {det + ' ' if det else ''}비교해줘",
+        "diagnose": f"{d} {det + ' ' if det else ''}상권 종합 진단해줘",
         "rank": f"{tgt + ' ' if tgt else ''}{RANK_METRICS.get(slots.get('metric'), '')} 동네 순위는?",
     }[tp["id"]]
     return " ".join(s.split())
+
+
+_SQUASH = re.compile(r"[\s?!.,·~]")
+
+
+def match_sentence(question):
+    """서비스가 만든 문장(추천 질문·대표 질문·공유한 주소의 질문)을 입력 칸에 그대로 다시 넣었을 때 같은 버튼 값을 돌려준다.
+    해석기(M1)가 자기 문장을 다르게 읽는 일을 막는다(문서 20 A1). 띄어쓰기·문장부호만 다르면 같은 문장으로 본다. 없으면 None."""
+    q = _SQUASH.sub("", question or "")
+    if not q:
+        return None
+    dongs = sorted([d for d in Q.DONGS if d in question], key=question.index)
+    for tp in TOPICS:
+        opts = tp.get("options", {})
+        for sp in ([dongs, []] if dongs else [[]]):
+            for v in [None, *tp.get("variants", {})]:
+                for tgt in [None, *opts.get("target", [])]:
+                    for m in opts.get("metric", [None]):
+                        slots = {k: x for k, x in {"topic": tp["id"], "space": sp, "variant": v, "target": tgt, "metric": m}.items() if x}
+                        if not missing(slots) and _SQUASH.sub("", sentence(slots)) == q:
+                            return slots
+    return None
 
 
 def missing(slots):
@@ -127,6 +153,18 @@ def to_tuple(slots):
         if slots["target"] not in tp.get("options", {}).get("target", []):
             raise ValueError(f"이 주제에서 고를 수 없는 대상: {slots['target']}")
         t["target"] = slots["target"]
+    if tp["id"] == "bizcompare" and isinstance(slots.get("details"), list):  # 자유 입력에서 읽은 세부 업종 묶음(가게 수로 비교, 문서 20 A9)
+        import qparse
+        ds = [w for w in slots["details"] if w in qparse.DETAIL or w in qparse.VS_BIZ]
+        if len(ds) >= 2:
+            t["details"] = ds
+    if slots.get("detail"):  # 자유 입력에서 읽은 세부 업종. 주소·'다시 계산'에서도 사라지지 않게 그대로 넘긴다(문서 20 A3·A6)
+        import qparse
+        if slots["detail"] in qparse.DETAIL:
+            t["detail"] = slots["detail"]
+            fam = qparse.MAJOR_TARGET.get(qparse.DETAIL[slots["detail"]]["major"])
+            if not t.get("target") and fam in tp.get("options", {}).get("target", []):
+                t["target"] = fam
     if tp["id"] == "rank":
         if slots.get("metric") not in RANK_METRICS:
             raise ValueError(f"고를 수 없는 순위 지표: {slots.get('metric')}")
@@ -147,6 +185,8 @@ def to_slots(t):
     topic = TYPE_TOPIC.get(t.get("type"))
     if t.get("type") in ("T1", "T4", "T5") and m in METRIC_TOPIC:
         topic = METRIC_TOPIC[m]
+    if t.get("type") == "T6" and m in METRIC_TOPIC and m != "일평균방문":  # '관광객 손님이 줄었어?'를 비 효과로 미리 고르지 않는다(문서 20 A1)
+        topic = METRIC_TOPIC[m]
     if t.get("type") == "T3":
         topic = "rank"
     out = {"topic": topic, "space": list(t.get("space") or [])}
@@ -165,6 +205,10 @@ def to_slots(t):
         out["variant"] = "age"
     if topic == "rank" and m in RANK_METRICS:
         out["metric"] = m
+    if t.get("detail"):
+        out["detail"] = t["detail"]
+    if t.get("details"):
+        out["details"] = list(t["details"])
     return {k: v for k, v in out.items() if v}
 
 

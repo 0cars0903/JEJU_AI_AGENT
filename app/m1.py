@@ -86,12 +86,28 @@ class M1:
                     # v3 묶음 지표가 사전에 명시적으로 잡히면 사전 해석을 따른다(예문이 적어 분류기가 '요즘 ~ 어디야'를 범위 밖으로 봄, 2026-11-11)
                     t["type"], t["expect"] = base["type"], "답함"
                     t["_why"] = list(base.get("_why") or []) + ["v3 묶음 지표는 사전 해석 우선"]
+                elif t["expect"] == "범위밖" and base["expect"] == "답함" and base.get("detail") and base["space"] and "점포수" in base["metric"]:
+                    # 상가 정보 소분류에 있는 업종의 가게 수('연동 펜션 몇 곳')는 사전 해석을 따른다(분류기 예문에 세부 업종이 없어 범위 밖으로 봄, 문서 20 A3)
+                    t["type"], t["expect"] = base["type"], "답함"
+                    t["_why"] = list(base.get("_why") or []) + ["세부 업종 가게 수는 사전 해석 우선"]
+                elif ((t["expect"] == "범위밖" or t["type"] == "T12") and base["expect"] != "범위밖"
+                      and qparse.DETAIL.get(base.get("detail"), {}).get("word") in Q.TARGETS_OUT and qparse.count_question(base)):
+                    # 미용실·약국·학원·병원·부동산중개의 가게 수는 상가 정보로 답한다(문서 20 7.5절 3번, 사용자 결정 2026-11-12).
+                    # 분류기는 이 업종들을 범위 밖으로 배웠으므로(x1_data) 사전 해석을 따른다. 동네가 없으면 사전 해석대로 되묻는다.
+                    t["type"], t["expect"] = base["type"], base["expect"]
+                    t["_why"] = list(base.get("_why") or []) + ["5개 업종 가게 수는 사전 해석 우선"]
                 elif t["expect"] == "범위밖":
                     t["type"] = "T12"
                 elif base["_amb"] and not base["space"]:
                     t["expect"] = "되묻기"
                 elif t["type"] in qparse.NEED_DONG and not base["space"] and t["expect"] == "답함" and not {"시장추이", "매출성장"} & set(t.get("metric") or []):
                     t["expect"] = "되묻기"
+                if (conf is not None and conf < self.low_conf and t["type"] == "T6" and t["expect"] == "답함" and not base["cond"]
+                        and base["type"] != "T6" and base["expect"] != "범위밖"):
+                    # 조건 낱말(비·주말 등)이 없는 문장을 분류기가 낮은 확신도로 '조건 효과'로 읽으면 사전 해석을 따른다(문서 20 7.5절 1번, 사용자 결정 2026-11-12).
+                    # 확신도 0.5 이상에는 적용하지 않는다: 사전에 없는 날씨 낱말(폭우·강수)의 조건 효과 문항 10건이 틀리게 바뀐다.
+                    t["type"] = base["type"]
+                    t["_why"] = list(t.get("_why") or []) + ["조건 낱말 없는 낮은 확신도의 조건 효과는 사전 해석 우선"]
             except Exception as e:  # Ollama가 없거나 실패하면 규칙 경로로 대체
                 t["_fallback_reason"] = type(e).__name__
         card = qparse.card(t)

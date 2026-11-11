@@ -66,12 +66,13 @@ class Ask(BaseModel):
     question: Optional[str] = Field(default=None, max_length=200)
     slots: Optional[dict] = None  # 추천 질문·단계별 선택·대표 질문의 버튼 값(app/guide.py). 있으면 해석하지 않는다
     dataset_id: Optional[str] = Field(default=None, max_length=32)  # F9: /api/dataset로 불러온 센터 CSV
+    dataset_key: Optional[str] = Field(default=None, max_length=64)  # 파일을 넣을 때 받은 열쇠. 주소에는 넣지 않는다(문서 20 A7)
 
 
 @app.post("/api/dataset")
 async def dataset(request: Request, check_dong: Optional[str] = None, check_biz: Optional[str] = None):
     """F9 센터 자료 불러오기: 요청 본문이 CSV 파일 그대로(파일 이름은 X-Filename 머리글). 칸 이름으로 자료를 알아보고 집계해 둔다.
-    응답: id·자료 이름·줄 수·기간·동네·업종·요청 조건과 맞지 않는 점(problems). 알아보지 못하면 422와 다시 받을 방법."""
+    응답: id·key(다시 계산할 때 함께 보내는 열쇠)·자료 이름·줄 수·기간·동네·업종·요청 조건과 맞지 않는 점(problems). 알아보지 못하면 422와 다시 받을 방법."""
     import center_csv
     from urllib.parse import unquote
     raw = await request.body()
@@ -99,8 +100,11 @@ def ask(body: Ask):
     env = {"center_db": False}
     if body.dataset_id:
         import center_csv
-        if not center_csv.get(body.dataset_id):
+        meta = center_csv.get(body.dataset_id)
+        if not meta:
             raise HTTPException(422, "불러온 센터 자료를 찾지 못했습니다(하루가 지나 지워졌을 수 있어요). 파일을 다시 넣어 주세요.")
+        if not center_csv.allowed(meta, body.dataset_key):
+            raise HTTPException(422, "센터 자료로 계산한 결과는 파일을 넣은 브라우저에서만 볼 수 있어요. 파일을 다시 넣어 주세요.")
         env["center_card"] = body.dataset_id
     if body.slots:
         try:
@@ -110,6 +114,28 @@ def ask(body: Ask):
     if "m" not in _M1:
         _M1["m"] = m1.M1()
     return clean(result.respond(question, env, llm_on=on, interpret=_M1["m"].interpret))
+
+
+@app.get("/api/map")
+def jeju_map():
+    """제주 행정동 43곳 경계(SVG 경로, app/build_map.py). 지도 배경 타일 없음. 출처 표기(attribution) 포함."""
+    import json as _json
+    if "map" not in _CACHE:
+        _CACHE["map"] = _json.loads((ROOT / "data" / "tables" / "jeju_map.json").read_text(encoding="utf-8"))
+    return _CACHE["map"]
+
+
+@app.get("/api/summary")
+def dong_summary(dong: str = Query(..., max_length=10)):
+    """패턴 A 첫 화면 '동네 한눈에': 질문형 카드 3장(하루 방문·카드 매출·가게 수)과 지도 색칠 값."""
+    import qtuple as Q
+    import v3
+    if dong not in Q.DONGS:
+        raise HTTPException(422, f"알 수 없는 동네: {dong}")
+    return clean(v3.summary(dong))
+
+
+_CACHE = {}
 
 
 @app.get("/api/guide")

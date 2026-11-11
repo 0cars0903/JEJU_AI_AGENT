@@ -10,9 +10,12 @@
 |---|---|---|
 | 1. 설치(처음 1회, 인터넷 필요) | `scripts\setup_windows.bat` | `sh scripts/setup_mac.sh` |
 | 2. 실행 | `scripts\run_windows.bat` | `sh scripts/run_mac.sh` |
-| 3. 접속 | 브라우저에서 http://localhost:8501 | 같음 |
+| 3. 접속 | 실행하면 기록을 남기지 않는 브라우저 창(Edge InPrivate, 없으면 Chrome 시크릿)이 http://localhost:8501 로 열립니다 | 같음(Chrome 시크릿, 없으면 Edge InPrivate) |
+| 4. 방문자가 바뀔 때 | 브라우저 창을 닫고 `scripts\run_windows.bat`을 다시 실행합니다(서버는 그대로 쓰고 새 창만 엽니다) | 창을 닫고 `sh scripts/run_mac.sh`를 다시 실행 |
 
 필요 환경: Python 3.9. 표준 테이블(`data/tables/`)이 들어 있어 데이터를 내려받지 않아도 바로 동작합니다.
+
+기록을 남기지 않는 창은 물어본 질문 주소를 방문 기록에 쓰지 않고, 창을 닫으면 뒤로 가기 목록과 고른 동네도 지웁니다. 창이 열려 있는 동안에는 뒤로 가기 목록이 남으므로 방문자가 바뀌면 4번처럼 창을 닫습니다. Edge와 Chrome을 둘 다 찾지 못하면 기본 브라우저로 열고, 그때는 방문 기록을 직접 지워야 한다고 실행 창에 알려 줍니다.
 
 ## LLM 경로
 앱이 시작할 때 아래 순서로 고릅니다. 질의 해석(M1)은 LLM이 아니라 문장 임베딩(Ollama `bge-m3`)과 분류기로 하고, 임베딩을 쓸 수 없으면 사전 규칙으로 해석합니다.

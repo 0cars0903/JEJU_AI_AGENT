@@ -96,6 +96,9 @@
   }
   h1, h2, h3 { text-wrap: balance; }
   button, a, summary, label, select, [role="button"] { touch-action: manipulation; }
+  /* C1: 누를 수 있는 것 위에서는 손가락 모양 커서(Tailwind 4 기본은 화살표) */
+  button:not(:disabled), [role="button"], summary, label[for], select, a[href], label:has(input:not(:disabled)) { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
   table { font-variant-numeric: tabular-nums; }
   h1 { font-size: var(--krds-fs-heading-large); font-weight: 700; line-height: 1.3; }
   h2 { font-size: var(--krds-fs-heading-medium); font-weight: 700; line-height: 1.35; }
@@ -143,15 +146,18 @@
 }
 
 
-/* F7 보고서: 화면에서는 숨기고, 인쇄할 때는 보고서만 보인다(v3 설계 2절) */
+/* F7 보고서: 화면에서는 숨기고, 인쇄할 때는 보고서만 보인다(v3 설계 2절). 보고서는 body 바로 아래에 붙어 있어 나머지를 display:none으로 뺀다(B7). */
 .print-only { display: none; }
+.report-tag { display: block; font-size: 10pt; font-weight: 700; color: #444; }
 @media print {
-  body * { visibility: hidden; }
-  .print-only, .print-only * { visibility: visible; }
-  .print-only { display: block; position: absolute; inset: 0 auto auto 0; width: 100%; padding: 12mm; font-size: 12pt; color: #000; background: #fff; }
+  body > *:not(.print-only) { display: none !important; }
+  .print-only { display: block; position: static; padding: 0; font-size: 12pt; color: #000; background: #fff; }
   .print-only h1 { font-size: 18pt; margin-bottom: 6pt; }
   .print-only h2 { font-size: 14pt; margin-top: 10pt; }
   .print-only h3 { font-size: 12pt; }
   .print-only ul { padding-left: 14pt; list-style: disc; }
+  .print-only li { margin-bottom: 4pt; break-inside: avoid; }
   .print-only .report-chart { break-inside: avoid; margin-top: 8pt; }
+  .print-only button, .print-only [data-testid$="-zoom"], .print-only [data-testid$="-tiny-hint"] { display: none; }
+  .print-only figure { max-width: 75mm; }
 }

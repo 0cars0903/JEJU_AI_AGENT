@@ -43,6 +43,89 @@ FOOD_GROUPS = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분�
 NEED_DONG = {"T1", "T4", "T5", "T6", "T8", "T9", "T10", "T13"}
 NEED_TWO = {"T2"}
 
+# ---------- 세부 업종(문서 20 A3, 2026-11-12) ----------
+# 원인: 업종 칸은 닫힌 목록(Q.TARGETS_*)인데 BIZ_KEYS가 소분류 이름('꽃집')·인허가 묶음('기타')을 그대로 넣어 검증에서 떨어졌고,
+# 소분류 이름의 일부('국수/칼국수'의 국수)는 아예 찾지 못해 말없이 전 업종으로 답했다.
+# 고침: 업종 칸에는 닫힌 목록만 넣는다. 그 밖의 낱말은 상가 정보(793) 소분류 이름에서 찾아 detail 칸에 따로 남긴다.
+# 소분류로 셀 수 있는 것은 가게 수뿐이다(카드 매출·방문에는 소분류가 없다). 그래서 다른 지표에서는 '반영하지 못했다'고 알린다.
+CLOSED_TARGETS = set(Q.TARGETS_BIZ) | set(Q.TARGETS_POP) | set(Q.TARGETS_OUT)
+MAJOR_TARGET = {"음식": "음식점", "숙박": "숙박", "소매": "소매"}  # 세부 업종의 대분류 → 업종 칸 값
+TARGET_FAMILY = {**{g: "음식점" for g in FOOD_GROUPS}, "숙박": "숙박", "소매": "소매", "편의점": "소매", "약국": "소매",
+                 "학원": "교육", "병원": "보건의료", "미용실": "수리·개인", "부동산중개": "부동산"}
+DETAIL_ALIAS = {"기념품": "기념품점", "꽃가게": "꽃집", "빨래방": "셀프 빨래방", "코인노래방": "노래방", "피시방": "PC방", "책방": "서점"}  # 소분류 이름과 다르게 부르는 말
+# 상가 정보 소분류 이름에 없는 일상 낱말 → 세는 소분류 묶음(문서 20 A9). 답에는 어느 분류로 셌는지 함께 적는다.
+DETAIL_GROUP = {"디저트": ["빵/도넛", "아이스크림/빙수", "떡/한과"], "빵집": ["빵/도넛"], "베이커리": ["빵/도넛"], "제과점": ["빵/도넛"], "떡집": ["떡/한과"]}
+NO_DETAIL = {"브런치": "상가 정보에 '브런치'라는 분류가 없어서 브런치 가게만 따로 셀 수 없어요."}  # 분류가 없어 셀 수 없는 낱말
+# 범위 밖이던 5개 업종(Q.TARGETS_OUT)의 가게 수(문서 20 7.5절 3번, 사용자 결정 2026-11-12): 상가 정보 소분류로 센다.
+# 낱말 → (대분류, 소분류 이름 규칙, 세는 기준 설명). 열리는 것은 가게 수뿐이다. 카드 매출은 공개 자료(대분류 5개)에도,
+# 비씨카드 42개 업종 목록(허브 746 기준)에도 이 업종들이 없어서 답하지 않는다.
+OUT_DETAIL = {"미용실": ("수리·개인", r"^미용실$", None), "약국": ("소매", r"^약국$", None),
+              "학원": ("교육", r"학원", "교육 분류에서 이름에 '학원'이 든 소분류 {n}개(입시·교과학원, 요가/필라테스 학원, 음악학원 등)"),
+              "병원": ("보건의료", r"병원|의원", "보건의료 분류에서 이름에 '병원'·'의원'이 든 소분류 {n}개(치과의원·한의원 포함, 약국·동물병원 제외)"),
+              "부동산중개": ("부동산", r"^부동산 중개/대리업$", None)}
+OUT_ALIAS = {"헤어샵": "미용실", "미장원": "미용실", "부동산 중개": "부동산중개", "공인중개사": "부동산중개", "중개업소": "부동산중개"}
+# '부동산'만 쓴 문장은 집값·시세 질문일 수 있다(범위 밖). 가게 수를 묻는 말('몇 곳'·'가게 수')이 함께 있을 때만 중개업소로 읽는다.
+OUT_COUNT_ALIAS = {"부동산": "부동산중개"}
+OUT_PART = {"치과": ("보건의료", r"^치과")}  # 5개 업종 안의 한 갈래를 가리키는 낱말(업종 칸은 '병원'으로 잡힌다)
+VS_BIZ = set(Q.TARGETS_BIZ) - {"음식점", "숙박", "소매"}  # 대분류가 아닌 업종 낱말(세부 업종끼리 비교에 쓴다)
+DETAIL_STOP = set("간이 구이 기타 무도 요리 유흥 음식점 일반 전문 포장 전문자격 충전업 찌개류".split())  # 업종을 가리키지 못하는 조각
+
+
+def _detail_table():
+    out = {}
+    for name, v in BIZ["categories"].items():
+        major = v.get("major")
+        if not major or not v.get("stores_793"):
+            continue
+        # 음식은 '국수/칼국수'·'일식 회/초밥'처럼 여러 낱말을 묶은 이름이라 조각으로 나눈다. 그 밖은 띄어쓰기 없는 이름만 '/'로 나눈다.
+        pieces = re.split(r"[ /]", name) if major == "음식" else name.split("/") if " " not in name else [name]
+        for w in pieces:
+            if len(w) < 2 or w in DETAIL_STOP or w in CLOSED_TARGETS:
+                continue
+            out.setdefault(w, {"word": w, "names": [], "major": major})["names"].append(name)
+    for a, w in DETAIL_ALIAS.items():
+        if w in out and a not in out:
+            out[a] = dict(out[w], word=a)
+    for a, names in DETAIL_GROUP.items():
+        ok = [n for n in names if BIZ["categories"].get(n, {}).get("stores_793")]
+        if ok and a not in out:
+            out[a] = {"word": a, "names": ok, "major": "음식"}
+
+    def pick(major, pat):
+        return [n for n, v in BIZ["categories"].items() if v.get("major") == major and v.get("stores_793") and re.search(pat, n)]
+    for w, (major, pat, desc) in OUT_DETAIL.items():
+        names = pick(major, pat)
+        if names:
+            out[w] = {"word": w, "names": names, "major": major, **({"desc": desc.format(n=len(names))} if desc else {})}
+    for a, w in OUT_ALIAS.items():
+        if w in out and a not in out:
+            out[a] = out[w]  # 답에는 대표 낱말(미용실·부동산중개)로 적는다
+    for w, (major, pat) in OUT_PART.items():
+        names = pick(major, pat)
+        if names and w not in out:
+            out[w] = {"word": w, "names": names, "major": major}
+    return out
+
+
+def detail_desc(det):
+    """세부 업종을 어느 분류로 셌는지 적는 말: "상가 정보의 '꽃집' 분류" 또는 묶음 설명."""
+    d = DETAIL.get(det) or {}
+    return "상가 정보의 " + (d["desc"] if d.get("desc") else "·".join(f"'{n}'" for n in d.get("names", [])) + " 분류")
+
+
+def count_question(t, rule_type=None):
+    """세부 업종의 가게 수를 묻는 질문인가. 지표가 가게 수 계열뿐이거나, 지표 없이 현황·비교·순위를 물은 경우다."""
+    ms = set(t.get("metric") or [])
+    return ms <= COUNT_METRICS if ms else (rule_type or t.get("type")) in ("T1", "T2", "T3")
+
+
+# 카드 자료로 계산하는 지표. 업종별 값이 따로 있어야 뜻이 통한다(방문·버스·인구는 업종 구분이 없는 동네 전체 값이라 넣지 않는다).
+CARD_METRICS = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "외국인매출", "과거매출", "시장추이", "업종비교", "매출성장"}
+
+
+DETAIL = _detail_table()
+DETAIL_KEYS = sorted(DETAIL, key=len, reverse=True)
+
 
 def norm(q):
     return re.sub(r"\s+", " ", q.strip())
@@ -116,7 +199,8 @@ def place_ok_kiwi(q, k, i, toks):
     return admin and _left_ok(q, i)  # 형태소가 더 잘게 나뉜 행정 이름(예: '이도2동')은 앞 경계만 본다
 
 
-def find_places(q, mode=None):
+def find_places(q, mode=None, trace=None):
+    """trace에 list를 주면 (질문에 쓴 낱말, 읽은 동네)를 담는다(이해 상자 안내용)."""
     mode = mode or PLACE_MODE
     found, strong, amb, used = [], set(), {}, q
     toks = _kiwi().tokenize(q) if mode == "kiwi" else None
@@ -132,6 +216,8 @@ def find_places(q, mode=None):
                 if "dong" in v:
                     if v["dong"] not in found:
                         found.append(v["dong"])
+                    if trace is not None:
+                        trace.append((k, v["dong"]))
                     if k in STRONG or (ADMIN_SUFFIX.search(k) and len(k) >= 3):
                         strong.add(v["dong"])
                 else:
@@ -144,10 +230,46 @@ def find_places(q, mode=None):
     return found, amb
 
 
+def find_detail(q):
+    """세부 업종 낱말(국수·꽃집·펜션 …) → {"word", "names"(상가 정보 소분류 이름), "major"} 또는 None. 긴 낱말부터 본다.
+    음식 낱말은 단어 중간도 인정한다(칼국수·고기국수집·햄버거). 그 밖은 단어 첫머리에서 시작할 때만 인정한다."""
+    for w in DETAIL_KEYS:
+        d = DETAIL[w]
+        if " " in w:
+            ok = has(q, w)
+        elif d["major"] == "음식":
+            ok = w in q
+        else:
+            ok = any(_left_ok(q, m.start()) for m in re.finditer(re.escape(w), q))
+        if ok:
+            return d
+    return None
+
+
+def find_details(q):
+    """질문에 나온 업종 낱말을 모두 찾는다(한 동네 안에서 세부 업종끼리 비교, 문서 20 A9). 긴 낱말부터 보고, 이미 찾은 낱말 안의 조각은 다시 세지 않는다.
+    돌려주는 값: [{"word", "names"(상가 정보 소분류 이름) 또는 None(업종 낱말로 찾음)}], 같은 분류 묶음은 한 번만."""
+    rest, out, seen = norm(q), [], []
+    for w in DETAIL_KEYS:
+        d = DETAIL[w]
+        if w in rest and (d["major"] == "음식" or " " in w or any(_left_ok(rest, m.start()) for m in re.finditer(re.escape(w), rest))):
+            rest = rest.replace(w, " " * len(w))
+            if sorted(d["names"]) not in seen:
+                seen.append(sorted(d["names"]))
+                out.append({"word": w, "names": d["names"]})
+    for w, g in BIZ_KEYS:
+        if g in VS_BIZ and w in rest and not any(x["word"] == g for x in out):
+            rest = rest.replace(w, " " * len(w))
+            out.append({"word": g, "names": None})
+    return out
+
+
 def find_targets(q):
     """업종과 인구 집단을 모두 찾는다(Fable 일치도 분석: 둘이 함께 드는 질문이 있음). 첫째가 대표 대상."""
     out = []
     for w, g in BIZ_KEYS:
+        if g not in CLOSED_TARGETS:  # 소분류 이름·인허가 '기타' 묶음은 업종 칸에 넣지 않는다(세부 업종은 find_detail이 맡는다)
+            continue
         if has(q, w):
             out.append(g)
             break
@@ -218,11 +340,27 @@ def parse(q):
     ts = find_targets(q)
     t["target"] = ts[0] if ts else None
     t["_targets"] = ts
+    d = find_detail(q)
+    if d and t["target"] in Q.TARGETS_OUT and d["word"] not in Q.TARGETS_OUT and any(w in d["word"] for w, g in BIZ_KEYS if g == t["target"] and w in q) \
+            and TARGET_FAMILY.get(t["target"]) != d["major"]:
+        t["target"] = None  # '동물병원'의 '병원'처럼 다른 분류의 긴 낱말 안에서 잡힌 업종은 버린다
+    if d and (t["target"] is None or t["target"] in Q.TARGETS_POP or TARGET_FAMILY.get(t["target"]) == MAJOR_TARGET.get(d["major"], d["major"])):
+        t["detail"] = d["word"]  # 가게 수는 이 낱말의 소분류로 센다
+        if t["target"] is None:
+            t["target"] = d["word"] if d["word"] in Q.TARGETS_OUT else MAJOR_TARGET.get(d["major"])  # 매출 등은 대분류로 답한다(없으면 빈 칸)
+    if t["target"] in Q.TARGETS_OUT and not t.get("detail") and t["target"] in DETAIL:
+        t["detail"] = t["target"]  # 5개 업종(미용실·약국·학원·병원·부동산중개)은 가게 수를 상가 정보 소분류로 센다
     t["metric"] = hits(q, METRIC_W)[:3]
     # v3: 카드 매출 계열 지표가 있으면 '손님'만으로 잡힌 방문 인구는 뺀다("관광객 손님 비중"의 손님은 매출 손님)
     CARD = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "외국인매출"}
     if "일평균방문" in t["metric"] and CARD & set(t["metric"]) and not re.search(r"방문|유동인구|오가는|인파|붐비|북적", q):
         t["metric"] = [m for m in t["metric"] if m != "일평균방문"]
+    if t.get("detail") and not t["metric"] and re.search(r"(?<![가-힣])(수|개수|갯수)(는|가|를|도|만|야|예요|이야)?(\s|[?.!]|$)", q):
+        t["metric"] = ["점포수"]  # '학원 수 알려줘'·'펜션 수는?'의 '수'는 가게 수다(업종 낱말이 있을 때만)
+    if not t.get("detail") and t["target"] is None and "점포수" in t["metric"]:
+        w = next((g for a, g in OUT_COUNT_ALIAS.items() if g in DETAIL and any(_left_ok(q, m.start()) for m in re.finditer(re.escape(a), q))), None)
+        if w:
+            t["target"] = t["detail"] = w
     if {"업종비교", "시장추이", "매출성장"} & set(t["metric"]):  # 묶음 지표가 있으면 같이 잡힌 '매출'은 그 안에 들어 있다
         t["metric"] = [m for m in t["metric"] if m != "매출"]
     t["cond"] = [c for c in hits(q, COND_W) if c in Q.CONDS][:2]
@@ -281,6 +419,51 @@ def parse(q):
 
 TYPE_KO = Q.TYPES
 
+# ---------- 이해 상자 안내(문서 20 A3: 질문의 낱말을 말없이 빼거나 바꾸지 않는다) ----------
+BRANDS = ["스타벅스", "이디야", "투썸", "메가커피", "컴포즈", "빽다방", "파리바게뜨", "뚜레쥬르", "맥도날드", "롯데리아", "버거킹", "맘스터치", "교촌", "올리브영", "다이소", "이마트", "하나로마트"]
+MODIFIERS = ["브런치", "디저트", "프랜차이즈", "무인", "오션뷰", "애견", "반려견", "키즈", "루프탑", "수제"]  # 자료에 구분이 없는 꾸밈말
+NEAR = re.compile(r"([가-힣A-Za-z0-9]+)\s*(옆|앞|맞은편|건너편)(에|에서|의)?(\s|$)")
+COUNT_METRICS = {"점포수", "특화계수"}
+
+
+def _eun(w):
+    """받침이 있으면 '은', 없으면 '는'(한글이 아니면 '는')."""
+    c = w[-1] if w else ""
+    return "은" if "가" <= c <= "힣" and (ord(c) - 0xAC00) % 28 else "는"
+
+
+def notes(question, t):
+    """질문에 있었지만 답에 그대로 반영하지 못한 낱말을 한 줄씩 알린다(없으면 빈 목록)."""
+    q, out = norm(question or ""), []
+    if not q:
+        return out
+    tr = []
+    find_places(q, trace=tr)
+    for k, dong in tr:
+        if dong in (t.get("space") or []) and not dong.startswith(k):
+            out.append(f"'{k}'{_eun(k)} {dong}에 속해서 {dong} 전체 값으로 답해요.")
+    m = NEAR.search(q)
+    brand = next((b for b in BRANDS if b in q), None)
+    if m and m.group(1) not in PLACES and (brand or t.get("target") or t.get("detail")):
+        out.append(f"'{m.group(1)} {m.group(2)}' 같은 가게 단위 위치는 자료에 없어서 동네 전체 값으로 답해요.")
+    elif brand:
+        out.append(f"'{brand}' 같은 상표·가게 하나의 값은 자료에 없어서 동네 전체 값으로 답해요.")
+    for w, why in NO_DETAIL.items():
+        if w in q:
+            out.append(why)
+    det = t.get("detail")
+    for w in MODIFIERS:
+        if w in q and w != det and not (det and w in det) and w not in NO_DETAIL and w not in (t.get("details") or []):
+            out.append(f"'{w}'{_eun(w)} 자료에 구분이 없어서 반영하지 못했어요.")
+    if det:
+        ms = set(t.get("metric") or [])
+        if t.get("type") == "T10" or (ms and not ms <= COUNT_METRICS) or (not ms and t.get("type") not in ("T1", "T2", "T3")):
+            scope = {"음식점": "음식점업 전체", "숙박": "숙박업 전체", "소매": "소매업 전체"}.get(t.get("target"), "동네 전체")
+            out.append(f"'{det}' 가게만 따로 볼 수 있는 값은 가게 수뿐이에요({detail_desc(det)}). 매출·방문 같은 다른 값은 {scope} 또는 동네 전체 기준이에요.")
+        else:
+            out.append(f"'{det}' 가게 수는 {detail_desc(det)}로 셌어요.")
+    return list(dict.fromkeys(out))
+
 
 def card(t):
     """의도 확인 카드 문장(사용자 승인 2026-11-11). 화면은 이 문장과 칸별 수정 버튼을 보여 준다."""
@@ -289,8 +472,9 @@ def card(t):
     parts = []
     if t["space"]:
         parts.append("·".join(t["space"]))
-    if t["target"]:
-        parts.append(t["target"])
+    if t["target"] or t.get("detail"):
+        count = {"점포수", "특화계수"} & set(t["metric"]) or (not t["metric"] and t.get("type") in (None, "T1", "T2", "T3"))
+        parts.append(t["detail"] if t.get("detail") and (count or not t["target"]) else t["target"])
     if t["metric"]:
         parts.append("·".join(Q.METRICS.get(m, m) for m in t["metric"]))
     if t["cond"]:

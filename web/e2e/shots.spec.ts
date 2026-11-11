@@ -61,3 +61,17 @@ test("v3 장면 캡처: F9 센터 CSV 넣기", async ({ page }, info) => {
   await page.waitForTimeout(800);
   await page.screenshot({ path: `${OUT}/${tag}-10-center-answer.png`, fullPage: true });
 });
+
+test("역설계 적용 캡처: 첫 화면·결과 지도", async ({ page }, info) => {
+  const tag = info.project.name;
+  await page.goto("/");
+  await page.getByTestId("home-dong").selectOption("노형동"); // 숫자 카드는 동네를 고른 뒤에 나온다
+  await expect(page.getByTestId("home-card-visit")).toBeVisible();
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${OUT}/${tag}-11-home.png`, fullPage: true });
+  await page.getByTestId("question-input").fill("노형동에 카페 차려도 될까?");
+  await page.getByTestId("ask-submit").click();
+  await expect(page.locator('[data-testid="conclusion"]')).toHaveCount(1, { timeout: 10000 });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${OUT}/${tag}-12-diagnose.png`, fullPage: true });
+});

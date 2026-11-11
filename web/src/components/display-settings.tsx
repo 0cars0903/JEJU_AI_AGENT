@@ -76,7 +76,7 @@ export function DisplaySettings() {
   };
   return (
     <Popover>
-      <PopoverTrigger render={<Button variant="ghost" size="sm" {...triggerProps} />}>
+      <PopoverTrigger render={<Button variant="ghost" size="default" {...triggerProps} />}>
         <SettingsIcon ref={ref} size={20} aria-hidden />
         <span>화면 설정</span>
       </PopoverTrigger>

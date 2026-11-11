@@ -36,7 +36,7 @@ TYPE_PLAN = {
 def pick_source(metric, env):
     """지표 → (경로, 자료 설명). 센터 DB가 있으면 센터 경로 우선(센터 자료가 본체).
     v3 F9: 이용자가 센터 카드 CSV(1-07·1-08)를 불러왔으면 매출은 그 자료로 계산한다(route center_csv)."""
-    if env.get("center_card") and metric in ("매출", "과거매출"):
+    if env.get("center_card") and metric in ("매출", "과거매출", "외국인매출"):  # 외국인매출: 센터 파일의 이용자구분으로 동네별 값을 낸다(문서 20 A9)
         return "center_csv", {"dataset": env["center_card"]}
     m = MD.get(metric)
     if not m:
@@ -61,10 +61,11 @@ def plan(t, env=None):
         out["steps"].append({"sub": "S0", "op": "자료 목록 검색", "dataset": "catalog"})
         return out
     if t["type"] == "T10":  # v3 F2 상권 묶음 진단: 판단 재료(수요·경쟁·생존) + 매출 흐름 + 손님 구성 + 가게 수
-        flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}
+        flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time"), "detail": t.get("detail"), "details": t.get("details")}
         biz_ok = not t.get("target") or t["target"] in FOOD or t["target"] in ("숙박", "소매", "편의점")
         for m in ["판단재료", "매출", "관광객비중", "점포수"] if biz_ok else ["판단재료", "점포수"]:
-            out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": "public", "source": pick_source(m, env)[1], "filter": flt, "breakdown": None})
+            route, src = pick_source(m, env)  # 센터 카드 CSV를 넣었으면 매출은 그 자료로 계산한다(문서 20 A6: 전에는 공개 경로로 고정돼 넣은 자료가 쓰이지 않았다)
+            out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route if route == "center_csv" else "public", "source": src, "filter": flt, "breakdown": None})
         out["steps"] += [{"sub": "S2", "op": "기술 통계·추세·상관"}, {"sub": "S6", "op": "판정(차이·동등성·짝 비교)"}, {"sub": "S4", "op": "차트·지도"}]
         return out
     metrics = list(t["metric"]) or ([DEFAULT_METRIC.get(t["type"])] if DEFAULT_METRIC.get(t["type"]) else [])
@@ -74,6 +75,9 @@ def plan(t, env=None):
         metrics = ["점포수", "일평균방문", "버스일평균"]
     if t["type"] in ("T2", "T14") and not metrics:
         metrics = ["점포수", "일평균방문", "버스일평균"]
+        if t["type"] == "T2" and (t.get("target") in Q.TARGETS_BIZ or t.get("target") in Q.TARGETS_OUT or t.get("detail")):
+            # 업종을 넣은 비교는 그 업종의 가게 수가 먼저다. 카드 매출은 대분류가 있는 업종만 붙인다(문서 20 A4: 동네 전체 방문·버스가 업종 값처럼 나왔다)
+            metrics = ["점포수"] + (["매출"] if t.get("target") in FOOD or t.get("target") in ("숙박", "소매") else []) + ["일평균방문"]
     # 음식점만 있는 지표에 다른 업종이 오면 범위 밖(사전 해석기와 같은 규칙)
     if t.get("target") and t["target"] not in FOOD and t["target"] not in Q.TARGETS_POP and any(m in ("개업수", "폐업수", "폐업률", "5년생존율", "조건부생존") for m in metrics):
         out["status"] = "범위밖"
@@ -125,7 +129,7 @@ def plan(t, env=None):
                 recipe = None
         if route == "center_csv":
             out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route, "source": src,
-                                 "filter": {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}, "breakdown": breakdown})
+                                 "filter": {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time"), "detail": t.get("detail"), "details": t.get("details")}, "breakdown": breakdown})
             continue
         if route == "center_only":  # 완화 답: 공개 대체 지표로 답하고, 원래 지표는 센터에서 볼 수 있다고 안내한다
             subs_m = [x for x in CENTER_SUBSTITUTE.get(m, []) if pick_source(x, env)[0] == "public"]
@@ -134,13 +138,13 @@ def plan(t, env=None):
                 continue
             out["relaxed"].append(f"{Q.METRICS.get(m, m)}: {src['note']}({src['dataset']}) → {'·'.join(subs_m)}로 대신 답함")
             for x in subs_m:
-                flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}
+                flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time"), "detail": t.get("detail"), "details": t.get("details")}
                 out["steps"].append({"sub": "S1", "op": "조회", "metric": x, "route": "public", "source": pick_source(x, env)[1], "filter": flt, "breakdown": breakdown, "instead_of": m})
             continue
         if route is None:
             out["notes"].append(f"{m}: 지표 사전에 없음")
             continue
-        flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time")}
+        flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time"), "detail": t.get("detail"), "details": t.get("details")}
         out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route, "source": src, "filter": flt, "breakdown": breakdown})
     # 조건(비·주말 등): 조건 효과 레시피가 지원하는 지표가 아니면 조건 완화
     if t["cond"] and t["type"] not in ("T6",):

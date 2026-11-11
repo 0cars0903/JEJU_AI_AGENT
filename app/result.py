@@ -28,16 +28,16 @@ import recipes  # noqa: E402
 import verify as V  # noqa: E402
 from textcheck import BANNED, DONG_NUM, UNFOUNDED, _norm, check_numbers, is_korean  # noqa: E402
 
-UNIT_NOTE = {"지수": "유동인구는 사람 수가 아니라 지수입니다(통신 자료 추계)."}
-CLAIM_KO = {"효과 있음": "차이가 있습니다", "작지만 0은 아님": "차이는 있지만 ±10% 안의 작은 차이입니다",
-            "작음 확인": "차이가 ±10% 안으로 작습니다", "판단 불가": "차이를 확인하지 못했습니다"}
+UNIT_NOTE = {"지수": "유동인구는 사람 수가 아니라 지수예요(통신 자료 추계)."}
+CLAIM_KO = {"효과 있음": "차이가 있어요", "작지만 0은 아님": "차이는 있지만 ±10% 안의 작은 차이예요",
+            "작음 확인": "차이가 ±10% 안으로 작아요", "판단 불가": "차이를 확인하지 못했어요"}
 TYPE_KO = {"T1": "현황 조회", "T2": "동네 비교", "T3": "순위", "T4": "추세", "T5": "구성", "T6": "조건 효과", "T7": "관계", "T8": "예측",
            "T9": "비슷한 동네", "T10": "종합 진단", "T11": "자료 찾기", "T13": "시간대 패턴", "T14": "조건 탐색", "T15": "이례 변화"}
 SUB_KO = {"S0": "자료 탐색", "S1": "조회", "S2": "통계·점검", "S3": "모델", "S4": "차트", "S5": "단위 맞추기", "S6": "판정"}
 M3B_SYSTEM = ("너는 제주 동네 자료 안내원이다. 시스템이 고른 자료와 계산 순서를 도민에게 한두 문장으로 설명한다. "
-              "규칙: 숫자를 한 글자도 쓰지 않는다. 주어진 자료 이름과 단계만 말한다. 결과나 결론을 말하지 않는다. '~했습니다'체로 쓴다.\n"
+              "규칙: 숫자를 한 글자도 쓰지 않는다. 주어진 자료 이름과 단계만 말한다. 결과나 결론을 말하지 않는다. '~했어요'체로 쓴다.\n"
               "예시) 질문: 아라동 카페 개업 늘었어? / 고른 자료: 개업 수(음식점 인허가) / 계산 순서: 조회 → 통계·점검 → 판정 → 차트\n"
-              "답: 음식점 인허가 자료에서 아라동 카페 개업 수를 연도별로 모으고, 최근 흐름이 우연인지 판정한 뒤 그래프로 정리했습니다.")
+              "답: 음식점 인허가 자료에서 아라동 카페 개업 수를 연도별로 모으고, 최근 흐름이 우연인지 판정한 뒤 그래프로 정리했어요.")
 
 # ---------- 공통 ----------
 def _label(m):
@@ -86,6 +86,19 @@ def _ask_llm(system, user, timeout_ok=True):
 
 
 # ---------- 답 카드 ----------
+def _interval_ko(rid):
+    """예상 범위 설명을 쉬운 말로 쓴다(문서 20 A2·A10: 'R1'·'관문 v3'·'포함률' 같은 내부 용어를 화면에 내지 않는다). 숫자는 등록부(recipes.json) 값만 쓴다."""
+    reg = recipes.REG[rid]
+    raw, name = reg.get("interval") or "", reg["name"]
+    m = re.search(r"80% 구간 포함률 (\d+)~(\d+)%", raw)
+    if m:  # R1: 화면에는 예상값만 싣는다(범위는 싣지 않음)
+        return (f"{name}은 예상값만 보여 주고 예상 범위는 보여 주지 않아요. 10번 중 8번 맞도록 잡은 범위를 지난 기록으로 확인했더니 "
+                f"100번 중 {m.group(1)}~{m.group(2)}번만 맞았어요(범위가 좁게 잡혀요). 예상값은 실제와 다를 수 있어요.")
+    if raw.startswith("80% 구간"):
+        return f"{name}의 예상 범위는 지난 예상이 빗나간 크기를 보고 10번 중 8번 맞도록 잡은 폭이에요."
+    return f"{name} 예상 범위: {raw}"
+
+
 def _evidence(order, res):
     ev, intervals, as_of = [], [], {}
     tasks = {t["out"]: t for t in order["tasks"]}
@@ -95,7 +108,7 @@ def _evidence(order, res):
             tab = v["table"]
             c, last = _as_of(tab)
             cur = tab[tab[c] == last] if c else tab
-            when = str(last)[:7] if c else "최신 단면"
+            when = str(last)[:7] if c else (layers.v3.BIZ_ASOF if t.get("metric") in ("점포수", "특화계수") else "-")
             as_of[v.get("dataset")] = when
             m = t.get("metric")
             if "ageGroup" in cur:  # 연령 구성은 많은 순서만(값은 지수라 비중 계산을 따로 하지 않는다)
@@ -123,7 +136,7 @@ def _evidence(order, res):
         if v.get("survival"):
             s = v["survival"]
             ev.append({"metric": "업종 5년생존율", "text": f"{s['group']} 5년 생존율 {_num(s['surv5_pct'])}% (표본 {s['n']:,}곳, 제주 전체)", "dataset": "780 음식점 인허가", "as_of": f"개업 {s.get('cohort') or '2015-01~2020-08'} 코호트"})
-            intervals.append(f"{s['group']} 5년 생존율 95% 구간 ±{_num(s['ci95_pp'])}%p")
+            intervals.append(f"{s['group']} 5년 생존율은 표본으로 계산한 값이라 ±{_num(s['ci95_pp'])}%p 안에서 달라질 수 있어요(100번 중 95번 맞게 잡은 폭).")
         if v.get("forecast") and any(j.get("use_forecast") for j in V._judgements(res["store"]) if j["name"] == f"관문 {v.get('recipe')}"):  # 관문 통과한 예측만 쓴다(15-6)
             fc = v["forecast"]
             key = "visit" if "visit" in fc[0] else "value"
@@ -133,7 +146,7 @@ def _evidence(order, res):
             when = lambda r: r.get("date") or r.get("ym")  # noqa: E731
             ev.append({"metric": "예측", "kind": "forecast", "recipe": v.get("recipe"),
                        "text": f"{hi['dong']} 예측 최고 {when(hi)} {_num(hi[key])}, 최저 {when(lo)} {_num(lo[key])}", "dataset": f"레시피 {v.get('recipe')}", "as_of": v.get("data_last") or "-"})
-            intervals.append(f"{v.get('recipe')} 예측 구간: {recipes.REG[v['recipe']]['interval']}")
+            intervals.append(_interval_ko(v["recipe"]))
         if v.get("neighbors"):
             for d, nb in v["neighbors"].items():
                 ev.append({"metric": "비슷한 동네", "text": f"{_josa(d, '과', '와')} 비슷한 동네: {', '.join(nb)}", "dataset": "레시피 R5", "as_of": "-"})
@@ -146,7 +159,7 @@ def _evidence(order, res):
                 ev.append({"metric": "자료", "text": f"{r['name']} — {r.get('source')}, 반출 {r.get('export')}", "dataset": "자료 목록", "as_of": r.get("period") or "-"})
     for j in V._judgements(res["store"]):
         if "ci95" in j:
-            intervals.append(f"{j['name']} 효과 95% 구간 {_num(j['ci95'][0])}% ~ {_num(j['ci95'][1])}%")
+            intervals.append(f"{j['name']}: 조건에 따른 차이는 {_num(j['ci95'][0])}% ~ {_num(j['ci95'][1])}% 사이로 봐요(100번 중 95번 맞게 잡은 폭).")
     return ev, intervals, as_of
 
 
@@ -154,7 +167,7 @@ def _conclusion(t, order, res, ev, review):
     js = V._judgements(res["store"])
     dong = "·".join(t.get("space") or []) or "제주"
     if review["status"] == "부분 결과" and not ev:
-        return "확인된 결과가 없습니다. 아래 '계산하지 못함'을 확인해 주세요."
+        return "확인된 결과가 없어요. 아래 '계산하지 못함'을 확인해 주세요."
     nb = next((e for e in ev if e["metric"] == "비슷한 동네"), None)
     if t.get("type") == "T9" and nb:
         return nb["text"] + "(업종 구성·연령·방문·버스가 가까운 순)."
@@ -165,8 +178,8 @@ def _conclusion(t, order, res, ev, review):
     if gate:
         rid = gate["name"].split()[-1]
         name = recipes.REG[rid]["name"]
-        return (f"{dong} {name}: 모델이 단순 기준(7일 전 값 등)보다 정확해 예측값을 씁니다." if gate["use_forecast"]
-                else f"{dong} {name}: 모델이 단순 기준보다 낫지 않아 예측값 대신 최근 값으로 답합니다.").replace("(7일 전 값 등)", "")
+        return (f"{dong} {name}: 모델이 단순 기준(7일 전 값 등)보다 정확해 예측값을 써요." if gate["use_forecast"]
+                else f"{dong} {name}: 모델이 단순 기준보다 낫지 않아 예측값 대신 최근 값으로 답해요.").replace("(7일 전 값 등)", "")
     eff = [j for j in js if j.get("claim") in CLAIM_KO and "ci95" in j]
     if eff:
         cond = "·".join(t.get("cond") or []) or "조건"
@@ -175,22 +188,22 @@ def _conclusion(t, order, res, ev, review):
     if trend:
         tm = next((x.get("metric") for x in order["tasks"] if x["sub"] == "S1" and x["out"] in res["store"]
                    and any(c in getattr(res["store"][x["out"]].get("table"), "columns", []) for c in ("year", "ym"))), None)
-        word = "늘었습니다" if trend["claim"].startswith("증가") else "줄었습니다"
+        word = "늘었어요" if trend["claim"].startswith("증가") else "줄었어요"
         if "(유의)" in trend["claim"]:
             return f"{dong} {_label(tm)}: 최근 {word}(통계적으로 유의)."
-        return f"{dong} {_label(tm)}: 최근 {word[:-3]}지만 통계적으로 의미 있는 변화는 확인하지 못했습니다."
+        return f"{dong} {_label(tm)}: 최근 {word[:-2]}지만 통계적으로 의미 있는 변화는 확인하지 못했어요."
     if any(j.get("claim") in ("이례 증가", "이례 감소") for j in js):
-        return f"{dong}: 올해 평소와 다른 변화가 있습니다."
+        return f"{dong}: 올해 평소와 다른 변화가 있어요."
     nums = [e for e in ev if e.get("dong") and e.get("value") is not None]
     if t.get("type") == "T2" and len({e["dong"] for e in nums}) >= 2:  # 비교: 있는 값끼리 크기만 말한다(새 숫자를 만들지 않음)
         m = nums[0]["metric"]
         g = sorted([e for e in nums if e["metric"] == m], key=lambda e: -float(e["value"]))
-        return f"{_label(m)}: {_josa(g[0]['dong'], '이', '가')} {', '.join(e['dong'] for e in g[1:])}보다 많습니다({', '.join(e['dong'] + ' ' + _num(e['value']) for e in g)})."
+        return f"{_label(m)}: {_josa(g[0]['dong'], '이', '가')} {', '.join(e['dong'] for e in g[1:])}보다 많아요({', '.join(e['dong'] + ' ' + _num(e['value']) for e in g)})."
     if t.get("type") == "T11":
-        return "관련 자료 목록입니다. 반출 여부를 함께 적었습니다." if ev else "관련 자료를 찾지 못했습니다."
+        return "관련 자료 목록이에요. 반출 여부를 함께 적었어요." if ev else "관련 자료를 찾지 못했어요."
     if ev:
         return ev[0]["text"] + "."
-    return "확인된 결과가 없습니다."
+    return "확인된 결과가 없어요."
 
 
 def card(t, review, ev, intervals):
@@ -200,14 +213,15 @@ def card(t, review, ev, intervals):
     limits += [UNIT_NOTE[u] for u in {e.get("unit") for e in ev} if u in UNIT_NOTE]
     limits += [f"계산하지 못함: {SUB_KO.get(x.get('sub'), '')} {x.get('error')}" for x in _failed(order, res)]
     if any("업종 구분 없음" in str(e.get("dataset")) for e in ev) and any(e["metric"] == "업종 5년생존율" for e in ev):
-        limits.append("동네별 생존율은 음식점 전체 값이고, 업종별 생존율은 동네 표본이 작아 제주 전체 값입니다.")
+        limits.append("동네별 생존율은 음식점 전체 값이고, 업종별 생존율은 동네 표본이 작아 제주 전체 값이에요.")
     for v in res["store"].values():
         if v.get("survival") and v.get("fallback"):
             limits.append(f"표본 부족: {v['fallback']}")
     for r in review["record"]:
         if r["type"] == "효과 없음" and "관문" in r["detail"]:
             rid = r["detail"].split()[1].rstrip(":")
-            limits.append(f"{recipes.REG[rid]['name']}: 모델이 단순 기준보다 낫지 않아 예측값을 쓰지 않고 최근 값으로 답함")
+            limits.append(f"{recipes.REG[rid]['name']}: 모델이 단순 기준보다 낫지 않아 예측값을 쓰지 않고 최근 값으로 답해요")
+    limits = [layers.plain_names(x) for x in limits]  # 한계 문구에도 자료 번호를 싣지 않는다(문서 20 A10)
     return {"conclusion": _conclusion(t, order, res, ev, review), "evidence": ev, "intervals": intervals, "limits": limits, "next_questions": [x["text"] for x in G.suggestions(t)]}
 
 
@@ -232,14 +246,14 @@ def explain_plan(question, t, order, res, llm_on=True):
             nm = re.sub(r"^\d+\s*", "", str((res["store"].get(x["out"]) or {}).get("dataset") or src.get("name") or x.get("metric")))
             data.append(f"{_label(x.get('metric'))}({nm})")
     path = " → ".join(dict.fromkeys(SUB_KO[x["sub"]] for x in order["tasks"]))
-    tpl = f"질문을 '{TYPE_KO.get(t['type'], t['type'])}'로 보고 {', '.join(data) or '자료 목록'}을 골라 {path} 순서로 계산했습니다."
+    tpl = f"질문을 '{TYPE_KO.get(t['type'], t['type'])}'로 보고 {', '.join(data) or '자료 목록'}을 골라 {path} 순서로 계산했어요."
     if not llm_on:
         return {"text": tpl, "by": "템플릿", "sec": 0.0}
     user = f"질문: {question}\n질문 종류: {TYPE_KO.get(t['type'])}\n고른 자료: {', '.join(data) or '자료 목록'}\n계산 순서: {path}"
     out, err, sec = _ask_llm(M3B_SYSTEM, user)
     probs = [err] if err else llm_text_ok(out, question)
-    if not probs and not re.search(r"니다\.?$", out):
-        probs = ["문체('~습니다' 아님)"]
+    if not probs and not re.search(r"(어요|아요|해요|예요|이에요)\.?$", out):
+        probs = ["문체('~해요' 아님)"]
     subs = {x["sub"] for x in order["tasks"]}
     for pat, need in ((r"판정|우연", "S6"), (r"예측|모델", "S3"), (r"그래프|차트", "S4"), (r"단위", "S5")):  # 없는 단계를 말하면 사실과 다른 해설
         if not probs and re.search(pat, out) and need not in subs:
@@ -252,6 +266,28 @@ def explain_plan(question, t, order, res, llm_on=True):
 
 
 # ---------- 내려받기 ----------
+def bundle_csv(order, res):
+    """패턴 I: 이 답의 자료를 한 파일로(긴 형식: 자료·지표·동네·시점·값·단위). 반출 불가 자료는 검수에서 이미 집계만 남았다."""
+    import io
+    import pandas as pd
+    tasks = {t["out"]: t for t in order["tasks"]}
+    rows = []
+    for k, v in res["store"].items():
+        t = tasks.get(k, {})
+        if t.get("sub") != "S1" or "table" not in v or not len(v["table"]):
+            continue
+        tab = v["table"].copy()
+        tcol = next((c for c in ("ym", "year", "hour") if c in tab), None)
+        key = next((c for c in ("dong", "origin", "biz", "name") if c in tab), None)
+        rows.append(pd.DataFrame({"자료": v.get("dataset"), "지표": Q.METRICS.get(t.get("metric"), t.get("metric")), "대상": tab[key] if key else "",
+                                  "시점": tab[tcol].astype(str) if tcol else "", "값": tab["value"], "단위": v.get("unit")}))
+    if not rows:
+        return None
+    b = io.StringIO()
+    pd.concat(rows).to_csv(b, index=False)
+    return b.getvalue()
+
+
 def downloads(order, res):
     out = []
     for t in order["tasks"]:
@@ -261,6 +297,9 @@ def downloads(order, res):
                         "csv": v["table"].to_csv(index=False)})
         if t["sub"] == "S4" and v:
             out.append({"kind": "chart", "name": f"{t['id']}_chart.json", "chart": v.get("chart")})
+    b = bundle_csv(order, res)
+    if b:
+        out.insert(0, {"kind": "bundle", "name": "이 답의 자료.csv", "rows": b.count("\n") - 1, "export": "집계", "csv": b})
     return out
 
 
@@ -270,6 +309,16 @@ def _choose(question, t, slots, message, step, candidates=None, sec=0.0):
             "choose": {"message": message, "step": step, "candidates": candidates or [], "preset": slots}, "sec": round(sec, 3)}
 
 
+MY_DONG = re.compile(r"(우리|내|저희|제)\s*(동네|집|가게)|집\s*(근처|앞|주변)|이\s*동네|여기\s*(근처|주변)?")
+MY_DONG_MSG = "이 서비스는 위치 정보를 쓰지 않아서 '우리 동네'가 어디인지 알 수 없어요. 동네 이름을 골라 주세요."
+FOREIGN_Q = re.compile(r"외국인|중국인|일본인|중화권|해외\s*관광객")
+SPEND_Q = re.compile(r"매출|소비|결제|손님|카드|돈|써|쓰|쓴|쓸|팔")
+VS_Q = re.compile(r"비교|견주|vs|VS|중에|중 (어디|뭐|무엇|어느)|(뭐|무엇|어느 쪽|어디)[이가]? 더|[이가] 더 (많|적)")
+FOREIGN_NOTE = "동네별 외국인 카드 매출은 공개 자료에 없어요. 그래서 제주 전체 값을 출신지역별로 보여 드려요. 동네별 값은 아래 '자료 요청' 카드의 센터 자료로 볼 수 있어요."
+# 5개 업종(Q.TARGETS_OUT)의 가게 수 밖 질문. 비씨카드 42개 업종 목록은 허브 746(2017~2021)에서 확인했다. 센터 자료(1-08)의 목록은 직접 보지 못했다.
+OUT_ONLY_COUNT = "{we} 가게 수만 볼 수 있어요(상가 정보). "
+OUT_NO_CARD = "카드 매출은 공개 자료에 업종 대분류 5개로만 있어서 {w}만 따로 볼 수 없어요. 비씨카드 42개 업종 목록(2017~2021년 공개분)에도 {we} 없어요."
+OUT_NO_OPEN = "개업·폐업·생존율은 음식점 인허가 자료로 계산해서 음식점 업종만 볼 수 있어요."
 LOW_CONF = 0.5  # 이보다 확신도가 낮으면 추정하지 않는다(X1 024: 0.5 미만 유형 정답 26/39, 0.8 이상 58/58)
 TIME_WORDS = re.compile(r"언제|몇\s*시|시간대|붐비|붐벼|한산|출근|퇴근|점심\s*때|저녁\s*때")
 SALES_WORDS = re.compile(r"매출|잘\s*(되|돼)|장사|수익|벌이|벌어")
@@ -312,21 +361,26 @@ def _exception(question, t):
     amb = qparse.parse(question).get("_amb") or {}
     if amb and not t.get("space"):
         name, cands = next(iter(amb.items()))
-        return _choose(question, t, preset, f"'{name}'이(가) 여러 동네로 읽혀요. 어느 동네인지 골라 주세요.", "space", list(cands))
+        return _choose(question, t, preset, f"'{name}'{'이' if 0 <= ord(name[-1]) - 0xAC00 <= 11171 and (ord(name[-1]) - 0xAC00) % 28 else '가'} 여러 동네로 읽혀요. 어느 동네인지 골라 주세요.", "space", list(cands))
     if not preset.get("topic"):
         return _choose(question, t, preset, "무엇을 알고 싶은지 찾지 못했어요. 궁금한 것을 골라 주세요.", "topic")
     miss = G.missing(preset)
     if "space" in miss:
-        msg = "비교할 동네를 하나 더 골라 주세요." if preset["topic"] == "compare" and preset.get("space") else "질문에서 동네를 찾지 못했어요. 동네를 골라 주세요."
+        msg = ("비교할 동네를 하나 더 골라 주세요." if preset["topic"] == "compare" and preset.get("space")
+               else MY_DONG_MSG if MY_DONG.search(question or "") else "질문에서 동네를 찾지 못했어요. 동네를 골라 주세요.")
         return _choose(question, t, preset, msg, "space")
     if miss:
         return _choose(question, t, preset, G.missing_message(preset, miss[0]), miss[0])
     return None
 
 
-def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **review_kw):
+def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, path=None, **review_kw):
     t0 = time.perf_counter()
-    assumed = False
+    assumed, notes, typed = False, [], question if not slots or path else None
+    if not slots and question:  # 서비스가 만든 문장(추천 질문·주제 문장)을 그대로 적으면 해석하지 않고 그 버튼 값으로 답한다(문서 20 A1)
+        ms = G.match_sentence(question)
+        if ms and not G.missing(ms):
+            return respond(question, env, llm_on, slots=ms, path="제안 문장 일치", **review_kw)
     value_q = bool(slots and slots.get("topic") == "diagnose")
     if slots:  # ②③④ 버튼 값: 해석하지 않는다
         miss = G.missing(slots)
@@ -334,7 +388,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
             return _choose(question, None, slots, G.missing_message(slots, miss[0]), miss[0], sec=time.perf_counter() - t0)
         t = G.to_tuple(slots)
         question = question or G.sentence(slots)
-        it = {"tuple": t, "card": qparse.card(t), "path": "버튼 선택", "confidence": None, "sec": 0.0}
+        if t.get("detail") and not typed:  # 버튼 값에 세부 업종이 실려 온 경우(다시 계산·주소)에도 세는 기준을 알린다
+            typed = question
+        it = {"tuple": t, "card": qparse.card(t), "path": path or "버튼 선택", "confidence": None, "sec": 0.0}
         un = _unsupported(question, t, env) if t["type"] == "T13" else None
         if un:
             return dict(un, sec=round(time.perf_counter() - t0, 3))
@@ -348,13 +404,38 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
 
         def stop(r):
             return dict(r, interpret=meta, sec=round(time.perf_counter() - t0, 3))
-        if t["expect"] != "범위밖" and _dong_only(question, t):  # 동네 이름만 → 동네 종합 진단
+        od = qparse.DETAIL.get(t.get("detail"), {}).get("word")
+        if od in Q.TARGETS_OUT and (qparse.CARD_METRICS | qparse.FOOD_ONLY) & set(t["metric"]):
+            # 미용실·약국·학원·병원·부동산중개는 가게 수만 답한다(문서 20 7.5절 3번). 카드 매출·개업·폐업은 다른 업종·동네 전체 값으로 바꿔 답하지 않고 이유를 알린다.
+            # 방문·버스처럼 업종 구분이 없는 값('병원 가는 버스')은 막지 않는다.
+            d = t["space"][:1]
+            why = OUT_NO_CARD if qparse.CARD_METRICS & set(t["metric"]) else OUT_NO_OPEN
+            return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), (OUT_ONLY_COUNT + why).format(w=od, we=_josa(od)),
+                                 [{"topic": "stores", "space": d, "detail": od}] if d else []))
+        if "외국인매출" in t["metric"] or (FOREIGN_Q.search(question or "") and SPEND_Q.search(question or "")):
+            # 외국인 매출은 공개 자료에 제주 전체(업종·출신지역)만 있다. 전체 매출 순위로 바꿔 답하지 않고 있는 값과 받을 곳을 알린다(문서 20 A9)
+            t = dict(Q.empty(), type="T5" if t["space"] else "T3", metric=["외국인매출"], space=t["space"][:1],
+                     target=t.get("target") if t.get("target") in G.CARD_TARGETS else None, form=Q.DEFAULT_FORM["T5" if t["space"] else "T3"], expect="답함")
+            it = dict(it, tuple=t, card=qparse.card(t))
+            assumed = True
+            notes.append(FOREIGN_NOTE)
+        elif len(t["space"]) == 1 and VS_Q.search(question or "") and len(qparse.find_details(question)) >= 2:
+            # 한 동네 안에서 세부 업종끼리 비교: 매출은 대분류뿐이라 상가 정보 소분류의 가게 수로 견준다(문서 20 A9)
+            t = dict(Q.empty(), type="T5", metric=["업종비교"], space=t["space"][:1], details=[d["word"] for d in qparse.find_details(question)],
+                     form=Q.DEFAULT_FORM["T5"], expect="답함")
+            it = dict(it, tuple=t, card={"text": f"이렇게 이해했어요: {t['space'][0]} · {'·'.join(t['details'])} — 점포 수 비교", "buttons": ["맞아요", "동네 바꾸기", "질문 종류 바꾸기"]})
+            assumed = True
+        elif not t["space"] and MY_DONG.search(question or ""):  # '우리 동네': 위치를 모른다는 것을 알리고 동네를 고르게 한다(문서 20 A9)
+            ps = G.to_slots(t) if t["expect"] != "범위밖" else {}
+            return stop(_choose(question, t, ps if ps.get("topic") else {"topic": "diagnose"}, MY_DONG_MSG, "space"))
+        elif t["expect"] != "범위밖" and _dong_only(question, t):  # 동네 이름만 → 동네 종합 진단
             t = dict(Q.empty(), type="T10", space=t["space"][:1], form=Q.DEFAULT_FORM["T10"], expect="답함")
             it = dict(it, tuple=t, card=qparse.card(t))
             assumed = True
         elif t["space"] and layers.VALUE_WORDS.search(question or "") and len(t["space"]) == 1:
             # 가치 판단 질문(L5)은 확신도 검사보다 먼저: 판단 재료(상권 묶음 진단)로 답한다(08 문서 0절 합성안)
-            t = dict(Q.empty(), type="T10", space=t["space"][:1], target=t.get("target"), form=Q.DEFAULT_FORM["T10"], expect="답함")
+            t = dict(Q.empty(), type="T10", space=t["space"][:1], target=t.get("target"), form=Q.DEFAULT_FORM["T10"], expect="답함",
+                     **({"detail": t["detail"]} if t.get("detail") else {}))
             it = dict(it, tuple=t, card=qparse.card(t))
             assumed, value_q = True, True
         elif t["expect"] != "범위밖":
@@ -368,7 +449,10 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
             conf = it.get("confidence")
             agree = it.get("rule_type") == t["type"]  # 분류기와 사전 해석기가 같은 유형: 블라인드 4묶음에서 확신도 0.5 미만이어도 29/30 정답(불일치 9/27), 2026-11-11 측정
             if conf is not None and conf < LOW_CONF and not agree:  # 추정할 근거가 약하면 답하지 않고 고르게 한다
-                return stop(_choose(question, t, G.to_slots(t), "질문을 정확히 이해하지 못했어요. 궁금한 것을 골라 주세요.", "topic"))
+                ps = G.to_slots(t)  # 확신이 낮으면 답하지 않는다(사용자 승인 규칙). 다만 읽은 뜻을 보여 주고 한 번에 확인할 수 있게 한다(문서 20 A1)
+                msg = (f"질문을 '{G.sentence(ps)}'로 읽었는데 확실하지 않아요. 맞으면 [이대로 답 보기]를 누르고, 아니면 궁금한 것을 다시 골라 주세요."
+                       if ps.get("topic") and not G.missing(ps) else "질문을 정확히 이해하지 못했어요. 궁금한 것을 골라 주세요.")
+                return stop(_choose(question, t, ps, msg, "topic"))
             if t["expect"] == "되묻기":
                 t = dict(t, expect="답함")  # 추정해서 답하고 "이렇게 이해했어요"로 보여 준다
                 it = dict(it, tuple=t, card=qparse.card(t))
@@ -381,12 +465,15 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, **
         ex["sec"] = round(time.perf_counter() - t0, 3)
         return ex
     if rv["status"] == "범위밖" or rv.get("run") is None:  # 범위 밖은 답하지 않는다(차단)
-        out["card"] = {"conclusion": (it.get("card") or {}).get("text") or "지금 자료로 답할 수 없는 질문입니다.", "evidence": [], "intervals": [], "limits": [],
+        out["card"] = {"conclusion": (it.get("card") or {}).get("text") or "지금 자료로는 답할 수 없는 질문이에요.", "evidence": [], "intervals": [], "limits": [],
                        "next_questions": [x["text"] for x in G.representative()[:3]]}
         out["suggestions"] = [{"text": x["text"], "slots": x["slots"]} for x in G.representative()[:3]]
     else:
+        if any("이용자 불러옴" in str(v.get("dataset")) for v in rv["run"]["store"].values() if isinstance(v, dict)):
+            notes = [x for x in notes if x != FOREIGN_NOTE]  # 넣은 센터 파일로 동네 값을 답했으면 '제주 전체로 답해요' 안내를 뺀다
         out["understood"] = {"text": (it.get("card") or {}).get("text"), "by": it.get("path"), "assumed": assumed or bool(it.get("needs_confirm")),
-                             "slots": slots or G.to_slots(t)}
+                             "slots": slots or ({"space": t["space"]} if "외국인매출" in t["metric"] else G.to_slots(t)),
+                             "notes": list(dict.fromkeys(notes + (qparse.notes(typed, t) if typed else [])))}
         out["suggestions"] = G.suggestions(t)
         ev, intervals, as_of = _evidence(rv["order"], rv["run"])
         c = card(t, rv, ev, intervals)
