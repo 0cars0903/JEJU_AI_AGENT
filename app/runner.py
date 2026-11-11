@@ -41,9 +41,11 @@ def build_order(plan, timeout_ms=30000, on_failure="partial"):
     for i, st in enumerate(plan.get("steps", []), 1):
         tid = f"t{i}"
         task = {"id": tid, "sub": st["sub"], "op": st.get("op"), "out": f"r{i}"}
-        for k in ("metric", "route", "source", "filter", "breakdown", "recipe", "dataset"):
+        for k in ("metric", "route", "source", "filter", "breakdown", "recipe", "dataset", "instead_of"):
             if k in st:
                 task[k] = st[k]
+        if st["sub"] == "S1":  # 반출 불가 자료 표시(원자료 행 차단의 근거, 검수 '반출 위반')
+            task["export_restricted"] = isinstance(st.get("source"), dict) and st["source"].get("export") == "불가능"
         if st["sub"] in ("S0", "S1"):
             task["in"], task["depends_on"] = [], []
             prev_s1.append(task["out"])
@@ -232,7 +234,7 @@ def _exec(task, store, env):
             if inj and attempts == 1 or inj in ("계산", "반출", "표현"):
                 raise TaskError(inj, f"주입된 {inj} 오류")
             res = EXEC[task["sub"]](task, store, env)
-            if task["sub"] == "S1" and task.get("source", {}) and isinstance(task.get("source"), dict) and task["source"].get("export") == "불가능":
+            if task.get("export_restricted"):
                 res["export"] = "집계만"
             if task.get("metric"):
                 res.setdefault("metric", task["metric"])
@@ -253,6 +255,11 @@ def run(order, env=None):
     budget = order["policy"]["timeout_ms"] / 1000
     tasks = order["tasks"]
     pending = list(tasks)
+    done_before = set()
+    if env.get("resume"):  # 검수 되돌림: 성공한 작업 결과는 저장소에 남기고 나머지만 다시 실행(05 문서 4-4절)
+        store = dict(env["resume"]["store"])
+        done_before = set(env["resume"]["done"])
+        pending = [t for t in tasks if t["id"] not in done_before]
     while pending:
         if time.perf_counter() - t0 > budget:
             for t in pending:
@@ -282,7 +289,7 @@ def run(order, env=None):
                     return {"status": "중단", "log": log, "store": store, "sec": round(time.perf_counter() - t0, 4)}
         done = set(x["id"] for x in layer)
         pending = [t for t in pending if t["id"] not in done]
-    ok = [x for x in log if x["status"] == "성공"]
+    ok = [x for x in log if x["status"] == "성공"] + [{"task_id": i} for i in done_before]
     status = "성공" if len(ok) == len(tasks) else "부분 결과" if ok else "실패"
     return {"status": status, "log": log, "store": store, "relaxed": order.get("relaxed", []), "notes": order.get("notes", []), "sec": round(time.perf_counter() - t0, 4)}
 
