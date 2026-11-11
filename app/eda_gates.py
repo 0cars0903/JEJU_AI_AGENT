@@ -1,4 +1,4 @@
-"""가설 H1·H2·H3 판정 자료를 계획(docs/기획/01_개발방향.md 3.3절)대로 계산한다.
+"""가설 H1·H2·H3 판정 자료를 계획(docs/조사/06_EDA_H1H3.md)대로 계산한다.
 
 입력: data/interim/ (build_tables.py 결과, api 수집 파일). 실행 시점까지 받은 583 날짜만 쓴다.
 출력: data/interim/eda/ — dong_metrics.csv(동네 × 지표), weather_effect.csv, summary.json

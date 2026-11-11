@@ -17,7 +17,6 @@ interaction/
 .agents/
 docs/조사/
 docs/기획/
-docs/평가/화면/
 dist/
 
 # 화면 빌드 부산물(web/out은 Node 없는 실행을 위해 저장소에 둔다)

@@ -1,4 +1,4 @@
-"""W8 결과 생성 시험: 답 카드 순서·수치 대조, 판단 과정, 관문 실패 예측 숨김, M1-b·M3-b LLM 대체 규칙, 내려받기, /api/v2/ask.
+"""W8 결과 생성 시험: 답 카드 순서·수치 대조, 판단 과정, 관문 실패 예측 숨김, M1-b·M3-b LLM 대체 규칙, 내려받기, /api/ask.
 해석은 규칙 해석기, LLM은 끄거나 가짜 응답으로 바꿔 Ollama 없이도 같은 결과가 나오게 한다.
 실행: .venv/bin/python -m unittest tests.test_result"""
 import sys
@@ -131,11 +131,11 @@ class Explain(unittest.TestCase):
 
 
 class Api(unittest.TestCase):
-    def test_v2_ask(self):
+    def test_ask(self):
         from fastapi.testclient import TestClient
         import api
         with mock.patch.object(api.llm, "backend", return_value="rule"):
-            r = TestClient(api.app).post("/api/v2/ask", json={"question": "노형동이랑 연동 버스 이용 비교해줘"})
+            r = TestClient(api.app).post("/api/ask", json={"question": "노형동이랑 연동 버스 이용 비교해줘"})
         self.assertEqual(r.status_code, 200)
         js = r.json()
         self.assertIn("card", js)

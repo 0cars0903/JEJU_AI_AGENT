@@ -19,7 +19,7 @@ import llm  # noqa: E402
 import qtuple as Q  # noqa: E402
 import recipes  # noqa: E402
 import verify as V  # noqa: E402
-from agent import BANNED, DONG_NUM, UNFOUNDED, _norm, check_numbers, is_korean  # noqa: E402
+from textcheck import BANNED, DONG_NUM, UNFOUNDED, _norm, check_numbers, is_korean  # noqa: E402
 
 UNIT_NOTE = {"지수": "유동인구는 사람 수가 아니라 지수입니다(통신 자료 추계)."}
 CLAIM_KO = {"효과 있음": "차이가 있습니다", "작지만 0은 아님": "차이는 있지만 ±10% 안의 작은 차이입니다",

@@ -4,14 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useIconHover } from "@animateicons/react";
 import { cn } from "cn";
-import { MapPinnedIcon, MessageCircleIcon, TableIcon } from "@/components/icons";
+import { MessageCircleIcon } from "@/components/icons";
 import { DisplaySettings } from "@/components/display-settings";
-import { GlossaryButton } from "@/components/glossary";
 
 const NAV = [
   { href: "/", label: "질문하기", Icon: MessageCircleIcon },
-  { href: "/diagnosis/", label: "동네 진단", Icon: MapPinnedIcon },
-  { href: "/compare/", label: "동네 비교", Icon: TableIcon },
 ];
 
 function NavItem({ href, label, Icon, active }: (typeof NAV)[number] & { active: boolean }) {
@@ -44,7 +41,6 @@ export function SiteHeader() {
           동네 생활 진단
         </Link>
         <div className="ml-auto flex items-center gap-1 md:order-last">
-          <GlossaryButton variant="ghost" />
           <DisplaySettings />
         </div>
         <nav aria-label="주요 메뉴" className="order-last flex w-full flex-wrap gap-x-1 md:order-none md:w-auto">

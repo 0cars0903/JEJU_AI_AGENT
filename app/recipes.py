@@ -213,7 +213,7 @@ def r2(flt, table):
 # ---------- R4 업종별 생존 ----------
 def _cohort(target):
     from build_dong_tables import IN, KM_END, KM_START
-    from tools import REST_MAP
+    from places import REST_MAP
     rest = pd.read_parquet(IN / "restaurants.parquet")
     end = rest[["open_date", "close_date"]].max().max()
     co = rest[(rest["open_date"] >= KM_START) & (rest["open_date"] <= KM_END)].copy()
@@ -269,7 +269,7 @@ def r6(flt, chk):
 # ---------- R7 올해 이례 변화 ----------
 def r7(flt, chk, kind="close"):
     from build_dong_tables import IN
-    from tools import REST_MAP
+    from places import REST_MAP
     ev = pd.read_parquet(TAB / "rest_events.parquet")
     ev = ev[ev["kind"] == kind]
     tgt = (flt or {}).get("target")

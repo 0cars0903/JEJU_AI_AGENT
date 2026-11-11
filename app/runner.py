@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import qtuple as Q  # noqa: E402
 import recipes  # noqa: E402
 import s6  # noqa: E402
-from tools import REST_MAP  # noqa: E402
+from places import REST_MAP  # noqa: E402
 
 TAB = Q.ROOT / "data" / "tables"
 SUBS = {"S0", "S1", "S2", "S3", "S4", "S5", "S6"}

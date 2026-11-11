@@ -81,8 +81,6 @@ def run(name, gold):
             t = emb.parse(g["q"])
         elif kind == "S":
             t = M.schema_parse(g["q"], model or "qwen3:1.7b")
-        elif kind == "C":
-            t = M.plan_parse(g["q"])
         elif kind == "LR":  # LoRA: 저장된 원출력을 같은 규칙(coerce)으로 Tuple로 바꾸고, 시간은 추론 때 잰 값을 쓴다
             r = lraw[g["id"]]
             try:
@@ -107,7 +105,7 @@ def main():
         print("제주어 제외:", len(drop), "문항, 남은 문항", len(gold))
     OUTD.mkdir(parents=True, exist_ok=True)
     res = {}
-    for name in [a for a in sys.argv[1:] if not a.startswith("--")] or ["A", "AB", "C"]:
+    for name in [a for a in sys.argv[1:] if not a.startswith("--")] or ["A", "AB"]:
         res[name] = run(name, gold)
         (OUTD / f"{name.replace(':', '_')}.jsonl").write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in res[name]) + "\n", encoding="utf-8")
     keys = ["core", "type", "expect", "space", "target", "metric"]

@@ -43,8 +43,8 @@ jobs:
           $h | ConvertTo-Json
           $page = Invoke-WebRequest http://127.0.0.1:8501/ -UseBasicParsing
           if ($page.StatusCode -ne 200) { throw "web page failed" }
-          $body = [Text.Encoding]::UTF8.GetBytes((@{ question = "노형동 상권 어때?" } | ConvertTo-Json))
+          $body = [Text.Encoding]::UTF8.GetBytes((@{ question = "노형동이랑 연동 버스 이용 비교해줘" } | ConvertTo-Json))
           $t = Measure-Command { $a = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8501/api/ask -ContentType "application/json; charset=utf-8" -Body $body }
-          if ($a.status -ne "ok") { throw "ask failed: $($a.status)" }
+          if (-not $a.card) { throw "ask failed: no answer card" }
           "ask ok in $([math]::Round($t.TotalSeconds, 2)) s (GitHub runner, not center PC)"
           Stop-Process -Id $p.Id

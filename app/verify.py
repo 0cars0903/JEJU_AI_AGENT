@@ -23,7 +23,7 @@ import planner  # noqa: E402
 import qparse  # noqa: E402
 import qtuple as Q  # noqa: E402
 import runner  # noqa: E402
-from agent import check_numbers  # noqa: E402
+from textcheck import check_numbers  # noqa: E402
 
 ROUTE = {"해석": "M1", "계획": "M2·M3", "실행": "Sub", "계산": "Sub", "표현": "검수", "반출": "검수"}
 LIMIT = {"sub": 1, "main": 1, "total": 2}

@@ -17,7 +17,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "app"))
 import qtuple as Q  # noqa: E402
-from tools import REST_MAP  # noqa: E402
+from places import REST_MAP  # noqa: E402
 
 IN, OUT = ROOT / "data" / "interim", ROOT / "data" / "lexicon"
 

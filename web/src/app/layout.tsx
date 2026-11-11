@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "동네 생활 진단",
-  description: "제주 43개 읍면동의 상가·음식점·유동인구·버스·기상 자료로 동네를 설명합니다. 미래 예측은 하지 않습니다.",
+  description: "제주 43개 읍면동의 상가·음식점·유동인구·버스·기상 자료로 동네에 대한 질문에 답합니다.",
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#ffffff" };

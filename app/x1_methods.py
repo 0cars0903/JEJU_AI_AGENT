@@ -5,7 +5,6 @@ A+B  bank_parse      : 질문 은행(학습 자료와 같은 질문)에서 TF-ID
                        동네·업종 같은 값 칸은 규칙으로 채운다
 A+L  llm_fill_parse  : 규칙 결과에서 규칙이 정하지 못한 칸(type 기본값, 빈 metric·target·space)만 LLM 값으로 채운다
 L    llm_parse       : LLM이 Tuple 전체를 낸다(A+L·A+L-ft의 원재료, 형식 오류율 측정용)
-C    plan_parse      : 현재 Agent(agent.py)의 해석·계획 결과를 Tuple로 옮긴다(기존 시스템 기준선)
 Ollama는 11/12~13 GPU 공유 때문에 CPU 모드(num_gpu 0)로 부른다(05 문서 11-1절).
 """
 import json
@@ -194,37 +193,6 @@ def llm_fill_parse(q, model, cpu=True, fewshot=False):
         r["expect"], r["type"] = "범위밖", "T12"
     r["_json_ok"], r["_sec"] = l["_json_ok"], l["_sec"]
     return r
-
-
-TOOL_TYPE = {"dong_profile": "T10", "compare_rank": "T3", "biz_diagnostic": "T1", "population_mix": "T5", "bus_usage": "T1"}
-
-
-def plan_parse(q, backend="rule", model=None):
-    """현재 Agent의 해석·기본 계획을 Tuple로 옮긴다. backend='rule'이면 LLM 없이 기존 규칙 경로."""
-    import agent
-    it = agent.interpret(q)
-    t = Q.empty()
-    if it["scope"] == "out":
-        t.update(type="T12", expect="범위밖")
-        return t
-    t["space"], t["target"] = it["dongs"], it.get("category")
-    t["target"] = next((b for w, b in BIZ_KEYS if t["target"] and w == t["target"]), t["target"])
-    if t["target"] not in [*Q.TARGETS_BIZ, *Q.TARGETS_POP]:
-        t["target"] = None
-    plan = agent.default_plan(it, q) if backend == "rule" else agent._llm_plan(q, it, model, backend)
-    names = [p["name"] for p in plan]
-    if not names:
-        t["expect"] = "되묻기" if not it["dongs"] else "답함"
-        t["type"] = "T1"
-        return t
-    typ = TOOL_TYPE.get(names[0], "T1")
-    if names[0] == "dong_profile" and len(it["dongs"]) >= 2:
-        typ = "T2"
-    if it["weather"]:
-        typ = "T6"
-    t["type"] = typ
-    return t
-
 
 
 # ---------- B2: 구조화 출력(JSON 스키마로 칸 이름과 허용 값을 강제, 2026-11-11) ----------

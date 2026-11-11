@@ -1,5 +1,5 @@
 """제출용 zip을 만들고 민감정보를 검사한다. 실행: .venv/bin/python tools/build_package.py
-넣는 것: 실행 코드, 표준 테이블, 수동 매핑표, 시험, 매뉴얼, 제출 문서. 빼는 것: .env, 원본·중간 데이터, 이중 검토 기록.
+넣는 것: 실행 코드, 모델·레시피, 표준 테이블, 사전, 수동 매핑표, 시험. 빼는 것: .env, 원본·중간 데이터, 이중 검토 기록.
 """
 import re
 import sys
@@ -8,8 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NAME = "jeju_dong_agent"
-INCLUDE = ["README.md", "requirements.txt", ".env.example", "app", "scripts", "tests", "eval/run_eval.py", "data/tables", "data/manual", "docs/제출", "docs/평가/01_평가셋결과.md",
-           "web/out", "web/src", "web/e2e", "web/public", "web/package.json", "web/package-lock.json", "web/next.config.ts", "web/tsconfig.json", "web/postcss.config.mjs", "web/components.json", "web/playwright.config.ts"]
+INCLUDE = ["README.md", "requirements.txt", ".env.example", "app", "scripts", "tests", "models/m1_intent.json", "models/recipes.json", "data/tables", "data/manual", "data/lexicon", "data/catalog.json", "data/metric_dict.json",
+           "web/out", "web/src", "web/public", "web/package.json", "web/package-lock.json", "web/next.config.ts", "web/tsconfig.json", "web/postcss.config.mjs", "web/components.json", "web/playwright.config.ts"]
 SKIP = {"__pycache__", ".DS_Store", "node_modules", ".next", "test-results"}
 # 키 형식과 개발 PC의 절대 경로(macOS /Volumes·/Users)가 제출본에 들어가지 않게 막는다.
 PATTERNS = [re.compile(rb"sk-ant-[A-Za-z0-9_-]{8,}"), re.compile(rb"/Volumes/"), re.compile(rb"/Users/")]

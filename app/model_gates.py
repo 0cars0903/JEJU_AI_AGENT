@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "app"))
 from build_dong_tables import IN, MOUNTAIN, KM_START, KM_END, load_api  # noqa: E402
 from stats import km_at  # noqa: E402
-from tools import REST_MAP  # noqa: E402
+from places import REST_MAP  # noqa: E402
 
 TAB = ROOT / "data" / "tables"
 OUTD = IN / "gates"
