@@ -30,8 +30,9 @@ def accounts():
 
 
 def required():
-    """계정이 설정돼 있으면 Claude 기능에 로그인이 필요하다."""
-    return bool(accounts())
+    """Claude 기능에 로그인이 필요한가. 계정이 설정돼 있거나, 공개 서버(Vercel)·JEJU_REQUIRE_LOGIN=1이면 필요하다.
+    공개 서버에서 계정 변수가 빠지면 아무도 로그인할 수 없어 Claude 기능이 꺼진다(설정 누락 시 닫힌 쪽으로, 2026-11-13)."""
+    return bool(accounts()) or bool(os.environ.get("VERCEL")) or os.environ.get("JEJU_REQUIRE_LOGIN") == "1"
 
 
 def make_hash(password, salt=None):

@@ -46,7 +46,13 @@ class AuthUnit(unittest.TestCase):
 
     def test_local_needs_no_login(self):
         with mock.patch.dict(os.environ, {"JEJU_ACCOUNTS": ""}):
+            os.environ.pop("VERCEL", None)
             self.assertFalse(auth.required())
+
+    def test_public_server_fails_closed(self):
+        with mock.patch.dict(os.environ, {"JEJU_ACCOUNTS": "", "VERCEL": "1"}):
+            self.assertTrue(auth.required())
+            self.assertIsNone(auth.login("judge1", "비번-1234", ip="9.9.9.9")[0])
 
 
 class AuthApi(unittest.TestCase):
