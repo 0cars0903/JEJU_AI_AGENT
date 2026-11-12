@@ -831,3 +831,38 @@ test.describe("전문가 모드(설계 11-2절)", () => {
     await expect(page.getByTestId("expert-fail")).toContainText("기법 목록");
   });
 });
+
+test.describe("데모 로그인(2026-11-13)", () => {
+  test("로컬(계정 없음)에서는 로그인 단추가 없다", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await expect(page.getByTestId("login-open")).toHaveCount(0);
+  });
+
+  test("데모: 로그인 전에는 전문가 모드가 잠겨 있고, 로그인하면 열린다. 틀린 비밀번호는 안내", async ({ page }) => {
+    let logged = false;
+    await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: logged, id: logged ? "judge1" : null, claude: true } }));
+    await page.route("**/api/expert/status", (r) =>
+      r.fulfill({ json: { enabled: logged, available: true, login_required: !logged, daily_limit: 50 } }),
+    );
+    await page.route("**/api/login", async (r) => {
+      const b = r.request().postDataJSON();
+      if (b.password === "pw-1") {
+        logged = true;
+        await r.fulfill({ json: { logged_in: true, id: "judge1" } });
+      } else await r.fulfill({ status: 401, json: { detail: "아이디 또는 비밀번호가 맞지 않아요." } });
+    });
+    await page.goto("/");
+    await expect(page.getByTestId("login-open")).toBeVisible();
+    const locked = page.getByTestId("expert-locked");
+    await locked.locator("summary").click();
+    await locked.getByTestId("login-id").fill("judge1");
+    await locked.getByTestId("login-pw").fill("틀림");
+    await locked.getByTestId("login-submit").click();
+    await expect(locked.getByTestId("login-error")).toContainText("맞지 않아요");
+    await locked.getByTestId("login-pw").fill("pw-1");
+    await locked.getByTestId("login-submit").click();
+    await expect(page.getByTestId("expert")).toBeVisible();
+    await expect(page.getByTestId("login-state")).toContainText("judge1");
+  });
+});

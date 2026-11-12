@@ -9,6 +9,7 @@
 """
 import io
 import json
+import os
 import time
 import uuid
 from pathlib import Path
@@ -16,7 +17,7 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-UP = ROOT / "data" / "interim" / "uploads"
+UP = (Path(os.environ["JEJU_WRITE_DIR"]) if os.environ.get("JEJU_WRITE_DIR") else ROOT / "data" / "interim") / "uploads"  # 데모는 /tmp
 MAX_BYTES = 300 * 1024 * 1024
 KEEP_SEC = 24 * 3600
 # 표준 칸 ← 받을 수 있는 이름들(센터 명세 영문·한글, 허브 746)

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useIconHover } from "@animateicons/react";
 import { cn } from "cn";
 import { MessageCircleIcon } from "@/components/icons";
+import { LoginButton } from "@/components/login";
 
 const NAV = [
   { href: "/", label: "질문하기", Icon: MessageCircleIcon },
@@ -44,6 +45,9 @@ export function SiteHeader() {
             <NavItem key={n.href} {...n} active={n.href === "/" ? path === "/" : path.startsWith(n.href.slice(0, -1))} />
           ))}
         </nav>
+        <div className="ml-auto py-2">
+          <LoginButton />
+        </div>
       </div>
     </header>
   );

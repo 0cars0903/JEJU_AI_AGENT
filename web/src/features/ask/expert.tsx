@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { type ExpertResult, type ExpertSeries, type ExpertTable, askExpert, getExpertStatus } from "@/lib/api";
 import { shortNum } from "./views";
+import { LoginForm } from "@/components/login";
 
 const EXAMPLES = ["노형동 음식점 월 매출을 시계열 분해해서 추세와 계절성 보여줘", "43개 동네를 방문·매출·가게 수로 군집분석 해줘", "동네별 음식점 매출에 방문 인구와 가게 수가 미치는 영향을 회귀분석해줘"];
 
@@ -161,6 +162,16 @@ export function ExpertMode() {
   const st = useQuery({ queryKey: ["expert-status"], queryFn: getExpertStatus, staleTime: Infinity, retry: false });
   const [q, setQ] = useState("");
   const m = useMutation({ mutationFn: askExpert });
+  if (st.data?.available && st.data.login_required)
+    return (
+      <details data-testid="expert-locked" className="rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
+        <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(로그인 필요)</summary>
+        <div className="mt-2 flex max-w-sm flex-col gap-2">
+          <p className="text-(--krds-text-bolder)">AI가 분석 코드를 짜서 실행하는 기능이라 로그인한 사용자만 쓸 수 있어요.</p>
+          <LoginForm />
+        </div>
+      </details>
+    );
   if (!st.data?.enabled) return null;
   return (
     <details data-testid="expert" className="rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">

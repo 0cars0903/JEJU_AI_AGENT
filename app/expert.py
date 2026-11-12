@@ -3,7 +3,7 @@
 - Claude 키가 있을 때만 켠다(`enabled()`). 로컬 Ollama 경로는 쓰지 않는다(소형 모델은 코드 품질이 낮다고 봄 [추정]).
 - 고치기는 1번만: 검사·실행 오류를 Claude에 되돌려 한 번 고치게 한다. 다시 실패하면 이유와 기법 목록 안내를 돌려준다.
 - 해설 문장의 숫자는 실행 결과와 대조한다(`textcheck.check_numbers`). 어긋나면 해설을 버리고 숫자표만 보인다.
-- 하루 요청 상한 `JEJU_EXPERT_DAILY`(기본 50). 키 값은 출력하지 않는다.
+- 하루 요청 상한 `JEJU_EXPERT_DAILY`(기본 50, 아이디마다). 키 값은 출력하지 않는다.
 """
 import datetime as dt
 import json
@@ -18,7 +18,7 @@ import sandbox  # noqa: E402
 from textcheck import check_numbers  # noqa: E402
 
 DAILY = int(os.environ.get("JEJU_EXPERT_DAILY", "50"))
-_count = {"day": None, "n": 0}
+_count = {"day": None}  # 아이디별 오늘 요청 수(인스턴스 안에서만 셈)
 
 from prompts import EXPERT_SYSTEM as SYSTEM, EXPLAIN_SYSTEM, TOOL_ANALYSIS, TOOL_EXPLAIN  # noqa: E402
 
@@ -27,13 +27,15 @@ def enabled():
     return bool(os.environ.get("ANTHROPIC_API_KEY")) and os.environ.get("LLM_BACKEND") not in ("rule", "ollama")
 
 
-def _quota():
+def _quota(user="local"):
     today = dt.date.today().isoformat()
-    if _count["day"] != today:
-        _count.update(day=today, n=0)
-    if _count["n"] >= DAILY:
+    if _count.get("day") != today:
+        _count.clear()
+        _count["day"] = today
+    n = _count.get(user, 0)
+    if n >= DAILY:
         return False
-    _count["n"] += 1
+    _count[user] = n + 1
     return True
 
 
@@ -70,12 +72,12 @@ def _fallback_lines(result):
     return lines + [f"주의: {n}" for n in (result.get("notes") or [])[:3]]
 
 
-def ask(question, chat=None):
+def ask(question, chat=None, user="local"):
     """전문가 모드 한 번. 돌려주는 값: status, method, plan, code, result, lines, by, attempts, error, usage, sec."""
     t0 = time.perf_counter()
     if not enabled():
         return {"status": "꺼짐", "error": "Claude API 키가 없어 전문가 모드를 쓸 수 없어요. 기법 목록이나 일반 질문을 써 주세요."}
-    if not _quota():
+    if not _quota(user):
         return {"status": "상한", "error": f"오늘 전문가 모드 요청 상한({DAILY}건)에 닿았어요."}
     usage = {}
     msgs = [{"role": "system", "content": SYSTEM + datadict.describe()}, {"role": "user", "content": question}]

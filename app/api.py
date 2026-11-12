@@ -28,6 +28,14 @@ OUT = ROOT / "web" / "out"
 app = FastAPI(title="동네 생활 진단 API")
 
 
+def _user(request):
+    """로그인한 아이디. 계정을 설정하지 않은 로컬이면 'local'(로그인 없이 Claude 기능 사용)."""
+    import auth
+    if not auth.required():
+        return "local"
+    return auth.verify(request.cookies.get(auth.COOKIE))
+
+
 @app.on_event("startup")
 def _warm_recipes():
     """R1 레시피 캐시를 별도 스레드에서 미리 채운다. 서버는 기다리지 않고 바로 뜬다(상태는 /api/health)."""
@@ -91,7 +99,7 @@ _M1 = {}
 
 
 @app.post("/api/ask")
-def ask(body: Ask):
+def ask(body: Ask, request: Request):
     """자유 입력(question) 또는 버튼 값(slots) → 해석 → 계획 → 지시서 → 실행 → 검수 → 결과 생성.
     응답: understood·card·suggestions·process·downloads, 추정할 수 없으면 status '선택필요'와 choose. 명세 docs/기획/07_화면API명세.md"""
     import m1
@@ -100,7 +108,7 @@ def ask(body: Ask):
     if not question and not body.slots:
         raise HTTPException(422, "질문을 입력하거나 고를 항목을 골라 주세요.")
     b = llm.backend()  # 계획 해설: 키가 있으면 Claude, 없으면 켜져 있는 Ollama, 둘 다 없으면 템플릿(2026-11-13)
-    on = b == "claude" or (b == "ollama" and llm._ollama_alive())
+    on = (b == "claude" and _user(request) is not None) or (b == "ollama" and llm._ollama_alive())  # Claude는 로그인 뒤에만(데모)
     env = {"center_db": False}
     if body.dataset_id:
         import center_csv
@@ -181,21 +189,70 @@ class Expert(BaseModel):
     question: str = Field(..., max_length=500)
 
 
-@app.get("/api/expert/status")
-def expert_status():
-    """전문가 모드(설계 11-2절) 사용 가능 여부. Claude 키가 있을 때만 켜진다."""
+class Login(BaseModel):
+    id: str = Field(..., max_length=64)
+    password: str = Field(..., max_length=200)
+
+
+@app.get("/api/me")
+def me(request: Request):
+    """로그인 상태. login_required가 False면(로컬) 로그인 화면을 보이지 않는다."""
+    import auth
     import expert
-    return {"enabled": expert.enabled(), "daily_limit": expert.DAILY}
+    uid = _user(request)
+    return {"login_required": auth.required(), "logged_in": uid is not None and uid != "local", "id": uid if uid != "local" else None,
+            "claude": expert.enabled()}
+
+
+@app.post("/api/login")
+def do_login(body: Login, request: Request):
+    import auth
+    from fastapi.responses import JSONResponse as J
+    if not auth.required():
+        raise HTTPException(404, "이 환경은 로그인이 필요 없어요.")
+    ip = (request.headers.get("x-forwarded-for") or (request.client.host if request.client else "?")).split(",")[0].strip()
+    try:
+        token, why = auth.login(body.id.strip(), body.password, ip)
+    except RuntimeError:
+        raise HTTPException(503, "로그인 설정이 끝나지 않았어요(관리자 확인 필요).")
+    if not token:
+        raise HTTPException(401, why)
+    r = J({"logged_in": True, "id": body.id.strip()})
+    secure = request.headers.get("x-forwarded-proto", request.url.scheme) == "https"
+    r.set_cookie(auth.COOKIE, token, max_age=auth.TTL, httponly=True, secure=secure, samesite="lax", path="/")
+    return r
+
+
+@app.post("/api/logout")
+def do_logout():
+    import auth
+    from fastapi.responses import JSONResponse as J
+    r = J({"logged_in": False})
+    r.delete_cookie(auth.COOKIE, path="/")
+    return r
+
+
+@app.get("/api/expert/status")
+def expert_status(request: Request):
+    """전문가 모드(설계 11-2절) 사용 가능 여부. Claude 키가 있고, 데모에서는 로그인했을 때만 켜진다."""
+    import auth
+    import expert
+    uid = _user(request)
+    return {"enabled": expert.enabled() and uid is not None, "available": expert.enabled(),
+            "login_required": auth.required() and uid is None, "daily_limit": expert.DAILY}
 
 
 @app.post("/api/expert")
-def expert_ask(body: Expert):
-    """전문가 모드: 요청 → Claude가 계획·코드 설계 → 검사·격리 실행 → 해설 → 숫자 대조."""
+def expert_ask(body: Expert, request: Request):
+    """전문가 모드: 요청 → Claude가 계획·코드 설계 → 검사·격리 실행 → 해설 → 숫자 대조. 데모에서는 로그인 필요."""
     import expert
+    uid = _user(request)
+    if uid is None:
+        raise HTTPException(401, "전문가 모드는 로그인한 뒤에 쓸 수 있어요.")
     q = body.question.strip()
     if not q:
         raise HTTPException(422, "요청을 입력해 주세요.")
-    return clean(expert.ask(q))
+    return clean(expert.ask(q, user=uid))
 
 
 @app.get("/api/health")

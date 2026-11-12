@@ -9,6 +9,7 @@
 """
 import hashlib
 import json
+import os
 import sys
 import time
 import warnings
@@ -21,9 +22,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import qtuple as Q  # noqa: E402
 
 REG = json.loads((Q.ROOT / "models" / "recipes.json").read_text(encoding="utf-8"))
-CACHE = Q.ROOT / "models" / "cache"
-REGISTRY = Q.ROOT / "models" / "registry.json"
-PANEL = Q.ROOT / "data" / "interim" / "gates" / "panel_v2.parquet"
+_WRITE = Path(os.environ["JEJU_WRITE_DIR"]) if os.environ.get("JEJU_WRITE_DIR") else Q.ROOT  # 데모(Vercel)는 /tmp만 쓸 수 있다
+CACHE_RO = Q.ROOT / "models" / "cache"  # 저장소에 든 캐시(읽기)
+CACHE = _WRITE / "models" / "cache"
+REGISTRY = _WRITE / "models" / "registry.json"
+# 방문 패널: 제출본에 든 data/tables 사본을 먼저 쓴다(data/interim은 git·ZIP에 없음, 2026-11-13)
+PANEL = next((p for p in (Q.ROOT / "data" / "tables" / "panel_v2.parquet", Q.ROOT / "data" / "interim" / "gates" / "panel_v2.parquet") if p.exists()),
+             Q.ROOT / "data" / "tables" / "panel_v2.parquet")
 TAB = Q.ROOT / "data" / "tables"
 CENTER_ONLY = {"R8", "R9"}
 NO_CHECK = {"R3", "R8", "R9", "R10", "R11"}
@@ -34,7 +39,8 @@ class RecipeError(Exception):
 
 
 def _fingerprint(*paths):
-    return [f"{p.name}:{p.stat().st_size}:{int(p.stat().st_mtime)}" for p in paths]
+    """자료 판 표시: 이름·크기·내용 해시. 수정 시각을 쓰지 않아 git·ZIP으로 옮겨도 같은 캐시를 쓴다(2026-11-13)."""
+    return [f"{p.name}:{p.stat().st_size}:{hashlib.sha1(p.read_bytes()).hexdigest()[:12]}" for p in paths]
 
 
 def _key(rid, fp, cfg):
@@ -45,8 +51,9 @@ def _cached(rid, fp, cfg, build):
     """캐시가 있으면 읽고, 없으면 build()로 학습해 저장하고 등록부에 기록한다."""
     k = _key(rid, fp, cfg)
     f = CACHE / f"{rid}_{k}.json"
-    if f.exists():
-        return dict(json.loads(f.read_text(encoding="utf-8")), cache="hit")
+    for c in (f, CACHE_RO / f.name):
+        if c.exists():
+            return dict(json.loads(c.read_text(encoding="utf-8")), cache="hit")
     t0 = time.perf_counter()
     res = build()
     res["train_sec"] = round(time.perf_counter() - t0, 2)

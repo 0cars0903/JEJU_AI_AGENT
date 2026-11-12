@@ -18,7 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import deep  # noqa: E402
 import v3  # noqa: E402
 
-PANEL = v3.ROOT / "data" / "interim" / "gates" / "panel_v2.parquet"
+PANEL = next((p for p in (v3.ROOT / "data" / "tables" / "panel_v2.parquet", v3.ROOT / "data" / "interim" / "gates" / "panel_v2.parquet") if p.exists()),
+             v3.ROOT / "data" / "tables" / "panel_v2.parquet")  # 제출본 사본 먼저(2026-11-13)
 ALPHA = 0.05
 SAME, DIFF, RANK = "차이 확인 안 됨", "차이 있음", "순위로만 비교"
 

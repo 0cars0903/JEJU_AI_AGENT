@@ -160,5 +160,11 @@ export type ExpertResult = {
   sec?: number;
   usage?: { input_tokens?: number; output_tokens?: number };
 };
-export const getExpertStatus = () => call<{ enabled: boolean; daily_limit: number }>("/api/expert/status");
+export type ExpertStatus = { enabled: boolean; available?: boolean; login_required?: boolean; daily_limit: number };
+export const getExpertStatus = () => call<ExpertStatus>("/api/expert/status");
+/** 데모 로그인(2026-11-13): 계정이 설정된 환경에서만 login_required가 true. 로그인해야 Claude 기능이 켜진다. */
+export type Me = { login_required: boolean; logged_in: boolean; id: string | null; claude: boolean };
+export const getMe = () => call<Me>("/api/me");
+export const login = (id: string, password: string) => call<{ logged_in: boolean; id: string }>("/api/login", { method: "POST", body: JSON.stringify({ id, password }) });
+export const logout = () => call<{ logged_in: boolean }>("/api/logout", { method: "POST" });
 export const askExpert = (question: string) => call<ExpertResult>("/api/expert", { method: "POST", body: JSON.stringify({ question }) });

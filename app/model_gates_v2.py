@@ -211,6 +211,7 @@ def main():
     OUTD.mkdir(parents=True, exist_ok=True)
     d = panel()
     d.to_parquet(OUTD / "panel_v2.parquet", index=False)
+    d.to_parquet(OUTD.parents[1] / "tables" / "panel_v2.parquet", index=False)  # 제출본·데모가 쓰는 사본(data/interim은 git에 없음, 2026-11-13)
     res = {"panel": {"rows": int(len(d)), "days": int(d["date"].nunique()), "from": str(d["date"].min().date()), "to": str(d["date"].max().date()),
                      "folds": FOLDS, "test_days": TEST_DAYS, "horizon_days": H}}
     res["M1"], _ = run_m1(d)
