@@ -20,6 +20,14 @@ CAT = {r["id"]: r for r in json.loads((Q.ROOT / "data" / "catalog.json").read_te
 CENTER_SUBSTITUTE = {"시간대방문": ["일평균방문"], "시간대버스": ["버스일평균"]}  # v3: 매출은 공개 경로(제주관광공사)가 생겨 대체하지 않는다
 NO_CHECK = {"R3", "R8", "R9", "R10", "R11"}  # 미리 계산한 검정 결과(R3)·센터 전용(R8·R9)은 점검하지 않는다
 FOOD = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점", "편의점", "음식점"}
+REST_BIZ = FOOD - {"편의점"}  # 음식점 인허가 자료로 생존·개업·폐업을 볼 수 있는 업종
+# 종합 진단(T10)에 붙이는 모델 결과의 순서(문서 21 3.1절): 생존·방문 예상·닮은 동네 → 매출 예상·개업폐업 이례 → 계절 유형·비 효과
+DIAG_RECIPES = ["R4", "R1", "R5", "R10", "R7", "R6", "R3"]
+# 단순 주제에 곁가지로 붙이는 모델 결과(문서 22 4절, 이중 검토 033 답 4절 대응표). R5는 '비슷한 동네 5곳 대비' 위치 계산에 쓴다
+SIDE_BY_METRIC = {"일평균방문": ["R1", "R6", "R3", "R5"], "점포수": ["R4", "R5"], "개업수": ["R4", "R7", "R5"], "폐업수": ["R4", "R7", "R5"],
+                  "5년생존율": ["R4", "R5"], "조건부생존": ["R4", "R5"], "매출": ["R10", "R5"], "이용건수": ["R10", "R5"], "건당금액": ["R5"],
+                  "관광객비중": ["R5"], "시간대매출": ["R5"], "시장추이": ["R10", "R5"], "업종비교": ["R5"]}
+SIDE_SKIP = {"T2", "T3", "T8", "T9", "T10", "T11", "T15"}  # 비교(T2)는 동네 비교 화면, 예상·닮은 동네·이례는 주 레시피가 이미 모델이다
 
 # 유형별 기본 지표(질문에 지표가 없을 때)
 DEFAULT_METRIC = {"T1": "점포수", "T2": None, "T3": "점포수", "T4": "개업수", "T5": "거주연령구성", "T6": "일평균방문", "T8": "일평균방문",
@@ -51,6 +59,30 @@ def pick_source(metric, env):
     return None, None
 
 
+def _side_steps(t, out, metrics):
+    """단순 주제(동네 하나)에 관련 모델 결과를 곁가지로 붙인다(문서 22 4절 공통 작업). 곁가지는 실패해도 답을 막지 않는다."""
+    if t["type"] in SIDE_SKIP or len(t.get("space") or []) != 1 or out["status"] != "ok":
+        return
+    tgt = t.get("target")
+    rest = not tgt or tgt in REST_BIZ
+    card_biz = tgt in FOOD or tgt in ("숙박", "소매", "편의점", "음식점")  # 카드 대분류가 있는 업종(매출 예상 R10)
+    main = {st.get("recipe") for st in out["steps"]}
+    want = []
+    for m in metrics:
+        for r in SIDE_BY_METRIC.get(m, []):
+            if r in want or r in main or (r in ("R4", "R7") and not rest) or (r == "R10" and not card_biz):
+                continue
+            want.append(r)
+    if not want:
+        return
+    out["side"] = list(want)
+    for r in want:  # 주 단계 뒤에 붙인다(주 단계의 번호와 입력은 그대로)
+        if r not in NO_CHECK:
+            out["steps"].append({"sub": "S2", "op": "학습 전 점검", "recipe": r, "side": True})
+        out["steps"].append({"sub": "S3", "op": "레시피 학습·검증·추론", "recipe": r, "side": True})
+    out["steps"].append({"sub": "S6", "op": "판정(곁가지 모델 관문·비 효과)"})  # 곁가지 예상(R1·R10)의 관문과 비 효과(R3) 판정
+
+
 def plan(t, env=None):
     env = env or {"center_db": False}
     out = {"type": t["type"], "steps": [], "relaxed": [], "notes": [], "status": "ok"}
@@ -66,6 +98,14 @@ def plan(t, env=None):
         for m in ["판단재료", "매출", "관광객비중", "점포수"] if biz_ok else ["판단재료", "점포수"]:
             route, src = pick_source(m, env)  # 센터 카드 CSV를 넣었으면 매출은 그 자료로 계산한다(문서 20 A6: 전에는 공개 경로로 고정돼 넣은 자료가 쓰이지 않았다)
             out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route if route == "center_csv" else "public", "source": src, "filter": flt, "breakdown": None})
+        # 모델 결과를 곁가지 단계로 붙인다(문서 21 6.1절 1단계). 곁가지는 실패해도 진단의 다른 줄을 막지 않는다(runner: optional)
+        tgt, rest = t.get("target"), not t.get("target") or t.get("target") in REST_BIZ
+        for r in (DIAG_RECIPES if t["space"] else []):
+            if (r in ("R4", "R7") and not rest) or (r == "R10" and not biz_ok):
+                continue  # 생존·개업폐업은 음식점 인허가 업종만, 매출 예상은 카드 대분류가 있는 업종만
+            if r not in NO_CHECK:
+                out["steps"].append({"sub": "S2", "op": "학습 전 점검", "recipe": r, "side": True})
+            out["steps"].append({"sub": "S3", "op": "레시피 학습·검증·추론", "recipe": r, "side": True})
         out["steps"] += [{"sub": "S2", "op": "기술 통계·추세·상관"}, {"sub": "S6", "op": "판정(차이·동등성·짝 비교)"}, {"sub": "S4", "op": "차트·지도"}]
         return out
     metrics = list(t["metric"]) or ([DEFAULT_METRIC.get(t["type"])] if DEFAULT_METRIC.get(t["type"]) else [])
@@ -84,6 +124,9 @@ def plan(t, env=None):
         out["notes"].append(f"{t['target']}은 개업·폐업 자료(음식점 인허가)에 없음")
         return out
     subs, recipe = TYPE_PLAN.get(t["type"], (["S1"], None))
+    season = t["type"] == "T9" and t.get("breakdown") == "계절"
+    if season:  # 닮은 기준이 계절 흐름이면 업종·연령 유사도(R5)가 아니라 월별 방문 곡선(R6)으로 찾는다(문서 21)
+        metrics, recipe = ["일평균방문"], "R6"
     if t["type"] == "T8" and (metrics == ["버스일평균"] or "버스" in str(t.get("target"))):  # v3: 버스 예상(R2) 제외
         out["status"] = "범위밖"
         out["notes"].append("버스 이용 예상은 하지 않습니다(v3 상권 분석 범위 밖, 모델이 단순 기준보다 낫지 않음)")
@@ -94,7 +137,8 @@ def plan(t, env=None):
         metrics, recipe = ["매출"], "R10"
     if any(m in ("5년생존율", "조건부생존") for m in metrics) and t.get("target"):
         subs, recipe = ["S1", "S3", "S4"], "R4"  # 업종 생존은 업종 묶음 카플란-마이어(동네별 표에는 업종 구분이 없다)
-    breakdown = t.get("breakdown")
+    by_biz = t["type"] == "T15" and t.get("breakdown") == "업종"  # 업종별 이례(R7): 조회는 동네 값 그대로, 레시피가 업종 묶음별로 계산한다
+    breakdown = None if season or by_biz else t.get("breakdown")
     hourly = t["type"] == "T13" or any(m in ("시간대방문", "시간대버스", "시간대매출") for m in metrics) or breakdown == "시간대"
     bus = any(m in ("버스일평균", "경로일평균", "정류소일이용", "시간대버스") for m in metrics) or "버스" in str(t.get("target"))
     if hourly and not bus:  # v3: 상권의 '몇 시'는 공개 시간대 카드 매출(제주관광공사, 2024-10~)로 답한다
@@ -147,8 +191,12 @@ def plan(t, env=None):
         flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time"), "detail": t.get("detail"), "details": t.get("details")}
         out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route, "source": src, "filter": flt, "breakdown": breakdown})
     # 조건(비·주말 등): 조건 효과 레시피가 지원하는 지표가 아니면 조건 완화
-    if t["cond"] and t["type"] not in ("T6",):
+    if t["cond"] and t["type"] not in ("T6",) and not season:
         out["relaxed"].append(f"조건({', '.join(t['cond'])})은 이 질문 유형에서 쓰지 않음")
+    if by_biz:
+        for st in out["steps"]:
+            if st.get("filter"):
+                st["filter"] = dict(st["filter"], by="업종")
     for s in subs[1:]:
         if s == "S3" and recipe and recipe not in NO_CHECK:  # 학습 전 점검(S2)을 S3 앞에 둔다(사용자 결정 2026-11-11)
             out["steps"].append({"sub": "S2", "op": "학습 전 점검", "recipe": recipe})
@@ -164,6 +212,7 @@ def plan(t, env=None):
         elif s == "S4":
             step.update(op="차트·지도")
         out["steps"].append(step)
+    _side_steps(t, out, metrics)
     seen, uniq = set(), []
     for st in out["steps"]:  # 같은 후속 단계(S4 등) 중복 제거
         key = json.dumps(st, ensure_ascii=False, sort_keys=True, default=str)

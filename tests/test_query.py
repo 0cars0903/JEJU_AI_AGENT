@@ -188,7 +188,7 @@ class RecipesW5(unittest.TestCase):
 
     def test_r3_has_no_check(self):  # 미리 계산한 검정 결과(R3)는 점검하지 않는다
         st = self._plan("비 오면 노형동 사람 줄어?")["steps"]
-        self.assertFalse(any(s.get("op") == "학습 전 점검" for s in st))
+        self.assertFalse(any(s.get("op") == "학습 전 점검" for s in st if not s.get("side")))  # 곁가지(문서 22: 방문 예상 R1 등)의 점검은 제외
 
     def test_check_fail_skips_training(self):
         import pandas as pd

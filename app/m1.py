@@ -82,7 +82,9 @@ class M1:
                 t["type"], conf = self._predict("type", v)
                 t["expect"], _ = self._predict("expect", v)
                 path = "B3(임베딩 + 분류기)"
-                if t["expect"] == "범위밖" and base["expect"] == "답함" and {"매출성장", "시장추이", "업종비교"} & set(base["metric"]):
+                if base.get("_out_rule"):  # 사전 규칙이 자료에 없는 분류로 확정한 질문(애견 미용)은 분류기가 덮지 않는다
+                    t["type"], t["expect"] = "T12", "범위밖"
+                elif t["expect"] == "범위밖" and base["expect"] == "답함" and {"매출성장", "시장추이", "업종비교"} & set(base["metric"]):
                     # v3 묶음 지표가 사전에 명시적으로 잡히면 사전 해석을 따른다(예문이 적어 분류기가 '요즘 ~ 어디야'를 범위 밖으로 봄, 2026-11-11)
                     t["type"], t["expect"] = base["type"], "답함"
                     t["_why"] = list(base.get("_why") or []) + ["v3 묶음 지표는 사전 해석 우선"]
@@ -100,8 +102,13 @@ class M1:
                     t["type"] = "T12"
                 elif base["_amb"] and not base["space"]:
                     t["expect"] = "되묻기"
-                elif t["type"] in qparse.NEED_DONG and not base["space"] and t["expect"] == "답함" and not {"시장추이", "매출성장"} & set(t.get("metric") or []):
+                elif t["type"] in qparse.NEED_DONG and not base["space"] and t["expect"] == "답함" and not qparse.jeju_wide(t):
                     t["expect"] = "되묻기"
+                surv = set(base["metric"]) and set(base["metric"]) <= {"5년생존율", "조건부생존"} and not base["space"] and t["expect"] == "되묻기"
+                if base["expect"] == "답함" and not base["_amb"] and qparse.jeju_wide(base) and (surv or base.get("_wide")):
+                    # 업종 생존율과 업종별 이례는 업종 묶음(제주 전체) 단위로 계산하므로 동네를 되묻지 않는다(문서 21). 분류기는 동네 없는 문장을 되묻기로 배웠다.
+                    t["type"], t["expect"] = base["type"], "답함"
+                    t["_why"] = list(t.get("_why") or []) + ["제주 전체 값으로 답하는 질문은 사전 해석 우선"]
                 if (conf is not None and conf < self.low_conf and t["type"] == "T6" and t["expect"] == "답함" and not base["cond"]
                         and base["type"] != "T6" and base["expect"] != "범위밖"):
                     # 조건 낱말(비·주말 등)이 없는 문장을 분류기가 낮은 확신도로 '조건 효과'로 읽으면 사전 해석을 따른다(문서 20 7.5절 1번, 사용자 결정 2026-11-12).

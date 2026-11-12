@@ -84,6 +84,8 @@
   }
   html {
     @apply font-sans;
+    /* 사람 시험 H4(문서 23 8절): 화면 설정을 없애고 글자 크기 '작게'(90%)를 기본으로 둔다. 더 크게 보려면 브라우저 확대(Ctrl +)를 쓴다. */
+    font-size: 90%;
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
   }
@@ -138,7 +140,8 @@
 }
 
 @media print {
-  @page { size: A4; margin: 16mm; }
+  /* 문서 23 H2: 인쇄 창에서 여백 '없음'을 골라도 좌우 여백이 남게, 좌우 여백 일부를 보고서 안쪽 여백으로 옮긴다(합계 18mm는 그대로) */
+  @page { size: A4; margin: 16mm 6mm; }
   html { font-size: 11pt !important; }
   body { background: #ffffff; color: #000000; }
   a { color: inherit; text-decoration: none; }
@@ -151,7 +154,9 @@
 .report-tag { display: block; font-size: 10pt; font-weight: 700; color: #444; }
 @media print {
   body > *:not(.print-only) { display: none !important; }
-  .print-only { display: block; position: static; padding: 0; font-size: 12pt; color: #000; background: #fff; }
+  .print-only { display: block; position: static; padding: 0 12mm; font-size: 12pt; color: #000; background: #fff; }
+  .print-only .report-summary td { font-size: 10pt; }
+  .print-only .report-srcs { list-style: none; padding-left: 0; font-size: 9.5pt; }
   .print-only h1 { font-size: 18pt; margin-bottom: 6pt; }
   .print-only h2 { font-size: 14pt; margin-top: 10pt; }
   .print-only h3 { font-size: 12pt; }
@@ -160,4 +165,13 @@
   .print-only .report-chart { break-inside: avoid; margin-top: 8pt; }
   .print-only button, .print-only [data-testid$="-zoom"], .print-only [data-testid$="-tiny-hint"] { display: none; }
   .print-only figure { max-width: 75mm; }
+  .print-only .report-table { width: 100%; border-collapse: collapse; font-size: 9.5pt; table-layout: fixed; }
+  .print-only .report-table th, .print-only .report-table td { border: 0.5pt solid #888; padding: 3pt 4pt; text-align: left; vertical-align: top; word-break: keep-all; overflow-wrap: anywhere; }
+  .print-only .report-table tr { break-inside: avoid; }
+  .print-only .report-methods tr:last-child th:first-child { width: 15%; }
+  .print-only .report-table .report-caption { border: 0; padding: 0 0 4pt; }
+  .print-only .report-charts { display: flex; flex-wrap: wrap; gap: 6pt 4%; }
+  .print-only .report-charts > .report-chart { flex: 0 0 100%; }
+  .print-only .report-charts > .report-map { flex: 0 0 48%; }
+  .print-only h2, .print-only h3 { break-after: avoid; }
 }

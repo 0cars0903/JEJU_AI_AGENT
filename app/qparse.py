@@ -333,6 +333,17 @@ def type_scores(q, t):
     return {k: v for k, v in sc.items() if v > 0}
 
 
+def jeju_wide(t):
+    """동네 없이 제주 전체 값으로 답하는 질문인가. 시장 추이·뜨는 곳, 그리고 업종 생존율(업종 묶음 단위로만 계산한다, 문서 21)."""
+    m = set(t.get("metric") or [])
+    return bool({"시장추이", "매출성장"} & m) or bool(m and m <= {"5년생존율", "조건부생존"} and t.get("target")) or (t.get("type") == "T15" and t.get("breakdown") == "업종")
+
+
+ODD_Q = re.compile(r"이상(한|해|하[게지])|유난|이례|평소보다|평소와|급증|급감|갑자기|튀는|눈에 띄")  # '2배 이상'의 이상은 뺀다
+BIZ_ASKED = re.compile(r"업종(들)?(은|이|을|도)?\s*([?!.]|$|있|뭐|무엇|알려|찾|보여)|(어떤|무슨|어느)\s*업종")  # 답으로 업종을 묻는 문장
+PET_GROOM = re.compile(r"(애견|반려견|반려\s*동물|강아지|고양이|펫|동물)\s*(전용\s*)?미용")
+
+
 def parse(q):
     q = norm(q)
     t = Q.empty()
@@ -369,6 +380,10 @@ def parse(q):
     t["_amb"] = amb
     t["_why"] = []
     # ① 판단: 범위 밖 주제 먼저
+    if PET_GROOM.search(q):  # '애견미용실'은 상가 정보에 분류가 없다. 사람 미용실 수로 바꿔 답하지 않는다(문서 21, X1-B142)
+        t.update(type="T12", expect="범위밖", target=None, detail=None, _out_rule=True)
+        t["_why"].append("애견·동물 미용은 상가 정보에 따로 분류가 없음")
+        return t
     out = hits(q, OUT_W)
     if out:
         t.update(type="T12", expect="범위밖")
@@ -384,12 +399,19 @@ def parse(q):
     t["_type_default"] = not sc
     if t["type"] == "T3" and t["space"]:
         t["type"] = "T1"
+    if {"폐업수", "개업수"} & set(t["metric"]) and BIZ_ASKED.search(q) and ODD_Q.search(q):
+        t.update(type="T15", breakdown="업종", _wide=True)  # '올해 폐업이 이상한 업종': 업종 묶음별 이례(R7)로 답한다. 동네가 없으면 제주 전체(문서 21)
+        t["_type_default"] = False
     if t["type"] in ("T8",) and not t["time"]:
         t["time"] = "다음달" if "달" in q else "다음분기" if "분기" in q else "다음주" if "주" in q else None
-    if "시간대" in q or "몇 시" in q:
+    if t.get("breakdown") == "업종":
+        pass
+    elif "시간대" in q or "몇 시" in q:
         t["breakdown"] = "시간대"
     elif re.search(r"나이|연령", q):
         t["breakdown"] = "연령대"
+    elif re.search(r"계절|월별|성수기|비수기", q) and re.search(r"비슷|닮|유사", q):
+        t["breakdown"] = "계절"  # '계절 흐름이 비슷한 동네': 닮은 기준이 월별 방문 흐름(R6)이다(문서 21)
     if not t["target"] and any(m in FOOD_ONLY for m in t["metric"]):
         t["target"] = "음식점"  # 개업·폐업·생존 지표는 음식점 인허가 자료라 대상이 음식점으로 정해진다
     vague = not t["metric"] and not t["target"] and t["_type_default"]
@@ -402,7 +424,7 @@ def parse(q):
     if amb and not t["space"]:
         t["expect"] = "되묻기"
         t["_why"].append(f"여러 동네로 읽히는 지명: {', '.join(amb)}")
-    elif t["type"] in NEED_DONG and not t["space"] and not {"시장추이", "매출성장"} & set(t["metric"]):  # 시장 추이·뜨는 곳은 제주 전체로 답함
+    elif t["type"] in NEED_DONG and not t["space"] and not jeju_wide(t):  # 시장 추이·뜨는 곳·업종 생존율은 제주 전체로 답함
         t["expect"] = "되묻기"
         t["_why"].append("동네가 필요함")
     elif vague:

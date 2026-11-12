@@ -88,6 +88,16 @@ class Api(unittest.TestCase):
     def setUpClass(cls):
         cls.c = TestClient(api.app, raise_server_exceptions=False)
 
+    def test_groups_cover_every_topic_once(self):
+        """문서 21 6.2절 3단계: 주제 14개가 빠짐없이 한 묶음에만 들어가고, 첫 단계 선택지는 6개 이하."""
+        g = self.c.get("/api/guide").json()
+        ids = [t["id"] for t in g["topics"]]
+        grouped = [t for gr in g["groups"] for t in gr["topics"]]
+        self.assertEqual(sorted(grouped), sorted(ids))
+        self.assertEqual(len(grouped), len(set(grouped)))
+        self.assertLessEqual(len(g["groups"]), 6)
+        self.assertEqual([gr["label"] for gr in g["groups"]], ["가게", "손님·매출", "비교·순위", "진단·예상"])
+
     def test_guide(self):
         g = self.c.get("/api/guide").json()
         self.assertEqual(len(g["topics"]), len(G.TOPICS))

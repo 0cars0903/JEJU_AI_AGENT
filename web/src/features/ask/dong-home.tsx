@@ -10,7 +10,7 @@ const HINT = (picked: boolean) => (picked ? "지도에서 눌러도 바뀌어요
 const MAP_BASE = "노형동"; // 지도 색(43곳 값)을 받는 데만 쓴다. 43곳 값은 어느 동네로 물어도 같다.
 const fmt = (v: number, unit: string) => (unit === "원" ? `${shortNum(v)} 원` : unit === "지수" ? shortNum(v) : `${Math.round(v).toLocaleString("ko-KR")} ${unit}`);
 
-/** Notion '텍스트 등장' 카운트 업: 0 → 값으로 0.6초. 화면 설정의 '움직임 줄이기'면 바로 값을 보여 준다. */
+/** Notion '텍스트 등장' 카운트 업: 0 → 값으로 0.6초. 운영체제의 '움직임 줄이기'면 바로 값을 보여 준다. */
 function useCountUp(target: number, ms = 600) {
   const [v, setV] = useState(target);
   useEffect(() => {
@@ -85,6 +85,17 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
             ))}
           </select>
         </label>
+        {/* 이중 검토 034·035: 동네를 고르면 한 번 더 눌러 종합 진단(조건 패널 7번 → 2번) */}
+        {dong && (
+          <button
+            type="button"
+            data-testid="home-diagnose"
+            onClick={() => onAsk({ topic: "diagnose", space: [dong] }, `${dong} 상권 종합 진단해줘`)}
+            className="hidden min-h-11 rounded-(--radius) bg-(--krds-text-primary) px-4 font-semibold text-white hover:opacity-90 lg:block"
+          >
+            {dong} 종합 진단 보기
+          </button>
+        )}
         <span className="hidden text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder) md:inline">{HINT(!!dong)}</span>
       </div>
       {/* 스플릿 배치(Notion '화면 배치'): 데스크톱은 카드 3장 세로 | 지도, 한 화면에 들어오게 */}
@@ -101,6 +112,17 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
               ))}
             </ul>
           </div>
+        )}
+        {dong && (
+          // 좁은 화면: 지도 아래 카드 자리 맨 앞(머리 줄에 두면 지도가 화면 밖으로 밀린다, 사용성 점검 B1)
+          <button
+            type="button"
+            data-testid="home-diagnose"
+            onClick={() => onAsk({ topic: "diagnose", space: [dong] }, `${dong} 상권 종합 진단해줘`)}
+            className="min-h-11 rounded-(--radius) bg-(--krds-text-primary) px-4 font-semibold text-white hover:opacity-90 md:col-span-3 lg:hidden"
+          >
+            {dong} 종합 진단 보기
+          </button>
         )}
         {(dong && !loading ? (q.data?.cards ?? []) : []).map((c) => (
           <button
@@ -134,7 +156,8 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
         {dong && loading && [0, 1, 2].map((i) => <div key={i} className="h-24 rounded-(--radius) bg-muted" aria-hidden />)}
       </div>
       {cur && (
-        <div className="order-1 lg:order-none">
+        <div className="order-1 lg:order-none lg:max-w-[calc((100dvh-21rem)*1.5)]">
+        {/* 문서 21 6.2절: 조건 패널이 본문을 밀지 않아 지도 칸이 넓어졌다. 지도 높이가 첫 화면을 넘지 않게 폭을 화면 높이에 맞춘다(B1) */}
         <JejuMap
           values={cur.values}
           unit={cur.unit}

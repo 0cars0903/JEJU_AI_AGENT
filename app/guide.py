@@ -52,6 +52,15 @@ TOPICS = [
 TOPIC = {x["id"]: x for x in TOPICS}
 
 # ④ 대표 질문: 이용 사례 U1~U6에서 고른 설계 목록(질문 기록을 쌓아 고른 것이 아님)
+# 주제 묶음(문서 21 6.2절 3단계, 사용자 확정 2026-11-12 후보 A): 첫 단계에서 묶음 4개를 먼저 고른다.
+GROUPS = [
+    # hint: 묶음을 고르면 어떤 답이 나오는지 한 줄(사람 시험 H1, 문서 23 8절)
+    {"id": "shop", "label": "가게", "topics": ["stores", "openclose", "market"], "hint": "가게 수와 개업·폐업 흐름, 업종 시장 크기를 43개 동네 가운데 위치로 알려 줘요."},
+    {"id": "people", "label": "손님·매출", "topics": ["sales", "customers", "hourly", "visit", "rain"], "hint": "카드 매출, 도민·관광객 비중, 붐비는 시간, 오가는 사람 수를 알려 줘요."},
+    {"id": "compare", "label": "비교·순위", "topics": ["compare", "bizcompare", "rank", "similar"], "hint": "두 동네를 같은 기준으로 견주거나, 43곳 순위와 닮은 동네를 보여 줘요."},
+    {"id": "outlook", "label": "진단·예상", "topics": ["diagnose", "forecast"], "hint": "한 동네를 수요·매출·경쟁·생존·앞으로 5칸으로 요약하고, 방문·매출을 예상해요."},
+]
+
 REPRESENTATIVE = [  # v3 사용자 3유형(docs/기획/v3_설계.md 1절)
     {"use_case": "예비창업자", "slots": {"topic": "stores", "space": ["노형동"], "target": "카페"}},
     {"use_case": "예비창업자", "slots": {"topic": "openclose", "space": ["노형동"], "target": "카페", "variant": "survival"}},
@@ -109,6 +118,35 @@ def match_sentence(question):
                         if not missing(slots) and _SQUASH.sub("", sentence(slots)) == q:
                             return slots
     return None
+
+
+def biz_tabs(t):
+    """종합 진단 답 위의 업종 탭(문서 22 5절 2단계). 그 동네에 가게가 1곳 이상 있는 업종만 낸다(자료가 맞는 업종만).
+    note: 그 업종에서 빠지는 분석(생존·개업·폐업은 음식점 인허가뿐, 매출은 대분류 값)."""
+    import pandas as pd
+    import v3
+    sp = list(t.get("space") or [])
+    if not ((t.get("type") == "T10" and len(sp) == 1) or (t.get("type") == "T2" and len(sp) == 2)):
+        return []
+    topic, cur = ("diagnose" if t["type"] == "T10" else "compare"), t.get("target")
+    b = pd.read_parquet(v3.TAB / "biz.parquet")
+    b = b[b["dong"].isin(sp)]
+    count = lambda x: min(int(x[x["dong"] == d]["count"].sum()) for d in sp)  # 동네 비교는 두 동네 모두에 가게가 있어야 탭을 낸다
+    tabs = [{"target": None, "label": "전 업종", "stores": count(b), "note": None}]
+    for tgt in DIAG_TARGETS:
+        n = count(b[b["major"] == "음식"] if tgt == "음식점" else v3.biz_rows(b, tgt))
+        if n == 0:
+            continue
+        note = ("생존·개업·폐업 자료는 음식점만 있어요" if tgt not in FOOD else
+                f"카드 매출은 음식점업 전체 값이에요" if tgt != "음식점" else None)
+        tabs.append({"target": tgt, "label": tgt, "stores": n, "note": note})
+    for x in tabs:
+        x["slots"] = {k: v for k, v in {"topic": topic, "space": sp, "target": x["target"]}.items() if v}
+        x["text"] = sentence(x["slots"])
+        x["current"] = x["target"] == cur
+        if topic == "compare":
+            x["stores"] = None  # 두 동네 중 작은 값이라 화면에는 쓰지 않는다(탭을 낼지 정하는 데만 썼다)
+    return tabs
 
 
 def missing(slots):
@@ -236,4 +274,4 @@ def catalog_view():
         topics.append({"id": tp["id"], "label": tp["label"], "need": tp.get("need", []), "optional": tp.get("optional", []), "min_space": tp.get("min_space", 1), "center_only": tp.get("center_only", False),
                        "options": {k: [{"value": v, "label": RANK_METRICS.get(v, v)} for v in vs] for k, vs in tp.get("options", {}).items()},
                        "variants": [{"value": k, "label": v["label"]} for k, v in tp.get("variants", {}).items()]})
-    return {"topics": topics, "dongs": Q.DONGS, "representative": representative()}
+    return {"topics": topics, "groups": GROUPS, "dongs": Q.DONGS, "representative": representative()}

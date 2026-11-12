@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useIconHover } from "@animateicons/react";
 import { cn } from "cn";
 import { MessageCircleIcon } from "@/components/icons";
-import { DisplaySettings } from "@/components/display-settings";
 
 const NAV = [
   { href: "/", label: "질문하기", Icon: MessageCircleIcon },
@@ -45,9 +44,6 @@ export function SiteHeader() {
             <NavItem key={n.href} {...n} active={n.href === "/" ? path === "/" : path.startsWith(n.href.slice(0, -1))} />
           ))}
         </nav>
-        <div className="ml-auto flex items-center gap-1">
-          <DisplaySettings />
-        </div>
       </div>
     </header>
   );

@@ -91,9 +91,10 @@ def _interval_ko(rid):
     reg = recipes.REG[rid]
     raw, name = reg.get("interval") or "", reg["name"]
     m = re.search(r"80% 구간 포함률 (\d+)~(\d+)%", raw)
-    if m:  # R1: 화면에는 예상값만 싣는다(범위는 싣지 않음)
-        return (f"{name}은 예상값만 보여 주고 예상 범위는 보여 주지 않아요. 10번 중 8번 맞도록 잡은 범위를 지난 기록으로 확인했더니 "
-                f"100번 중 {m.group(1)}~{m.group(2)}번만 맞았어요(범위가 좁게 잡혀요). 예상값은 실제와 다를 수 있어요.")
+    if m:  # R1: 예상 범위를 싣되 지난 기록의 실제 적중 비율을 함께 적는다(문서 21 3.1절)
+        narrow = "(범위가 좁게 잡혀요)" if int(m.group(1)) < 75 else ""
+        return (f"{name}의 예상 범위는 지난 세 시점의 예상이 빗나간 크기를 보고 10번 중 8번 맞도록 잡은 폭이에요. 지난 기록으로 확인했더니 "
+                f"100번 중 {m.group(1)}~{m.group(2)}번 맞았어요{narrow}. 실제 값은 범위를 벗어날 수 있어요.")
     if raw.startswith("80% 구간"):
         return f"{name}의 예상 범위는 지난 예상이 빗나간 크기를 보고 10번 중 8번 맞도록 잡은 폭이에요."
     return f"{name} 예상 범위: {raw}"
@@ -314,6 +315,8 @@ MY_DONG_MSG = "이 서비스는 위치 정보를 쓰지 않아서 '우리 동네
 FOREIGN_Q = re.compile(r"외국인|중국인|일본인|중화권|해외\s*관광객")
 SPEND_Q = re.compile(r"매출|소비|결제|손님|카드|돈|써|쓰|쓴|쓸|팔")
 VS_Q = re.compile(r"비교|견주|vs|VS|중에|중 (어디|뭐|무엇|어느)|(뭐|무엇|어느 쪽|어디)[이가]? 더|[이가] 더 (많|적)")
+TOUR_COUNT_Q = re.compile(r"관광객.{0,6}(얼마나|몇\s*명|많이|얼마|수가|수는).{0,6}(와|오[나는니]|온|올|방문|찾)|관광객\s*(방문자|입도객|방문)\s*(수|규모)(?![준요])")
+TOUR_NOTE = "관광객 방문자 수 자료는 없어요. 대신 카드 매출에서 도민과 관광객이 차지하는 비중을 보여 드려요."
 FOREIGN_NOTE = "동네별 외국인 카드 매출은 공개 자료에 없어요. 그래서 제주 전체 값을 출신지역별로 보여 드려요. 동네별 값은 아래 '자료 요청' 카드의 센터 자료로 볼 수 있어요."
 # 5개 업종(Q.TARGETS_OUT)의 가게 수 밖 질문. 비씨카드 42개 업종 목록은 허브 746(2017~2021)에서 확인했다. 센터 자료(1-08)의 목록은 직접 보지 못했다.
 OUT_ONLY_COUNT = "{we} 가게 수만 볼 수 있어요(상가 정보). "
@@ -419,6 +422,14 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             it = dict(it, tuple=t, card=qparse.card(t))
             assumed = True
             notes.append(FOREIGN_NOTE)
+        elif (len(t["space"]) == 1 and TOUR_COUNT_Q.search(question or "") and not (qparse.CARD_METRICS - {"관광객비중"}) & set(t["metric"])
+              and t["type"] not in ("T6", "T8") and not t["cond"]):  # 조건 효과·예상 질문은 그대로 둔다
+            # '관광객이 얼마나 와?': 방문자 수 자료가 없으므로 사는 사람 연령대로 바꿔 답하지 않고 손님 구성(카드 매출 비중)으로 답한다(문서 20 7.5절 11번, 사용자 결정 2026-11-12)
+            t = dict(Q.empty(), type="T5", metric=["관광객비중"], space=t["space"][:1],
+                     target=t.get("target") if t.get("target") in G.CARD_TARGETS else None, form=Q.DEFAULT_FORM["T5"], expect="답함")
+            it = dict(it, tuple=t, card=qparse.card(t))
+            assumed = True
+            notes.append(TOUR_NOTE)
         elif len(t["space"]) == 1 and VS_Q.search(question or "") and len(qparse.find_details(question)) >= 2:
             # 한 동네 안에서 세부 업종끼리 비교: 매출은 대분류뿐이라 상가 정보 소분류의 가게 수로 견준다(문서 20 A9)
             t = dict(Q.empty(), type="T5", metric=["업종비교"], space=t["space"][:1], details=[d["word"] for d in qparse.find_details(question)],
@@ -478,9 +489,10 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         ev, intervals, as_of = _evidence(rv["order"], rv["run"])
         c = card(t, rv, ev, intervals)
         ans = layers.build(t, rv, ev, value_q or t.get("type") == "T10")
-        rv["run"]["store"]["_display"] = {"numbers": ans.pop("numbers")}  # 코드가 만든 표시값(억·만 원, 배수, 순위)과 정책 상수
+        rv["run"]["store"]["_display"] = {"numbers": ans.pop("numbers")}
+        all_lines = ans.pop("all_lines")  # 답 카드 근거는 화면 중복 제거(결론과 같은 줄) 전의 줄 전부  # 코드가 만든 표시값(억·만 원, 배수, 순위)과 정책 상수
         c = dict(c, conclusion=ans["conclusion"]["text"],
-                 evidence=[{"text": x["text"], "tag": x["tag"], "layer": x["layer"], "dataset": x.get("source"), "as_of": x.get("as_of"), "kind": x.get("kind")} for b in ans["blocks"] for x in b["lines"]])
+                 evidence=[{"text": x["text"], "tag": x["tag"], "layer": x["layer"], "dataset": x.get("source"), "as_of": x.get("as_of"), "kind": x.get("kind")} for x in all_lines])
         probs = card_problems(c, rv["run"])
         if probs:  # 카드 수치가 결과와 어긋나면 검수 템플릿 문장으로 바꾼다
             c = dict(c, conclusion="수치 대조에 실패해 확인된 값만 보여 드립니다.", evidence=[{"text": x} for x in V.template_answer(rv["order"], rv["run"]).splitlines()])
@@ -488,6 +500,15 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         if probs:
             ans["conclusion"] = {"text": c["conclusion"], "layer": None, "tag": None}
             ans["blocks"] = [{"id": "facts", "title": layers.BLOCK_TITLE["facts"], "lines": [{"layer": "L1", "block": "facts", "tag": "검수 템플릿", "text": e["text"]} for e in c["evidence"]]}]
+        if t.get("type") in ("T10", "T2"):
+            ans["biz_tabs"] = G.biz_tabs(t)
+        if t.get("type") == "T10" and len(t.get("space") or []) == 1:  # 문서 22 3절: 종합 진단 → 다른 동네와 비교. 후보는 비슷한 동네 5곳(R5)
+            nb = next((v["neighbors"].get(t["space"][0]) for v in rv["run"]["store"].values() if isinstance(v, dict) and (v.get("neighbors") or {}).get(t["space"][0])), [])
+            tgt = t.get("target") if t.get("target") in G.TOPIC["compare"]["options"]["target"] else None
+            ans["compare_with"] = {"dong": t["space"][0], "target": tgt,
+                                   "candidates": [{"dong": d, "slots": {k: v for k, v in {"topic": "compare", "space": [t["space"][0], d], "target": tgt}.items() if v}} for d in nb]}
+            for c in ans["compare_with"]["candidates"]:
+                c["text"] = G.sentence(c["slots"])
         out["answer"] = ans
         out["process"] = {
             "tuple": t, "type": TYPE_KO.get(t["type"]),

@@ -56,7 +56,7 @@ export function JejuMap({
   // C8: 화면에서 짧은 변이 24px보다 작은 동은 손가락·마우스로 정확히 누를 수 없어 지도에서는 누름 대상에서 빼고, '도심 확대'나 목록으로 고르게 한다.
   const [tiny, setTiny] = useState<Set<string>>(() => new Set());
   const mapData = map.data;
-  // C9: 구역 이름 글자는 '화면 설정'의 글자 크기를 따른다. 그림 안의 글자는 그림 배율로 줄어들므로, 화면에서 보이는 크기를 기준으로 거꾸로 계산한다.
+  // C9: 구역 이름 글자는 화면 글자 크기(브라우저 확대 포함)를 따른다. 그림 안의 글자는 그림 배율로 줄어들므로, 화면에서 보이는 크기를 기준으로 거꾸로 계산한다.
   const [w, setW] = useState(0);
   const [scale, setScale] = useState(1);
   useEffect(() => {

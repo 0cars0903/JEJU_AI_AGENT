@@ -40,7 +40,7 @@ def _f(kind, detail, task=None, sub=None):
 # ---------- 해석·계획 ----------
 def check_tuple(t):
     out = [_f("해석", f"목록 밖 칸: {b}") for b in Q.validate(t)]
-    if t.get("expect") == "답함" and t.get("type") in qparse.NEED_DONG and not t.get("space") and not {"시장추이", "매출성장"} & set(t.get("metric") or []):
+    if t.get("expect") == "답함" and t.get("type") in qparse.NEED_DONG and not t.get("space") and not qparse.jeju_wide(t):
         out.append(_f("해석", "필수 칸 누락: 동네"))
     return out
 
@@ -312,7 +312,7 @@ def review(question, env=None, interpret=None, answer_fn=None, tuple_override=No
         for f in errs:
             log("표현", f, "코드 템플릿 문장으로 바꿈")
         text = template_answer(order, res, no_eff, short)
-    ok = [x for x in res.get("log", []) if x["status"] == "성공"]
+    ok = [x for x in res.get("log", []) if x["status"] in ("성공", "생략")]
     status = "no_significant_effect" if no_eff and len(ok) == len(order["tasks"]) else ("성공" if len(ok) == len(order["tasks"]) else "부분 결과" if ok else "실패")
     return {"status": status, "answer": text, "record": rec, "retries": used, "tuple": t, "order": order, "run": res}
 

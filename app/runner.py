@@ -38,7 +38,7 @@ class TaskError(Exception):
 
 # ---------- 작업 지시서 ----------
 def build_order(plan, timeout_ms=30000, on_failure="partial"):
-    tasks, prev_s1, last = [], [], None
+    tasks, prev_s1, last, side_out = [], [], None, []
     for i, st in enumerate(plan.get("steps", []), 1):
         tid = f"t{i}"
         task = {"id": tid, "sub": st["sub"], "op": st.get("op"), "out": f"r{i}"}
@@ -50,13 +50,28 @@ def build_order(plan, timeout_ms=30000, on_failure="partial"):
         if st["sub"] in ("S0", "S1"):
             task["in"], task["depends_on"] = [], []
             prev_s1.append(task["out"])
-        else:  # 후속 단계는 앞선 조회 결과 전부와 직전 단계를 입력으로 받는다
-            ins = list(prev_s1) + ([last] if last and last not in prev_s1 else [])
+        elif st.get("side"):  # 곁가지(종합 진단의 모델 결과): 조회 결과와 바로 앞의 자기 점검만 입력으로 받고, 실패해도 뒤 단계를 막지 않는다
+            chk = tasks[-1] if tasks and tasks[-1].get("optional") and tasks[-1]["sub"] == "S2" and st["sub"] == "S3" and tasks[-1].get("recipe") == st.get("recipe") else None
+            f = next((x.get("filter") for x in tasks if x["sub"] == "S1" and x.get("filter")), None)
+            if f:
+                task["filter"] = f
+            task["optional"] = True
+            task["in"] = list(prev_s1) + ([chk["out"]] if chk else [])
+            task["depends_on"] = [t["id"] for t in tasks if t["out"] in task["in"]]
+            if st["sub"] == "S3":
+                side_out.append(task["out"])
+            tasks.append(task)
+            continue
+        else:  # 후속 단계는 앞선 조회 결과 전부와 직전 단계를 입력으로 받는다. 곁가지 결과도 받되 기다리기만 한다(after)
+            ins = list(prev_s1) + side_out + ([last] if last and last not in prev_s1 else [])
             f = next((x.get("filter") for x in tasks if x["sub"] == "S1" and x.get("filter")), None)
             if f and "filter" not in task:
                 task["filter"] = f  # 동네·업종 조건을 후속 단계(S3 등)에도 전달
             task["in"] = ins
-            task["depends_on"] = [t["id"] for t in tasks if t["out"] in ins]
+            task["depends_on"] = [t["id"] for t in tasks if t["out"] in ins and not t.get("optional")]
+            after = [t["id"] for t in tasks if t.get("optional")]
+            if after:
+                task["after"] = after
         tasks.append(task)
         last = task["out"]
     return {"policy": {"timeout_ms": timeout_ms, "on_task_failure": on_failure}, "tasks": tasks, "relaxed": plan.get("relaxed", []), "notes": plan.get("notes", [])}
@@ -73,7 +88,7 @@ def validate(order):
             errs.append(f"{t.get('id')}: id 중복")
         if t.get("out") in outs:
             errs.append(f"{t.get('id')}: out 키 충돌")
-        if any(d not in ids for d in t.get("depends_on", [])):
+        if any(d not in ids for d in t.get("depends_on", []) + t.get("after", [])):
             errs.append(f"{t.get('id')}: depends_on이 앞선 작업이 아님")
         ids.add(t.get("id"))
         outs.add(t.get("out"))
@@ -361,7 +376,7 @@ def s6_judge(task, store, env):
             out.append({"name": f"관문 {v.get('recipe')}", "claim": "통과(예측 사용)" if g["pass"] else "실패(fallback)", "mase": round(g["mase"], 4),
                         "better": f"{g['better']}/{g['n']}", "p_sign": g["p_sign"], "use_forecast": g["pass"]})
         if v.get("anomaly"):  # R7: 포아송 z(예측 아님)
-            out += [{"name": f"{a['dong']} {a['year']}년 {v.get('kind')}", "claim": a["flag"], "z": a["z"], "count": a["count"], "expected": a["expected"]} for a in v["anomaly"]]
+            out += [{"name": f"{a['dong']} {a.get('biz') or ''} {a['year']}년 {v.get('kind')}".replace("  ", " "), "claim": a["flag"], "z": a["z"], "count": a["count"], "expected": a["expected"]} for a in v["anomaly"]]
         if "summary" in v and v["summary"].get("slope_se"):
             sm = v["summary"]
             from scipy import stats
@@ -395,6 +410,10 @@ def _exec(task, store, env):
             if e.kind == "실행" and attempts < 2:  # 실행 오류는 같은 Sub에서 1회 재시도
                 continue
             return {"task_id": task["id"], "status": "실패", "error_type": e.kind, "error": str(e), "attempts": attempts, "sec": round(time.perf_counter() - t0, 4)}
+        except Exception as e:  # 곁가지 단계는 예상 못 한 오류도 그 단계의 실패로만 남긴다(종합 진단의 다른 줄을 막지 않는다)
+            if not task.get("optional"):
+                raise
+            return {"task_id": task["id"], "status": "실패", "error_type": "실행", "error": f"{type(e).__name__}: {e}", "attempts": attempts, "sec": round(time.perf_counter() - t0, 4)}
 
 
 def run(order, env=None):
@@ -417,13 +436,13 @@ def run(order, env=None):
             for t in pending:
                 log.append({"task_id": t["id"], "status": "건너뜀", "reason": "시간 초과"})
             break
-        ready = [t for t in pending if all(d in {x["id"] for x in tasks if x not in pending} for d in t["depends_on"])]
+        ready = [t for t in pending if all(d in {x["id"] for x in tasks if x not in pending} for d in t["depends_on"] + t.get("after", []))]
         layer = ready if env.get("parallel") else ready[:1]
         runnable = []
         for t in layer:
             if any(d in failed for d in t["depends_on"]):
                 failed.add(t["id"])
-                log.append({"task_id": t["id"], "status": "건너뜀", "reason": "의존 작업 실패"})
+                log.append({"task_id": t["id"], "status": "생략" if t.get("optional") else "건너뜀", "reason": "의존 작업 실패"})
             else:
                 runnable.append(t)
         if env.get("parallel") and len(runnable) > 1:
@@ -435,13 +454,16 @@ def run(order, env=None):
             log.append({k: v for k, v in r.items() if k in ("task_id", "status", "error_type", "error", "attempts", "sec")})
             if r["status"] == "성공":
                 store[t["out"]] = r
+            elif t.get("optional"):  # 곁가지는 빠져도 답이 된다. 실패가 아니라 '생략'으로 적는다
+                log[-1]["status"] = "생략"
+                failed.add(t["id"])
             else:
                 failed.add(t["id"])
                 if order["policy"]["on_task_failure"] == "abort":
                     return {"status": "중단", "log": log, "store": store, "sec": round(time.perf_counter() - t0, 4)}
         done = set(x["id"] for x in layer)
         pending = [t for t in pending if t["id"] not in done]
-    ok = [x for x in log if x["status"] == "성공"] + [{"task_id": i} for i in done_before]
+    ok = [x for x in log if x["status"] in ("성공", "생략")] + [{"task_id": i} for i in done_before]
     status = "성공" if len(ok) == len(tasks) else "부분 결과" if ok else "실패"
     return {"status": status, "log": log, "store": store, "relaxed": order.get("relaxed", []), "notes": order.get("notes", []), "sec": round(time.perf_counter() - t0, 4)}
 

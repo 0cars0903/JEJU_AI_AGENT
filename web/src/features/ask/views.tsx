@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContai
 import { Button } from "@/components/ui/button";
 import { type AskResult, type DataRequest, type DatasetMeta, type View, uploadDataset } from "@/lib/api";
 import { JejuMap } from "./jeju-map";
+import { sourceList } from "./answer";
 
 // 색은 흰 배경 + 강조색 하나, 나머지는 회색 계열(사용자 PPT·화면 규칙과 같은 원칙)
 const COLORS = ["var(--krds-element-primary, #256ef4)", "#6b7280", "#a3a3a3", "#d4d4d4", "#374151", "#9ca3af"];
@@ -55,7 +56,7 @@ export function ViewChart({ v, width }: { v: View; width?: number }) {
   const data = rows(v);
   const many = v.series.length > 1;
   const u = viewUnit(v);
-  const margin = { top: 16, right: 12, bottom: 8, left: 8 };
+  const margin = { top: width && many ? 44 : 16, right: 28, bottom: 8, left: 8 }; // 오른쪽 끝 눈금 글자(예: 5년)가 잘리지 않게 글자 반 폭보다 넓게(문서 23 H2) // 인쇄용은 범례 자리를 위쪽 여백으로 미리 잡는다(숨긴 채 그려져 범례 높이를 재지 못함)
   const tick = (x: number) => fmtVal(x, u);
   const tip = (val: unknown) => `${fmtVal(Number(val), u)}${u.label ? ` ${u.label}` : ""}`;
   const inner =
@@ -65,7 +66,7 @@ export function ViewChart({ v, width }: { v: View; width?: number }) {
         <XAxis dataKey="x" tick={{ fontSize: 13 }} interval="preserveStartEnd" />
         <YAxis tickFormatter={tick} tick={{ fontSize: 13 }} width={56} />
         {!width && <Tooltip formatter={tip} />}
-        {many && <Legend />}
+        {many && (width ? <Legend verticalAlign="top" wrapperStyle={{ top: 4 }} /> : <Legend />)}
         {v.series.map((s, i) => (
           <Bar key={s.name} dataKey={s.name} fill={COLORS[i % COLORS.length]} isAnimationActive={false} />
         ))}
@@ -76,7 +77,7 @@ export function ViewChart({ v, width }: { v: View; width?: number }) {
         <XAxis dataKey="x" tick={{ fontSize: 13 }} interval="preserveStartEnd" minTickGap={24} />
         <YAxis tickFormatter={tick} tick={{ fontSize: 13 }} width={56} />
         {!width && <Tooltip formatter={tip} />}
-        {many && <Legend />}
+        {many && (width ? <Legend verticalAlign="top" wrapperStyle={{ top: 4 }} /> : <Legend />)}
         {v.series.map((s, i) => (
           <Line key={s.name} dataKey={s.name} stroke={COLORS[i % COLORS.length]} strokeWidth={i === 0 ? 3 : 2} dot={false} connectNulls isAnimationActive={false} />
         ))}
@@ -326,6 +327,45 @@ export function Requests({ items, onCenter }: { items: DataRequest[]; onCenter?:
   );
 }
 
+/** 동네 비교 표의 인쇄본(문서 23 H2: 화면에만 있고 PDF에서 빠지던 표) */
+function ReportCompare({ c }: { c: NonNullable<NonNullable<AskResult["answer"]>["compare"]> }) {
+  return (
+    <div data-testid="report-compare">
+      <h2>
+        {c.dongs[0]}·{c.dongs[1]} 비교
+      </h2>
+      <table className="report-table">
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>{c.dongs[0]}</th>
+            <th>{c.dongs[1]}</th>
+            <th>제주 중간값</th>
+            <th>판정</th>
+          </tr>
+        </thead>
+        {c.sections.map((sec) => (
+          <tbody key={sec.id}>
+            <tr>
+              <th colSpan={5}>{sec.title}</th>
+            </tr>
+            {sec.rows.map((row) => (
+              <tr key={row.label}>
+                <td>{row.label}</td>
+                <td>{row.texts[0]}</td>
+                <td>{row.texts[1]}</td>
+                <td>{row.texts[2]}</td>
+                <td>{row.verdict}</td>
+              </tr>
+            ))}
+          </tbody>
+        ))}
+      </table>
+      <p>{c.rule}</p>
+    </div>
+  );
+}
+
 /** F7 분석 보고서: 인쇄할 때만 보이는 정리본(질문·이해한 내용·3블록·차트 기본 3개·한계·출처·생성 시각). 브라우저 인쇄에서 PDF로 저장한다.
  *  화면 맨 바깥(body)에 붙여, 인쇄할 때 나머지 화면을 완전히 빼고 이 정리본만 찍는다(B7: 첫 쪽 위 빈칸·쪽수 늘어남 해소). */
 export function Report({ r }: { r: AskResult }) {
@@ -334,7 +374,60 @@ export function Report({ r }: { r: AskResult }) {
   const a = r.answer;
   if (!a || !host) return null;
   const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
-  const sources = Array.from(new Set(a.blocks.flatMap((b) => b.lines.map((l) => l.source).filter(Boolean)))) as string[];
+  const lines = a.blocks.flatMap((b) => b.lines);
+  const srcs = sourceList(a); // 화면과 같은 출처 번호(문서 23 P3)
+  const mark = (name?: string | null) => {
+    const n = name ? srcs.findIndex((x) => x.name === name) + 1 : 0;
+    return n > 0 ? ` [${n}]` : "";
+  };
+  const sources = Array.from(new Set(lines.map((l) => l.source).filter(Boolean))) as string[];
+  // 문서 21 3.2절 구성: 줄의 종류(kind)로 절을 나눈다. 해당 줄이 없는 절은 찍지 않는다.
+  const SECTION: Record<string, string> = { forecast: "next", salesfc: "next", reference: "next", anomaly: "next", trend: "now", decomp: "now", survival: "surv", similar: "near", season: "near", rain: "rain" };
+  const sec = (l: (typeof lines)[number]) => (l.block === "guide" ? "guide" : (l.kind && SECTION[l.kind]) || (l.block === "facts" ? "now" : "etc"));
+  const pick = (id: string) => lines.filter((l) => sec(l) === id);
+  const CHART: Record<string, string> = { survcurve: "surv", validation: "next" };
+  const shown = a.views.filter((v, i) => i < a.default_views || CHART[v.id]);
+  const charts = (id: string) =>
+    shown
+      .filter((v) => (CHART[v.id] ?? "now") === id)
+      .map((v) => (
+        <div key={v.id} className={v.kind === "map" ? "report-chart report-map" : "report-chart"}>
+          <h3>
+            {v.label} — {v.summary}
+          </h3>
+          {v.kind === "map" ? <JejuMap values={v.values} unit={v.unit} highlight={v.highlight} label={v.label} testId="report-map" /> : <ViewChart v={v} width={640} />}
+        </div>
+      ));
+  const part = (id: string, title: string) => {
+    const ls = pick(id);
+    const cs = charts(id);
+    if (!ls.length && !cs.length) return null;
+    return (
+      <div key={id} data-testid={`report-${id}`}>
+        <h2>{title}</h2>
+        <ul>
+          {ls.map((l, i) => (
+            <li key={i}>
+              <span className="report-tag">{l.tag}</span>
+              {l.text}
+              {mark(l.source)}
+            </li>
+          ))}
+        </ul>
+        {cs.length > 0 && <div className="report-charts">{cs}</div>}
+      </div>
+    );
+  };
+  // 부록 B: 계산식이 붙은 출처 이름(예: '카드 소비(매출 ÷ 결제 건수)')은 자료 이름으로 줄여 한 번만 적는다
+  const base = (x: string) => x.replace(/\(.*$/, "").replace(/ 기록$/, "").trim();
+  const asOf = new Map<string, string>();
+  for (const f of a.freshness) if (!asOf.has(base(f.source))) asOf.set(base(f.source), f.as_of);
+  const named = new Map<string, string>(); // 같은 자료는 제공처가 붙은 이름 하나로
+  for (const x of sources) if (!named.has(base(x)) || /포털|허브|행정안전부/.test(x)) named.set(base(x), /÷|−|합계|계산/.test(x) ? base(x) : x);
+  const dataList = Array.from(named.entries());
+  const guide = a.blocks.find((b) => b.id === "guide");
+  const limits = r.card?.limits ?? [];
+  const center = a.requests.filter((q) => q.kind === "center");
   return createPortal(
     <div className="print-only" data-testid="report" aria-hidden>
       <h1>제주 상권 EDA 보고서</h1>
@@ -343,45 +436,145 @@ export function Report({ r }: { r: AskResult }) {
       {(r.understood?.notes ?? []).map((n) => (
         <p key={n}>{n}</p>
       ))}
-      <h2>결론</h2>
+      <h2>한눈에</h2>
       {a.conclusion.tag && <span className="report-tag">{a.conclusion.tag}</span>}
       <p>
         <strong>{a.conclusion.text}</strong>
+        {mark(a.conclusion.source)}
       </p>
-      {a.blocks.map((b) => (
-        <div key={b.id}>
-          <h2>{b.title}</h2>
+      {a.summary && (
+        // 문서 23 H3: 첫 쪽은 화면과 같은 5칸 요약. 줄 목록은 뒤쪽 절로 보낸다
+        <table className="report-table report-summary" data-testid="report-summary">
+          <thead>
+            <tr>
+              {a.summary.map((c) => (
+                <th key={c.key}>
+                  {c.label} · {c.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {a.summary.map((c) => (
+                <td key={c.key}>
+                  <strong>{c.value}</strong>
+                  <br />
+                  {c.level} · {c.note}
+                  {c.sub ? (
+                    <>
+                      <br />
+                      {c.sub}
+                    </>
+                  ) : null}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      )}
+      {a.compare && <ReportCompare c={a.compare} />}
+      {guide && (
+        <div data-testid="report-guide">
+          {a.summary && <h2>판단할 때 볼 것</h2>}
           <ul>
-            {b.lines.map((l, i) => (
+            {guide.lines.map((l, i) => (
               <li key={i}>
-                <span className="report-tag">{l.tag}</span>
                 {l.text}
-                {l.source ? ` (${l.source})` : ""}
+                {mark(l.source)}
               </li>
             ))}
           </ul>
-          {b.closing && <p>{b.closing}</p>}
+          {guide.closing && <p>{guide.closing}</p>}
         </div>
-      ))}
-      {a.views.slice(0, a.default_views).map((v) => (
-        <div key={v.id} className="report-chart">
-          <h3>
-            {v.label} — {v.summary}
-          </h3>
-          {v.kind === "map" ? <JejuMap values={v.values} unit={v.unit} highlight={v.highlight} label={v.label} testId="report-map" /> : <ViewChart v={v} width={640} />}
-        </div>
-      ))}
-      {(r.card?.limits?.length ?? 0) > 0 && (
-        <>
-          <h2>한계</h2>
-          <ul>{r.card!.limits.map((x) => <li key={x}>{x}</li>)}</ul>
-        </>
       )}
-      <h2>출처</h2>
-      <ul>{sources.map((s) => <li key={s}>{s}</li>)}</ul>
-      <p>
-        자료 기준: {a.freshness.map((f) => `${f.source} ${f.as_of}`).join(" · ") || "-"} · 생성 {now} · 제주 상권 EDA Agent
-      </p>
+      {part("now", "지금 상태")}
+      {part("etc", "분석")}
+      {part("next", "앞으로")}
+      {part("surv", "업종 생존")}
+      {part("near", "비슷한 동네와 계절")}
+      {part("rain", "날씨")}
+      {(limits.length > 0 || center.length > 0 || (a.gaps?.length ?? 0) > 0) && (
+        <div data-testid="report-limits">
+          <h2>알 수 있는 것과 없는 것</h2>
+          <ul>
+            {(a.gaps ?? []).map((g) => (
+              <li key={g.what}>
+                {g.what}: {g.why} 확인할 곳: {g.where}
+              </li>
+            ))}
+            {limits.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+            {center.map((q) => (
+              <li key={q.title}>
+                센터 자료가 있으면 볼 수 있어요: {q.title} — {q.why}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {(a.methods?.length ?? 0) > 0 && (
+        <div data-testid="report-methods">
+          <table className="report-table report-methods">
+            <thead>
+              <tr>
+                <th colSpan={4} className="report-caption">
+                  <h2>부록 A. 방법과 검증</h2>
+                </th>
+              </tr>
+              <tr>
+                <th>모델</th>
+                <th>방법</th>
+                <th>검증 방식과 결과</th>
+                <th>쓸 수 없는 경우</th>
+              </tr>
+            </thead>
+            <tbody>
+              {a.methods!.map((m) => (
+                <tr key={m.kind}>
+                  <th>{m.title}</th>
+                  <td>{m.how}</td>
+                  <td>
+                    {m.check} {m.result}
+                  </td>
+                  <td>{m.limit}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <div data-testid="report-sources">
+        <h2>부록 B. 자료 목록과 기준 시점</h2>
+        <ol className="report-srcs">
+          {srcs.map((x, i) => (
+            <li key={x.name}>
+              [{i + 1}] {x.name}
+              {x.as_of ? ` · 기준 ${x.as_of}` : ""}
+            </li>
+          ))}
+        </ol>
+        <table className="report-table">
+          <thead>
+            <tr>
+              <th>자료</th>
+              <th>기준 시점</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataList.map(([k, name]) => (
+              <tr key={k}>
+                <td>{name}</td>
+                <td>{asOf.get(k) ?? "답의 해당 줄에 적음"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p>
+          생성 {now} · 제주 상권 EDA Agent
+        </p>
+      </div>
     </div>,
     host,
   );

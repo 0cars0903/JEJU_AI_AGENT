@@ -13,7 +13,7 @@ import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMe
 import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
-import { AnswerCard, Downloads, Process, SuggestionList, Understood, Waiting } from "./answer";
+import { AnswerCard, BizTabs, CompareWith, Downloads, Process, SuggestionList, Understood, Waiting } from "./answer";
 
 // 로딩 뼈대의 모양을 그리기 위한 예시 답(화면에 보이지 않는다).
 const SAMPLE: AskResult = {
@@ -31,7 +31,6 @@ const SAMPLE: AskResult = {
   },
 };
 const MAX = 200;
-const PANEL_KEY = "jeju.panel";
 
 type Picker = { preset?: Slots; notice?: string };
 type Body = AskBody;
@@ -70,7 +69,7 @@ function fromParams(sp: URLSearchParams): { body: Body; label: string } | null {
   return { body, label: sp.get("l") ?? q ?? PICK_LABEL };
 }
 
-/** 질문 화면. 첫 화면 = 왼쪽 조건 패널 + 입력 + 동네 한눈에(스플릿). 결과 화면 = 같은 탭의 결과 주소, 패널은 접어 두고 [<]·[조건으로 묻기]로 연다. */
+/** 질문 화면. 첫 화면 = 왼쪽 조건 패널 + 입력 + 동네 한눈에(스플릿). 결과 화면 = 같은 탭의 결과 주소, 패널은 접어 두고 [<]·[입력 없이 골라서 묻기]로 연다. */
 export function AskPage() {
   const router = useRouter();
   const sp = useSearchParams();
@@ -78,7 +77,7 @@ export function AskPage() {
   const guide = useQuery({ queryKey: ["guide"], queryFn: getGuide, staleTime: Infinity });
   const [text, setText] = useState("");
   const [picker, setPicker] = useState<Picker | null>(null);
-  const [panel, setPanel] = useState(true);
+  const [panel, setPanel] = useState(false);
   const [moreRep, setMoreRep] = useState(false);
   const [center, setCenterState] = useState<CenterFile | null>(null);
   const [emptyHint, setEmptyHint] = useState(false);
@@ -96,14 +95,9 @@ export function AskPage() {
     },
   });
 
-  // 패널은 사용자가 접고 편 상태를 기억한다. 답이 나와도 저절로 접거나 펴지 않는다(C7).
+  // 조건 패널은 본문 위에 겹쳐 뜬다(문서 21 5.3절 1안). 처음에는 닫혀 있고, 답을 받으면 닫아 답을 가리지 않는다.
   useEffect(() => {
     setCenterState(readCenter());
-    try {
-      setPanel(localStorage.getItem(PANEL_KEY) !== "closed");
-    } catch {
-      setPanel(true);
-    }
   }, []);
 
   // 주소가 바뀌면(질문·뒤로 가기) 그 질문으로 답을 받는다. 입력 칸 글을 '질문:' 줄과 맞춘다(C4).
@@ -118,6 +112,7 @@ export function AskPage() {
       setText("");
     }
     setPicker(null);
+    setPanel(false);
     setEmptyHint(false);
     jumpRef.current = null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,7 +121,6 @@ export function AskPage() {
   // 조건 패널이 열리면 패널로 이동하고 초점도 첫 칸으로 옮긴다(B4·C3).
   useEffect(() => {
     if (picker) {
-      pickerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       requestAnimationFrame(() => pickerRef.current?.querySelector<HTMLElement>("[data-testid^='topic-']")?.focus({ preventScroll: true }));
     }
   }, [picker]);
@@ -140,13 +134,10 @@ export function AskPage() {
     if (lost || (a as HTMLElement).dataset?.testid === "ask-submit") inputRef.current?.focus({ preventScroll: true });
   }, [m.data]);
 
-  const togglePanel = (open: boolean) => {
-    setPanel(open);
-    try {
-      localStorage.setItem(PANEL_KEY, open ? "open" : "closed");
-    } catch {
-      /* 저장이 막혀도 동작은 그대로 */
-    }
+  const togglePanel = (open: boolean) => setPanel(open);
+  const closePanel = () => {
+    setPicker(null);
+    setPanel(false);
   };
   const run = (body: Body, label: string) => router.push(toUrl(withCenter(body), label));
   const submitText = () => {
@@ -186,7 +177,7 @@ export function AskPage() {
   const needFile = m.isError && m.error instanceof ApiError && m.error.status === 422 && Boolean(req?.body.dataset_id);
 
   return (
-    <div className={"flex flex-col gap-6 lg:grid lg:items-start lg:gap-6 " + (showPanel ? "lg:grid-cols-[minmax(300px,360px)_1fr]" : "lg:grid-cols-[auto_1fr]")}>
+    <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[auto_1fr] lg:items-start lg:gap-6">
       {/* 화면 순서와 Tab 순서를 맞추려고 질문 칸(main)을 먼저 두고, 큰 화면에서만 패널을 왼쪽으로 보낸다(B5). */}
       <div className="flex min-w-0 flex-col gap-4 lg:order-2">
         <section className="flex flex-col gap-2" aria-label="질문하기">
@@ -288,7 +279,7 @@ export function AskPage() {
             disabled={!guide.data}
             className="w-fit border-2 border-(--krds-border-primary) font-semibold text-(--krds-text-primary) lg:hidden"
           >
-            조건으로 묻기
+            입력 없이 골라서 묻기
           </Button>
         </section>
 
@@ -352,7 +343,14 @@ export function AskPage() {
               {(res: AskResult) => (
                 <div className="flex flex-col gap-4">
                   <Understood key={JSON.stringify(res.understood)} r={res} sample={res === SAMPLE} onChange={(s) => setPicker({ preset: s })} />
-                  <AnswerCard r={res} sample={res === SAMPLE} />
+                  {res !== SAMPLE && res.answer?.biz_tabs && <BizTabs tabs={res.answer.biz_tabs} onPick={(x) => run({ slots: x.slots }, x.text)} />}
+                  {res !== SAMPLE && res.answer?.compare_with && (
+                    <CompareWith cw={res.answer.compare_with} onPick={(s, text) => run({ slots: s }, text)} onOther={(preset) => setPicker({ preset })} />
+                  )}
+                  {/* 문서 23 P5: 폰에서는 결론이 첫 화면에 오게 답 카드를 이해한 내용·업종 탭보다 앞에 둔다 */}
+                  <div className="max-md:-order-1">
+                    <AnswerCard r={res} sample={res === SAMPLE} />
+                  </div>
                   {res !== SAMPLE && res.answer && <Views key={res.question ?? ""} views={res.answer.views} n={res.answer.default_views} />}
                   {/* 이어서 물어보기는 자료 요청·내려받기보다 앞에 둔다(B2) */}
                   {res !== SAMPLE && res.suggestions && (
@@ -388,44 +386,50 @@ export function AskPage() {
         </div>
       </div>
 
-      <aside
-        ref={pickerRef}
-        aria-label="조건으로 묻기"
-        className={(picker ? "order-first block" : "hidden") + " scroll-mt-4 lg:order-1 lg:block lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"}
-      >
-        {showPanel ? (
-          <div className="flex flex-col gap-2">
-            <button
-              type="button"
-              data-testid="panel-close"
-              onClick={() => (picker ? setPicker(null) : togglePanel(false))}
-              className="hidden min-h-11 items-center gap-1 self-end rounded-(--radius) px-3 text-(--krds-text-bolder) hover:bg-muted lg:flex"
-              aria-label="조건 패널 접기"
+      {/* 겹침형 패널: 큰 화면은 왼쪽 단추 자리에서 본문 위로 뜨고, 폰은 화면 아래에서 올라오는 시트다. 열고 닫아도 본문 자리는 그대로다. */}
+      <aside ref={pickerRef} aria-label="입력 없이 골라서 묻기" className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-40 lg:sticky lg:top-20 lg:z-30 lg:order-1">
+        <button
+          type="button"
+          data-testid="panel-open"
+          onClick={() => togglePanel(true)}
+          className={"hidden min-h-11 items-center gap-2 rounded-(--radius) border border-(--krds-border-gray) bg-card px-3 font-semibold hover:bg-muted lg:flex" + (showPanel ? " lg:invisible" : "")}
+          aria-label="조건 패널 펼치기: 입력 없이 골라서 묻기"
+          aria-expanded={showPanel}
+        >
+          <ChevronRight size={18} aria-hidden />
+          <span>입력 없이 골라서 묻기</span>
+        </button>
+        {showPanel && (
+          <div className={picker ? "" : "max-lg:hidden"}>
+            <div data-testid="panel-backdrop" aria-hidden onClick={closePanel} className="fixed inset-0 -z-10 bg-black/40" />
+            <div
+              data-testid="panel"
+              className="flex max-h-[85dvh] flex-col gap-2 overflow-y-auto rounded-t-(--krds-radius-large1) bg-card shadow-2xl lg:absolute lg:top-0 lg:left-0 lg:max-h-[calc(100vh-6rem)] lg:w-[343px] lg:rounded-(--krds-radius-large1)"
             >
-              <ChevronLeft size={18} aria-hidden /> 접기
-            </button>
-            {guide.data && (
-              <StepPicker
-                key={JSON.stringify(picker ?? {})}
-                guide={guide.data}
-                preset={picker?.preset}
-                notice={picker?.notice}
-                onSubmit={(s) => run({ slots: s }, PICK_LABEL)}
-                onClose={() => setPicker(null)}
-              />
-            )}
+              <button
+                type="button"
+                data-testid="panel-close"
+                onClick={closePanel}
+                className="hidden min-h-11 items-center gap-1 self-end rounded-(--radius) px-3 text-(--krds-text-bolder) hover:bg-muted lg:flex"
+                aria-label="조건 패널 접기"
+              >
+                <ChevronLeft size={18} aria-hidden /> 접기
+              </button>
+              {guide.data && (
+                <StepPicker
+                  key={JSON.stringify(picker ?? {})}
+                  guide={guide.data}
+                  preset={picker?.preset}
+                  notice={picker?.notice}
+                  onSubmit={(s) => {
+                    closePanel();
+                    run({ slots: s }, PICK_LABEL);
+                  }}
+                  onClose={closePanel}
+                />
+              )}
+            </div>
           </div>
-        ) : (
-          <button
-            type="button"
-            data-testid="panel-open"
-            onClick={() => togglePanel(true)}
-            className="hidden min-h-11 items-center gap-2 rounded-(--radius) border border-(--krds-border-gray) bg-card px-3 font-semibold hover:bg-muted lg:flex"
-            aria-label="조건 패널 펼치기: 조건으로 묻기"
-          >
-            <ChevronRight size={18} aria-hidden />
-            <span>조건으로 묻기</span>
-          </button>
         )}
       </aside>
     </div>

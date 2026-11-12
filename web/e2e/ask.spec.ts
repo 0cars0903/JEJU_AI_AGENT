@@ -1,7 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
 // Skullet은 뼈대 → 답 전환 순간(교차 페이드) 결론 복사본을 잠깐 함께 둔다. 하나로 정리된 뒤 내용을 본다.
-// 조건 패널 열기: 모바일은 '조건으로 묻기', 데스크톱은 늘 열린 패널(사용자가 접었으면 [조건으로 묻기]로 펼침)
+// 조건 패널 열기: 모바일은 '입력 없이 골라서 묻기', 데스크톱은 늘 열린 패널(사용자가 접었으면 [입력 없이 골라서 묻기]로 펼침)
 async function openPicker(page: Page) {
   // 정적 HTML이 먼저 보이고 화면이 나중에 붙으므로, 열릴 때까지 다시 누른다
   await expect(async () => {
@@ -10,6 +10,19 @@ async function openPicker(page: Page) {
     else if (await page.getByTestId("panel-open").isVisible()) await page.getByTestId("panel-open").click();
     await expect(page.getByTestId("step-picker")).toBeVisible({ timeout: 1000 });
   }).toPass({ timeout: 15000 });
+}
+
+// 주제는 묶음(가게 / 손님·매출 / 비교·순위 / 진단·예상)을 먼저 고른 뒤에 보인다(문서 21 6.2절 3단계)
+const GROUP: Record<string, string> = {
+  stores: "shop", openclose: "shop", market: "shop",
+  sales: "people", customers: "people", hourly: "people", visit: "people", rain: "people",
+  compare: "compare", bizcompare: "compare", rank: "compare", similar: "compare",
+  diagnose: "outlook", forecast: "outlook",
+};
+async function pickTopic(page: Page, id: string) {
+  const chip = page.getByTestId(`topic-${id}`);
+  if (!(await chip.isVisible())) await page.getByTestId(`group-${GROUP[id]}`).click();
+  await chip.click();
 }
 
 async function conclusion(page: Page) {
@@ -43,7 +56,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await expect(await conclusion(page)).toContainText("노형동");
     await page.getByTestId("understood-change").click();
     const picker = page.getByTestId("step-picker");
-    await expect(picker.getByTestId("topic-stores")).toHaveAttribute("aria-pressed", "true");
+    await expect(picker.getByTestId("sum-topic")).toContainText("가게 수"); // 요약 칩에 알아들은 주제가 적힌다
     await expect(picker.getByTestId("dong-노형동")).toHaveAttribute("aria-pressed", "true");
     await picker.getByTestId("dong-연동").click();
     await picker.getByTestId("picker-submit").click();
@@ -66,7 +79,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
   test("③ 단계별 선택: 궁금한 것 → 필요한 칸만", async ({ page }) => {
     await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-rank").click();
+    await pickTopic(page, "rank");
     await expect(picker.getByText("동네 이름으로 찾기")).toHaveCount(0); // 순위는 동네를 묻지 않는다
     await picker.getByTestId("metric-점포수").click();
     await picker.getByTestId("picker-submit").click();
@@ -119,17 +132,22 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
   test("주제 칩을 다시 누르면 선택이 풀린다", async ({ page }) => {
     await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-stores").click();
+    await pickTopic(page, "stores");
+    await expect(picker.getByTestId("topic-stores")).toHaveCount(0); // 주제를 고르면 다음 단계(동네)로 넘어간다
+    await picker.getByTestId("sum-topic").click(); // 요약 칩을 누르면 그 단계로 돌아간다
     await expect(picker.getByTestId("topic-stores")).toHaveAttribute("aria-pressed", "true");
-    await picker.getByTestId("topic-stores").click();
+    await pickTopic(page, "stores");
     await expect(picker.getByTestId("topic-stores")).toHaveAttribute("aria-pressed", "false");
+    await expect(picker.getByTestId("picker-summary")).toHaveCount(0);
     await expect(picker.getByText("동네 이름으로 찾기")).toHaveCount(0);
   });
 
   test("가치 판단 질문: 판단 재료 블록과 '직접 판단' 맺음말", async ({ page }) => {
     await page.getByTestId("question-input").fill("노형동에 카페 차려도 될까?");
     await page.getByTestId("ask-submit").click();
-    await expect(await conclusion(page)).toContainText("43개 동네 가운데 위치");
+    await expect(await conclusion(page)).toContainText("43개 동네 중");
+    await expect(await conclusion(page)).toContainText(/\d+위/); // 결론에 실제 위치(문서 23)
+    await expect(page.getByTestId("summary-grid").locator("li")).toHaveCount(5); // 5칸 요약: 수요·매출·경쟁·생존·앞으로
     await expect(page.getByTestId("block-guide")).toContainText("직접 판단");
     await expect(page.getByTestId("block-facts")).toContainText("억 원");
   });
@@ -137,7 +155,7 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
   test("업종 시장 추이: 나눠 보기 칩 3개 + 더 보기, 칩을 누르면 차트가 바뀜", async ({ page }) => {
     await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-market").click();
+    await pickTopic(page, "market");
     await expect(picker.getByTestId("picker-missing")).toContainText("업종");
     await picker.getByTestId("target-음식점").click();
     await picker.getByTestId("picker-submit").click();
@@ -169,10 +187,85 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
     await expect(page.getByTestId("report")).toBeVisible();
   });
 
+  test("종합 진단: 방법과 검증 접힌 설명, 인쇄 보고서는 절 구성과 부록", async ({ page }) => {
+    await page.getByTestId("question-input").fill("노형동 카페 차려도 될까?");
+    await page.getByTestId("question-input").press("Enter");
+    await expect(await conclusion(page)).toBeVisible();
+    const methods = page.getByTestId("methods");
+    await expect(methods.locator("li").first()).toBeHidden();
+    await methods.locator("summary").click();
+    await expect(methods).toContainText("쓸 수 없는 경우");
+    await expect(methods).toContainText("7일 전 값을 그대로 쓰는 단순 예상");
+    await expect(methods).not.toContainText(/MASE|레시피|관문/);
+    const box = await methods.boundingBox();
+    expect(box!.x + box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+    await page.emulateMedia({ media: "print" });
+    const report = page.getByTestId("report");
+    const titles = await report.locator("h2").allTextContents();
+    await expect(page.getByTestId("report-summary").locator("th")).toHaveCount(5); // 첫 쪽은 화면과 같은 5칸 요약(문서 23 H3)
+    expect(titles).toEqual(["한눈에", "판단할 때 볼 것", "지금 상태", "앞으로", "업종 생존", "비슷한 동네와 계절", "날씨", "알 수 있는 것과 없는 것", "부록 A. 방법과 검증", "부록 B. 자료 목록과 기준 시점"]);
+    await expect(page.getByTestId("report-methods").locator("tbody tr")).toHaveCount(await methods.locator("li").count());
+  });
+
+  test("종합 진단 업종 탭: 지금 업종이 골라져 있고, 다른 탭을 누르면 그 업종으로 다시 진단한다(문서 22 2단계)", async ({ page }) => {
+    await page.getByTestId("question-input").fill("노형동 카페 상권 종합 진단해줘");
+    await page.getByTestId("question-input").press("Enter");
+    await expect(await conclusion(page)).toBeVisible();
+    const tabs = page.getByTestId("biz-tabs");
+    await expect(tabs.getByRole("tab", { selected: true })).toContainText("카페");
+    await expect(page.getByTestId("biz-tab-note")).toContainText("음식점업 전체");
+    await tabs.getByRole("tab", { name: /^숙박/ }).click();
+    await expect(page).toHaveURL(/%EC%88%99%EB%B0%95|숙박/);
+    await expect(page.getByTestId("biz-tab-note").filter({ hasText: "음식점만" })).toHaveCount(1); // 새 답이 온 뒤
+    await expect(page.getByTestId("biz-tab-note")).toHaveCount(1); // 답이 바뀌는 순간의 사본이 정리된 뒤
+    await expect(page.getByTestId("biz-tabs").getByRole("tab", { selected: true })).toContainText("숙박");
+  });
+
+  test("단순 주제에도 Agent 분석 블록이 붙는다: 비슷한 동네 대비 위치(문서 22 3단계)", async ({ page }) => {
+    await page.getByTestId("question-input").fill("노형동 카페 가게는 몇 곳이야?");
+    await page.getByTestId("question-input").press("Enter");
+    await expect(await conclusion(page)).toContainText("175");
+    await expect(page.getByTestId("block-analysis")).toContainText("비슷한 동네 5곳");
+  });
+
+  test("동네 비교: 종합 진단에서 비슷한 동네 후보를 눌러 5절 표로 견준다(문서 22 3절)", async ({ page }) => {
+    await page.getByTestId("question-input").fill("노형동 카페 상권 종합 진단해줘");
+    await page.getByTestId("question-input").press("Enter");
+    await expect(await conclusion(page)).toBeVisible();
+    await page.getByTestId("compare-open").click();
+    await expect(page.getByTestId("compare-candidate")).toHaveCount(5);
+    await page.getByTestId("compare-candidate").filter({ hasText: "연동" }).click();
+    await expect(page.getByTestId("compare-table")).toHaveCount(1); // 답이 바뀌는 순간의 사본이 정리된 뒤
+    await expect(await conclusion(page)).toContainText("지표로 견줬어요");
+    const table = page.getByTestId("compare-table");
+    await expect(table.locator("thead")).toContainText("노형동");
+    await expect(table.locator("thead")).toContainText("연동");
+    for (const title of ["수요", "매출 흐름", "경쟁", "생존", "앞으로"]) await expect(table.getByText(title, { exact: true }).locator("visible=true")).toHaveCount(1);
+    await expect(table).not.toContainText(/유망|추천|유리|더 좋/);
+    await expect(page.getByTestId("biz-tabs").getByRole("tab", { selected: true })).toContainText("카페");
+  });
+
+  test("첫 화면: 동네를 고르면 [종합 진단 보기]로 바로 진단하고, 카페 질문에는 업종 단위 안내가 붙는다(이중 검토 035)", async ({ page }) => {
+    await page.getByTestId("home-dong").selectOption("노형동");
+    await page.getByTestId("home-diagnose").locator("visible=true").click();
+    await expect(await conclusion(page)).toContainText("노형동");
+    await expect(page.getByTestId("biz-tabs").getByRole("tab", { selected: true })).toContainText("전 업종");
+    await page.getByTestId("biz-tabs").getByRole("tab", { name: /^카페/ }).click();
+    await expect(page.getByTestId("biz-notice")).toHaveCount(1);
+    await expect(page.getByTestId("biz-notice")).toContainText("카페만의 카드 매출 자료는 없어요");
+  });
+
+  test("동네 비교: 자유 입력도 같은 표로 답한다", async ({ page }) => {
+    await page.getByTestId("question-input").fill("노형동이랑 연동 카페 비교해줘");
+    await page.getByTestId("question-input").press("Enter");
+    await expect(await conclusion(page)).toContainText("지표로 견줬어요");
+    await expect(page.getByTestId("compare-table")).toContainText("차이 있음");
+  });
+
   test("단계별 선택: 자주 찾는 동네 먼저, 고른 칩은 채움, 꺼진 이유 안내", async ({ page }) => {
     await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-stores").click();
+    await pickTopic(page, "stores");
     await expect(picker.getByTestId("picker-missing")).toContainText("동네를 골라 주세요");
     await expect(picker.getByTestId("dong-추자면")).toHaveCount(0);
     await picker.getByTestId("dongs-more").click();
@@ -192,9 +285,9 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
     await card.getByTestId("center-file").setInputFiles(require("path").join(raw, file));
     await expect(card.getByTestId("center-meta")).toContainText("허브 746", { timeout: 30000 });
     await card.getByTestId("center-use").click();
-    await expect(page.getByTestId("block-facts").first()).toContainText("비알콜 음료점업", { timeout: 20000 }); // 전환 중 복사본이 잠깐 둘
-    await expect(page.getByTestId("block-facts")).toHaveCount(1);
-    await expect(page.getByTestId("block-facts").first()).toContainText("이용자 불러옴");
+    await expect(page.getByTestId("answer-card").first()).toContainText("비알콜 음료점업", { timeout: 20000 }); // 전환 중 복사본이 잠깐 둘
+    await expect(page.getByTestId("answer-card")).toHaveCount(1);
+    await expect(page.getByTestId("answer-card")).toContainText("이용자 불러옴"); // 결론과 같은 줄은 블록에서 빠지고 출처는 결론 아래(이중 검토 035)
   });
 
   test("F9: 카드 자료가 아닌 파일은 이유와 다시 받을 방법을 알린다", async ({ page }) => {
@@ -225,13 +318,15 @@ test.describe("역설계 패턴과 경계 색칠 지도", () => {
     await expect(await conclusion(page)).toContainText("한림읍");
   });
 
-  test("B: 업종 아이콘 타일과 지도에서 동네 고르기", async ({ page }) => {
+  test("B: 업종 아이콘 타일과 동네 칩으로 고르기", async ({ page }) => {
     await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-sales").click();
-    await picker.getByText("지도에서 고르기").click(); // 지도는 접어 두었다가 펼친다(B3)
-    await picker.locator('[data-testid="picker-map"] path[data-dong="아라동"]').click();
+    await pickTopic(page, "sales");
+    await expect(picker.getByTestId("picker-map")).toHaveCount(0); // 패널 안 지도는 뺐다(사용자 지시 2026-11-12: 너무 작다)
+    await picker.getByTestId("dong-아라동").click();
     await expect(picker.getByTestId("dong-아라동")).toHaveAttribute("aria-pressed", "true");
+    await expect(picker.getByTestId("target-카페")).toHaveCount(0); // 한 번에 한 단계만 보인다
+    await picker.getByTestId("picker-next").click();
     await picker.getByTestId("target-카페").click();
     await expect(picker.getByTestId("target-카페")).toHaveAttribute("aria-pressed", "true");
     await picker.getByTestId("picker-submit").click();
@@ -241,7 +336,7 @@ test.describe("역설계 패턴과 경계 색칠 지도", () => {
   test("지도 보기·정의·표로 보기, 바닥 줄, 묶음 내려받기(D·F·G·I)", async ({ page }) => {
     await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-market").click();
+    await pickTopic(page, "market");
     await picker.getByTestId("target-음식점").click();
     await picker.getByTestId("picker-submit").click();
     await expect(await conclusion(page)).toBeVisible();
@@ -329,7 +424,7 @@ test.describe("사용성 점검 반영", () => {
   test("A10 그래프에 세로 눈금 단위를 적고 표도 억 원 단위로 보여 준다", async ({ page }) => {
     await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-market").click();
+    await pickTopic(page, "market");
     await picker.getByTestId("target-음식점").click();
     await picker.getByTestId("picker-submit").click();
     await expect(await conclusion(page)).toBeVisible();
@@ -342,19 +437,30 @@ test.describe("사용성 점검 반영", () => {
     expect(await views.getByTestId("view-table").innerText()).not.toMatch(/\d{1,3}(,\d{3}){3}/); // 원 단위 원숫자(2,089,958,214)가 없다
   });
 
-  test("B3·C7 답이 나와도 조건 패널은 저절로 접히지 않고, [이대로 답 보기]는 패널 아래에 붙어 있다", async ({ page }, info) => {
-    test.skip(info.project.name !== "desktop");
-    await page.getByTestId("representative").getByRole("button").first().click();
-    await expect(await conclusion(page)).toBeVisible();
-    await expect(page.getByTestId("step-picker")).toBeVisible();
-    await page.getByTestId("topic-stores").click();
+  test("겹침형 조건 패널: 열고 닫아도 본문 자리가 그대로이고, 답을 받으면 닫힌다(문서 21 6.2절 1단계)", async ({ page }) => {
+    const box = async () => {
+      const i = await page.getByTestId("question-input").boundingBox();
+      const m = await page.getByTestId("home-map").boundingBox();
+      return [i!.x, i!.y + (await page.evaluate(() => window.scrollY)), i!.width, m?.width, m?.height].map((v) => Math.round(v ?? 0));
+    };
+    await expect(page.getByTestId("home-map")).toBeVisible();
+    const closed = await box();
+    await openPicker(page);
+    await expect(page.getByTestId("panel-backdrop")).toBeVisible();
+    expect(await box()).toEqual(closed); // 입력 칸 좌표와 지도 크기가 같다(밀림 0px)
+    const panel = await page.getByTestId("panel").boundingBox();
+    expect(panel!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+    await pickTopic(page, "stores");
     await expect(page.getByTestId("picker-submit")).toBeInViewport();
-    // 접기를 사용자가 누르면 그 상태를 기억한다(다시 열 때까지)
-    await page.getByTestId("panel-close").click();
-    await expect(page.getByTestId("panel-open")).toBeVisible();
-    await expect(page.getByTestId("panel-open")).toContainText("조건으로 묻기");
-    await page.reload();
-    await expect(page.getByTestId("panel-open")).toBeVisible();
+    await page.getByTestId("picker-close").or(page.getByTestId("panel-close")).locator("visible=true").first().click();
+    await expect(page.getByTestId("step-picker")).toBeHidden();
+    expect(await box()).toEqual(closed);
+    await openPicker(page);
+    await pickTopic(page, "stores");
+    await page.getByTestId("dong-노형동").click();
+    await page.getByTestId("picker-submit").click();
+    await expect(await conclusion(page)).toBeVisible();
+    await expect(page.getByTestId("step-picker")).toBeHidden(); // 답을 가리지 않는다
   });
 
   test("B5 지도는 Tab 정지점이 하나이고 방향키로 옮긴다", async ({ page }, info) => {
@@ -384,9 +490,11 @@ test.describe("사용성 점검 반영", () => {
   test("C1 누를 수 있는 것 위에서 커서가 손가락 모양이고, 지도 구역은 올리면 테두리가 생긴다", async ({ page }, info) => {
     test.skip(info.project.name !== "desktop");
     await page.getByTestId("home-dong").selectOption("노형동"); // 숫자 카드는 동네를 고른 뒤에 나온다
-    for (const loc of [page.getByTestId("rep-more"), page.getByTestId("topic-stores"), page.getByTestId("home-card-visit")]) {
+    await openPicker(page);
+    for (const loc of [page.getByTestId("rep-more"), page.getByTestId("group-shop"), page.getByTestId("home-card-visit")]) {
       expect(await loc.evaluate((e) => getComputedStyle(e).cursor)).toBe("pointer");
     }
+    await page.getByTestId("panel-close").click(); // 겹침형 패널을 닫아야 지도 위에 마우스를 올릴 수 있다
     await page.locator('[data-testid="home-map"] path[data-dong="애월읍"]').hover();
     await expect(page.locator('[data-testid="home-map"] path[fill="none"][stroke="#0b3fa8"]')).toHaveCount(1);
   });
@@ -554,24 +662,12 @@ test.describe("사용성 점검 2차 반영", () => {
     expect(asks).toBe(1); // 두 번 보내지 않는다
   });
 
-  test("C9 글자 크기 '크게'(125%)에서 회색 안내글·지도 글자도 1.25배가 된다", async ({ browser }, info) => {
-    test.skip(info.project.name !== "desktop");
-    const sizes: Record<number, { help: number; label: number }> = {};
-    for (const size of [100, 125]) {
-      const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-      await ctx.addInitScript((s) => localStorage.setItem("display-settings", JSON.stringify({ size: s, contrast: "normal" })), size);
-      const p = await ctx.newPage();
-      await p.goto("/");
-      await expect(p.locator('[data-testid="home-map"] svg')).toBeVisible();
-      await p.waitForTimeout(800);
-      sizes[size] = await p.evaluate(() => ({
-        help: parseFloat(getComputedStyle(document.querySelector('[data-testid="question-help"]')!).fontSize),
-        label: document.querySelector('[data-testid="home-map"] svg text[pointer-events="none"]')!.getBoundingClientRect().height,
-      }));
-      await ctx.close();
-    }
-    expect(sizes[125].help / sizes[100].help).toBeCloseTo(1.25, 1);
-    expect(sizes[125].label / sizes[100].label).toBeGreaterThan(1.15);
+  test("H4 화면 설정은 없고 기본 글자 크기는 '작게'(90%)다", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await expect(page.getByRole("button", { name: "화면 설정" })).toHaveCount(0);
+    const px = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
+    expect(px).toBeCloseTo(14.4, 1);
   });
 
   test("C2 응답이 4초 늦어도 안내 문구·뼈대가 보이고 초점이 입력 칸에 남으며 화면이 밀리지 않는다", async ({ page }) => {
@@ -602,20 +698,98 @@ test.describe("사용성 점검 2차 반영", () => {
     await expect(page.getByTestId("choose-notice")).toContainText("골라 주세요");
   });
 
-  test("B3 주제를 고르면 주제 목록이 접혀 업종 칸이 스크롤 없이 보인다(1280×900)", async ({ page }, info) => {
-    test.skip(info.project.name !== "desktop", "조건 패널이 처음부터 펼쳐진 데스크톱 배치만 본다");
-    await page.setViewportSize({ width: 1280, height: 900 });
+  test("한 번에 한 단계만 보이고, 요약 칩을 누르면 그 단계로 돌아간다(문서 21 6.2절 2·4단계)", async ({ page }) => {
     await page.goto("/");
+    await openPicker(page);
     const picker = page.getByTestId("step-picker");
-    await picker.getByTestId("topic-sales").click();
-    await expect(picker.getByTestId("topic-stores")).toHaveCount(0);
+    await expect(picker.getByTestId("picker-submit")).toBeDisabled();
+    await expect(picker.getByTestId("picker-missing")).toContainText("궁금한 것을 골라 주세요");
+    await expect(picker.locator('[data-testid^="group-"]')).toHaveCount(4); // 첫 단계 선택지는 묶음 4개뿐이다(6개 이하)
+    await expect(picker.locator('[data-testid^="topic-"]')).toHaveCount(0);
+    await pickTopic(page, "sales");
+    await expect(picker.getByTestId("topic-stores")).toHaveCount(0); // 주제 단계는 접히고 동네 단계만 보인다
+    await expect(picker.getByTestId("sum-space")).toHaveAttribute("aria-current", "step");
+    await expect(picker.getByTestId("sum-space")).toContainText("골라 주세요"); // 빠진 칸은 요약 칩에도 적힌다
+    await expect(picker.getByTestId("picker-submit")).toBeDisabled();
+    await expect(picker.getByTestId("picker-missing")).toContainText("동네를 골라 주세요");
+    await picker.getByTestId("dong-노형동").click();
+    await expect(picker.getByTestId("sum-space")).toContainText("노형동");
+    await expect(picker.getByTestId("picker-submit")).toBeEnabled();
+    await picker.getByTestId("picker-next").click();
+    await expect(picker.getByTestId("dong-노형동")).toHaveCount(0);
+    await picker.getByTestId("target-카페").click();
+    await expect(picker.getByTestId("sum-target")).toContainText("카페");
+    const panel = await page.getByTestId("panel").boundingBox();
+    expect(panel!.height).toBeLessThanOrEqual(page.viewportSize()!.height); // 412×839에서도 패널이 화면 높이 안에 든다
+    await expect(picker.getByTestId("picker-submit")).toBeInViewport();
+    await picker.getByTestId("sum-space").click();
+    await expect(picker.getByTestId("dong-노형동")).toHaveAttribute("aria-pressed", "true");
+    await picker.getByTestId("sum-topic").click();
     await expect(picker.getByTestId("topic-sales")).toHaveAttribute("aria-pressed", "true");
-    const biz = await picker.getByTestId("target-카페").boundingBox();
-    const bar = await picker.getByTestId("picker-actions").boundingBox();
-    expect(biz!.y + biz!.height).toBeLessThanOrEqual(bar!.y);
-    await picker.getByTestId("topics-more").click();
-    await expect(picker.getByTestId("topic-stores")).toBeVisible();
-    await picker.getByTestId("topic-stores").click();
-    await expect(picker.getByTestId("topic-sales")).toHaveCount(0);
+    await pickTopic(page, "stores"); // 주제를 바꾸면 동네는 남고 다음 단계로 간다
+    await expect(picker.getByTestId("sum-topic")).toContainText("가게 수");
+    await expect(picker.getByTestId("dong-노형동")).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
+// 문서 23 개선(2026-11-12 사용자 실행 지시): 5칸 요약·손익분기 칸·골라서 묻기 안내·AI 고지·출처 번호·인쇄 여백
+test.describe("문서 23 답 화면 편의성", () => {
+  test("종합 진단: 5칸 요약, 묶음은 접혀 있고 출처는 번호로, 손익분기 예시는 월 700만 원", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await page.getByTestId("question-input").fill("노형동 상권 종합 진단해줘");
+    await page.keyboard.press("Enter");
+    await expect(await conclusion(page)).toContainText("43개 동네 중");
+    const grid = page.getByTestId("summary-grid");
+    await expect(grid.locator("li")).toHaveCount(5);
+    await expect(grid).toContainText("결제 건수"); // 매출 칸: 건수·1건당 금액 흐름
+    await expect(page.getByTestId("more-facts")).not.toHaveAttribute("open", "");
+    await expect(page.getByTestId("src-mark").first()).toBeAttached();
+    await expect(page.getByTestId("answer-footer")).toContainText("[1]");
+    await expect(page.getByTestId("gaps")).toContainText("임대료·권리금");
+    const bep = page.getByTestId("bep");
+    await bep.locator("summary").click();
+    await expect(bep.getByTestId("bep-empty")).toBeVisible();
+    await bep.getByTestId("bep-example").click();
+    await expect(bep.getByTestId("bep-result")).toContainText("한 달 700만 원 이상");
+    await expect(bep.getByTestId("bep-ticket")).not.toHaveValue("");
+  });
+
+  test("폰: 결론이 이해한 내용보다 위에 있다", async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile");
+    await page.goto("/");
+    await page.getByTestId("question-input").fill("노형동 상권 종합 진단해줘");
+    await page.keyboard.press("Enter");
+    const c = await (await conclusion(page)).boundingBox();
+    const u = await page.getByTestId("understood").boundingBox();
+    expect(c!.y).toBeLessThan(u!.y);
+  });
+
+  test("골라서 묻기: 무엇을 돕는지 한 줄, 묶음 설명, 몇 단계 중 몇 단계", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await openPicker(page);
+    const picker = page.getByTestId("step-picker");
+    await expect(picker.getByTestId("picker-intro")).toContainText("단추로 골라서");
+    await picker.getByTestId("group-outlook").click();
+    await expect(picker.getByTestId("group-hint")).toContainText("5칸");
+    await picker.getByTestId("topic-diagnose").click();
+    await expect(picker.getByTestId("picker-step")).toHaveText("3단계 중 2단계");
+  });
+
+  test("AI 고지는 첫 화면 맨 아래 작은 글씨, 인쇄에서는 빠지고 보고서에 좌우 여백이 있다", async ({ page }) => {
+    await page.goto("/");
+    const n = page.getByTestId("ai-notice");
+    await expect(n).toContainText("AI");
+    const body = await page.evaluate(() => parseFloat(getComputedStyle(document.body).fontSize));
+    const small = await n.evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
+    expect(small).toBeLessThan(body);
+    await page.getByTestId("question-input").fill("노형동 상권 종합 진단해줘");
+    await page.keyboard.press("Enter");
+    await expect(await conclusion(page)).toBeVisible();
+    await page.emulateMedia({ media: "print" });
+    await expect(n).toBeHidden();
+    const pad = await page.getByTestId("report").evaluate((e) => parseFloat(getComputedStyle(e).paddingLeft));
+    expect(pad).toBeGreaterThan(40); // 12mm ≈ 45px: 인쇄 창에서 여백 '없음'을 골라도 남는 여백
   });
 });

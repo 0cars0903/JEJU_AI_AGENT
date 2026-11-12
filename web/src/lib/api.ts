@@ -12,7 +12,8 @@ export type Slots = {
 export type Option = { value: string; label: string };
 export type Topic = { id: string; label: string; need: string[]; optional: string[]; min_space: number; center_only: boolean; options: Record<string, Option[]>; variants: Option[] };
 export type Representative = { use_case: string; slots: Slots; text: string };
-export type Guide = { topics: Topic[]; dongs: string[]; representative: Representative[] };
+export type Group = { id: string; label: string; topics: string[]; hint?: string };
+export type Guide = { topics: Topic[]; groups: Group[]; dongs: string[]; representative: Representative[] };
 
 export type Evidence = { text: string; dataset?: string; as_of?: string; value?: number; unit?: string; dong?: string; metric?: string };
 export type Card = { conclusion: string; evidence: Evidence[]; intervals: string[]; limits: string[]; next_questions: string[] };
@@ -32,8 +33,17 @@ export type DongSummary = { dong: string; cards: SummaryCard[] };
 export type Freshness = { source: string; as_of: string; months_old: number; stale: boolean };
 export type QueryField = { field: string; value: string };
 export type DataRequest = { kind: "update" | "center"; title: string; data: string; why: string; where: string; now?: string; steps?: string[]; query?: QueryField[] };
+/** 답에 쓰인 모델의 방법·검증 설명(문서 21 3.2절): 화면의 접힌 설명과 인쇄 보고서 부록 A가 함께 쓴다 */
+export type Method = { kind: string; title: string; how: string; check: string; result: string; limit: string };
+/** 종합 진단 5칸 요약(문서 23, 사람 시험 H3): 수요·매출·경쟁·생존·앞으로 */
+export type SummaryCell = { key: string; label: string; name: string; value: string; level: string; note: string; sub?: string };
 export type Answer = {
-  conclusion: { text: string; layer: string | null; tag: string | null };
+  summary?: SummaryCell[];
+  /** 손익분기 계산 칸의 결제 1건당 금액 기본값(문서 23, 사용자 결정 2026-11-12) */
+  bep?: { ticket: number; basis: string };
+  /** 이 답에 없는 것과 확인할 곳(문서 23) */
+  gaps?: { what: string; why: string; where: string }[];
+  conclusion: { text: string; layer: string | null; tag: string | null; source?: string | null };
   blocks: Block[];
   views: View[];
   default_views: number;
@@ -41,7 +51,19 @@ export type Answer = {
   freshness: Freshness[];
   requests: DataRequest[];
   footer?: FooterItem[];
+  methods?: Method[];
+  /** 종합 진단 답 위의 업종 탭(문서 22 2단계): 그 동네에 가게가 있는 업종만 */
+  biz_tabs?: BizTab[];
+  /** 업종 단위 안내(카페 질문에 음식점업 전체 매출이 나올 때, 이중 검토 035) */
+  notice?: string;
+  /** 동네 비교 5절 표(문서 22 3절) */
+  compare?: CompareTable;
+  /** 종합 진단 → 다른 동네와 비교. 후보는 비슷한 동네 5곳 */
+  compare_with?: { dong: string; target: string | null; candidates: { dong: string; slots: Slots; text: string }[] };
 };
+export type BizTab = { target: string | null; label: string; stores: number | null; note: string | null; slots: Slots; text: string; current: boolean };
+export type CompareRow = { label: string; unit: string; texts: [string, string, string]; verdict: string; method: string; p?: number; n?: number; ranks?: [number, number]; ci?: [[number, number], [number, number]] };
+export type CompareTable = { dongs: [string, string]; target: string | null; sections: { id: string; title: string; rows: CompareRow[]; note?: string | null }[]; rule: string };
 export type Step = { id: string; sub: string; name: string; status: string; metric?: string | null; recipe?: string | null };
 export type AskResult = {
   question: string | null;

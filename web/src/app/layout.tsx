@@ -10,15 +10,9 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#ffffff" };
 
-// 표시 설정을 첫 그림 전에 적용해 글자 크기가 깜빡이지 않게 한다.
-const applySettings = `try{var s=JSON.parse(localStorage.getItem("display-settings")||"{}");if(s.size)document.documentElement.style.fontSize=s.size+"%";if(s.contrast==="high")document.documentElement.dataset.contrast="high"}catch(e){}`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: applySettings }} />
-      </head>
       <body className="flex min-h-dvh flex-col antialiased">
         <a
           href="#main"
@@ -31,6 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[100rem] flex-1 px-4 py-4 outline-none md:px-6 md:py-4">
             {children}
           </main>
+          {/* 문서 23 8절(사용자 결정): AI 고지는 다른 서비스처럼 메인 페이지 맨 아래 작은 글씨로 둔다. 인공지능기본법 제31조 사전 고지. */}
+          <footer data-testid="ai-notice" className="mx-auto w-full max-w-[100rem] px-4 pt-2 pb-4 text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle) print:hidden md:px-6">
+            이 서비스는 AI 모델로 질문을 해석하고, 판단 과정의 설명 문장 일부를 AI가 씁니다. 답의 숫자는 공공 자료로 프로그램이 계산한 값입니다. 중요한 결정 전에는 원자료와 전문가 의견을 함께 확인해 주세요.
+          </footer>
         </Providers>
       </body>
     </html>

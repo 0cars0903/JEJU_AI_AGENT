@@ -289,6 +289,77 @@ def summary(dong):
     return {"dong": dong, "cards": cards}
 
 
+def _rank(s, dong):
+    """43곳 값(Series) → (그 동네 값, 순위(큰 값이 1위), 동네 수, 중간값). 값이 없으면 None."""
+    s = s.dropna()
+    if dong not in s.index:
+        return None
+    v = float(s[dong])
+    return {"value": v, "rank": int((s > v).sum() + 1), "of": int(len(s)), "median": float(s.median())}
+
+
+def composite(dong, target=None, biz5=None, cats=None, names=None):
+    """종합 진단에 붙이는 복합 지표(문서 21 4절 (가)). 여러 칸을 나누거나 견줘 만든 값이라 계산식을 basis에 적는다.
+    ticket 건당 결제 금액 · density 방문 1만 지수당 가게 수 · lq 업종 특화도 · hours 시간대 카드 소비 · net 개업−폐업 · yearly 3개년 매출."""
+    out, dongs = {}, meta()["dongs"]
+    c = card()
+    c = c[c["dong"].isin(dongs)]
+    if biz5:
+        c = c[c["biz"] == biz5]
+    end = c["ym"].max()
+    cur = c[c["ym"] == end].groupby(["dong", "cust"])[["amt", "cnt"]].sum()
+    tk = {}
+    for cust in ("도민", "내국인 관광객"):
+        if (dong, cust) in cur.index and cur.loc[(dong, cust), "cnt"] > 0:
+            a = cur.xs(cust, level="cust")
+            tk[cust] = {"value": float(a.loc[dong, "amt"] / a.loc[dong, "cnt"]), "median": float((a["amt"] / a["cnt"]).median())}
+    if tk:
+        out["ticket"] = {"ym": end, "by": tk, "basis": "매출 ÷ 결제 건수"}
+    b = pd.read_parquet(TAB / "biz.parquet")
+    b = b[b["dong"].isin(dongs)]
+    sub = b[b["minor"].isin(names)] if names else b[b["major"] == "음식"] if target == "음식점" else biz_rows(b, target) if target else None
+    if sub is not None and len(sub):
+        cnt = sub.groupby("dong")["count"].sum().reindex(dongs).fillna(0)
+        visit, _, vend = dong_values("visit")
+        d = _rank(cnt / (visit.reindex(dongs) / 1e4), dong)
+        if d:
+            out["density"] = {**d, "stores": float(cnt[dong]), "visit": float(visit[dong]), "visit_end": vend, "basis": "가게 수 ÷ (하루 평균 방문 지수 ÷ 10,000)"}
+        share = cnt / b.groupby("dong")["count"].sum().reindex(dongs)
+        jeju = float(sub["count"].sum() / b["count"].sum())
+        q = _rank(share / jeju, dong)
+        if q:
+            out["lq"] = {**q, "share_pct": float(share[dong] * 100), "jeju_pct": jeju * 100, "basis": "동네의 업종 가게 비중 ÷ 제주 전체의 업종 가게 비중"}
+    h = pd.read_parquet(TAB / "card_hour.parquet")
+    h = h[(h["dong"] == dong) & (h["ym"] > sorted(h["ym"].unique())[-13])]
+    if biz5:
+        h = h[h["biz"] == biz5]
+    if len(h) and h["amt"].sum() > 0:
+        g = h.groupby("hour")["amt"].sum()
+        pct = g / g.sum() * 100
+        band = {"낮(11~14시)": range(11, 15), "저녁(17~21시)": range(17, 22), "밤(22~다음 날 4시)": [22, 23, 0, 1, 2, 3, 4]}
+        out["hours"] = {"peak": int(pct.idxmax()), "peak_pct": float(pct.max()), "bands": {k: float(pct.reindex(list(v)).sum()) for k, v in band.items()},
+                        "from": h["ym"].min(), "to": h["ym"].max(), "points": [[int(k), round(float(v), 2)] for k, v in pct.sort_index().items()],
+                        "basis": "시간대 매출 ÷ 하루 전체 매출(최근 12개월)"}
+    if cats is not False:  # 음식점 인허가 업종만(cats=None이면 음식점 전체)
+        e = pd.read_parquet(TAB / "rest_events.parquet")
+        e = e[e["dong"] == dong]
+        if cats:
+            e = e[e["category"].isin(cats)]
+        last = meta().get("rest_last", "")
+        full = int(last[:4]) - (0 if last.endswith("12-31") else 1)  # 12월까지 다 있는 마지막 해
+        pv = e[e["year"].between(full - 2, full)].pivot_table(index="year", columns="kind", values="count", aggfunc="sum").reindex(range(full - 2, full + 1)).fillna(0)
+        if len(e):
+            out["net"] = {"rows": [{"year": int(y), "open": int(r.get("open", 0)), "close": int(r.get("close", 0)), "net": int(r.get("open", 0) - r.get("close", 0))}
+                                   for y, r in pv.iterrows()], "basis": "개업 수 − 폐업 수"}
+    m = c[c["dong"] == dong].groupby("ym")["amt"].sum()
+    yr = m.groupby(m.index.str[:4]).agg(["sum", "count"])
+    yr = yr[yr["count"] == 12]["sum"].tail(3)
+    if len(yr) == 3 and yr.iloc[0] > 0:
+        out["yearly"] = {"rows": [{"year": int(y), "amt": float(v)} for y, v in yr.items()],
+                         "change_pct": float((yr.iloc[-1] / yr.iloc[0] - 1) * 100), "basis": "12개월이 다 있는 해의 매출 합계"}
+    return out
+
+
 # ---------- F4 업종 간 비교 ----------
 def biz_compare(dong):
     c = card()

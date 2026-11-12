@@ -141,6 +141,38 @@ def _r1_build(cfg):
     # 추론: 전체 자료로 다시 학습, 마지막 날 다음 7일. 7·14일 전 값은 이미 관측된 값이다.
     g, coef = fit(np.ones(len(d), bool))
     last = d["date"].max()
+    # 예상 범위(문서 22 4절 R1 ①): 검증 3회차(각 60일)에서 빗나간 크기(로그 차이)의 10%·90% 분위로 폭을 정한다. 모델은 다시 학습하지 않는다.
+    # 확인: 한 회차를 빼고 나머지 두 회차로 잡은 폭이 뺀 회차에서 실제 값을 몇 % 담는지(목표 80%).
+    # 폭 후보 셋(전체 하나 · 동/읍면 두 묶음 · 동네별) 가운데, 전체 포함률과 동·읍면 묶음별 포함률이 모두 80%에 가까운 쪽을 쓴다(이중 검토 035: 읍면이 좁았다).
+    t["r"] = t["y"] - t["pred"]
+    t["grp"] = np.where(t["emd"].astype(str).str.endswith("동"), "동", "읍면")
+    t["day"] = (t["date"] - pd.to_datetime(t["fold"])).dt.days
+    keys = {"pooled": None, "by_group": "grp", "by_dong": "emd"}
+    hit = {k: [] for k in keys}
+    for f in cfg["folds"]:
+        tr_, te_ = t[t["fold"] != f], t[t["fold"] == f]
+        for k, col in keys.items():
+            if col is None:
+                lo, hi = tr_["r"].quantile(0.1), tr_["r"].quantile(0.9)
+                ok = te_["r"].between(lo, hi)
+            else:
+                m = te_.join(tr_.groupby(col)["r"].quantile([0.1, 0.9]).unstack(), on=col)
+                ok = (m["r"] >= m[0.1]) & (m["r"] <= m[0.9])
+            hit[k].append(te_.assign(ok=ok.to_numpy()))
+    cover, score = {}, {}
+    for k, parts in hit.items():
+        h = pd.concat(parts)
+        pc = lambda x: round(float(x.mean() * 100), 1)
+        cover[k] = {"folds": {f: pc(g["ok"]) for f, g in h.groupby("fold")}, "groups": {g: pc(x["ok"]) for g, x in h.groupby("grp")},
+                    "first7": pc(h[h["day"] < 7]["ok"])}
+        score[k] = abs(np.mean(list(cover[k]["folds"].values())) - 80) + max(abs(v - 80) for v in cover[k]["groups"].values())
+    how = min(score, key=score.get)
+    q_all = (float(t["r"].quantile(0.1)), float(t["r"].quantile(0.9)))
+    col = keys[how]
+    qg = t.groupby(col)["r"].quantile([0.1, 0.9]).unstack() if col else None
+    key_of = lambda e: (e if col == "emd" else ("동" if str(e).endswith("동") else "읍면"))
+    qd_map = {e: (float(qg.loc[key_of(e), 0.1]), float(qg.loc[key_of(e), 0.9])) if col and key_of(e) in qg.index else q_all for e in cats}
+    q_lo, q_hi = q_all
     days = pd.date_range(last + pd.Timedelta(days=1), periods=cfg["horizon"])
     cal = calendar(days)
     ylog = d.set_index(["emd", "date"])["y"]
@@ -157,13 +189,16 @@ def _r1_build(cfg):
     return {"gate_input": {"model_err": cell["em"].round(6).tolist(), "baseline_err": cell["eb"].round(6).tolist(), "mase": round(mase, 4),
                            "cells": [f"{a}|{b}" for a, b in cell.index]},
             "mase_by_dong": mase_dong,
-            "forecast": [{"dong": r.emd, "date": str(r.date.date()), "visit": round(float(r.visit), 1), "rain_effect_pct": None if pd.isna(r.rain_pct) else float(r.rain_pct), **{c: int(getattr(r, c)) for c in G.CAL}} for r in fu.itertuples()],
+            "interval_q": {"lo": round(q_lo, 5), "hi": round(q_hi, 5), "method": how, "coverage_lofo": cover,
+                           "by": {k: [round(v[0], 5), round(v[1], 5)] for k, v in ({g: (float(qg.loc[g, 0.1]), float(qg.loc[g, 0.9])) for g in qg.index} if col == "grp" else {}).items()}},
+            "forecast": [{"dong": r.emd, "date": str(r.date.date()), "visit": round(float(r.visit), 1),
+                          "lo": round(float(r.visit * np.exp(qd_map[r.emd][0])), 1), "hi": round(float(r.visit * np.exp(qd_map[r.emd][1])), 1), "rain_effect_pct": None if pd.isna(r.rain_pct) else float(r.rain_pct), **{c: int(getattr(r, c)) for c in G.CAL}} for r in fu.itertuples()],
             "data_last": str(last.date())}
 
 
 def r1(flt):
     spec = REG["R1"]
-    cfg = {"folds": spec["validation"]["folds"], "test_days": spec["validation"]["test_days"], "horizon": spec["horizon_days"], "model": "gbm_M0+big8rain"}
+    cfg = {"folds": spec["validation"]["folds"], "test_days": spec["validation"]["test_days"], "horizon": spec["horizon_days"], "model": "gbm_M0+big8rain", "interval": "cv_folds_q10_q90_pick_group"}
     res = _cached("R1", _fingerprint(PANEL), cfg, lambda: _r1_build(cfg))
     return _limit(res, flt, ("forecast",), "mase_by_dong")
 
@@ -233,8 +268,9 @@ def r4(flt, chk):
     co = _cohort(use)
     s5, se5, n = km_at(co["y"].to_numpy(), co["event"].to_numpy(), 5)
     s2, _, _ = km_at(co["y"].to_numpy(), co["event"].to_numpy(), 2)
+    curve = [{"year": k, "pct": round(float(km_at(co["y"].to_numpy(), co["event"].to_numpy(), k)[0]) * 100, 1)} for k in (1, 2, 3, 4, 5)]
     return {"survival": {"group": use or "음식점 전체", "n": int(len(co)), "surv5_pct": round(s5 * 100, 1), "ci95_pp": round(1.96 * se5 * 100, 1),
-                         "cond_2to5_pct": round(s5 / s2 * 100, 1) if s2 > 0 else None, "space": "제주 전체(동네별 표본이 작아 업종 묶음 단위)", "cohort": co.attrs.get("cohort")},
+                         "cond_2to5_pct": round(s5 / s2 * 100, 1) if s2 > 0 else None, "space": "제주 전체(동네별 표본이 작아 업종 묶음 단위)", "cohort": co.attrs.get("cohort"), "curve": curve},
             "fallback": None if use == tgt else f"{tgt} 표본 부족 → 음식점 전체"}
 
 
@@ -248,7 +284,16 @@ def r5(flt, chk):
     import model_gates as G1
     F = _features()
     nb = G1.neighbors(F)
-    return {"neighbors": {d: sorted(nb[d]) for d in chk["ok"]}, "gate": REG["R5"]["pass"]}
+    # 닮은 이유: 그 동네와 이웃 5곳이 함께 43곳 평균에서 같은 쪽으로 벗어난 특성 3개(표준화 값이 큰 순)
+    Z = (F - F.mean()) / F.std(ddof=0)
+    why = {}
+    for d in chk["ok"]:
+        m = Z.loc[sorted(nb[d])].mean()
+        c = [k for k in Z.columns if Z.loc[d, k] * m[k] > 0 and abs(m[k]) >= 0.3]
+        top = sorted(c, key=lambda k: -min(abs(Z.loc[d, k]), abs(m[k])))[:3]
+        why[d] = [{"feature": k, "high": bool(Z.loc[d, k] > 0), "value": round(float(F.loc[d, k]), 4), "nb_mean": round(float(F.loc[sorted(nb[d]), k].mean()), 4),
+                   "all_mean": round(float(F[k].mean()), 4)} for k in top]  # 문서 22 4절 R5 ①: 닮은 특성을 수치로
+    return {"neighbors": {d: sorted(nb[d]) for d in chk["ok"]}, "why": why, "gate": REG["R5"]["pass"]}
 
 
 def _curves():
@@ -264,7 +309,12 @@ def r6(flt, chk):
     c = _curves()
     lab = pd.Series(KMeans(2, n_init=20, random_state=0).fit_predict(c), index=c.index)
     peak = {k: int(c[lab == k].mean().idxmax()) for k in (0, 1)}
-    return {"season_type": {d: {"group": f"{peak[lab[d]]}월 정점형", "same_type": sorted(set(lab[lab == lab[d]].index) - {d})} for d in chk["ok"]},
+    near = {}
+    for d in chk["ok"]:  # 월별 곡선(그 동네 평균 = 1)의 유클리드 거리가 가까운 5곳
+        dist = np.sqrt(((c - c.loc[d]) ** 2).sum(axis=1)).drop(d).sort_values()
+        near[d] = {"dongs": list(dist.index[:5]), "peak": int(c.loc[d].idxmax()), "low": int(c.loc[d].idxmin()),
+                   "peak_ratio": round(float(c.loc[d].max()), 2), "low_ratio": round(float(c.loc[d].min()), 2), "months": int(c.shape[1])}
+    return {"season_type": {d: {"group": f"{peak[lab[d]]}월 정점형", "same_type": sorted(set(lab[lab == lab[d]].index) - {d})} for d in chk["ok"]}, "nearest": near,
             "gate": REG["R6"]["pass"]}
 
 
@@ -279,12 +329,29 @@ def r7(flt, chk, kind="close"):
         ev = ev[ev["category"].isin(REST_MAP[tgt])]
     end = pd.read_parquet(IN / "restaurants.parquet", columns=["open_date", "close_date"]).max().max()
     year = end.year if end.month == 12 else end.year - 1  # 관측이 끝난 해가 12월 전이면 그 해는 덜 찼다 → 마지막 완전 연도
+    kind_ko = "폐업" if kind == "close" else "개업"
+    note = f"관측 종료 {end.date()}, 마지막 완전 연도 {year}년 기준"
+    if (flt or {}).get("by") == "업종":  # 업종별 이례: 고른 동네(없으면 제주 전체) 안에서 음식 업종 묶음별로 같은 계산을 한다(문서 21)
+        dongs = (flt or {}).get("dong")
+        one = isinstance(dongs, list) and len(dongs) == 1
+        if one:
+            ev = ev[ev["dong"] == dongs[0]]
+        rows = []
+        for g, cats in REST_MAP.items():
+            if not cats or g == "횟집":  # 횟집은 일식 묶음에 들어 있다
+                continue
+            s = ev[ev["category"].isin(cats)].groupby("year")["count"].sum()
+            cnt, mu = float(s.get(year, 0)), float(np.mean([s.get(year - k, 0) for k in (1, 2, 3)]))
+            z = (cnt - mu) / np.sqrt(max(mu, 0.5))
+            rows.append({"dong": dongs[0] if one else "제주 전체", "biz": g, "year": int(year), "count": int(cnt), "expected": round(mu, 1), "z": round(float(z), 2),
+                         "flag": "많음" if z > 2 else "적음" if z < -2 else "보통 범위"})
+        return {"anomaly": rows, "kind": kind_ko, "by": "업종", "note": note, "end_year": int(end.year)}
     e = ev.groupby(["dong", "year"])["count"].sum().unstack("year").fillna(0)
     mu = e[[year - 1, year - 2, year - 3]].mean(axis=1)
     z = (e[year] - mu) / np.sqrt(mu.clip(lower=0.5))
     rows = [{"dong": d, "year": int(year), "count": int(e.loc[d, year]), "expected": round(float(mu[d]), 1), "z": round(float(z[d]), 2),
              "flag": "많음" if z[d] > 2 else "적음" if z[d] < -2 else "보통 범위"} for d in chk["ok"] if d in e.index]
-    return {"anomaly": rows, "kind": "폐업" if kind == "close" else "개업", "note": f"관측 종료 {end.date()}, 마지막 완전 연도 {year}년 기준"}
+    return {"anomaly": rows, "kind": kind_ko, "by": "동네", "note": note, "end_year": int(end.year)}
 
 
 WARM = {"R1": "대기"}
@@ -299,6 +366,11 @@ def warm():
         WARM["R1"] = f"준비됨(cache {r['cache']}, {time.perf_counter() - t0:.1f}초)"
     except Exception as e:  # 캐시를 못 채워도 서버는 뜬다(질문 때 학습)
         WARM["R1"] = f"실패: {type(e).__name__}"
+    try:  # 종합 진단이 쓰는 매출 예상 검증(43개 동네 × 5개 업종, 약 1초)도 미리 계산한다(문서 21: 수치 답 4초 안)
+        import v3
+        v3._r10_gate()
+    except Exception:
+        pass
     return WARM["R1"]
 
 
