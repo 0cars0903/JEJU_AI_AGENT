@@ -793,3 +793,41 @@ test.describe("문서 23 답 화면 편의성", () => {
     expect(pad).toBeGreaterThan(40); // 12mm ≈ 45px: 인쇄 창에서 여백 '없음'을 골라도 남는 여백
   });
 });
+
+test.describe("전문가 모드(설계 11-2절)", () => {
+  test("키가 없으면(rule 경로) 전문가 모드가 보이지 않는다", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await expect(page.getByTestId("expert")).toHaveCount(0);
+  });
+
+  test("켜져 있으면 요청 → 설명·숫자·그래프·코드가 보이고, 실패하면 이유와 안내가 보인다", async ({ page }) => {
+    await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: true, daily_limit: 50 } }));
+    let n = 0;
+    await page.route("**/api/expert", (r) =>
+      r.fulfill({
+        json:
+          n++ === 0
+            ? {
+                status: "성공", method: "Pearson 상관", plan: ["월 매출과 방문 지수를 맞춘다", "상관계수를 구한다"], code: "result = {}", by: "AI", sec: 12.3,
+                lines: ["상관계수는 0.784입니다."], result: { numbers: { r: 0.784, n: 34 }, notes: ["월 단위 34개월이라 자기상관 주의"],
+                  series: [{ title: "산점도", kind: "scatter", x: [1, 2, 3], y: [2, 4, 5] }], tables: [{ title: "표", columns: ["a", "b"], rows: [[1, 2]] }] },
+              }
+            : { status: "실패", error: "검사: 쓸 수 없는 이름: open", hint: "기법 목록으로 다시 물어 주세요." },
+      }),
+    );
+    await page.goto("/");
+    const ex = page.getByTestId("expert");
+    await ex.locator("summary").click();
+    await page.getByTestId("expert-input").fill("노형동 매출과 방문 상관");
+    await page.getByTestId("expert-submit").click();
+    await expect(page.getByTestId("expert-lines")).toContainText("0.784");
+    await expect(page.getByTestId("expert-numbers")).toContainText("34");
+    await expect(page.getByTestId("expert-chart")).toBeVisible();
+    await expect(page.getByTestId("expert-notes")).toContainText("자기상관");
+    await page.getByTestId("expert-code").locator("summary").click();
+    await expect(page.getByTestId("expert-code")).toContainText("result = {}");
+    await page.getByTestId("expert-submit").click();
+    await expect(page.getByTestId("expert-fail")).toContainText("기법 목록");
+  });
+});

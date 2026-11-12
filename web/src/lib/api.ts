@@ -142,3 +142,23 @@ export function writeCenter(c: CenterFile | null) {
     /* 저장이 막혀도 이번 화면에서는 그대로 쓴다 */
   }
 }
+
+/** 전문가 모드(설계 11-2절): Claude가 계획·pandas 코드를 짜고 격리 실행한 결과 */
+export type ExpertTable = { title?: string; columns: string[]; rows: (string | number | null)[][] };
+export type ExpertSeries = { title?: string; kind?: "line" | "bar" | "scatter"; name?: string; x: (string | number)[]; y: (number | null)[] };
+export type ExpertResult = {
+  status: "성공" | "실패" | "꺼짐" | "상한" | "오류";
+  method?: string;
+  plan?: string[];
+  code?: string;
+  result?: { numbers?: Record<string, number | string | null>; tables?: ExpertTable[]; series?: ExpertSeries[]; notes?: string[] };
+  lines?: string[];
+  by?: string;
+  attempts?: { stage?: string; ok?: boolean; error?: string }[];
+  error?: string;
+  hint?: string;
+  sec?: number;
+  usage?: { input_tokens?: number; output_tokens?: number };
+};
+export const getExpertStatus = () => call<{ enabled: boolean; daily_limit: number }>("/api/expert/status");
+export const askExpert = (question: string) => call<ExpertResult>("/api/expert", { method: "POST", body: JSON.stringify({ question }) });

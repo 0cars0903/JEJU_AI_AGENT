@@ -34,10 +34,7 @@ CLAIM_KO = {"효과 있음": "차이가 있어요", "작지만 0은 아님": "�
 TYPE_KO = {"T1": "현황 조회", "T2": "동네 비교", "T3": "순위", "T4": "추세", "T5": "구성", "T6": "조건 효과", "T7": "관계", "T8": "예측",
            "T9": "비슷한 동네", "T10": "종합 진단", "T11": "자료 찾기", "T13": "시간대 패턴", "T14": "조건 탐색", "T15": "이례 변화"}
 SUB_KO = {"S0": "자료 탐색", "S1": "조회", "S2": "통계·점검", "S3": "모델", "S4": "차트", "S5": "단위 맞추기", "S6": "판정"}
-M3B_SYSTEM = ("너는 제주 동네 자료 안내원이다. 시스템이 고른 자료와 계산 순서를 도민에게 한두 문장으로 설명한다. "
-              "규칙: 숫자를 한 글자도 쓰지 않는다. 주어진 자료 이름과 단계만 말한다. 결과나 결론을 말하지 않는다. '~했어요'체로 쓴다.\n"
-              "예시) 질문: 아라동 카페 개업 늘었어? / 고른 자료: 개업 수(음식점 인허가) / 계산 순서: 조회 → 통계·점검 → 판정 → 차트\n"
-              "답: 음식점 인허가 자료에서 아라동 카페 개업 수를 연도별로 모으고, 최근 흐름이 우연인지 판정한 뒤 그래프로 정리했어요.")
+from prompts import M3B_SYSTEM, M3B_TOOL, M3B_FORMAT  # noqa: E402
 
 # ---------- 공통 ----------
 def _label(m):
@@ -77,12 +74,24 @@ def llm_text_ok(text, question=""):
 
 
 def _ask_llm(system, user, timeout_ok=True):
+    """계획 해설 한 문장. llm.backend()를 따른다(키 있으면 Claude → Ollama). 출력은 {"text"} 한 칸으로 고정(2026-11-13).
+    Claude: submit_plan_text 도구(strict), 생각 깊이 low. Ollama: format JSON 스키마. 돌려주는 값: (문장, 오류, 초, 백엔드)."""
     t0 = time.perf_counter()
+    name = llm.backend()
+    msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
     try:
-        out = llm.chat(None, [{"role": "system", "content": system}, {"role": "user", "content": user}], [], name="ollama", max_tokens=160)["message"].get("content", "").strip()
+        if name == "claude":
+            m = llm.chat(None, msgs, [M3B_TOOL], name="claude", effort="low")["message"]
+            args = next((c["function"]["arguments"] for c in m.get("tool_calls") or [] if c["function"]["name"] == "submit_plan_text"), None)
+            if isinstance(args, str):
+                args = json.loads(args)
+            out = (args or {}).get("text", "").strip()
+        else:
+            raw = llm.chat(None, msgs, [], name="ollama", max_tokens=160, fmt=M3B_FORMAT)["message"].get("content", "").strip()
+            out = str(json.loads(raw).get("text", "")).strip() if raw.startswith("{") else raw
     except Exception as e:
-        return None, f"LLM 오류 {type(e).__name__}", time.perf_counter() - t0
-    return out, None, time.perf_counter() - t0
+        return None, f"LLM 오류 {type(e).__name__}", time.perf_counter() - t0, name
+    return out, None, time.perf_counter() - t0, name
 
 
 # ---------- 답 카드 ----------
@@ -251,7 +260,7 @@ def explain_plan(question, t, order, res, llm_on=True):
     if not llm_on:
         return {"text": tpl, "by": "템플릿", "sec": 0.0}
     user = f"질문: {question}\n질문 종류: {TYPE_KO.get(t['type'])}\n고른 자료: {', '.join(data) or '자료 목록'}\n계산 순서: {path}"
-    out, err, sec = _ask_llm(M3B_SYSTEM, user)
+    out, err, sec, name = _ask_llm(M3B_SYSTEM, user)
     probs = [err] if err else llm_text_ok(out, question)
     if not probs and not re.search(r"(어요|아요|해요|예요|이에요)\.?$", out):
         probs = ["문체('~해요' 아님)"]
@@ -262,8 +271,8 @@ def explain_plan(question, t, order, res, llm_on=True):
     if not probs and re.search(r"연도별", out) and not any("year" in getattr((res["store"].get(x["out"]) or {}).get("table"), "columns", []) for x in order["tasks"]):
         probs = ["없는 단계 언급(연도별)"]
     if probs:
-        return {"text": tpl, "by": "템플릿(LLM 대체)", "llm_raw": out, "problems": probs, "sec": round(sec, 3)}
-    return {"text": out, "by": "LLM", "sec": round(sec, 3)}
+        return {"text": tpl, "by": "템플릿(LLM 대체)", "llm_raw": out, "problems": probs, "sec": round(sec, 3), "backend": name}
+    return {"text": out, "by": "LLM", "sec": round(sec, 3), "backend": name}
 
 
 # ---------- 내려받기 ----------

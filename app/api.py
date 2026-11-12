@@ -17,6 +17,9 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import envfile  # noqa: E402
+
+envfile.load()  # 평가용 키를 ZIP의 .env로 받는다. 이미 설정된 환경 변수가 우선
 import llm  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -96,7 +99,8 @@ def ask(body: Ask):
     question = (body.question or "").strip()
     if not question and not body.slots:
         raise HTTPException(422, "질문을 입력하거나 고를 항목을 골라 주세요.")
-    on = llm.backend() != "rule" and llm._ollama_alive()
+    b = llm.backend()  # 계획 해설: 키가 있으면 Claude, 없으면 켜져 있는 Ollama, 둘 다 없으면 템플릿(2026-11-13)
+    on = b == "claude" or (b == "ollama" and llm._ollama_alive())
     env = {"center_db": False}
     if body.dataset_id:
         import center_csv
@@ -171,6 +175,27 @@ def catalog(q: str = Query(default="", max_length=50)):
     hit = [r for r in rows if all(w in f"{r['name']} {r.get('domain', '')} {r.get('columns') or ''}" for w in words)] if words else rows
     keep = ["id", "name", "source", "space", "time", "domain", "period", "export", "access"]
     return clean({"query": q, "count": len(hit), "items": [{k: r.get(k) for k in keep} for r in hit[:20]]})
+
+
+class Expert(BaseModel):
+    question: str = Field(..., max_length=500)
+
+
+@app.get("/api/expert/status")
+def expert_status():
+    """전문가 모드(설계 11-2절) 사용 가능 여부. Claude 키가 있을 때만 켜진다."""
+    import expert
+    return {"enabled": expert.enabled(), "daily_limit": expert.DAILY}
+
+
+@app.post("/api/expert")
+def expert_ask(body: Expert):
+    """전문가 모드: 요청 → Claude가 계획·코드 설계 → 검사·격리 실행 → 해설 → 숫자 대조."""
+    import expert
+    q = body.question.strip()
+    if not q:
+        raise HTTPException(422, "요청을 입력해 주세요.")
+    return clean(expert.ask(q))
 
 
 @app.get("/api/health")

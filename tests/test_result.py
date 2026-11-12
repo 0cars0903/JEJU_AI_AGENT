@@ -162,6 +162,22 @@ class Explain(unittest.TestCase):
             self.assertEqual(e["by"], "템플릿(LLM 대체)", bad)
             self.assertNotIn("3622", e["text"])
 
+    def test_claude_tool_output(self):
+        text = "버스 이용 자료에서 두 동네 값을 모아 그래프로 정리했어요."
+        reply = {"message": {"content": "", "tool_calls": [{"id": "c", "function": {"name": "submit_plan_text", "arguments": {"text": text}}}]}}
+        with mock.patch.object(R.llm, "backend", return_value="claude"), mock.patch.object(R.llm, "chat", return_value=reply) as ch:
+            e = ask(self.Q, llm_on=True)["process"]["explain"]
+        self.assertEqual((e["by"], e["text"], e["backend"]), ("LLM", text, "claude"))
+        self.assertEqual(ch.call_args.kwargs.get("effort"), "low")
+        self.assertTrue(ch.call_args.args[2][0]["function"]["strict"])
+
+    def test_ollama_json_output(self):
+        with mock.patch.object(R.llm, "backend", return_value="ollama"), \
+                fake_llm('{"text": "버스 이용 자료에서 두 동네 값을 모아 그래프로 정리했어요."}') as ch:
+            e = ask(self.Q, llm_on=True)["process"]["explain"]
+        self.assertEqual(e["by"], "LLM")
+        self.assertIn("required", ch.call_args.kwargs["fmt"])
+
     def test_llm_down(self):
         with mock.patch.object(R.llm, "chat", side_effect=OSError("down")):
             self.assertEqual(ask(self.Q, llm_on=True)["process"]["explain"]["by"], "템플릿(LLM 대체)")

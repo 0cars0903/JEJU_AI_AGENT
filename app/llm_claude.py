@@ -26,7 +26,10 @@ def to_claude_tools(tools):
     out = []
     for t in tools:
         f = t["function"] if t.get("type") == "function" else t
-        out.append({"name": f["name"], "description": f.get("description", ""), "input_schema": f["parameters"]})
+        tool = {"name": f["name"], "description": f.get("description", ""), "input_schema": f["parameters"]}
+        if f.get("strict"):  # 스키마 강제(2026-11-13): 칸 이름·형식이 정의와 정확히 맞는 인자만 받는다
+            tool["strict"] = True
+        out.append(tool)
     return out
 
 
@@ -74,11 +77,12 @@ def from_claude(resp):
     return {"message": msg, "usage": usage, "stop_reason": resp.stop_reason, "model": resp.model}
 
 
-def chat(model, messages, tools, temperature=None, max_tokens=None):
-    """llm_client.chat과 같은 자리에서 부른다. temperature는 Opus 5.5에서 400이라 받기만 하고 보내지 않는다."""
+def chat(model, messages, tools, temperature=None, max_tokens=None, effort=None):
+    """llm_client.chat과 같은 자리에서 부른다. temperature는 Opus 5.5에서 400이라 받기만 하고 보내지 않는다.
+    effort: 짧은 해설처럼 가벼운 호출은 'low'(비용·지연 절감), 코드 설계는 기본값(JEJU_CLAUDE_EFFORT, medium)."""
     system, msgs = to_claude_messages(messages)
     kwargs = {"model": model or MODEL, "max_tokens": MAX_TOKENS, "messages": msgs, "tools": to_claude_tools(tools),
-              "thinking": {"type": "adaptive"}, "output_config": {"effort": EFFORT},
+              "thinking": {"type": "adaptive"}, "output_config": {"effort": effort or EFFORT},
               "betas": BETAS, "fallbacks": "default"}
     if system:
         kwargs["system"] = system

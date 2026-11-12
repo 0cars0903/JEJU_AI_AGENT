@@ -25,17 +25,20 @@ def backend():
     return "ollama" if _ollama_alive() else "rule"
 
 
-def chat(model, messages, tools, name=None, max_tokens=700):
-    """돌려주는 형식: {"message": {"role", "content", "tool_calls"?}}"""
+def chat(model, messages, tools, name=None, max_tokens=700, fmt=None, effort=None):
+    """돌려주는 형식: {"message": {"role", "content", "tool_calls"?}}
+    fmt: Ollama 출력 JSON 스키마(format). effort: Claude 생각 깊이(low·medium·high)."""
     name = name or backend()
     if name == "claude":
         import llm_claude
-        return llm_claude.chat(model, messages, tools)
+        return llm_claude.chat(model, messages, tools, effort=effort)
     if name == "ollama":
         model = model or DEFAULT_OLLAMA_MODEL
         payload = {"model": model, "messages": messages, "stream": False, "options": {"temperature": 0, "seed": 0, "num_predict": max_tokens}}
         if tools:
             payload["tools"] = tools
+        if fmt:
+            payload["format"] = fmt
         if model.startswith("qwen3"):
             payload["think"] = False
         req = urllib.request.Request(OLLAMA_URL, json.dumps(payload).encode(), {"Content-Type": "application/json"})

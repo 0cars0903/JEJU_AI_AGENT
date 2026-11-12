@@ -13,6 +13,7 @@ import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMe
 import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
+import { ExpertMode } from "./expert";
 import { AnswerCard, BizTabs, CompareWith, Downloads, Process, SuggestionList, Understood, Waiting } from "./answer";
 
 // 로딩 뼈대의 모양을 그리기 위한 예시 답(화면에 보이지 않는다).
@@ -300,6 +301,8 @@ export function AskPage() {
         )}
         {!req && guide.data && <DongHome dongs={guide.data.dongs} onAsk={(s, t) => run({ slots: s }, t)} />}
         {guide.isError && <ErrorState error={guide.error} onRetry={() => guide.refetch()} />}
+        {/* 설계 11-2절: Claude 키가 있을 때만 보이는 전문가 모드 */}
+        <ExpertMode />
 
         <div
           ref={resultRef}
