@@ -26,7 +26,8 @@ async function pickTopic(page: Page, id: string) {
 }
 
 async function conclusion(page: Page) {
-  await expect(page.locator('[data-testid="conclusion"]')).toHaveCount(1);
+  // 종합 진단은 시험 4개가 동시에 돌 때 서버 응답이 5초에 가까워진다(실제 데모 1.4초). 기다림 상한을 15초로 둔다(2026-11-13).
+  await expect(page.locator('[data-testid="conclusion"]')).toHaveCount(1, { timeout: 15_000 });
   return page.getByTestId("conclusion");
 }
 

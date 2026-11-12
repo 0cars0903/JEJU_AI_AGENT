@@ -333,6 +333,9 @@ export function AskPage() {
           )}
           {req && !m.isError && (m.isPending || answered) && (
             <Skeleton
+              // 질문(주소)마다 전환 부품을 새로 만든다. 같은 부품에서 '앞 답 → 대기 → 새 답'을 연달아 바꾸면 사라져야 할 대기 층이
+              // 새 답 위에 남는 경우가 있었다(화면 시험 '추천 질문 이어 답하기' 불안정의 원인, 2026-11-13).
+              key={sp.toString()}
               data={m.isPending ? null : r}
               sample={SAMPLE}
               label="답을 만들고 있어요"
