@@ -1,3 +1,22 @@
-# Vercel 데모 배포용(2026-11-13). 의존성은 requirements.txt를 쓴다. 로컬 실행에는 영향 없음.
+# Vercel 데모 배포용(2026-11-13). Vercel은 pyproject.toml이 있으면 여기서 의존성을 읽는다(requirements.txt와 같은 목록을 유지).
+# 로컬·센터 PC 설치는 requirements.txt(setup 스크립트)를 쓴다.
+[project]
+name = "jeju-dong-agent"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy==2.0.2",
+    "pandas==2.3.3",
+    "pyarrow==21.0.0",
+    "scikit-learn==1.6.1",
+    "requests==2.32.5",
+    "fastapi==0.128.8",
+    "uvicorn==0.39.0",
+    "anthropic==0.125.0",
+]
+
 [tool.vercel]
 entrypoint = "app.api:app"
+
+[tool.uv]
+package = false  # 이 저장소를 패키지로 빌드하지 않고 의존성만 설치
