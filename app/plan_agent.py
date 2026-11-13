@@ -9,6 +9,7 @@
 """
 import json
 import os
+import re
 import time
 from pathlib import Path
 
@@ -73,8 +74,20 @@ def ko(type_):
     return CHOICES.get(type_, type_ or "-").split(":")[0]
 
 
-def needed(it):
+# 여러 단계 표지(2026-11-14, 조정용 047 100문항으로 정함): 한 질문에 하위 질문이 둘 이상일 때 흔한 연결 표현.
+# 분류기는 이런 질문도 종류 하나로 자신 있게 읽어(047: Agent 문항 50 중 4만 넘김) 확신도 관문을 통과하므로 따로 건다.
+MULTI = re.compile(r"(하고|보고|본 뒤|확인한 뒤|확인하고|뽑고|구하고|나서|다음|이어서|그리고|함께|연계|까지|뒤에|후에|및\s|와 함께|랑 같이|도 (알려|보여|비교|정리)|도 같이)")
+
+
+def multi(question):
+    return bool(MULTI.search(question or ""))
+
+
+def needed(it, question=None):
+    """계획 선택 Agent를 부를지(코드 관문). ① 확신도 낮음 ② 분류기·사전 규칙 종류 불일치 ③ 여러 단계 표지(되묻기 질문 포함)."""
     t = it["tuple"]
+    if question and multi(question) and t.get("expect") in ("답함", "되묻기") and it.get("rule_type") != "T12":
+        return True
     return (t.get("expect") == "답함" and t.get("type") in CHOICES and
             (bool(it.get("needs_confirm")) or (it.get("rule_type") not in (None, t.get("type")) and it.get("rule_type") in CHOICES)))
 
@@ -82,7 +95,8 @@ def needed(it):
 def _ask(name, question, it, chat=None):
     t = it["tuple"]
     user = (f"질문: {question}\n분류기 판단: {t['type']}({CHOICES.get(t['type'], '-')}), 확신도 {it.get('confidence')}\n"
-            f"사전 규칙 판단: {it.get('rule_type')}({CHOICES.get(it.get('rule_type'), '-')})")
+            f"사전 규칙 판단: {it.get('rule_type')}({CHOICES.get(it.get('rule_type'), '-')})"
+            + ("\n참고: 질문에 여러 단계를 잇는 표현이 있다. 하위 질문이 둘 이상이면 AGENT를 고른다." if multi(question) else ""))
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
     if chat:
         m = chat(None, msgs, [TOOL])["message"]
@@ -101,7 +115,7 @@ def _ask(name, question, it, chat=None):
 
 def adjust(question, it, chat=None):
     """해석 결과 it를 받아, 필요하면 LLM이 고른 질문 종류로 바꾼 it를 돌려준다. it["plan_agent"]에 기록을 남긴다."""
-    if not question or not needed(it):
+    if not question or not needed(it, question):
         return it
     name = "test" if chat else _backend()
     if not name:

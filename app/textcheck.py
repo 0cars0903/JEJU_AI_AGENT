@@ -35,7 +35,7 @@ def check_numbers(answer, tool_results):
         allowed |= {abs(x) for x in numbers(json.dumps(r, ensure_ascii=False))}
     # 정수 반올림은 허용하지 않는다: 없는 값 "12%"가 11.6의 반올림으로 통과할 수 있다
     bad = [n for n in numbers(answer) if not any(abs(abs(n) - a) < 0.005 or round(a, 1) == abs(n) for a in allowed)]
-    return bad + KO_NUM.findall(DONG_NUM.sub(" ", _norm(answer)))
+    return bad + [k for k in KO_NUM.findall(DONG_NUM.sub(" ", _norm(answer))) if re.sub(r"\s", "", k) != "이곳"]  # '이곳'은 '이 장소'(2026-11-14 오탐)
 
 
 def is_korean(text):

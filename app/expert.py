@@ -139,14 +139,17 @@ def _technique(question, args):
         return False, {"error": f"질문에는 '{techniques.TECH[named][0]}'이(가) 적혀 있어요. 기법을 다시 고르세요.", "hint": named}, None
     bad = [d for d in (args.get("dongs") or []) if d and d not in techniques.Q.DONGS]
     dongs = [d for d in (args.get("dongs") or []) if d in techniques.Q.DONGS] or None
-    slots = {"method": tech, "space": dongs, "target": (args.get("target") or None)}
+    tgt = (args.get("target") or "").strip() or None
+    bad_t = tgt if tgt and tgt not in techniques.Q.TARGETS_BIZ else None  # 목록 밖 업종은 빼고 알린다(2026-11-14: 없는 업종 이름을 붙여 답한 결함)
+    slots = {"method": tech, "space": dongs, "target": None if bad_t else tgt}
     ans = techniques.answer(question, slots)
     steps = (ans.get("process") or {}).get("steps") or []
     if any(s.get("status") == "거부" for s in steps):
         return False, {"error": "적용 조건이 맞지 않아 계산하지 않았어요", "why": (ans.get("card") or {}).get("limits")}, ans
     card = ans.get("card") or {}
-    if bad:
-        card["limits"] = (card.get("limits") or []) + [f"동네 이름이 아니어서 뺐어요: {', '.join(bad)}"]
+    if bad or bad_t:
+        card["limits"] = (card.get("limits") or []) + ([f"동네 이름이 아니어서 뺐어요: {', '.join(bad)}"] if bad else []) \
+            + ([f"'{bad_t}'은(는) 자료의 업종 목록에 없어 업종 구분 없이 계산했어요"] if bad_t else [])
         ans["card"] = card
     return True, {"technique": tech, "conclusion": card.get("conclusion"), "numbers": ans.get("numbers"),
                   "evidence": [e["text"] for e in card.get("evidence", [])][:6], "limits": card.get("limits")}, ans
@@ -294,6 +297,14 @@ def ask(question, chat=None, user="local", mode="expert"):
             break
         _add_usage(usage, r.get("usage") or {})
         msg = r["message"]
+        if not msg.get("tool_calls") and msg.get("content"):  # 소형 모델이 도구 호출을 본문 JSON으로 쓴 경우(2026-11-14 관찰)
+            import re as _re
+            m_ = _re.search(r'\{\s*"name"\s*:\s*"(\w+)"\s*,\s*"arguments"\s*:\s*(\{.*\})\s*\}', msg["content"], _re.S)
+            if m_ and m_.group(1) in allowed:
+                try:
+                    msg = {**msg, "tool_calls": [{"id": "text_call", "function": {"name": m_.group(1), "arguments": json.loads(m_.group(2))}}]}
+                except ValueError:
+                    pass
         tcs = [c for c in (msg.get("tool_calls") or []) if c.get("function", {}).get("name") in allowed]
         if not tcs:
             if got or (info and not analysis_q):
@@ -370,7 +381,8 @@ def ask(question, chat=None, user="local", mode="expert"):
             rows = [[c.get("no"), c.get("name"), c.get("space"), c.get("time"), c.get("period"), c.get("export")] for c in rep["found"]]
             res = {"numbers": {}, "notes": [rep["note"]], "series": [],
                    "tables": [{"title": "센터 자료 찾기 결과", "columns": ["번호", "자료", "공간 단위", "시간 단위", "기간", "반출"], "rows": rows}]}
-            auto = [f"센터 자료 목록에서 {len(rows)}건을 찾았어요." ] + [f"{r[0]} {r[1]}: {r[2]}·{r[3]} 단위, {r[4]}" for r in rows[:3]]
+            auto = [f"센터 자료 목록에서 {len(rows)}건을 찾았어요."] + [f"{r[0]} {r[1]}: {r[2]}·{r[3]} 단위" + (f", {r[4]}" if r[4] else "") for r in rows[:3]] \
+                + ["센터에서 조회한 CSV를 '센터 자료 넣기'로 넣으면 이 자료로 계산할 수 있어요."]
         else:
             cols = rep.get("columns") or {}
             res = {"numbers": {"행 수": rep.get("rows", 0)} if rep.get("table") else {}, "notes": [rep["note"]] if rep.get("note") else [], "series": [],
@@ -396,6 +408,8 @@ def ask(question, chat=None, user="local", mode="expert"):
         elif got["kind"] == "technique":
             card = (got.get("answer") or {}).get("card") or {}
             lines, by = [card.get("conclusion") or ""] + [e["text"] for e in card.get("evidence", [])][:4], "프로그램(기법 코드의 문장)"
+            if mode == "escalate" and not analysis_q:  # 기법을 묻지 않은 질문에 기법으로 답했으면 근사 답이라고 밝힌다
+                lines = ["질문한 분석을 그대로 할 자료가 없어, 가장 가까운 분석을 보여 드려요."] + lines
         elif not local:
             view = {"numbers": result.get("numbers"), "notes": result.get("notes")}
             try:

@@ -207,6 +207,29 @@ class ExpertFlowTest(unittest.TestCase):
         self.assertIn("동네", r["trace"][0]["note"])
         self.assertEqual(r["status"], "성공")
 
+    def test_igot_is_not_a_number(self):  # '이곳'은 '2곳'이 아니다(2026-11-14 오탐)
+        from textcheck import check_numbers
+        self.assertEqual(check_numbers("이곳에서 볼 수 있어요.", [{}]), [])
+        self.assertEqual(check_numbers("카페는 이십 곳이에요.", [{}]), ["이십 곳"])
+
+    def test_unknown_target_dropped(self):  # 목록 밖 업종 이름을 붙여 답하지 않는다(2026-11-14 결함)
+        chat = fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": "아이스 음료 전문점"}), ("text", "끝")])
+        r = expert.ask(CORR_Q, chat=chat)
+        self.assertTrue(any("업종 목록에 없어" in n for n in r["result"]["notes"]))
+        self.assertNotIn("아이스", " ".join(r["lines"]))
+
+    def test_tool_call_written_as_text(self):
+        expert.backend = lambda: "ollama"
+        txt = '도구를 부를게요 {"name": "run_technique", "arguments": {"technique": "corr", "dongs": [], "target": ""}}'
+        r = expert.ask(CORR_Q, chat=fake_chat([("text", txt)]))
+        self.assertEqual(r["status"], "성공")
+        self.assertEqual((r["trace"][0]["tool"], r["trace"][0]["by"]), ("run_technique", "AI"))
+
+    def test_escalate_nearest_analysis_is_labeled(self):
+        chat = fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""}), ("text", "끝")])
+        r = expert.ask("버스정류장 50m 안 카페의 존속기간 차이", chat=chat, mode="escalate")
+        self.assertIn("가장 가까운 분석", r["lines"][0])
+
     def test_auth_error_is_reported(self):
         def chat(model, messages, tools):
             raise RuntimeError("Error code: 401 - invalid x-api-key")
