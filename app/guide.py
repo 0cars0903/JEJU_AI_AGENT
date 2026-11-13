@@ -69,6 +69,9 @@ REPRESENTATIVE = [  # v3 사용자 3유형(docs/기획/v3_설계.md 1절)
     {"use_case": "소상공인", "slots": {"topic": "customers", "space": ["성산읍"], "target": "숙박"}},
     {"use_case": "소상공인", "slots": {"topic": "rain", "space": ["아라동"]}},
     {"use_case": "중소기업", "slots": {"topic": "rank", "metric": "매출", "target": "숙박"}},
+    # (가) 기법 목록(설계 11-1절, 11/13): 센터 담당자가 기법을 지정해 묻는 예. 문장은 techniques.EXAMPLES와 같다
+    {"use_case": "센터 담당자", "slots": {"topic": "technique", "method": "corr"}, "text": "43개 동네 방문과 매출의 상관 분석해줘"},
+    {"use_case": "센터 담당자", "slots": {"topic": "technique", "method": "decomp"}, "text": "노형동 음식점 월 매출 시계열 분해해줘"},
 ]
 
 
@@ -264,7 +267,7 @@ def suggestions(t, n=3):
 
 
 def representative():
-    return [dict(x, text=sentence(x["slots"])) for x in REPRESENTATIVE]
+    return [dict(x, text=x.get("text") or sentence(x["slots"])) for x in REPRESENTATIVE]
 
 
 def catalog_view():

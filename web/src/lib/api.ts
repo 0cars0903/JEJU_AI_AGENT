@@ -23,8 +23,10 @@ export type Line = { layer: "L1" | "L2" | "L3" | "L4" | "L5"; block: string; tag
 export type Block = { id: "facts" | "analysis" | "guide"; title: string; lines: Line[]; closing?: string };
 export type ViewSeries = { name: string; points: [string | number, number | null][] };
 export type View = {
-  id: string; label: string; kind: "line" | "bar" | "map"; x: string; series: ViewSeries[]; summary: string; definition?: string | null;
+  id: string; label: string; kind: "line" | "bar" | "map" | "scatter"; x: string; series: ViewSeries[]; summary: string; definition?: string | null;
   values?: Record<string, number>; unit?: string; highlight?: string[];
+  /** 점그래프(기법 분석의 상관·회귀): 점마다 이름(동네·월)과 가로·세로 축 이름 */
+  names?: string[]; axes?: string[];
 };
 export type FooterItem = { source: string; as_of: string; next: string };
 export type JejuMapData = { viewBox: [number, number, number, number]; dongs: { dong: string; d: string; cx: number; cy: number; area: number }[]; inset: { x: number; y: number; w: number; h: number; label: string }; attribution: string };

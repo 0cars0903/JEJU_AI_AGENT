@@ -118,6 +118,12 @@ def ask(body: Ask, request: Request):
         if not center_csv.allowed(meta, body.dataset_key):
             raise HTTPException(422, "센터 자료로 계산한 결과는 파일을 넣은 브라우저에서만 볼 수 있어요. 파일을 다시 넣어 주세요.")
         env["center_card"] = body.dataset_id
+    # (가) 기법 목록(설계 11-1절): 질문에 분석 기법 이름이 있으면 정해진 코드로 계산한다. 센터 CSV를 쓰는 질문은 기존 경로로 보낸다
+    import techniques
+    if not body.dataset_id and ((body.slots or {}).get("topic") == "technique" or (not body.slots and techniques.detect(question))):
+        if (body.slots or {}).get("topic") == "technique" and not question:
+            question = techniques.EXAMPLES.get(body.slots.get("method"), "")
+        return clean(techniques.answer(question, body.slots))
     if body.slots:
         try:
             return clean(result.respond(question or None, env, llm_on=on, slots=body.slots))

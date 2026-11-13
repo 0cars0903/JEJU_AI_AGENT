@@ -41,6 +41,8 @@ class Slots(unittest.TestCase):
 
     def test_representative_and_suggestions_answer(self):
         for x in G.representative():
+            if x["slots"]["topic"] == "technique":  # 기법 분석은 /api/ask가 techniques로 보낸다(tests/test_techniques.py)
+                continue
             r = run(x["slots"])
             self.assertIn(r["status"], OK, x)
             self.assertEqual(len(r["suggestions"]), 3)

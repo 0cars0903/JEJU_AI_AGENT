@@ -8,6 +8,8 @@ import { shortNum } from "./views";
 // 5단계 색(같은 색의 진하기, SGIS 범례 방식). 강조색 계열 하나만 쓴다.
 const SHADES = ["#e8eef9", "#bcd0f3", "#7ea6ea", "#3f78dc", "#1d4fb3"];
 const NONE = "#f1f3f5";
+// 군집처럼 순서 없는 번호(unit "군집")는 구간 색 대신 번호마다 색 하나. 강조색 계열 진하기와 회색으로 6개까지 구분한다(기법 분석, 2026-11-13).
+const CATS = ["#1d4fb3", "#7ea6ea", "#6b7280", "#bcd0f3", "#3f78dc", "#d1d5db"];
 // C8: 도심의 작은 동은 눌러 보기 어려워 두 도심은 한 번에 확대해서 볼 수 있게 한다(가운데 좌표와 가로 폭은 viewBox 1000 기준).
 const ZOOMS = { jeju: { label: "제주시 도심 확대", cx: 470, cy: 93, w: 110 }, seogwipo: { label: "서귀포 도심 확대", cx: 505, cy: 468, w: 90 } } as const;
 const LABEL_PX = 10; // 글자 크기 '보통'(100%)에서 구역 이름이 화면에서 차지하는 높이(px)
@@ -53,6 +55,8 @@ export function JejuMap({
   const [stop, setStop] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const cuts = useMemo(() => (values ? breaks(Object.values(values)) : []), [values]);
+  const cat = unit === "군집";
+  const catN = cat && values ? Math.max(...Object.values(values)) : 0;
   // C8: 화면에서 짧은 변이 24px보다 작은 동은 손가락·마우스로 정확히 누를 수 없어 지도에서는 누름 대상에서 빼고, '도심 확대'나 목록으로 고르게 한다.
   const [tiny, setTiny] = useState<Set<string>>(() => new Set());
   const mapData = map.data;
@@ -106,11 +110,12 @@ export function JejuMap({
   const m = map.data;
   const color = (d: string) => {
     if (!values) return selected.includes(d) ? SHADES[3] : SHADES[0];
+    if (cat) return values[d] === undefined ? NONE : CATS[(values[d] - 1) % CATS.length];
     const v = values[d];
     if (v === undefined) return NONE;
     return SHADES[cuts.filter((c) => v > c).length];
   };
-  const fmt = (v: number) => `${shortNum(v)}${unit ? (unit === "%" || unit === "%p" ? unit : ` ${unit}`) : ""}`;
+  const fmt = (v: number) => (cat ? `군집 ${v}` : `${shortNum(v)}${unit ? (unit === "%" || unit === "%p" ? unit : ` ${unit}`) : ""}`);
   const hv = hover ?? highlight[0] ?? selected[0];
   // 확대 영역: 가로세로 비율을 전체 지도와 같게 두어 화면 높이가 변하지 않는다
   const [X0, Y0, W, H] = m.viewBox;
@@ -215,7 +220,14 @@ export function JejuMap({
         {/* 첫 화면 지도는 값보다 경계가 먼저 그려진다. 값이 와서 범례가 생길 때 지도가 밀리지 않게, 값이 없으면 같은 모양의 범례를 안 보이게 그려 자리를 잡는다 */}
         {(values || onPick) && (
           <span className={"flex flex-wrap items-center gap-1" + (values ? "" : " invisible")} aria-label={values ? "범례(43곳을 5단계로 나눔)" : undefined} aria-hidden={values ? undefined : true}>
-            {SHADES.map((c, i) => (
+            {cat
+              ? Array.from({ length: catN }, (_, i) => (
+                  <span key={i} className="flex items-center gap-1">
+                    <span className="inline-block h-3 w-5 rounded-sm" style={{ background: CATS[i % CATS.length] }} />
+                    <span className="text-(--krds-text-bolder)">군집 {i + 1}</span>
+                  </span>
+                ))
+              : SHADES.map((c, i) => (
               <span key={c} className="flex items-center gap-1">
                 <span className="inline-block h-3 w-5 rounded-sm" style={{ background: c }} />
                 <span className="text-(--krds-text-bolder)">

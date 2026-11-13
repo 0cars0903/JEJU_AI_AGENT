@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { type AskResult, type DataRequest, type DatasetMeta, type View, uploadDataset } from "@/lib/api";
 import { JejuMap } from "./jeju-map";
@@ -53,7 +53,42 @@ function rows(v: View) {
 }
 
 /** 나눠 보기 차트 하나. width를 주면 고정 크기(인쇄용 보고서: 말풍선 없음), 없으면 화면 폭에 맞춘다. */
+/** 점그래프(기법 분석의 상관·회귀, 2026-11-13): 점마다 이름을 말풍선에 보인다. 축 값은 짧은 숫자로. */
+function ScatterView({ v, width }: { v: View; width?: number }) {
+  const pts = (v.series[0]?.points ?? []).map((p, i) => ({ x: Number(p[0]), y: p[1], name: v.names?.[i] ?? String(p[0]) }));
+  const [ax, ay] = v.axes ?? ["가로", "세로"];
+  const chart = (
+    <ScatterChart width={width} height={280} margin={{ top: 16, right: 28, bottom: 24, left: 8 }}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="x" type="number" name={ax} tickFormatter={(x: number) => shortNum(x)} tick={{ fontSize: 13 }} domain={["auto", "auto"]} label={{ value: ax, position: "insideBottom", offset: -12 }} />
+      <YAxis dataKey="y" type="number" name={ay} tickFormatter={(x: number) => shortNum(x)} tick={{ fontSize: 13 }} width={56} domain={["auto", "auto"]} />
+      {!width && (
+        <Tooltip
+          content={({ payload }) => {
+            const d = payload?.[0]?.payload as { x: number; y: number; name: string } | undefined;
+            return d ? (
+              <div className="rounded border bg-background px-2 py-1 text-[length:var(--krds-fs-body-small)]">
+                <strong>{d.name}</strong> · {ax} {shortNum(d.x)} · {ay} {shortNum(d.y)}
+              </div>
+            ) : null;
+          }}
+        />
+      )}
+      <Scatter data={pts} fill={COLORS[0]} isAnimationActive={false} />
+    </ScatterChart>
+  );
+  return (
+    <div>
+      <p data-testid="chart-unit" className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
+        가로: {ax} · 세로: {ay}
+      </p>
+      {width ? chart : <ResponsiveContainer width="100%" height={280}>{chart}</ResponsiveContainer>}
+    </div>
+  );
+}
+
 export function ViewChart({ v, width }: { v: View; width?: number }) {
+  if (v.kind === "scatter") return <ScatterView v={v} width={width} />;
   const data = rows(v);
   const many = v.series.length > 1;
   const u = viewUnit(v);
@@ -108,6 +143,17 @@ function ViewTable({ v }: { v: View }) {
         <table data-testid="view-table" className="w-full text-left">
           <thead><tr className="border-b"><th className="py-1">순위</th><th>동네</th><th className="text-right">값{u.label ? `(${u.label})` : ""}</th></tr></thead>
           <tbody>{rs.map(([d, x], i) => <tr key={d} className={v.highlight?.includes(d) ? "border-b font-bold" : "border-b"}><td className="py-1">{i + 1}</td><td>{d}</td><td className="text-right">{fmtVal(x, u)}</td></tr>)}</tbody>
+        </table>
+      </div>
+    );
+  }
+  if (v.kind === "scatter") {
+    const [ax, ay] = v.axes ?? ["가로", "세로"];
+    return (
+      <div className="max-h-96 overflow-auto">
+        <table data-testid="view-table" className="w-full text-left">
+          <thead><tr className="border-b"><th className="py-1">이름</th><th className="text-right">{ax}</th><th className="text-right">{ay}</th></tr></thead>
+          <tbody>{(v.series[0]?.points ?? []).map((p, i) => <tr key={i} className="border-b"><td className="py-1">{v.names?.[i] ?? p[0]}</td><td className="text-right">{shortNum(Number(p[0]))}</td><td className="text-right">{shortNum(Number(p[1]))}</td></tr>)}</tbody>
         </table>
       </div>
     );

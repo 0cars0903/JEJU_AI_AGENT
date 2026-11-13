@@ -43,7 +43,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     const rep = page.getByTestId("representative");
     await expect(rep.getByRole("button")).toHaveCount(4); // 대표 질문 3개 + 더 보기
     await rep.getByTestId("rep-more").click();
-    await expect(rep.getByRole("button")).toHaveCount(8); // 7개 + 접기
+    await expect(rep.getByRole("button")).toHaveCount(10); // 9개(기법 분석 예 2개 포함) + 접기
     await rep.getByRole("button", { name: "노형동 카페 가게는 몇 곳이야?" }).click();
     await expect(await conclusion(page)).toContainText("노형동");
     await expect(page.getByTestId("understood")).toContainText("이렇게 이해했어요");
@@ -948,4 +948,16 @@ test.describe("2026-11-13 지적 반영", () => {
     const brk = await rep.locator(".report-appendix").evaluate((e) => getComputedStyle(e).breakBefore);
     expect(brk).toBe("page");
   });
+});
+
+test("(가) 기법 분석: 기법을 지정하면 그 기법으로 계산하고, 점그래프·주의·방법을 보인다(2026-11-13)", async ({ page }) => {
+  await page.goto("/");
+  await page.getByTestId("question-input").fill("43개 동네 방문과 매출의 상관 분석해줘");
+  await page.getByTestId("ask-submit").click();
+  await expect(await conclusion(page)).toContainText("상관계수");
+  await expect(page.getByTestId("understood")).toContainText("상관 분석");
+  await expect(page.getByTestId("view-chart").getByTestId("chart-unit")).toContainText("가로: 하루 방문");
+  await expect(page.getByTestId("block-analysis")).toContainText("원인과 결과를 뜻하지 않아요");
+  await page.getByTestId("view-as-table").click();
+  await expect(page.getByTestId("view-table")).toContainText("노형동");
 });
