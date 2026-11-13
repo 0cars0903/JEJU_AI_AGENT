@@ -103,10 +103,18 @@ class ExpertFlowTest(unittest.TestCase):
         self.assertEqual(len(seen[0]), 5)  # Claude에는 도구 5개
 
     def test_wrong_number_falls_back(self):
-        chat = fake_chat([PY(OK), ("submit_answer", {"lines": ["상관계수는 0.92이고 증가율은 12.3%예요."]})])
+        wrong = ("submit_answer", {"lines": ["상관계수는 0.92이고 증가율은 12.3%예요."]})
+        chat = fake_chat([PY(OK), wrong, wrong, wrong])
         r = expert.ask("노형동 월 매출 추이", chat=chat)
         self.assertTrue(r["by"].startswith("프로그램"))
         self.assertIn("months: 81", r["lines"])
+
+    def test_wrong_number_rewritten(self):  # 안 B: 결과에 없는 숫자면 되돌려 다시 쓰게 한다
+        chat = fake_chat([PY(OK), ("submit_answer", {"lines": ["상관계수는 0.92예요."]}), ("submit_answer", {"lines": ["노형동 월 매출은 81개월 자료예요."]})])
+        r = expert.ask("노형동 월 매출 추이", chat=chat)
+        self.assertEqual(r["by"], "AI")
+        self.assertIn("다시 쓰기 1/2", r["trace"][1]["note"])
+        self.assertEqual(r["lines"], ["노형동 월 매출은 81개월 자료예요."])
 
     def test_step_limit(self):
         chat = fake_chat([PY("import os")] * 6)

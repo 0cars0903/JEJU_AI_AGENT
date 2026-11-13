@@ -27,6 +27,7 @@ import prompts as P  # noqa: E402
 from prompts import EXPLAIN_SYSTEM, TOOL_EXPLAIN  # noqa: E402
 
 MAX_STEPS = 5
+REWRITES = 2  # 안 B: 답 숫자 대조 실패 시 다시 쓰기 상한
 BUDGET = float(os.environ.get("JEJU_EXPERT_BUDGET", "90"))
 AGENT_MODEL = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")
 _local = {"t": 0.0, "ok": False}
@@ -201,7 +202,7 @@ def ask(question, chat=None, user="local"):
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": question}]
     usage, trace, attempts = {}, [], []
     got = None  # {"kind", "result", "method", "plan", "code", "answer"}
-    lines, nudged, calls, fails = None, False, 0, 0
+    lines, nudged, calls, fails, rewrites = None, False, 0, 0, 0
     info = []  # 자료 확인·센터 자료 찾기 결과(정보 질문은 이것으로 답한다)
     import techniques
     analysis_q = techniques.detect(question) is not None
@@ -287,8 +288,17 @@ def ask(question, chat=None, user="local"):
             calls += 1
             if fn == "submit_answer":
                 if got or info:
-                    lines = [str(x) for x in args.get("lines") or []]
-                    trace.append({"step": len(trace) + 1, "tool": fn, "name": TOOL_KO[fn], "by": "AI", "args": f"{len(lines)}문장", "ok": True, "note": "", "sec": 0})
+                    cand = [str(x) for x in args.get("lines") or []]
+                    src = [(got or {}).get("result") or {}, (got or {}).get("answer") or {}] + [r_ for _, r_ in info] + [{"q": question, "dict": datadict.describe()}]
+                    bad = check_numbers("\n".join(cand), src) if cand else ["빈 답"]
+                    if bad and rewrites < REWRITES:  # 안 B: 결과에 없는 숫자면 되돌려 다시 쓰게 한다
+                        rewrites += 1
+                        note = f"결과에 없는 숫자 {bad[:5]} → 다시 쓰기 {rewrites}/{REWRITES}"
+                        trace.append({"step": len(trace) + 1, "tool": fn, "name": TOOL_KO[fn], "by": "AI", "args": f"{len(cand)}문장", "ok": False, "note": note, "sec": 0})
+                        msgs.append({"role": "tool", "tool_call_id": cid, "content": f"숫자 대조 실패: 도구 결과에 없는 숫자 {bad[:5]}. 도구 결과에 있는 값만 그대로 써서 submit_answer로 다시 제출하세요."})
+                        continue
+                    lines = cand
+                    trace.append({"step": len(trace) + 1, "tool": fn, "name": TOOL_KO[fn], "by": "AI", "args": f"{len(lines)}문장", "ok": not bad, "note": "" if not bad else f"결과에 없는 숫자 {bad[:5]}", "sec": 0})
                     msgs.append({"role": "tool", "tool_call_id": cid, "content": "받았어요."})
                     done = True
                     continue

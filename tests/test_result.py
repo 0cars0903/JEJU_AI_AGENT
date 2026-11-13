@@ -148,6 +148,13 @@ class Understood(unittest.TestCase):
 class Explain(unittest.TestCase):
     Q = "노형동이랑 연동 버스 이용 비교해줘"  # 경로: 조회 → 차트
 
+    def setUp(self):  # 다른 시험이 .env를 읽어 Claude 키가 생겨도 가짜 응답(Ollama 형식)과 맞게 백엔드를 고정한다
+        self._b = mock.patch.object(R.llm, "backend", return_value="ollama")
+        self._b.start()
+
+    def tearDown(self):
+        self._b.stop()
+
     def test_llm_used_when_valid(self):
         with fake_llm("버스 이용 자료에서 두 동네 값을 모아 그래프로 정리했어요."):  # v3: 해요체
             self.assertEqual(ask(self.Q, llm_on=True)["process"]["explain"]["by"], "LLM")
@@ -177,6 +184,20 @@ class Explain(unittest.TestCase):
             e = ask(self.Q, llm_on=True)["process"]["explain"]
         self.assertEqual(e["by"], "LLM")
         self.assertIn("required", ch.call_args.kwargs["fmt"])
+
+    def test_rewrite_after_rejection(self):  # 안 B(문서 26): 걸린 문장과 이유를 돌려 다시 쓰게 한다
+        good = "버스 이용 자료에서 두 동네 값을 모아 그래프로 정리했어요."
+        replies = [{"message": {"content": "노형동이 3622명입니다."}}, {"message": {"content": good}}]
+        with mock.patch.object(R.llm, "chat", side_effect=replies) as ch:
+            e = ask(self.Q, llm_on=True)["process"]["explain"]
+        self.assertEqual((e["by"], e["text"], e["rewrites"]), ("LLM", good, 1))
+        self.assertIn("검사에서 걸린 이유", ch.call_args_list[1].args[1][-1]["content"])
+
+    def test_rewrite_limit_then_template(self):
+        with fake_llm("노형동이 3622명입니다.") as ch:
+            e = ask(self.Q, llm_on=True)["process"]["explain"]
+        self.assertEqual((e["by"], e["rewrites"]), ("템플릿(LLM 대체)", R.REWRITES))
+        self.assertEqual(ch.call_count, R.REWRITES + 1)
 
     def test_llm_down(self):
         with mock.patch.object(R.llm, "chat", side_effect=OSError("down")):

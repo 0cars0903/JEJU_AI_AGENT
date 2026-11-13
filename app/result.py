@@ -248,6 +248,9 @@ def card_problems(c, res):
 
 
 # ---------- M3-b 계획 해설 ----------
+REWRITES = 2  # 안 B: 해설 다시 쓰기 상한
+
+
 def explain_plan(question, t, order, res, llm_on=True):
     data = []
     for x in order["tasks"]:
@@ -260,19 +263,33 @@ def explain_plan(question, t, order, res, llm_on=True):
     if not llm_on:
         return {"text": tpl, "by": "템플릿", "sec": 0.0}
     user = f"질문: {question}\n질문 종류: {TYPE_KO.get(t['type'])}\n고른 자료: {', '.join(data) or '자료 목록'}\n계산 순서: {path}"
-    out, err, sec, name = _ask_llm(M3B_SYSTEM, user)
-    probs = [err] if err else llm_text_ok(out, question)
-    if not probs and not re.search(r"(어요|아요|해요|예요|이에요)\.?$", out):
-        probs = ["문체('~해요' 아님)"]
     subs = {x["sub"] for x in order["tasks"]}
-    for pat, need in ((r"판정|우연", "S6"), (r"예측|모델", "S3"), (r"그래프|차트", "S4"), (r"단위", "S5")):  # 없는 단계를 말하면 사실과 다른 해설
-        if not probs and re.search(pat, out) and need not in subs:
-            probs = [f"없는 단계 언급({need})"]
-    if not probs and re.search(r"연도별", out) and not any("year" in getattr((res["store"].get(x["out"]) or {}).get("table"), "columns", []) for x in order["tasks"]):
-        probs = ["없는 단계 언급(연도별)"]
+
+    def check(out):
+        probs = llm_text_ok(out, question)
+        if not probs and not re.search(r"(어요|아요|해요|예요|이에요)\.?$", out):
+            probs = ["문체('~해요' 아님)"]
+        for pat, need in ((r"판정|우연", "S6"), (r"예측|모델", "S3"), (r"그래프|차트", "S4"), (r"단위", "S5")):  # 없는 단계를 말하면 사실과 다른 해설
+            if not probs and re.search(pat, out) and need not in subs:
+                probs = [f"없는 단계 언급({need})"]
+        if not probs and re.search(r"연도별", out) and not any("year" in getattr((res["store"].get(x["out"]) or {}).get("table"), "columns", []) for x in order["tasks"]):
+            probs = ["없는 단계 언급(연도별)"]
+        return probs
+
+    # 안 B(문서 26): 검사에 걸리면 틀린 문장과 이유를 돌려 최대 REWRITES번 다시 쓰게 한다. 그래도 걸리면 템플릿.
+    tries, total = [], 0.0
+    ask = user
+    for i in range(REWRITES + 1):
+        out, err, sec, name = _ask_llm(M3B_SYSTEM, ask)
+        total += sec
+        probs = [err] if err else check(out)
+        tries.append({"text": out, "problems": probs})
+        if not probs or err:
+            break
+        ask = f"{user}\n\n앞서 쓴 문장: {out}\n검사에서 걸린 이유: {', '.join(probs)}\n이유를 고쳐 규칙대로 다시 쓰세요."
     if probs:
-        return {"text": tpl, "by": "템플릿(LLM 대체)", "llm_raw": out, "problems": probs, "sec": round(sec, 3), "backend": name}
-    return {"text": out, "by": "LLM", "sec": round(sec, 3), "backend": name}
+        return {"text": tpl, "by": "템플릿(LLM 대체)", "llm_raw": out, "problems": probs, "rewrites": len(tries) - 1, "tries": tries, "sec": round(total, 3), "backend": name}
+    return {"text": out, "by": "LLM", "rewrites": len(tries) - 1, "tries": tries if len(tries) > 1 else None, "sec": round(total, 3), "backend": name}
 
 
 # ---------- 내려받기 ----------
