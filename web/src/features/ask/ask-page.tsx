@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorState } from "@/components/states";
 import { SendIcon } from "@/components/icons";
-import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMeta, type Slots, ask, getGuide, readCenter, writeCenter } from "@/lib/api";
+import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMeta, type Slots, ask, getGuide, readCenter, writeCenter, sendFeedback } from "@/lib/api";
 import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
@@ -79,6 +79,7 @@ export function AskPage() {
   const guide = useQuery({ queryKey: ["guide"], queryFn: getGuide, staleTime: Infinity });
   const [text, setText] = useState("");
   const [picker, setPicker] = useState<Picker | null>(null);
+  const correction = useRef<{ question: string; before: Slots } | null>(null); // [조건 바꾸기]로 연 선택 화면이면 원래 질문
   const [panel, setPanel] = useState(false);
   const [moreRep, setMoreRep] = useState(false);
   const [center, setCenterState] = useState<CenterFile | null>(null);
@@ -327,6 +328,8 @@ export function AskPage() {
                       notice={picker?.notice}
                       onSubmit={(s) => {
                         closePanel();
+                        if (correction.current) sendFeedback({ ...correction.current, slots: s, ok: false }); // 검수·재실행 라인 4단계: 고친 해석 기록
+                        correction.current = null;
                         run({ slots: s }, PICK_LABEL);
                       }}
                       onClose={closePanel}
@@ -419,7 +422,15 @@ export function AskPage() {
                   </div>
                 ) : (
                 <div className="flex flex-col gap-4">
-                  <Understood key={JSON.stringify(res.understood)} r={res} sample={res === SAMPLE} onChange={(s) => setPicker({ preset: s })} />
+                  <Understood
+                    key={JSON.stringify(res.understood)}
+                    r={res}
+                    sample={res === SAMPLE}
+                    onChange={(s) => {
+                      correction.current = res.question ? { question: res.question, before: s } : null;
+                      setPicker({ preset: s });
+                    }}
+                  />
                   {res !== SAMPLE && res.answer?.biz_tabs && <BizTabs tabs={res.answer.biz_tabs} onPick={(x) => run({ slots: x.slots }, x.text)} />}
                   {res !== SAMPLE && res.answer?.compare_with && (
                     <CompareWith cw={res.answer.compare_with} onPick={(s, text) => run({ slots: s }, text)} onOther={(preset) => setPicker({ preset })} />

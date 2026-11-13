@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
+import { sendFeedback } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoaderCircleIcon } from "@/components/icons";
@@ -32,6 +33,13 @@ export function Understood({ r, onChange, sample }: { r: AskResult; onChange: (s
         <p className="text-[length:var(--krds-fs-body-medium)] font-semibold">{u.text}</p>
         {strong && <Badge variant="outline" className="h-auto py-1 text-[length:var(--krds-fs-label-medium)]">질문을 읽고 추정했어요</Badge>}
       </div>
+      {(u.check ?? []).length > 0 && !ok && (
+        <ul data-testid="understood-check" className="flex flex-col gap-1 rounded-(--radius) bg-(--krds-surface-warning-subtler,#fff8e1) px-3 py-2 text-[length:var(--krds-fs-body-medium)]">
+          {u.check!.map((c) => (
+            <li key={c.field}>확인이 필요해요: {c.text}</li>
+          ))}
+        </ul>
+      )}
       {notes.length > 0 && (
         <ul data-testid="understood-notes" className="flex list-disc flex-col gap-1 pl-5 text-[length:var(--krds-fs-body-medium)]">
           {notes.map((n) => (
@@ -48,7 +56,15 @@ export function Understood({ r, onChange, sample }: { r: AskResult; onChange: (s
         {!ok && (
           <>
             <span className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">아래 답은 이 내용으로 계산했어요. 다르면 고쳐 주세요.</span>
-            <Button variant="outline" size="sm" onClick={() => setOk(true)} data-testid="understood-ok">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setOk(true);
+                if (r.question) sendFeedback({ question: r.question, slots: u.slots, ok: true });
+              }}
+              data-testid="understood-ok"
+            >
               맞아요
             </Button>
           </>

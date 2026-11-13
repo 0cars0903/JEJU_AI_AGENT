@@ -243,6 +243,19 @@ class Escalate(unittest.TestCase):  # 중간안: 일반 경로가 못 풀면 Age
         ag.assert_not_called()
 
 
+class CheckLine(unittest.TestCase):  # 검수·재실행 라인 3단계: LLM이 풀지 못한 의심 칸을 이해 카드에 쉬운 말로
+    def test_expect_disagreement_asks_human(self):
+        it = {"tuple": {"type": "T1", "expect": "답함", "space": ["노형동"]}, "rule_type": "T1", "rule_expect": "되묻기", "needs_confirm": False, "confidence": 0.9}
+        c = R._to_check("노형동 가게 몇 개", it)
+        self.assertEqual([x["field"] for x in c], ["expect"])
+        self.assertNotIn("분류기", c[0]["text"])  # 도민 화면에 내부 용어를 쓰지 않는다
+
+    def test_type_disagreement_only_without_agent(self):
+        it = {"tuple": {"type": "T1", "expect": "답함"}, "rule_type": "T4", "rule_expect": "답함", "needs_confirm": False, "confidence": 0.9}
+        self.assertEqual([x["field"] for x in R._to_check("q", it)], ["type"])
+        self.assertEqual(R._to_check("q", dict(it, plan_agent={"kept": True})), [])  # 계획 선택 Agent가 이미 봤으면 묻지 않는다
+
+
 if __name__ == "__main__":
     unittest.main()
 

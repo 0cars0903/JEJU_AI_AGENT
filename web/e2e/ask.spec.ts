@@ -137,6 +137,26 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await expect(a.getByTestId("expert-lines")).toContainText("연동보다");
   });
 
+  test("검수·재실행 라인: 의심 칸은 이해 카드에 '확인이 필요해요'로 보이고 [맞아요]는 기록된다", async ({ page }) => {
+    await page.route("**/api/ask", async (route) => {
+      const res = await route.fetch();
+      const j = await res.json();
+      if (j.understood) j.understood.check = [{ field: "expect", text: "동네·업종을 정확히 읽었는지 확인해 주세요." }];
+      await route.fulfill({ response: res, json: j });
+    });
+    const sent: string[] = [];
+    await page.route("**/api/feedback", (r) => {
+      sent.push(r.request().postData() ?? "");
+      return r.fulfill({ json: { ok: true } });
+    });
+    await page.getByTestId("representative").getByRole("button").first().click();
+    await expect(page.getByTestId("understood-check")).toContainText("확인이 필요해요");
+    await page.getByTestId("understood-ok").click();
+    await expect(page.getByTestId("understood-check")).toHaveCount(0);
+    await expect.poll(() => sent.length).toBe(1);
+    expect(JSON.parse(sent[0]).ok).toBe(true);
+  });
+
   test("② 추천 질문을 누르면 이어서 답한다", async ({ page }) => {
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();

@@ -3,6 +3,7 @@ import os
 os.environ.setdefault("JEJU_PLAN_AGENT", "0")  # 실제 키로 계획 선택 Agent(안 C)를 부르지 않는다. 동작은 test_plan_agent에서 시험
 import sys
 import unittest
+import unittest.mock
 from pathlib import Path
 
 os.environ.setdefault("LLM_BACKEND", "rule")
@@ -34,6 +35,27 @@ class Api(unittest.TestCase):
 
     def test_health(self):
         self.assertEqual(self.c.get("/api/health").json()["status"], "ok")
+
+
+class FeedbackLine(unittest.TestCase):  # 검수·재실행 라인 4·5단계: 사람 확인·고침 기록 → 학습 자료
+    def test_feedback_logged_and_converted(self):
+        import json, tempfile
+        from fastapi.testclient import TestClient
+        d = tempfile.mkdtemp()
+        with unittest.mock.patch.dict(os.environ, {"JEJU_WRITE_DIR": d}):
+            import api
+            c = TestClient(api.app)
+            slots = {"topic": "openclose", "space": ["노형동"], "target": "카페"}
+            self.assertTrue(c.post("/api/feedback", json={"question": "노형동 카페 요즘 어때(시험)", "slots": slots, "before": {"topic": "stores"}, "ok": False}).json()["ok"])
+        rec = [json.loads(l) for l in open(Path(d) / "feedback.jsonl", encoding="utf-8")]
+        self.assertEqual((rec[0]["kind"], rec[0]["slots"]["topic"]), ("고침", "openclose"))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+        import feedback_to_train as F
+        root = Path(tempfile.mkdtemp()); (root / "data" / "x1").mkdir(parents=True)
+        with unittest.mock.patch.object(F, "ROOT", root):
+            F.main(Path(d) / "feedback.jsonl")
+        rows = [json.loads(l) for l in open(root / "data" / "x1" / "feedback_train.jsonl", encoding="utf-8")]
+        self.assertEqual((rows[0]["tuple"]["type"], rows[0]["tuple"]["space"]), ("T4", ["노형동"]))
 
 
 if __name__ == "__main__":

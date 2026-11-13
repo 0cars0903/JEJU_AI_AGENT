@@ -403,6 +403,21 @@ def _exception(question, t):
     return None
 
 
+def _to_check(question, it):
+    """검수·재실행 라인 3단계(사람 확인): LLM이 풀지 못한 오류 노트를 도민이 읽을 말로 바꾼다.
+    답할지 불일치는 LLM이 바꾸지 않으므로 늘 남기고, 종류 불일치는 계획 선택 Agent가 보지 않았을 때만 남긴다."""
+    import plan_agent
+    pa = it.get("plan_agent")
+    out = []
+    for n in plan_agent.notes(it, question):
+        if n["field"] == "expect":
+            out.append({"field": "expect", "text": "동네·업종을 정확히 읽었는지 확인해 주세요. 다르면 [조건 바꾸기]로 고쳐 주세요."})
+        elif n["field"] == "type" and not pa and it.get("rule_type") in plan_agent.CHOICES:
+            out.append({"field": "type", "text": f"질문을 '{plan_agent.ko(it['tuple']['type'])}' 또는 '{plan_agent.ko(it['rule_type'])}'(으)로 읽을 수 있어요. "
+                                                 "원하는 쪽이 아니면 [조건 바꾸기]로 고쳐 주세요."})
+    return list({x["field"]: x for x in out}.values())
+
+
 def _escalate(question, it, t0, why):
     """일반 경로가 처리하지 못한 질문을 Agent(expert.ask, mode=escalate)에게 넘긴다. Agent가 실패하면 None(일반 경로 결과를 그대로 쓴다)."""
     import expert
@@ -535,7 +550,10 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             notes = [x for x in notes if x != FOREIGN_NOTE]  # 넣은 센터 파일로 동네 값을 답했으면 '제주 전체로 답해요' 안내를 뺀다
         out["understood"] = {"text": (it.get("card") or {}).get("text"), "by": it.get("path"), "assumed": assumed or bool(it.get("needs_confirm")),
                              "slots": slots or ({"space": t["space"]} if "외국인매출" in t["metric"] else G.to_slots(t)),
-                             "notes": list(dict.fromkeys(notes + (qparse.notes(typed, t) if typed else [])))}
+                             "notes": list(dict.fromkeys(notes + (qparse.notes(typed, t) if typed else []))),
+                             "check": _to_check(question, it) if not slots else []}
+        if out["understood"]["check"]:
+            out["understood"]["assumed"] = True
         out["suggestions"] = G.suggestions(t)
         ev, intervals, as_of = _evidence(rv["order"], rv["run"])
         c = card(t, rv, ev, intervals)

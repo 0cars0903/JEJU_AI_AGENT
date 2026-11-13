@@ -1,6 +1,7 @@
 """동네 생활 진단 API. 질문 → M1 해석 → M2 계획 → M3 지시서 → 실행 → 검수 → 결과 생성.
 실행: .venv/bin/python -m uvicorn app.api:app --port 8000 (web/out이 있으면 같은 주소에서 화면도 제공한다. Node 설치 불필요)
 """
+import json
 import math
 import re
 import sys
@@ -78,6 +79,36 @@ class Ask(BaseModel):
     slots: Optional[dict] = None  # 추천 질문·단계별 선택·대표 질문의 버튼 값(app/guide.py). 있으면 해석하지 않는다
     dataset_id: Optional[str] = Field(default=None, max_length=32)  # F9: /api/dataset로 불러온 센터 CSV
     dataset_key: Optional[str] = Field(default=None, max_length=64)  # 파일을 넣을 때 받은 열쇠. 주소에는 넣지 않는다(문서 20 A7)
+
+
+class Feedback(BaseModel):
+    question: str = Field(max_length=200)
+    slots: Optional[dict] = None  # 확인한(또는 고친 뒤의) 버튼 값
+    before: Optional[dict] = None  # 고치기 전 버튼 값([조건 바꾸기])
+    ok: bool = True  # True: [맞아요], False: [조건 바꾸기]로 고침
+
+
+def _log_feedback(rec):
+    """검수·재실행 라인 4단계: 사람이 확인([맞아요])하거나 고친([조건 바꾸기]) 해석을 쌓아 다음 재학습 자료로 쓴다(tools/feedback_to_train.py).
+    질문 문장과 버튼 값만 남긴다(이용자 정보 없음). 쓸 수 없는 환경이면 남기지 않는다."""
+    import datetime as dt
+    import os
+    from pathlib import Path
+    d = Path(os.environ.get("JEJU_WRITE_DIR") or (Path(__file__).resolve().parents[1] / "data" / "interim"))
+    try:
+        d.mkdir(parents=True, exist_ok=True)
+        with open(d / "feedback.jsonl", "a", encoding="utf-8") as f:
+            f.write(json.dumps({**rec, "at": dt.datetime.now().isoformat(timespec="seconds")}, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
+
+
+@app.post("/api/feedback")
+def feedback(body: Feedback):
+    """[맞아요] 확인 또는 [조건 바꾸기]로 고친 해석을 기록한다(검수·재실행 라인 4단계)."""
+    if body.question.strip():
+        _log_feedback({"kind": "확인" if body.ok else "고침", "question": body.question.strip(), "before": body.before, "slots": body.slots})
+    return {"ok": True}
 
 
 @app.post("/api/dataset")

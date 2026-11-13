@@ -76,7 +76,7 @@ export type AskResult = {
   /** 중간안(2026-11-14): 일반 경로가 못 풀어 Agent에게 넘긴 답(status "Agent") */
   agent?: ExpertResult;
   escalated?: string;
-  understood?: { text: string; by: string; assumed: boolean; slots: Slots; notes?: string[] };
+  understood?: { text: string; by: string; assumed: boolean; slots: Slots; notes?: string[]; check?: { field: string; text: string }[] };
   card?: Card;
   answer?: Answer;
   suggestions?: Suggestion[];
@@ -116,6 +116,9 @@ export const getGuide = () => call<Guide>("/api/guide");
 export const getMap = () => call<JejuMapData>("/api/map");
 export const getSummary = (dong: string) => call<DongSummary>(`/api/summary?dong=${encodeURIComponent(dong)}`);
 export type AskBody = { question?: string; slots?: Slots; dataset_id?: string; dataset_key?: string };
+/** 검수·재실행 라인 4단계: [맞아요](ok) 또는 [조건 바꾸기]로 고친 해석을 서버에 남긴다. 실패해도 화면은 그대로 둔다. */
+export const sendFeedback = (b: { question: string; slots?: Slots; before?: Slots; ok: boolean }) =>
+  call<{ ok: boolean }>("/api/feedback", { method: "POST", body: JSON.stringify(b) }).catch(() => undefined);
 export const ask = (body: AskBody) => call<AskResult>("/api/ask", { method: "POST", body: JSON.stringify(body) });
 
 /** F9: 센터에서 받은 CSV를 그대로 보낸다(본문 = 파일, 파일 이름은 머리글). 서버가 칸 이름으로 자료를 알아본다. */

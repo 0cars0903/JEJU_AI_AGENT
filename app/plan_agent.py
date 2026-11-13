@@ -37,8 +37,9 @@ SYSTEM = ("너는 제주 상권 질문을 정해진 분석 계획으로 연결�
           "분류기와 사전 규칙의 판단이 함께 주어진다. 분류기 판단이 설명에 맞으면 그대로 고른다. 분류기 판단이 분명히 틀렸을 때만 "
           "사전 규칙 판단이나 다른 종류를 고른다. 변화의 크기(급증·급감·추락·치솟음)를 묻는지, 지금 값의 크기를 묻는지, 조건 여러 개를 함께 거는지 먼저 구분한다. "
           "질문 하나에 여러 종류가 섞였거나(예: 추세를 보고 다른 동네와 비교) 위 종류로 답할 수 없으면 AGENT를 고른다. "
-          "이유는 한 문장, 숫자 없이 쓴다.\n질문 종류:\n" + "\n".join(f"- {k}: {v}" for k, v in CHOICES.items())
+          "오류 노트가 주어지면 그 칸을 특히 다시 본다. 이유는 한 문장, 숫자 없이 쓴다.\n질문 종류:\n" + "\n".join(f"- {k}: {v}" for k, v in CHOICES.items())
           + "\n- AGENT: 정해진 종류 하나로 답할 수 없음(여러 단계를 함께 묻거나, 자료를 찾아야 하거나, 위 종류 밖) → Agent에게 넘김")
+EXPECTS = ["답함", "되묻기", "범위밖"]
 TOOL = {"type": "function", "function": {"name": "choose_plan", "description": "질문 종류(분석 계획)를 하나 고른다.", "strict": True,
         "parameters": {"type": "object", "additionalProperties": False, "required": ["type", "reason"],
                        "properties": {"type": {"type": "string", "enum": list(CHOICES) + ["AGENT"]}, "reason": {"type": "string"}}}}}
@@ -83,6 +84,21 @@ def multi(question):
     return bool(MULTI.search(question or ""))
 
 
+def notes(it, question=None):
+    """오류 노트(검수·재실행 라인 1단계, 2026-11-14): 해석에서 의심되는 칸과 이유. 코드만으로 만든다."""
+    t, out = it["tuple"], []
+    if it.get("rule_type") in CHOICES and t.get("type") in CHOICES and it.get("rule_type") != t.get("type"):
+        out.append({"field": "type", "why": f"분류기는 '{ko(t['type'])}', 사전 규칙은 '{ko(it['rule_type'])}'로 읽음"})
+    re_ = it.get("rule_expect")
+    if re_ in EXPECTS and t.get("expect") in EXPECTS and re_ != t.get("expect") and it.get("rule_type") != "T12":
+        out.append({"field": "expect", "why": f"분류기는 '{t['expect']}', 사전 규칙은 '{re_}'로 판단"})
+    if it.get("needs_confirm") and t.get("expect") == "답함" and it.get("confidence") is not None:
+        out.append({"field": "type", "why": f"분류기 확신도가 낮음({it['confidence']:.2f})"})
+    if question and multi(question):
+        out.append({"field": "route", "why": "여러 단계를 잇는 표현이 있음(하위 질문이 둘 이상일 수 있음)"})
+    return out
+
+
 def needed(it, question=None):
     """계획 선택 Agent를 부를지(코드 관문). ① 확신도 낮음 ② 분류기·사전 규칙 종류 불일치 ③ 여러 단계 표지(되묻기 질문 포함)."""
     t = it["tuple"]
@@ -96,6 +112,7 @@ def _ask(name, question, it, chat=None):
     t = it["tuple"]
     user = (f"질문: {question}\n분류기 판단: {t['type']}({CHOICES.get(t['type'], '-')}), 확신도 {it.get('confidence')}\n"
             f"사전 규칙 판단: {it.get('rule_type')}({CHOICES.get(it.get('rule_type'), '-')})"
+            + ("\n오류 노트:\n" + "\n".join(f"- {n['field']}: {n['why']}" for n in notes(it, question)) if notes(it, question) else "")
             + ("\n참고: 질문에 여러 단계를 잇는 표현이 있다. 하위 질문이 둘 이상이면 AGENT를 고른다." if multi(question) else ""))
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
     if chat:
@@ -121,7 +138,7 @@ def adjust(question, it, chat=None):
     if not name:
         return it
     t = it["tuple"]
-    key = f"{' '.join(question.split())}|{t['type']}|{it.get('rule_type')}"
+    key = f"{' '.join(question.split())}|{t['type']}|{it.get('rule_type')}|{t.get('expect')}|{it.get('rule_expect')}"
     t0 = time.perf_counter()
     rec = {"by": {"claude": "AI(Claude)", "ollama": "AI(로컬 모델)"}.get(name, "AI"), "from": t["type"], "rule": it.get("rule_type"), "from_ko": ko(t["type"])}
     cache = _load()
@@ -142,14 +159,18 @@ def adjust(question, it, chat=None):
     if new not in CHOICES:
         return dict(it, plan_agent={**rec, "to": t["type"], "kept": True, "why": "AI가 정해진 종류를 고르지 않음"})
     import verify
-    t2 = dict(t, type=new)
+    # '답할지'는 LLM이 바꾸지 않는다: 개발용 300 측정(2026-11-14)에서 답할지 변경은 망침이 많고(범위 밖→답함, 되묻기↔답함) 종류 변경만 고침이 있었다.
+    # 답할지 불일치는 오류 노트로 남겨 사람 확인(이해 카드)으로 넘긴다.
+    new_exp = t.get("expect")
+    t2 = dict(t, type=new, expect=new_exp)
     errs = verify.check_tuple(t2)
     if errs:
         return dict(it, plan_agent={**rec, "to": t["type"], "kept": True, "why": "AI가 고른 종류가 검수 규칙에 걸림: " + "; ".join(e.get("detail", "") for e in errs)[:120]})
     if not cached and name != "test":
-        cache[key] = {"type": new, "reason": str(got.get("reason") or "")[:200]}
+        cache[key] = {"type": new, "expect": new_exp, "reason": str(got.get("reason") or "")[:200]}
         _save()
     card = qparse.card(t2)
     return dict(it, tuple=t2, card=card, path=f"{it.get('path')} + 계획 선택 {rec['by']}",
-                plan_agent={**rec, "to": new, "to_ko": ko(new), "kept": new == t["type"], "reason": str(got.get("reason") or "")[:200], "cached": cached,
+                plan_agent={**rec, "to": new, "to_ko": ko(new), "kept": new == t["type"] and new_exp == t.get("expect"),
+                            "expect_from": t.get("expect"), "expect_to": new_exp, "notes": notes(it, question), "reason": str(got.get("reason") or "")[:200], "cached": cached,
                             "sec": round(time.perf_counter() - t0, 3)})

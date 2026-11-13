@@ -121,7 +121,7 @@ class M1:
         low = conf is not None and conf < self.low_conf and t["expect"] == "답함"
         if low:
             card["text"] += " (확인이 필요해요)"
-        return {"tuple": {k: v for k, v in t.items() if not k.startswith("_")}, "card": card, "confidence": conf, "needs_confirm": low or t["expect"] != "답함", "rule_type": base["type"],
+        return {"tuple": {k: v for k, v in t.items() if not k.startswith("_")}, "card": card, "confidence": conf, "needs_confirm": low or t["expect"] != "답함", "rule_type": base["type"], "rule_expect": base["expect"],
                 "path": path, "why": t.get("_why", []), "sec": round(time.perf_counter() - t0, 4)}
 
 
