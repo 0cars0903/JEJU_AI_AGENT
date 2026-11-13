@@ -127,7 +127,11 @@ export function AskPage() {
   // 조건 패널이 열리면 패널로 이동하고 초점도 첫 칸으로 옮긴다(B4·C3).
   useEffect(() => {
     if (picker) {
-      requestAnimationFrame(() => pickerRef.current?.querySelector<HTMLElement>("[data-testid^='topic-']")?.focus({ preventScroll: true }));
+      requestAnimationFrame(() => {
+        // 패널은 질문 줄 아래에 붙어 있으므로, 답 아래쪽에서 열었으면(다른 동네와 비교 등) 패널이 보이게 올린다
+        if (window.matchMedia("(min-width: 1024px)").matches) pickerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        pickerRef.current?.querySelector<HTMLElement>("[data-testid^='topic-']")?.focus({ preventScroll: true });
+      });
     }
   }, [picker]);
 
@@ -189,7 +193,7 @@ export function AskPage() {
     <div className="flex flex-col gap-6">
       {/* 왼쪽 열(패널 여는 단추 하나)을 없애 본문을 넓혔다. 패널은 [입력 없이 골라서 묻기]로 열고 본문 위에 겹쳐 뜬다(UI 검토 2026-11-13). */}
       <div className="flex min-w-0 flex-col gap-4">
-        <section className="flex flex-col gap-2" aria-label="질문하기">
+        <section className="relative flex flex-col gap-2" aria-label="질문하기">
           {req ? (
             <div className="flex flex-wrap items-center gap-2">
               <a href="/" onClick={goHome} data-testid="go-home" className="inline-flex min-h-11 items-center gap-1 rounded-(--radius) border border-(--krds-border-gray) px-3 font-semibold hover:bg-muted">
@@ -281,6 +285,42 @@ export function AskPage() {
               {emptyHint ? "질문을 먼저 적어 주세요." : text.length >= MAX ? `질문은 ${MAX}자까지 쓸 수 있어요. 조금 줄여 주세요.` : "동네와 업종을 함께 쓰면 더 정확해요."} ({text.length}/{MAX})
             </p>
           </form>
+              {/* 겹침형 패널: 큰 화면은 [입력 없이 골라서 묻기] 바로 아래(오른쪽 끝 맞춤)에 뜨고, 폰은 화면 아래에서 올라오는 시트다. 열고 닫아도 본문 자리는 그대로다.
+                  예전에는 왼쪽 열 자리(화면 왼쪽)에 떠서 누른 단추와 멀었다(UI 검토 2026-11-13). */}
+          <aside ref={pickerRef} aria-label="입력 없이 골라서 묻기" className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-40 lg:absolute lg:top-full lg:right-0 lg:z-40 lg:mt-1">
+            {showPanel && (
+              <div>
+                <div data-testid="panel-backdrop" aria-hidden onClick={closePanel} className="fixed inset-0 -z-10 bg-black/40" />
+                <div
+                  data-testid="panel"
+                  className="flex max-h-[85dvh] flex-col gap-2 overflow-y-auto rounded-t-(--krds-radius-large1) bg-card shadow-2xl lg:absolute lg:top-0 lg:right-0 lg:max-h-[calc(100vh-8rem)] lg:w-[420px] lg:rounded-(--krds-radius-large1)"
+                >
+                  <button
+                    type="button"
+                    data-testid="panel-close"
+                    onClick={closePanel}
+                    className="hidden min-h-11 items-center gap-1 self-end rounded-(--radius) px-3 text-(--krds-text-bolder) hover:bg-muted lg:flex"
+                    aria-label="조건 패널 접기"
+                  >
+                    <ChevronLeft size={18} aria-hidden /> 접기
+                  </button>
+                  {guide.data && (
+                    <StepPicker
+                      key={JSON.stringify(picker ?? {})}
+                      guide={guide.data}
+                      preset={picker?.preset}
+                      notice={picker?.notice}
+                      onSubmit={(s) => {
+                        closePanel();
+                        run({ slots: s }, PICK_LABEL);
+                      }}
+                      onClose={closePanel}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+          </aside>
           {center && (
             <p data-testid="center-using" className="flex flex-wrap items-center gap-2 rounded-(--radius) bg-(--krds-surface-primary-subtler) px-3 py-1 font-semibold">
               센터 자료 {center.label}({center.file}) 사용 중
@@ -403,41 +443,6 @@ export function AskPage() {
         {req && <ExpertMode />}
       </div>
 
-      {/* 겹침형 패널: 큰 화면은 왼쪽 단추 자리에서 본문 위로 뜨고, 폰은 화면 아래에서 올라오는 시트다. 열고 닫아도 본문 자리는 그대로다. */}
-      <aside ref={pickerRef} aria-label="입력 없이 골라서 묻기" className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-40 lg:fixed lg:top-20 lg:left-6 lg:z-40">
-        {showPanel && (
-          <div>
-            <div data-testid="panel-backdrop" aria-hidden onClick={closePanel} className="fixed inset-0 -z-10 bg-black/40" />
-            <div
-              data-testid="panel"
-              className="flex max-h-[85dvh] flex-col gap-2 overflow-y-auto rounded-t-(--krds-radius-large1) bg-card shadow-2xl lg:absolute lg:top-0 lg:left-0 lg:max-h-[calc(100vh-6rem)] lg:w-[343px] lg:rounded-(--krds-radius-large1)"
-            >
-              <button
-                type="button"
-                data-testid="panel-close"
-                onClick={closePanel}
-                className="hidden min-h-11 items-center gap-1 self-end rounded-(--radius) px-3 text-(--krds-text-bolder) hover:bg-muted lg:flex"
-                aria-label="조건 패널 접기"
-              >
-                <ChevronLeft size={18} aria-hidden /> 접기
-              </button>
-              {guide.data && (
-                <StepPicker
-                  key={JSON.stringify(picker ?? {})}
-                  guide={guide.data}
-                  preset={picker?.preset}
-                  notice={picker?.notice}
-                  onSubmit={(s) => {
-                    closePanel();
-                    run({ slots: s }, PICK_LABEL);
-                  }}
-                  onClose={closePanel}
-                />
-              )}
-            </div>
-          </div>
-        )}
-      </aside>
     </div>
   );
 }

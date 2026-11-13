@@ -828,6 +828,17 @@ test.describe("전문가 모드(설계 11-2절)", () => {
     await expect(page.getByTestId("expert-notes")).toContainText("자기상관");
     await page.getByTestId("expert-code").locator("summary").click();
     await expect(page.getByTestId("expert-code")).toContainText("result = {}");
+    // PDF(2026-11-13): 평소 인쇄에는 전문가 정리본이 없고, [PDF로 저장]을 누른 동안만 정리본(설명·그래프·표·부록 코드)이 인쇄된다
+    await expect(page.getByTestId("expert-print")).toBeVisible();
+    await page.emulateMedia({ media: "print" });
+    await expect(page.getByTestId("expert-report")).toBeHidden();
+    await page.evaluate(() => document.body.classList.add("printing-expert"));
+    const rep = page.getByTestId("expert-report");
+    await expect(rep).toBeVisible();
+    await expect(rep).toContainText("Pearson 상관");
+    await expect(rep.locator(".report-appendix")).toContainText("result = {}");
+    await page.evaluate(() => document.body.classList.remove("printing-expert"));
+    await page.emulateMedia({ media: "screen" });
     await page.getByTestId("expert-submit").click();
     await expect(page.getByTestId("expert-fail")).toContainText("기법 목록");
   });
@@ -897,4 +908,44 @@ test("UI 검토(2026-11-13): 답 화면은 위 단추 한 줄, 출처는 근거 
   expect(src!.y).toBeGreaterThan(views!.y);
   const tags = await page.getByTestId("block-facts").locator("li > span:first-child.bg-muted").allTextContents();
   for (let i = 1; i < tags.length; i++) expect(tags[i]).not.toBe(tags[i - 1]);
+});
+
+test.describe("2026-11-13 지적 반영", () => {
+  test("지도: 동네 값이 늦어도 경계는 먼저 그리고, 값 요청이 실패하면 다시 시도를 보여 준다", async ({ page }) => {
+    let fail = true;
+    await page.route("**/api/summary**", async (r) => {
+      if (fail) return r.fulfill({ status: 500, json: { detail: "x" } });
+      await r.continue();
+    });
+    await page.goto("/");
+    await expect(page.locator('[data-testid="home-map"] svg')).toBeVisible();
+    await expect(page.getByTestId("home-map-error")).toBeVisible({ timeout: 15_000 });
+    fail = false;
+    await page.getByTestId("home-map-error").getByRole("button", { name: "다시 시도" }).click();
+    await expect(page.getByTestId("home-map-error")).toHaveCount(0);
+  });
+
+  test("[입력 없이 골라서 묻기] 패널은 단추 바로 아래 오른쪽 끝에 붙는다(PC)", async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop");
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await openPicker(page);
+    const btn = (await page.getByTestId("open-picker").boundingBox())!;
+    const panel = (await page.getByTestId("panel").boundingBox())!;
+    expect(Math.abs(panel.x + panel.width - (btn.x + btn.width))).toBeLessThan(4);
+    expect(panel.y).toBeGreaterThan(btn.y + btn.height - 1);
+    expect(panel.y - (btn.y + btn.height)).toBeLessThan(80);
+  });
+
+  test("보고서 쪽 나눔: 장마다 report-part, 부록은 새 쪽, 인쇄 직전 긴 장 표시", async ({ page }) => {
+    await page.goto("/");
+    await page.getByTestId("representative").getByRole("button").first().click();
+    await expect(await conclusion(page)).toBeVisible();
+    const rep = page.getByTestId("report");
+    expect(await rep.locator(".report-part").count()).toBeGreaterThan(1);
+    await expect(rep.locator(".report-appendix")).toHaveCount(1); // 첫 부록만 새 쪽
+    await page.emulateMedia({ media: "print" });
+    const brk = await rep.locator(".report-appendix").evaluate((e) => getComputedStyle(e).breakBefore);
+    expect(brk).toBe("page");
+  });
 });

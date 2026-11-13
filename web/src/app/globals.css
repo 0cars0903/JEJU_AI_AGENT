@@ -174,4 +174,13 @@
   .print-only .report-charts > .report-chart { flex: 0 0 100%; }
   .print-only .report-charts > .report-map { flex: 0 0 48%; }
   .print-only h2, .print-only h3 { break-after: avoid; }
+  /* 쪽 나눔 규칙(사용자 지시 2026-11-13, print-layout.ts): 장은 안에서 자르지 않고, 한 쪽보다 긴 장과 부록은 새 쪽에서 시작한다 */
+  .print-only .report-part { break-inside: avoid; }
+  .print-only .report-big { break-inside: auto; }
+  .print-only .report-long { break-before: page; }
+  .print-only .report-appendix { break-before: page; }
+  .print-only pre { white-space: pre-wrap; word-break: break-all; font-size: 8.5pt; }
+  /* 전문가 모드 PDF: [PDF로 저장]을 누른 동안(body.printing-expert)만 전문가 결과를 인쇄하고, 평소 인쇄는 일반 답 보고서만 */
+  body:not(.printing-expert) > .print-expert { display: none !important; }
+  body.printing-expert > .print-only:not(.print-expert) { display: none !important; }
 }

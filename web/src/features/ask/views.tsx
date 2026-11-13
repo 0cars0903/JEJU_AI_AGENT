@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { type AskResult, type DataRequest, type DatasetMeta, type View, uploadDataset } from "@/lib/api";
 import { JejuMap } from "./jeju-map";
 import { sourceList } from "./answer";
+import { markLongParts } from "./print-layout";
 
 // 색은 흰 배경 + 강조색 하나, 나머지는 회색 계열(사용자 PPT·화면 규칙과 같은 원칙)
 const COLORS = ["var(--krds-element-primary, #256ef4)", "#6b7280", "#a3a3a3", "#d4d4d4", "#374151", "#9ca3af"];
@@ -371,6 +372,12 @@ function ReportCompare({ c }: { c: NonNullable<NonNullable<AskResult["answer"]>[
 export function Report({ r }: { r: AskResult }) {
   const [host, setHost] = useState<HTMLElement | null>(null);
   useEffect(() => setHost(document.body), []);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const f = () => markLongParts(rootRef.current); // 쪽 나눔 규칙 2: 한 쪽보다 긴 장은 새 쪽에서(print-layout.ts)
+    window.addEventListener("beforeprint", f);
+    return () => window.removeEventListener("beforeprint", f);
+  }, []);
   const a = r.answer;
   if (!a || !host) return null;
   const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
@@ -403,7 +410,7 @@ export function Report({ r }: { r: AskResult }) {
     const cs = charts(id);
     if (!ls.length && !cs.length) return null;
     return (
-      <div key={id} data-testid={`report-${id}`}>
+      <div key={id} data-testid={`report-${id}`} className="report-part">
         <h2>{title}</h2>
         <ul>
           {ls.map((l, i) => (
@@ -429,7 +436,7 @@ export function Report({ r }: { r: AskResult }) {
   const limits = r.card?.limits ?? [];
   const center = a.requests.filter((q) => q.kind === "center");
   return createPortal(
-    <div className="print-only" data-testid="report" aria-hidden>
+    <div ref={rootRef} className="print-only" data-testid="report" aria-hidden>
       <h1>제주 상권 EDA 보고서</h1>
       <p>질문: {r.question}</p>
       {r.understood && <p>{r.understood.text}</p>}
@@ -475,7 +482,7 @@ export function Report({ r }: { r: AskResult }) {
       )}
       {a.compare && <ReportCompare c={a.compare} />}
       {guide && (
-        <div data-testid="report-guide">
+        <div data-testid="report-guide" className="report-part">
           {a.summary && <h2>판단할 때 볼 것</h2>}
           <ul>
             {guide.lines.map((l, i) => (
@@ -495,7 +502,7 @@ export function Report({ r }: { r: AskResult }) {
       {part("near", "비슷한 동네와 계절")}
       {part("rain", "날씨")}
       {(limits.length > 0 || center.length > 0 || (a.gaps?.length ?? 0) > 0) && (
-        <div data-testid="report-limits">
+        <div data-testid="report-limits" className="report-part">
           <h2>알 수 있는 것과 없는 것</h2>
           <ul>
             {(a.gaps ?? []).map((g) => (
@@ -515,7 +522,7 @@ export function Report({ r }: { r: AskResult }) {
         </div>
       )}
       {(a.methods?.length ?? 0) > 0 && (
-        <div data-testid="report-methods">
+        <div data-testid="report-methods" className="report-part report-appendix">
           <table className="report-table report-methods">
             <thead>
               <tr>
@@ -545,7 +552,8 @@ export function Report({ r }: { r: AskResult }) {
           </table>
         </div>
       )}
-      <div data-testid="report-sources">
+      {/* 첫 부록만 새 쪽에서 시작한다(부록 B만 몇 줄 남은 쪽을 따로 쓰지 않게) */}
+      <div data-testid="report-sources" className={(a.methods?.length ?? 0) > 0 ? "report-part" : "report-part report-appendix"}>
         <h2>부록 B. 자료 목록과 기준 시점</h2>
         <ol className="report-srcs">
           {srcs.map((x, i) => (

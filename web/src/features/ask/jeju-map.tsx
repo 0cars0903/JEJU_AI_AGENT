@@ -93,7 +93,16 @@ export function JejuMap({
     ro.observe(svg);
     return () => ro.disconnect();
   }, [mapData, onPick, kNow]);
-  if (!map.data) return <div className="h-48 rounded-(--radius) bg-muted" aria-hidden />;
+  if (map.isError && !map.data)
+    return (
+      <p data-testid={`${testId}-error`} role="alert" className="flex flex-wrap items-center gap-2 rounded-(--radius) bg-muted p-3">
+        지도를 불러오지 못했어요.
+        <button type="button" onClick={() => map.refetch()} className="min-h-11 rounded-(--radius) border border-(--krds-border-gray) bg-background px-3 hover:bg-muted">
+          다시 시도
+        </button>
+      </p>
+    );
+  if (!map.data) return <div data-testid={`${testId}-loading`} className="aspect-[3/2] w-full rounded-(--radius) bg-muted" aria-label="지도를 불러오는 중" />;
   const m = map.data;
   const color = (d: string) => {
     if (!values) return selected.includes(d) ? SHADES[3] : SHADES[0];
@@ -203,12 +212,15 @@ export function JejuMap({
         <span data-testid={hv ? `${testId}-focus` : undefined} className="min-h-6 basis-full font-semibold" aria-live="polite">
           {hv ? `${hv}${values?.[hv] !== undefined ? `: ${fmt(values[hv])}` : ""}` : ""}
         </span>
-        {values && (
-          <span className="flex flex-wrap items-center gap-1" aria-label="범례(43곳을 5단계로 나눔)">
+        {/* 첫 화면 지도는 값보다 경계가 먼저 그려진다. 값이 와서 범례가 생길 때 지도가 밀리지 않게, 값이 없으면 같은 모양의 범례를 안 보이게 그려 자리를 잡는다 */}
+        {(values || onPick) && (
+          <span className={"flex flex-wrap items-center gap-1" + (values ? "" : " invisible")} aria-label={values ? "범례(43곳을 5단계로 나눔)" : undefined} aria-hidden={values ? undefined : true}>
             {SHADES.map((c, i) => (
               <span key={c} className="flex items-center gap-1">
                 <span className="inline-block h-3 w-5 rounded-sm" style={{ background: c }} />
-                <span className="text-(--krds-text-bolder)">{i === 0 ? `~${shortNum(cuts[0])}` : i === 4 ? `${shortNum(cuts[3])}~` : `${shortNum(cuts[i - 1])}~${shortNum(cuts[i])}`}</span>
+                <span className="text-(--krds-text-bolder)">
+                  {!values ? "0.0만~0.0만" : i === 0 ? `~${shortNum(cuts[0])}` : i === 4 ? `${shortNum(cuts[3])}~` : `${shortNum(cuts[i - 1])}~${shortNum(cuts[i])}`}
+                </span>
               </span>
             ))}
           </span>

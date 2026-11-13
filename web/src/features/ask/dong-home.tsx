@@ -155,15 +155,24 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
         ))}
         {dong && loading && [0, 1, 2].map((i) => <div key={i} className="h-24 rounded-(--radius) bg-muted" aria-hidden />)}
       </div>
-      {cur && (
+      {/* 지도 경계는 동네 값을 기다리지 않고 바로 그린다. 값이 오면 색을 칠한다. 예전에는 값 요청이 늦거나 실패하면 지도 자리가 통째로 비었다(운영 '처음 화면' 지도 없음, 2026-11-13) */}
+      {(
         <div className="order-1 lg:order-none lg:max-w-[calc((100dvh-28rem)*1.5)]">
+        {q.isError && !q.data && (
+          <p data-testid="home-map-error" role="alert" className="mb-2 flex flex-wrap items-center gap-2 text-[length:var(--krds-fs-body-medium)]">
+            지도 값을 불러오지 못했어요.
+            <button type="button" onClick={() => q.refetch()} className="min-h-11 rounded-(--radius) border border-(--krds-border-gray) px-3 hover:bg-muted">
+              다시 시도
+            </button>
+          </p>
+        )}
         {/* 문서 21 6.2절: 조건 패널이 본문을 밀지 않아 지도 칸이 넓어졌다. 지도 높이가 첫 화면을 넘지 않게 폭을 화면 높이에 맞춘다(B1) */}
         <JejuMap
-          values={cur.values}
-          unit={cur.unit}
+          values={cur?.values}
+          unit={cur?.unit}
           selected={dong ? [dong] : []}
           onPick={setDong}
-          label={`제주 43개 동네 ${cur.question.replace("?", "")} 지도. 동네를 누르면 그 동네${dong ? "로 바뀝니다" : "를 고릅니다"}.`}
+          label={`제주 43개 동네 ${cur ? cur.question.replace("?", "") : "행정동"} 지도. 동네를 누르면 그 동네${dong ? "로 바뀝니다" : "를 고릅니다"}.`}
           testId="home-map"
         />
         {/* B1: 좁은 화면에서는 안내 글을 지도 아래로 내려, 지도가 첫 화면 안에 다 들어오게 한다 */}
