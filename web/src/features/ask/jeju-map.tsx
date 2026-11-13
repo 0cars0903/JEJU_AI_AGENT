@@ -197,6 +197,23 @@ export function JejuMap({
   const hoverD = hover ? m.dongs.find((d) => d.dong === hover) : undefined;
   return (
     <figure data-testid={testId} className="flex flex-col gap-2">
+      {/* 범례를 지도 위에 둔다: 지도가 길면 아래 범례가 첫 화면에서 잘렸다(UI 검토 2026-11-13) */}
+      <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[length:var(--krds-fs-body-medium)]">
+        {/* 올린 동네 값 줄은 늘 자리를 잡아 둔다. 지도 위에 있어서, 값이 나타날 때 줄이 생기면 지도가 밀려 누른 자리에 다른 동네가 온다(2026-11-13) */}
+        <span data-testid={hv ? `${testId}-focus` : undefined} className="min-h-6 basis-full font-semibold" aria-live="polite">
+          {hv ? `${hv}${values?.[hv] !== undefined ? `: ${fmt(values[hv])}` : ""}` : ""}
+        </span>
+        {values && (
+          <span className="flex flex-wrap items-center gap-1" aria-label="범례(43곳을 5단계로 나눔)">
+            {SHADES.map((c, i) => (
+              <span key={c} className="flex items-center gap-1">
+                <span className="inline-block h-3 w-5 rounded-sm" style={{ background: c }} />
+                <span className="text-(--krds-text-bolder)">{i === 0 ? `~${shortNum(cuts[0])}` : i === 4 ? `${shortNum(cuts[3])}~` : `${shortNum(cuts[i - 1])}~${shortNum(cuts[i])}`}</span>
+              </span>
+            ))}
+          </span>
+        )}
+      </figcaption>
       <svg
         ref={svgRef}
         viewBox={vb.join(" ")}
@@ -306,24 +323,6 @@ export function JejuMap({
           작은 동네({m.dongs.filter((d) => tiny.has(d.dong) && inView(d)).length}곳)는 지도에서 누르기 어려워요. [+ 확대]나 '도심 확대'를 누르거나 목록에서 골라 주세요.
         </p>
       )}
-      <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[length:var(--krds-fs-body-medium)]">
-        {hv && (
-          <span data-testid={`${testId}-focus`} className="font-semibold">
-            {hv}
-            {values?.[hv] !== undefined ? `: ${fmt(values[hv])}` : ""}
-          </span>
-        )}
-        {values && (
-          <span className="flex flex-wrap items-center gap-1" aria-label="범례(43곳을 5단계로 나눔)">
-            {SHADES.map((c, i) => (
-              <span key={c} className="flex items-center gap-1">
-                <span className="inline-block h-3 w-5 rounded-sm" style={{ background: c }} />
-                <span className="text-(--krds-text-bolder)">{i === 0 ? `~${shortNum(cuts[0])}` : i === 4 ? `${shortNum(cuts[3])}~` : `${shortNum(cuts[i - 1])}~${shortNum(cuts[i])}`}</span>
-              </span>
-            ))}
-          </span>
-        )}
-      </figcaption>
       <p className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-bolder)">경계: 통계청 SGIS(공공누리 1유형), vuski/admdongkor(CC BY 4.0)</p>
     </figure>
   );

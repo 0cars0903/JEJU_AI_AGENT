@@ -158,13 +158,39 @@ function ResultView({ r }: { r: ExpertResult }) {
   );
 }
 
+const AREA = "expert-area";
+
+/** 머리말 바로 가기(UI 검토 2026-11-13): 2차 사용자(센터 담당자)가 화면 맨 아래 접힌 전문가 모드를 찾지 않아도 되게 한다. */
+export function ExpertLink() {
+  const st = useQuery({ queryKey: ["expert-status"], queryFn: getExpertStatus, staleTime: Infinity, retry: false });
+  if (!st.data?.available && !st.data?.enabled) return null;
+  return (
+    <a
+      href={`#${AREA}`}
+      data-testid="expert-link"
+      onClick={(e) => {
+        const el = document.getElementById(AREA) as HTMLDetailsElement | null;
+        if (!el) return;
+        e.preventDefault();
+        el.open = true;
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.querySelector("summary")?.focus({ preventScroll: true });
+      }}
+      // 폰에서는 머리말이 두 줄로 늘어나 숨긴다(센터 담당자는 PC를 쓰고, 전문가 모드 칸은 화면 아래에 그대로 있다)
+      className="hidden min-h-9 items-center rounded-(--radius) px-2 font-semibold text-(--krds-text-bolder) underline hover:bg-muted sm:inline-flex"
+    >
+      전문가 모드
+    </a>
+  );
+}
+
 export function ExpertMode() {
   const st = useQuery({ queryKey: ["expert-status"], queryFn: getExpertStatus, staleTime: Infinity, retry: false });
   const [q, setQ] = useState("");
   const m = useMutation({ mutationFn: askExpert });
   if (st.data?.available && st.data.login_required)
     return (
-      <details data-testid="expert-locked" className="rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
+      <details id={AREA} data-testid="expert-locked" className="scroll-mt-24 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
         <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(로그인 필요)</summary>
         <div className="mt-2 flex max-w-sm flex-col gap-2">
           <p className="text-(--krds-text-bolder)">AI가 분석 코드를 짜서 실행하는 기능이라 로그인한 사용자만 쓸 수 있어요.</p>
@@ -174,7 +200,7 @@ export function ExpertMode() {
     );
   if (!st.data?.enabled) return null;
   return (
-    <details data-testid="expert" className="rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
+    <details id={AREA} data-testid="expert" className="scroll-mt-24 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
       <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(AI가 코드를 짜서 실행)</summary>
       <div className="mt-2 flex flex-col gap-2">
         <p className="text-(--krds-text-bolder)">

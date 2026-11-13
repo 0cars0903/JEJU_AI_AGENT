@@ -6,6 +6,7 @@ import { useIconHover } from "@animateicons/react";
 import { cn } from "cn";
 import { MessageCircleIcon } from "@/components/icons";
 import { LoginButton } from "@/components/login";
+import { ExpertLink } from "@/features/ask/expert";
 
 const NAV = [
   { href: "/", label: "질문하기", Icon: MessageCircleIcon },
@@ -45,7 +46,8 @@ export function SiteHeader() {
             <NavItem key={n.href} {...n} active={n.href === "/" ? path === "/" : path.startsWith(n.href.slice(0, -1))} />
           ))}
         </nav>
-        <div className="ml-auto py-2">
+        <div className="ml-auto flex items-center gap-2 py-2">
+          <ExpertLink />
           <LoginButton />
         </div>
       </div>

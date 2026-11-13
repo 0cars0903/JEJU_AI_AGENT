@@ -182,7 +182,7 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
   test("보고서: 인쇄용 정리본이 있고 화면에서는 숨김", async ({ page }) => {
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();
-    await expect(page.getByTestId("print-report")).toBeVisible();
+    await expect(page.getByTestId("shortcut-print")).toBeVisible(); // 인쇄는 답 카드 바로 가기 한 곳에만 둔다(UI 검토 2026-11-13)
     await expect(page.getByTestId("report")).toBeHidden();
     await page.emulateMedia({ media: "print" });
     await expect(page.getByTestId("report")).toBeVisible();
@@ -866,4 +866,35 @@ test.describe("데모 로그인(2026-11-13)", () => {
     await expect(page.getByTestId("expert")).toBeVisible();
     await expect(page.getByTestId("login-state")).toContainText("judge1");
   });
+
+  test("UI 검토(2026-11-13): 로그인 창은 바깥 누름·Esc로 닫히고, 머리말 [전문가 모드]는 전문가 모드 칸을 펼친다", async ({ page }, info) => {
+    await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: false, id: null, claude: true } }));
+    await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: false, available: true, login_required: true, daily_limit: 50 } }));
+    await page.goto("/");
+    const pop = page.locator("header").getByTestId("login-form");
+    await page.getByTestId("login-open").click();
+    await expect(pop).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(pop).toHaveCount(0);
+    await page.getByTestId("login-open").click();
+    await page.mouse.click(4, page.viewportSize()!.height - 4); // 왼쪽 아래 여백(폰에서는 로그인 창이 제목을 덮는다)
+    await expect(pop).toHaveCount(0);
+    if (info.project.name === "desktop") {
+      await page.getByTestId("expert-link").click();
+      await expect(page.getByTestId("expert-locked").getByTestId("login-id")).toBeInViewport();
+    } else await expect(page.getByTestId("expert-link")).toBeHidden(); // 폰은 머리말이 두 줄이 되지 않게 숨긴다
+  });
+});
+
+test("UI 검토(2026-11-13): 답 화면은 위 단추 한 줄, 출처는 근거 차트 뒤, 같은 꼬리표는 한 번만", async ({ page }) => {
+  await page.goto("/");
+  await page.getByTestId("representative").getByRole("button", { name: "노형동 카페 가게는 몇 곳이야?" }).click();
+  await expect(await conclusion(page)).toContainText("노형동");
+  await expect(page.getByTestId("print-report")).toHaveCount(0);
+  await expect(page.getByTestId("asked")).toHaveClass(/sr-only/); // 입력 칸과 같은 질문은 화면에 두 번 보이지 않는다
+  const views = await page.getByTestId("views").boundingBox();
+  const src = await page.getByTestId("answer-footer").boundingBox();
+  expect(src!.y).toBeGreaterThan(views!.y);
+  const tags = await page.getByTestId("block-facts").locator("li > span:first-child.bg-muted").allTextContents();
+  for (let i = 1; i < tags.length; i++) expect(tags[i]).not.toBe(tags[i - 1]);
 });

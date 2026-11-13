@@ -156,7 +156,7 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
         {dong && loading && [0, 1, 2].map((i) => <div key={i} className="h-24 rounded-(--radius) bg-muted" aria-hidden />)}
       </div>
       {cur && (
-        <div className="order-1 lg:order-none lg:max-w-[calc((100dvh-21rem)*1.5)]">
+        <div className="order-1 lg:order-none lg:max-w-[calc((100dvh-28rem)*1.5)]">
         {/* 문서 21 6.2절: 조건 패널이 본문을 밀지 않아 지도 칸이 넓어졌다. 지도 높이가 첫 화면을 넘지 않게 폭을 화면 높이에 맞춘다(B1) */}
         <JejuMap
           values={cur.values}

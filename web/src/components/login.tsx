@@ -1,7 +1,7 @@
 "use client";
 
 /** 데모 로그인(2026-11-13): 계정이 설정된 데모에서만 보인다. 로그인해야 Claude를 쓰는 기능(판단 과정 AI 설명·전문가 모드)이 켜진다. */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ApiError, getMe, login, logout } from "@/lib/api";
@@ -51,7 +51,24 @@ export function LoginButton() {
   const qc = useQueryClient();
   const me = useQuery({ queryKey: ["me"], queryFn: getMe, retry: false, staleTime: 60_000 });
   const [open, setOpen] = useState(false);
+  const boxRef = useRef<HTMLDivElement>(null);
   const out = useMutation({ mutationFn: logout, onSuccess: () => qc.invalidateQueries() });
+  // 로그인 창이 질문 칸·[묻기]를 덮으므로 바깥을 누르거나 Esc를 누르면 닫는다(UI 검토 2026-11-13)
+  useEffect(() => {
+    if (!open) return;
+    const down = (e: PointerEvent) => {
+      if (boxRef.current && !boxRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const key = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", down, true); // 지도처럼 전파를 막는 부품 위를 눌러도 닫히게 붙잡기 단계에서 듣는다
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("pointerdown", down, true);
+      document.removeEventListener("keydown", key);
+    };
+  }, [open]);
   if (!me.data?.login_required) return null;
   if (me.data.logged_in)
     return (
@@ -63,7 +80,7 @@ export function LoginButton() {
       </div>
     );
   return (
-    <div className="relative">
+    <div className="relative" ref={boxRef}>
       <Button variant="outline" size="sm" data-testid="login-open" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
         로그인
       </Button>

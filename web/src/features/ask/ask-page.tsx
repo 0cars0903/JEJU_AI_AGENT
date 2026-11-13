@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "skullet/react";
-import { ChevronLeft, ChevronRight, ExternalLink, House, Link2, Printer, X } from "lucide-react";
+import { ChevronLeft, ExternalLink, House, Link2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorState } from "@/components/states";
@@ -14,7 +14,7 @@ import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
 import { ExpertMode } from "./expert";
-import { AnswerCard, BizTabs, CompareWith, Downloads, Process, SuggestionList, Understood, Waiting } from "./answer";
+import { AnswerCard, BizTabs, CompareWith, Downloads, Process, SourceList, SuggestionList, Understood, Waiting } from "./answer";
 
 // 로딩 뼈대의 모양을 그리기 위한 예시 답(화면에 보이지 않는다).
 const SAMPLE: AskResult = {
@@ -88,6 +88,10 @@ export function AskPage() {
   // B2·B7: 답이 펼쳐지는 동안 누른 바로 가기의 목적지. 펼침이 끝나면 한 번 더 맞춘다.
   const jumpRef = useRef<string | null>(null);
   const pickerRef = useRef<HTMLElement>(null);
+  // 답이 나온 뒤 프로그램이 입력 칸에 초점을 돌려줄 때는 글 전체를 고르지 않는다(파란 칠이 남아 보이는 문제, UI 검토 2026-11-13)
+  const quietFocus = useRef(false);
+  // 마지막으로 답을 요청한 주소. 주소가 바뀐 직후 한 번의 그리기 동안 앞 질문의 답이 새 전환 부품에 들어가지 않게 한다(2026-11-13)
+  const askedKey = useRef<string | null>(null);
 
   const m = useMutation({
     mutationFn: ask,
@@ -104,6 +108,7 @@ export function AskPage() {
   // 주소가 바뀌면(질문·뒤로 가기) 그 질문으로 답을 받는다. 입력 칸 글을 '질문:' 줄과 맞춘다(C4).
   const key = sp.toString();
   useEffect(() => {
+    askedKey.current = key;
     if (req) {
       m.mutate(withCenter(req.body));
       setText(req.body.question ?? (req.label !== PICK_LABEL ? req.label : ""));
@@ -132,10 +137,13 @@ export function AskPage() {
     if (!d || d.status === "선택필요") return;
     const a = document.activeElement;
     const lost = !a || a === document.body || !document.body.contains(a);
-    if (lost || (a as HTMLElement).dataset?.testid === "ask-submit") inputRef.current?.focus({ preventScroll: true });
+    if (lost || (a as HTMLElement).dataset?.testid === "ask-submit") {
+      quietFocus.current = true;
+      inputRef.current?.focus({ preventScroll: true });
+      quietFocus.current = false;
+    }
   }, [m.data]);
 
-  const togglePanel = (open: boolean) => setPanel(open);
   const closePanel = () => {
     setPicker(null);
     setPanel(false);
@@ -178,9 +186,9 @@ export function AskPage() {
   const needFile = m.isError && m.error instanceof ApiError && m.error.status === 422 && Boolean(req?.body.dataset_id);
 
   return (
-    <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[auto_1fr] lg:items-start lg:gap-6">
-      {/* 화면 순서와 Tab 순서를 맞추려고 질문 칸(main)을 먼저 두고, 큰 화면에서만 패널을 왼쪽으로 보낸다(B5). */}
-      <div className="flex min-w-0 flex-col gap-4 lg:order-2">
+    <div className="flex flex-col gap-6">
+      {/* 왼쪽 열(패널 여는 단추 하나)을 없애 본문을 넓혔다. 패널은 [입력 없이 골라서 묻기]로 열고 본문 위에 겹쳐 뜬다(UI 검토 2026-11-13). */}
+      <div className="flex min-w-0 flex-col gap-4">
         <section className="flex flex-col gap-2" aria-label="질문하기">
           {req ? (
             <div className="flex flex-wrap items-center gap-2">
@@ -203,11 +211,6 @@ export function AskPage() {
                 <a href="#request-center" data-testid="go-center" className="inline-flex min-h-11 items-center gap-1 rounded-(--radius) border border-(--krds-border-gray) px-3 hover:bg-muted">
                   센터 자료 넣기
                 </a>
-              )}
-              {r?.answer && (
-                <Button variant="outline" data-testid="print-report" onClick={() => window.print()} className="gap-1">
-                  <Printer size={18} aria-hidden /> 보고서 인쇄(PDF 저장)
-                </Button>
               )}
               <span role="status" data-testid="copied" className="font-semibold text-(--krds-text-primary)">
                 {copied ? "복사했어요" : ""}
@@ -242,7 +245,9 @@ export function AskPage() {
                   setEmptyHint(false);
                 }}
                 // 앞 질문이 남아 있으면 글 전체를 골라 두어, 바로 치면 새 질문으로 바뀐다(C4)
-                onFocus={(e) => e.currentTarget.select()}
+                onFocus={(e) => {
+                  if (!quietFocus.current) e.currentTarget.select();
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) {
                     e.preventDefault();
@@ -254,6 +259,17 @@ export function AskPage() {
               <Button type="submit" size="lg" data-testid="ask-submit" disabled={!text.trim()} aria-busy={m.isPending} className="md:h-auto">
                 <SendIcon size={20} aria-hidden />
                 묻기
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                data-testid="open-picker"
+                onClick={() => setPicker({})}
+                disabled={!guide.data}
+                aria-expanded={showPanel}
+                className="w-fit border-2 border-(--krds-border-primary) font-semibold text-(--krds-text-primary) md:h-auto"
+              >
+                입력 없이 골라서 묻기
               </Button>
             </div>
             <p
@@ -273,15 +289,6 @@ export function AskPage() {
               </button>
             </p>
           )}
-          <Button
-            variant="outline"
-            data-testid="open-picker"
-            onClick={() => setPicker({})}
-            disabled={!guide.data}
-            className="w-fit border-2 border-(--krds-border-primary) font-semibold text-(--krds-text-primary) lg:hidden"
-          >
-            입력 없이 골라서 묻기
-          </Button>
         </section>
 
         {!req && guide.data && (
@@ -301,8 +308,8 @@ export function AskPage() {
         )}
         {!req && guide.data && <DongHome dongs={guide.data.dongs} onAsk={(s, t) => run({ slots: s }, t)} />}
         {guide.isError && <ErrorState error={guide.error} onRetry={() => guide.refetch()} />}
-        {/* 설계 11-2절: Claude 키가 있을 때만 보이는 전문가 모드 */}
-        <ExpertMode />
+        {/* 설계 11-2절 전문가 모드: 첫 화면은 지도 아래, 답 화면은 답 아래. 찾기 쉽게 머리말에 [전문가 모드] 바로 가기를 둔다 */}
+        {!req && <ExpertMode />}
 
         <div
           ref={resultRef}
@@ -314,7 +321,8 @@ export function AskPage() {
           }}
         >
           {asked && (
-            <p className="text-(--krds-text-bolder)" data-testid="asked">
+            // 입력 칸 글과 같으면 화면에서는 숨기고 화면 읽기 프로그램에만 읽힌다(질문이 두 번 보이는 문제, UI 검토 2026-11-13)
+            <p className={(r?.question ?? req?.body.question ?? asked) === text ? "sr-only" : "text-(--krds-text-bolder)"} data-testid="asked">
               질문: {r?.question ?? req?.body.question ?? asked}
             </p>
           )}
@@ -336,7 +344,7 @@ export function AskPage() {
               // 질문(주소)마다 전환 부품을 새로 만든다. 같은 부품에서 '앞 답 → 대기 → 새 답'을 연달아 바꾸면 사라져야 할 대기 층이
               // 새 답 위에 남는 경우가 있었다(화면 시험 '추천 질문 이어 답하기' 불안정의 원인, 2026-11-13).
               key={sp.toString()}
-              data={m.isPending ? null : r}
+              data={m.isPending || askedKey.current !== key ? null : r}
               sample={SAMPLE}
               label="답을 만들고 있어요"
               // 대기 뼈대 높이에서 답 높이로 늘어나는 동안에는 문서가 아직 짧아, 그때 누른 바로 가기가 목적지에 못 미친다.
@@ -358,6 +366,8 @@ export function AskPage() {
                     <AnswerCard r={res} sample={res === SAMPLE} />
                   </div>
                   {res !== SAMPLE && res.answer && <Views key={res.question ?? ""} views={res.answer.views} n={res.answer.default_views} />}
+                  {/* 출처 목록은 근거 차트 뒤에 둔다(UI 검토 2026-11-13) */}
+                  {res !== SAMPLE && <SourceList r={res} />}
                   {/* 이어서 물어보기는 자료 요청·내려받기보다 앞에 둔다(B2) */}
                   {res !== SAMPLE && res.suggestions && (
                     <SuggestionList
@@ -390,23 +400,13 @@ export function AskPage() {
             </Skeleton>
           )}
         </div>
+        {req && <ExpertMode />}
       </div>
 
       {/* 겹침형 패널: 큰 화면은 왼쪽 단추 자리에서 본문 위로 뜨고, 폰은 화면 아래에서 올라오는 시트다. 열고 닫아도 본문 자리는 그대로다. */}
-      <aside ref={pickerRef} aria-label="입력 없이 골라서 묻기" className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-40 lg:sticky lg:top-20 lg:z-30 lg:order-1">
-        <button
-          type="button"
-          data-testid="panel-open"
-          onClick={() => togglePanel(true)}
-          className={"hidden min-h-11 items-center gap-2 rounded-(--radius) border border-(--krds-border-gray) bg-card px-3 font-semibold hover:bg-muted lg:flex" + (showPanel ? " lg:invisible" : "")}
-          aria-label="조건 패널 펼치기: 입력 없이 골라서 묻기"
-          aria-expanded={showPanel}
-        >
-          <ChevronRight size={18} aria-hidden />
-          <span>입력 없이 골라서 묻기</span>
-        </button>
+      <aside ref={pickerRef} aria-label="입력 없이 골라서 묻기" className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-40 lg:fixed lg:top-20 lg:left-6 lg:z-40">
         {showPanel && (
-          <div className={picker ? "" : "max-lg:hidden"}>
+          <div>
             <div data-testid="panel-backdrop" aria-hidden onClick={closePanel} className="fixed inset-0 -z-10 bg-black/40" />
             <div
               data-testid="panel"

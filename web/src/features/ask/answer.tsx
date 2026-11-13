@@ -62,14 +62,14 @@ export function Understood({ r, onChange, sample }: { r: AskResult; onChange: (s
 }
 
 function Tag({ text, layer }: { text: string; layer: string | null }) {
-  // 판단 층(L3·L4)은 강조색 윤곽, 사실(L1·L2)·판단 재료(L5)는 회색
+  // 판단 층(L3·L4)은 굵은 글씨, 사실(L1·L2)·판단 재료(L5)는 보통 글씨. 둘 다 회색 바탕이다.
+  // 강조색 윤곽은 버튼처럼 보여 누르려는 사람이 있어 뺐다(UI 검토 2026-11-13, 색은 강조색 하나만 버튼에 쓴다).
   const strong = layer === "L3" || layer === "L4";
   return (
     <span
       className={
-        strong
-          ? "inline-block w-fit rounded-(--radius) border border-(--krds-border-primary) px-2 py-0.5 text-[length:var(--krds-fs-label-medium)] font-semibold text-(--krds-text-primary)"
-          : "inline-block w-fit rounded-(--radius) bg-muted px-2 py-0.5 text-[length:var(--krds-fs-label-medium)] text-(--krds-text-bolder)"
+        "inline-block w-fit rounded-(--radius) bg-muted px-2 py-0.5 text-[length:var(--krds-fs-label-medium)] " +
+        (strong ? "font-semibold text-(--krds-text-basic)" : "text-(--krds-text-bolder)")
       }
     >
       {text}
@@ -127,7 +127,8 @@ function LineItems({ lines, srcNo, sample }: { lines: Line[]; srcNo: (s?: string
     <ul className="flex flex-col gap-3">
       {lines.map((l, i) => (
         <li key={i} className="flex flex-col gap-1">
-          <Tag text={l.tag} layer={l.layer} />
+          {/* 같은 꼬리표가 줄마다 되풀이되지 않게, 앞 줄과 다를 때만 보인다(UI 검토 2026-11-13) */}
+          {(i === 0 || lines[i - 1].tag !== l.tag) && <Tag text={l.tag} layer={l.layer} />}
           <span className="text-[length:var(--krds-fs-body-large)]">
             {l.text}
             <SrcMark n={srcNo(l.source)} sample={sample} />
@@ -218,6 +219,26 @@ export function BepCalc({ bep }: { bep?: { ticket: number; basis: string } }) {
 
 /** 접기(문서 23 P1: 펼치기 전 요점 6개 이하). 5칸 요약이 있으면 묶음을 모두 접고, 없으면 묶음마다 앞 2줄만 보인다. */
 const SHOW_LINES = 2;
+
+/** 패턴 G 바닥 줄(자료·기준 시점·다음 갱신, OWID 방식). 근거 차트(나눠 보기)를 먼저 보이도록 답 카드 밖, 차트 뒤에 둔다(UI 검토 2026-11-13). */
+export function SourceList({ r }: { r: AskResult }) {
+  const srcs = r.answer ? sourceList(r.answer) : [];
+  if (srcs.length === 0) return null;
+  return (
+    <div id="answer-source" data-testid="answer-footer" className="scroll-mt-24 flex flex-col gap-1 border-t border-(--krds-border-gray-light) pt-3 text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
+      <h3 className="text-[length:var(--krds-fs-body-medium)] font-semibold">출처</h3>
+      <ol className="flex flex-col gap-1">
+        {srcs.map((f, i) => (
+          <li key={f.name}>
+            [{i + 1}] {f.name}
+            {f.as_of ? ` · 기준 ${f.as_of}` : ""}
+            {f.next ? ` · 다음 갱신: ${f.next}` : ""}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
 
 /** v3 답 카드: 결론 한 줄(층 꼬리표) → 3블록(① 사실·비교 ② Agent 분석·예상 ③ 판단 재료) → 한계. answer가 없으면 card를 그대로 보여 준다. */
 export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
@@ -344,21 +365,6 @@ export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
         <div>
           <h3 className="mb-1">값이 달라질 수 있는 폭</h3>
           <ul>{c.intervals.map((x, i) => <li key={i}>{x}</li>)}</ul>
-        </div>
-      )}
-      {/* 패턴 G: 바닥 줄 — 자료·기준 시점·다음 갱신(OWID 방식) */}
-      {srcs.length > 0 && (
-        <div id={sample ? undefined : "answer-source"} data-testid={t("answer-footer")} className="scroll-mt-24 order-last flex flex-col gap-1 border-t border-(--krds-border-gray-light) pt-3 text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
-          <h3 className="text-[length:var(--krds-fs-body-medium)] font-semibold">출처</h3>
-          <ol className="flex flex-col gap-1">
-            {srcs.map((f, i) => (
-              <li key={f.name}>
-                [{i + 1}] {f.name}
-                {f.as_of ? ` · 기준 ${f.as_of}` : ""}
-                {f.next ? ` · 다음 갱신: ${f.next}` : ""}
-              </li>
-            ))}
-          </ol>
         </div>
       )}
       {c && c.limits.length > 0 && (
