@@ -87,6 +87,18 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await expect(await conclusion(page)).toContainText("점포 수");
   });
 
+  test("판단 과정: 처리 기록 5단계(해석·계획·계산·검수·설명)와 누가 정했는지 보인다(문서 26 안 D)", async ({ page }) => {
+    await page.getByTestId("representative").getByRole("button").first().click();
+    await expect(await conclusion(page)).toBeVisible();
+    const proc = page.getByTestId("process");
+    await proc.locator("summary").click();
+    const trace = proc.getByTestId("trace");
+    await expect(trace.locator("li")).toHaveCount(5);
+    for (const id of ["trace-interpret", "trace-plan", "trace-run", "trace-review", "trace-explain"]) await expect(trace.getByTestId(id)).toBeVisible();
+    await expect(trace.getByTestId("trace-review")).toContainText("검수");
+    await expect(trace.getByTestId("trace-plan")).toContainText("계산 단계");
+  });
+
   test("② 추천 질문을 누르면 이어서 답한다", async ({ page }) => {
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();

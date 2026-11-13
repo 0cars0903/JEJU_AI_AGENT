@@ -75,7 +75,12 @@ export type AskResult = {
   answer?: Answer;
   suggestions?: Suggestion[];
   choose?: { message: string; step: string; candidates: string[]; preset: Slots };
-  process?: { type?: string; steps: Step[]; data: Record<string, string>; explain?: { text: string; by: string }; relaxed: string[]; unused: string[] };
+  process?: {
+    type?: string; steps: Step[]; data: Record<string, string>; explain?: { text: string; by: string }; relaxed: string[]; unused: string[];
+    /** 검수 기록(app/verify.py review): 단계·문제·조치 */
+    review?: { stage: string; type: string; detail: string; action: string }[];
+    retries?: { sub: number; main: number; total: number };
+  };
   downloads?: { kind: "csv" | "chart" | "bundle"; name: string; rows?: number; export?: string; csv?: string }[];
   sec?: number;
 };

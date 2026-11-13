@@ -377,6 +377,57 @@ export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
   );
 }
 
+/** 처리 기록(문서 26 안 D): 단계마다 누가 정했는지(프로그램/AI)와 결과를 순서대로 보인다. */
+function Trace({ r }: { r: AskResult }) {
+  const p = r.process!;
+  const review = p.review ?? [];
+  const retried = p.retries?.total ?? 0;
+  const failed = p.steps.filter((s) => s.status !== "성공").length;
+  const rows: { name: string; who: string; text: React.ReactNode; testid: string }[] = [
+    { name: "질문 해석", who: r.understood?.by ?? "프로그램", text: `${p.type ?? "-"}${r.understood?.text ? ` · ${r.understood.text}` : ""}`, testid: "trace-interpret" },
+    { name: "계획", who: "프로그램(주제별 계획 표)", text: `계산 단계 ${p.steps.length}개를 골랐어요`, testid: "trace-plan" },
+    {
+      name: "계산",
+      who: "프로그램(Python)",
+      text: (
+        <span className="flex flex-wrap gap-1.5">
+          {p.steps.map((s) => (
+            <span key={s.id} className="rounded-(--radius) bg-muted px-2 py-0.5">
+              {s.name} · {s.status}
+            </span>
+          ))}
+        </span>
+      ),
+      testid: "trace-run",
+    },
+    {
+      name: "검수",
+      who: "프로그램(검수 규칙)",
+      text: review.length
+        ? review.map((x) => `${x.stage}: ${x.detail} → ${x.action}`).join(" / ") + ` (다시 한 횟수 ${retried}번)`
+        : failed
+          ? `계산 ${failed}단계가 실패해 그 칸에 이유를 표시했어요`
+          : "해석·계획·계산·답 문장을 검사했고 문제가 없었어요",
+      testid: "trace-review",
+    },
+    { name: "설명 문장", who: p.explain?.by === "LLM" ? "AI" : "프로그램(정해진 문장 틀)", text: p.explain?.by === "LLM" ? "AI가 썼고, 숫자가 계산값과 맞는지 검사했어요" : "정해진 문장 틀로 썼어요", testid: "trace-explain" },
+  ];
+  return (
+    <ol data-testid="trace" className="flex flex-col gap-1.5">
+      {rows.map((x, i) => (
+        <li key={x.name} data-testid={x.testid} className="grid grid-cols-[1.5rem_1fr] gap-x-2 text-[length:var(--krds-fs-body-small)]">
+          <span className="font-semibold text-(--krds-text-subtle)">{i + 1}</span>
+          <span>
+            <span className="font-semibold">{x.name}</span>
+            <span className="ml-1 text-(--krds-text-subtle)">· {x.who}</span>
+            <span className="block">{x.text}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export function Process({ r }: { r: AskResult }) {
   const p = r.process;
   if (!p) return null;
@@ -390,13 +441,7 @@ export function Process({ r }: { r: AskResult }) {
             {p.explain.by === "LLM" && <span data-testid="ai-label" className="ml-1 text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">(AI가 쓴 설명 · 숫자는 프로그램이 계산)</span>}
           </p>
         )}
-        <ol className="flex flex-wrap gap-2">
-          {p.steps.map((s) => (
-            <li key={s.id} className="rounded-(--radius) bg-muted px-2 py-1 text-[length:var(--krds-fs-body-small)]">
-              {s.name} · {s.status}
-            </li>
-          ))}
-        </ol>
+        <Trace r={r} />
         {Object.keys(p.data ?? {}).length > 0 && (
           <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
             자료 기준: {Object.entries(p.data).map(([k, v]) => `${k} ${v}`).join(" · ")}
