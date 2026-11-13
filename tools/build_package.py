@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NAME = "jeju_dong_agent"
-INCLUDE = ["README.md", "requirements.txt", ".env.example", "app", "scripts", "tests", "models/m1_intent.json", "models/recipes.json", "data/tables", "data/manual", "data/lexicon", "data/catalog.json", "data/metric_dict.json",
+INCLUDE = ["README.md", "docs/제출", "notebooks", "requirements.txt", ".env.example", "app", "scripts", "tests", "models/m1_intent.json", "models/recipes.json", "data/tables", "data/manual", "data/lexicon", "data/catalog.json", "data/metric_dict.json",
            "web/out", "web/src", "web/public", "web/package.json", "web/package-lock.json", "web/next.config.ts", "web/tsconfig.json", "web/postcss.config.mjs", "web/components.json", "web/playwright.config.ts"]
 SKIP = {"__pycache__", ".DS_Store", "node_modules", ".next", "test-results"}
 # 키 형식과 개발 PC의 절대 경로(macOS /Volumes·/Users)가 제출본에 들어가지 않게 막는다.
