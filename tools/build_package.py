@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-NAME = "jeju_dong_agent"
+NAME = "jeju_bigdata_consulting_agent"  # 서비스 이름: 제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent
 INCLUDE = ["README.md", "docs/제출", "notebooks", "requirements.txt", ".env.example", "app", "scripts", "tests", "models/m1_intent.json", "models/recipes.json", "data/tables", "data/manual", "data/lexicon", "data/catalog.json", "data/metric_dict.json",
            "web/out", "web/src", "web/public", "web/package.json", "web/package-lock.json", "web/next.config.ts", "web/tsconfig.json", "web/postcss.config.mjs", "web/components.json", "web/playwright.config.ts"]
 SKIP = {"__pycache__", ".DS_Store", "node_modules", ".next", "test-results"}
