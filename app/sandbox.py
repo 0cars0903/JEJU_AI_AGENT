@@ -72,6 +72,9 @@ def check(code):
 
 RUNNER = r'''
 import json, sys, math
+for _p in json.loads(sys.argv[2]):  # 부모의 라이브러리 경로(-I는 PYTHONPATH를 무시. Vercel은 라이브러리가 기본 위치 밖, 2026-11-13)
+    if _p not in sys.path:
+        sys.path.append(_p)
 import numpy as np, pandas as pd
 from scipy import stats
 import sklearn.cluster, sklearn.preprocessing, sklearn.linear_model, sklearn.metrics, sklearn.decomposition
@@ -158,6 +161,11 @@ def _windows_job(proc):
         return False
 
 
+def lib_paths():
+    """하위 프로세스가 쓸 라이브러리 경로: 부모 프로세스의 sys.path 가운데 있는 폴더만(현재 폴더 '' 제외)."""
+    return [p for p in sys.path if p and os.path.isdir(p)]
+
+
 def run(code, timeout=None):
     """검사 뒤 별도 프로세스에서 실행. {"ok", "result"|"error", "stage"}를 돌려준다."""
     try:
@@ -171,7 +179,7 @@ def run(code, timeout=None):
     limit = timeout or TIME_LIMIT
     with tempfile.TemporaryDirectory(prefix="jeju_expert_") as work:  # 빈 임시 폴더에서 실행
         win = os.name == "nt"
-        p = subprocess.Popen([sys.executable, "-I", "-c", RUNNER, app_dir], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+        p = subprocess.Popen([sys.executable, "-I", "-c", RUNNER, app_dir, json.dumps(lib_paths())], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, env=env, cwd=work, preexec_fn=None if win else _posix_limits)
         if win:
             _windows_job(p)

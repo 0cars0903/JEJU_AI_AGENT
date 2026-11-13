@@ -25,6 +25,23 @@ class SandboxTest(unittest.TestCase):
         self.assertTrue(r["ok"], r)
         self.assertEqual(r["result"]["numbers"]["months"], 81)
 
+    def test_libs_outside_default_location(self):
+        """Vercel처럼 라이브러리가 PYTHONPATH로만 보이는 경우(-I가 무시)에도 하위 프로세스가 numpy를 찾는다(2026-11-13 운영 오류)."""
+        import subprocess
+        import numpy
+        site = str(Path(numpy.__file__).resolve().parents[1])
+        app = str(Path(S.__file__).resolve().parent)
+        probe = ("import sys; sys.path.insert(0, %r); import sandbox as S\n"
+                 "if sys.argv[1] == 'none': S.lib_paths = lambda: []\n"
+                 "print(S.run('result = {\"numbers\": {\"n\": float(np.mean([1, 2, 3]))}}')['ok'])") % app
+        sysdir = Path(sys.base_prefix) / "bin" / "python3"
+        exe = str(sysdir) if sysdir.exists() and sys.prefix != sys.base_prefix else None
+        if not exe or subprocess.run([exe, "-I", "-c", "import numpy"], capture_output=True).returncode == 0:
+            self.skipTest("기본 위치에 numpy가 없는 파이썬이 필요함(가상환경 밖 파이썬)")
+        env = {**os.environ, "PYTHONPATH": site}
+        out = {m: subprocess.run([exe, "-c", probe, m], capture_output=True, text=True, env=env, timeout=120).stdout.strip() for m in ("fix", "none")}
+        self.assertEqual(out, {"fix": "True", "none": "False"})
+
     def test_attacks_rejected(self):
         for code in ATTACKS:
             with self.subTest(code=code):
