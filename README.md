@@ -154,3 +154,4 @@
 - 패키지: `requirements.txt`(FastAPI, uvicorn, pandas, pyarrow, requests, anthropic 등)와 `web/package.json`(Next.js, React, Tailwind CSS, shadcn/ui, AnimateIcons, Pretendard).
 - 화면 디자인: KRDS 디자인 토큰(https://www.krds.go.kr/tokens/transformed_tokens.json). 정부 사이트가 아닙니다.
 - 데이터: 제주데이터허브 583·743·612·793·780·746·579, 제주관광공사 카드 소비, 기상청 ASOS, 행정동 경계(vuski/admdongkor, CC BY 4.0). 출처·전처리·이용조건은 `docs/제출/데이터_활용_명세.md`.
+- 출처 표시: 본 자료는 제주데이터허브·제주빅데이터센터, 제주관광공사(데이터 출처 BC카드), 기상청에서 제공하는 자료를 활용한 것이며, 결과는 제주특별자치도 및 제주테크노파크와 관련이 없음을 밝힙니다.
