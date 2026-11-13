@@ -11,6 +11,8 @@ NAME = "jeju_dong_agent"
 INCLUDE = ["README.md", "docs/제출", "notebooks", "requirements.txt", ".env.example", "app", "scripts", "tests", "models/m1_intent.json", "models/recipes.json", "data/tables", "data/manual", "data/lexicon", "data/catalog.json", "data/metric_dict.json",
            "web/out", "web/src", "web/public", "web/package.json", "web/package-lock.json", "web/next.config.ts", "web/tsconfig.json", "web/postcss.config.mjs", "web/components.json", "web/playwright.config.ts"]
 SKIP = {"__pycache__", ".DS_Store", "node_modules", ".next", "test-results"}
+# 실행에 쓰지 않는 실험 스크립트(채택하지 않은 LoRA 판정, 개발 PC 경로 포함). 마스터 결정 2026-11-13.
+EXCLUDE = {"app/x1_lora_eval.py"}
 # 키 형식과 개발 PC의 절대 경로(macOS /Volumes·/Users)가 제출본에 들어가지 않게 막는다.
 PATTERNS = [re.compile(rb"sk-ant-[A-Za-z0-9_-]{8,}"), re.compile(rb"/Volumes/"), re.compile(rb"/Users/")]
 
@@ -35,6 +37,7 @@ def main():
         if not p.exists():
             continue
         files += [p] if p.is_file() else [f for f in p.rglob("*") if f.is_file() and not SKIP & set(f.parts)]
+    files = [f for f in files if f.relative_to(ROOT).as_posix() not in EXCLUDE]
     keys, bad = secrets(), []
     for f in files:
         b = f.read_bytes()
