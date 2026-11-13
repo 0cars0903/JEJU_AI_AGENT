@@ -235,7 +235,8 @@ export function AskPage() {
               </span>
             </div>
           ) : (
-            <h1 className="text-[length:var(--krds-fs-heading-medium)]">제주 상권, 자료로 물어보세요</h1>
+            // 첫 화면 제목: PC 약 29px(KRDS h2 32px × 화면 배율 90%), 폰 24px. 질문 칸 글자의 약 1.7배(사용자 결정 11/13)
+            <h1 data-testid="home-title" className="pb-1 text-[length:max(1.667rem,var(--krds-fs-heading-large))] leading-tight">제주 상권, 자료로 물어보세요</h1>
           )}
           {/* 입력창(Notion '입력창 디자인' 기준): 라벨 · 입력 · 도움말 또는 오류 문구 */}
           <form

@@ -250,7 +250,7 @@ export function AppSidebar() {
         aria-label="사이드 메뉴"
         data-testid="sidebar"
         style={c ? undefined : { width: nav.width }}
-        className={"sticky top-[49px] hidden h-[calc(100dvh-49px)] shrink-0 flex-col overflow-y-auto border-r border-(--krds-border-gray-light) bg-background py-3 print:hidden lg:flex " + (c ? "w-16 px-1" : "px-2")}
+        className={"sticky top-[64px] hidden h-[calc(100dvh-64px)] shrink-0 flex-col overflow-y-auto border-r border-(--krds-border-gray-light) bg-background py-3 print:hidden lg:flex " + (c ? "w-16 px-1" : "px-2")}
       >
         <div className="flex flex-col gap-2">
           <Tip on={c} text="펼치기(Ctrl+B)">

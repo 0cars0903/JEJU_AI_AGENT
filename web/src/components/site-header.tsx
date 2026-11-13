@@ -1,7 +1,9 @@
 "use client";
 
-/** 머리말(2026-11-13 사이드바 안 1): 서비스 이름과 폰·태블릿의 메뉴(☰) 단추만 둔다.
- * 탭이 '질문하기' 하나뿐이던 메뉴, 전문가 모드 바로 가기, 로그인은 사이드바로 옮겼다. */
+/** 머리말(2026-11-13 사이드바 안 1): 서비스 이름·부제와 폰·태블릿의 메뉴(☰) 단추만 둔다.
+ * 탭이 '질문하기' 하나뿐이던 메뉴, 전문가 모드 바로 가기, 로그인은 사이드바로 옮겼다.
+ * 높이 PC 64px·폰 56px, 이름 19px 굵게 + 부제(사용자 승인 11/13). KRDS 헤더의 '서비스 정체성(로고·슬로건)' 자리이며,
+ * 공식 배너(정부 공식 누리집 표시)는 공식 서비스가 아니라 넣지 않는다. */
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { useNav } from "@/components/nav-context";
@@ -9,7 +11,7 @@ import { useNav } from "@/components/nav-context";
 export function SiteHeader() {
   const nav = useNav();
   return (
-    <header className="sticky top-0 z-40 h-[49px] border-b border-(--krds-border-gray-light) bg-background print:hidden">
+    <header className="sticky top-0 z-40 h-[56px] border-b border-(--krds-border-gray-light) bg-background print:hidden md:h-[64px]">
       <div className="flex h-full w-full items-center gap-2 px-2 md:px-4">
         <button
           type="button"
@@ -21,8 +23,11 @@ export function SiteHeader() {
         >
           <Menu size={22} aria-hidden />
         </button>
-        <Link href="/" className="px-2 text-[length:var(--krds-fs-heading-xsmall)] font-bold text-(--krds-text-bolder) no-underline hover:text-(--krds-text-bolder)">
-          제주 상권 EDA
+        <Link href="/" data-testid="brand" className="flex min-w-0 flex-col px-2 no-underline md:flex-row md:items-baseline md:gap-3">
+          <span className="text-[19px] leading-tight font-bold text-(--krds-text-bolder)">제주 상권 EDA</span>
+          <span data-testid="brand-sub" className="truncate text-[12px] leading-tight text-(--krds-text-subtle) md:text-[14px]">
+            제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조
+          </span>
         </Link>
       </div>
     </header>
