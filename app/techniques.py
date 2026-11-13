@@ -590,4 +590,5 @@ def answer(question, slots=None):
                                                       {"id": "t3", "sub": "S4", "name": f"{tname} 계산", "op": "통계", "status": "성공"}],
                         "data": {s["source"]: s["as_of"] for s in srcs}, "unused": [],
                         "explain": {"text": f"질문에서 '{tname}' 기법을 찾아, 정해진 {mtitle} 코드로 제출본 자료를 계산했어요.", "by": "템플릿"}},
-            "downloads": [{"kind": "bundle", "name": "이 답의 계산값.csv", "rows": len(rows) - 1, "export": "집계", "csv": csv}]}
+            "downloads": [{"kind": "bundle", "name": "이 답의 계산값.csv", "rows": len(rows) - 1, "export": "집계", "csv": csv}],
+            "numbers": nums}  # 전문가 모드 도구(run_technique)가 숫자 대조에 쓴다

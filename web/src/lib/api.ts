@@ -162,12 +162,15 @@ export type ExpertResult = {
   lines?: string[];
   by?: string;
   attempts?: { stage?: string; ok?: boolean; error?: string }[];
+  /** 도구 루프 기록(문서 26 안 A): 단계·도구·누가 골랐는지·성공·메모 */
+  trace?: { step: number; tool: string; name: string; by: string; args: string; ok: boolean; note: string; sec: number }[];
+  backend?: "claude" | "ollama";
   error?: string;
   hint?: string;
   sec?: number;
   usage?: { input_tokens?: number; output_tokens?: number };
 };
-export type ExpertStatus = { enabled: boolean; available?: boolean; login_required?: boolean; daily_limit: number };
+export type ExpertStatus = { enabled: boolean; available?: boolean; backend?: "claude" | "ollama" | null; login_required?: boolean; daily_limit: number; max_steps?: number };
 export const getExpertStatus = () => call<ExpertStatus>("/api/expert/status");
 /** 데모 로그인(2026-11-13): 계정이 설정된 환경에서만 login_required가 true. 로그인해야 Claude 기능이 켜진다. */
 export type Me = { login_required: boolean; logged_in: boolean; id: string | null; claude: boolean };

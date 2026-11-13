@@ -97,7 +97,7 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
       <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent · 전문가 모드 분석</h1>
       <p>요청: {q}</p>
       <p>
-        기법: {r.method} · AI가 작성한 코드를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 만든 때 {now}
+        기법: {r.method} · {r.code ? "AI가 작성한 코드" : "정해진 기법 코드"}를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 도구 {r.trace?.length ?? 0}단계 · 만든 때 {now}
       </p>
       <div className="report-part">
         <h2>설명</h2>
@@ -170,6 +170,7 @@ function ResultView({ r, q }: { r: ExpertResult; q: string }) {
         <p className="font-semibold">분석을 끝내지 못했어요</p>
         <p>{r.error}</p>
         {r.hint && <p className="text-(--krds-text-bolder)">{r.hint}</p>}
+        <AgentTrace r={r} />
       </div>
     );
   }
@@ -182,8 +183,9 @@ function ResultView({ r, q }: { r: ExpertResult; q: string }) {
         PDF로 저장(인쇄)
       </Button>
       <p className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
-        기법: {r.method} · {r.by === "AI" ? "AI가 작성한 코드 · 실행 결과(설명 숫자는 실행 결과와 대조함)" : r.by} · {r.sec}초
+        기법: {r.method} · {r.code ? "AI가 작성한 코드 · 실행 결과" : "정해진 기법 코드 · 실행 결과"} · 설명: {r.by === "AI" ? "AI(숫자는 실행 결과와 대조함)" : r.by} · {r.sec}초
       </p>
+      <AgentTrace r={r} />
       <ul className="flex list-disc flex-col gap-1 pl-5" data-testid="expert-lines">
         {(r.lines ?? []).map((l, i) => (
           <li key={i}>{l}</li>
@@ -250,11 +252,40 @@ function ResultView({ r, q }: { r: ExpertResult; q: string }) {
             <li key={i}>{p}</li>
           ))}
         </ol>
-        <pre className="mt-2 overflow-x-auto rounded bg-muted p-2 text-[length:var(--krds-fs-body-small)]">{r.code}</pre>
-        <Button variant="outline" size="sm" onClick={() => save("analysis.py", r.code ?? "", "text/x-python;charset=utf-8")}>
-          코드 내려받기
-        </Button>
+        {r.code && (
+          <>
+            <pre className="mt-2 overflow-x-auto rounded bg-muted p-2 text-[length:var(--krds-fs-body-small)]">{r.code}</pre>
+            <Button variant="outline" size="sm" onClick={() => save("analysis.py", r.code ?? "", "text/x-python;charset=utf-8")}>
+              코드 내려받기
+            </Button>
+          </>
+        )}
       </details>
+    </div>
+  );
+}
+
+/** Agent 처리 기록(문서 26 안 A·D): AI가 고른 도구를 순서대로 보인다. */
+function AgentTrace({ r }: { r: ExpertResult }) {
+  if (!r.trace?.length) return null;
+  const who = r.backend === "ollama" ? "로컬 모델(qwen2.5:7b)" : "Claude";
+  return (
+    <div data-testid="expert-trace" className="rounded-(--radius) border border-(--krds-border-gray-light) p-2">
+      <p className="font-semibold">
+        Agent 처리 기록 <span className="font-normal text-(--krds-text-subtle)">· {who}가 도구를 골라 실행했어요</span>
+      </p>
+      <ol className="mt-1 flex flex-col gap-1 text-[length:var(--krds-fs-body-small)]">
+        {r.trace.map((t) => (
+          <li key={t.step} data-testid="expert-trace-step" className="grid grid-cols-[1.5rem_1fr] gap-x-2">
+            <span className="font-semibold text-(--krds-text-subtle)">{t.step}</span>
+            <span>
+              <span className="font-semibold">{t.name}</span>
+              <span className="ml-1 text-(--krds-text-subtle)">· {t.by} · {t.ok ? "성공" : "실패"} · {t.sec}초</span>
+              {t.note && <span className="block">{t.note}</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
@@ -278,10 +309,10 @@ export function ExpertMode() {
   if (!st.data?.enabled) return null;
   return (
     <details id={AREA} data-testid="expert" className="scroll-mt-24 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
-      <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(AI가 코드를 짜서 실행)</summary>
+      <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(AI가 도구를 골라 실행)</summary>
       <div className="mt-2 flex flex-col gap-2">
         <p className="text-(--krds-text-bolder)">
-          센터 담당자처럼 분석 기법을 정해 묻고 싶을 때 씁니다. AI가 분석 계획과 Python 코드를 짜고, 제출본에 든 표로만 실행합니다. 코드와 결과를 모두 보여 드려요.
+          센터 담당자처럼 분석 기법을 정해 묻고 싶을 때 써요. AI가 자료 확인·통계 기법·코드 실행·센터 자료 찾기 가운데 필요한 도구를 골라 제출본 표로 실행하고, 고른 순서와 결과를 모두 보여 드려요.
         </p>
         <Textarea data-testid="expert-input" value={q} onChange={(e) => setQ(e.target.value)} rows={2} maxLength={500} placeholder={EXAMPLES[0]} />
         <div className="flex flex-wrap gap-2">

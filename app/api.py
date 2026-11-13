@@ -210,7 +210,7 @@ def me(request: Request):
     import expert
     uid = _user(request)
     return {"login_required": auth.required(), "logged_in": uid is not None and uid != "local", "id": uid if uid != "local" else None,
-            "claude": expert.enabled()}
+            "claude": expert._claude_on()}
 
 
 @app.post("/api/login")
@@ -243,17 +243,17 @@ def do_logout():
 
 @app.get("/api/expert/status")
 def expert_status(request: Request):
-    """전문가 모드(설계 11-2절) 사용 가능 여부. Claude 키가 있고, 데모에서는 로그인했을 때만 켜진다."""
+    """전문가 모드 사용 가능 여부. Claude 키 또는 로컬 분석 모델(qwen2.5:7b)이 있을 때 켜지고, 데모에서는 로그인했을 때만 켜진다."""
     import auth
     import expert
     uid = _user(request)
-    return {"enabled": expert.enabled() and uid is not None, "available": expert.enabled(),
-            "login_required": auth.required() and uid is None, "daily_limit": expert.DAILY}
+    return {"enabled": expert.enabled() and uid is not None, "available": expert.enabled(), "backend": expert.backend(),
+            "login_required": auth.required() and uid is None, "daily_limit": expert.DAILY, "max_steps": expert.MAX_STEPS}
 
 
 @app.post("/api/expert")
 def expert_ask(body: Expert, request: Request):
-    """전문가 모드: 요청 → Claude가 계획·코드 설계 → 검사·격리 실행 → 해설 → 숫자 대조. 데모에서는 로그인 필요."""
+    """전문가 모드: 도구 루프(자료 확인·기법 실행·격리 코드 실행·센터 자료 찾기·답 제출) → 숫자 대조. 데모에서는 로그인 필요."""
     import expert
     uid = _user(request)
     if uid is None:

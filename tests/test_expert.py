@@ -55,52 +55,130 @@ class SandboxTest(unittest.TestCase):
         self.assertIn("모르는 키", S.run("result = {'html': 1}", timeout=5)["error"])
 
 
-def fake_chat(answers):
-    """미리 정한 도구 호출을 차례로 돌려주는 가짜 Claude."""
+def fake_chat(answers, seen=None):
+    """미리 정한 응답을 차례로 돌려주는 가짜 LLM. 항목: (도구, 인자) / [(도구, 인자), ...](한 번에 여러 도구) / ("text", 글)."""
     it = iter(answers)
 
     def chat(model, messages, tools):
-        name, args = next(it)
-        return {"message": {"role": "assistant", "content": "", "tool_calls": [{"id": "c1", "function": {"name": name, "arguments": args}}]},
+        if seen is not None:
+            seen.append([t["function"]["name"] for t in tools])
+        a = next(it)
+        if isinstance(a, tuple) and a[0] == "text":
+            return {"message": {"role": "assistant", "content": a[1]}, "usage": {"input_tokens": 10, "output_tokens": 5}}
+        calls = a if isinstance(a, list) else [a]
+        return {"message": {"role": "assistant", "content": "", "tool_calls": [{"id": f"c{i}", "function": {"name": n, "arguments": g}} for i, (n, g) in enumerate(calls)]},
                 "usage": {"input_tokens": 10, "output_tokens": 5}}
     return chat
 
 
+PY = lambda code: ("run_python", {"method": "추이", "plan": ["월 합계"], "code": code})  # noqa: E731
+CORR_Q = "43개 동네 방문과 매출의 상관 분석해줘"
+
+
 class ExpertFlowTest(unittest.TestCase):
+    """도구 루프(문서 26 안 A): 도구 선택·고치기·단계 상한·시간 예산·로컬 종료·규칙 대체."""
     def setUp(self):
-        self.env = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "LLM_BACKEND")}
+        self.env = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "LLM_BACKEND", "JEJU_LOCAL_AGENT")}
         os.environ["ANTHROPIC_API_KEY"] = "test"
         os.environ.pop("LLM_BACKEND", None)
+        os.environ["JEJU_LOCAL_AGENT"] = "0"
+        self.budget, self.backend = expert.BUDGET, expert.backend
 
     def tearDown(self):
+        expert.BUDGET, expert.backend = self.budget, self.backend
         for k, v in self.env.items():
             if v is None:
                 os.environ.pop(k, None)
             else:
                 os.environ[k] = v
 
-    def test_fix_once_then_explain(self):
-        chat = fake_chat([("submit_analysis", {"method": "추이", "plan": ["월 합계"], "code": "import os"}),
-                          ("submit_analysis", {"method": "추이", "plan": ["월 합계"], "code": OK}),
-                          ("submit_explanation", {"lines": ["노형동 월 매출은 81개월 자료입니다."]})])
+    def test_fix_once_then_submit(self):
+        seen = []
+        chat = fake_chat([PY("import os"), PY(OK), ("submit_answer", {"lines": ["노형동 월 매출은 81개월 자료예요."]})], seen)
         r = expert.ask("노형동 월 매출 추이", chat=chat)
         self.assertEqual(r["status"], "성공")
         self.assertEqual([a["stage"] for a in r["attempts"]], ["검사", "실행"])
         self.assertEqual(r["by"], "AI")
+        self.assertEqual([t["tool"] for t in r["trace"]], ["run_python", "run_python", "submit_answer"])
+        self.assertEqual(len(seen[0]), 5)  # Claude에는 도구 5개
 
     def test_wrong_number_falls_back(self):
-        chat = fake_chat([("submit_analysis", {"method": "추이", "plan": ["월 합계"], "code": OK}),
-                          ("submit_explanation", {"lines": ["상관계수는 0.92이고 증가율은 12.3%입니다."]})])
+        chat = fake_chat([PY(OK), ("submit_answer", {"lines": ["상관계수는 0.92이고 증가율은 12.3%예요."]})])
         r = expert.ask("노형동 월 매출 추이", chat=chat)
         self.assertTrue(r["by"].startswith("프로그램"))
         self.assertIn("months: 81", r["lines"])
 
-    def test_two_failures(self):
-        chat = fake_chat([("submit_analysis", {"method": "x", "plan": [], "code": "import os"}),
-                          ("submit_analysis", {"method": "x", "plan": [], "code": "open('a')"})])
+    def test_step_limit(self):
+        chat = fake_chat([PY("import os")] * 6)
         r = expert.ask("파일 읽어 줘", chat=chat)
         self.assertEqual(r["status"], "실패")
+        self.assertEqual(len(r["trace"]), expert.MAX_STEPS)
         self.assertIn("기법 목록", r["hint"])
+
+    def test_choose_technique_then_code_ends(self):
+        chat = fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""}), ("text", "끝났어요")])
+        r = expert.ask(CORR_Q, chat=chat)
+        self.assertEqual(r["status"], "성공", r)
+        self.assertEqual(r["trace"][0]["tool"], "run_technique")
+        self.assertTrue(r["result"]["numbers"])
+        self.assertTrue(r["result"]["series"])  # 기법 그래프를 전문가 화면 형식으로 옮김
+
+    def test_describe_and_catalog_then_python(self):
+        chat = fake_chat([[("describe_data", {"table": "card_month"}), ("search_center_catalog", {"keyword": "정류소 시간대"})], PY(OK),
+                          ("submit_answer", {"lines": ["노형동 월 매출은 81개월 자료예요."]})])
+        r = expert.ask("노형동 월 매출 추이", chat=chat)
+        self.assertEqual(r["status"], "성공")
+        self.assertEqual([t["tool"] for t in r["trace"]], ["describe_data", "search_center_catalog", "run_python", "submit_answer"])
+        self.assertTrue(all(t["ok"] for t in r["trace"]))
+
+    def test_submit_before_result_is_refused(self):
+        chat = fake_chat([("submit_answer", {"lines": ["그냥 답"]}), PY(OK), ("submit_answer", {"lines": ["81개월 자료예요."]})])
+        r = expert.ask("노형동 월 매출 추이", chat=chat)
+        self.assertFalse(r["trace"][0]["ok"])
+        self.assertEqual(r["status"], "성공")
+
+    def test_time_budget(self):
+        expert.BUDGET = -1
+        r = expert.ask("노형동 월 매출 추이", chat=fake_chat([PY(OK)]))
+        self.assertEqual(r["status"], "실패")
+        self.assertEqual(r["trace"][0]["name"], "시간 예산 초과")
+
+    def test_local_backend_stops_after_result(self):
+        expert.backend = lambda: "ollama"
+        seen = []
+        r = expert.ask(CORR_Q, chat=fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""})], seen))
+        self.assertEqual(r["status"], "성공")
+        self.assertEqual(len(seen), 1)  # 코드가 루프를 끝냄(로컬 모델은 스스로 끝내지 못함)
+        self.assertNotIn("run_python", seen[0])  # 로컬에는 코드 실행 도구를 주지 않음
+        self.assertEqual(r["by"], "프로그램(기법 코드의 문장)")
+
+    def test_local_no_tool_rule_picks(self):
+        expert.backend = lambda: "ollama"
+        r = expert.ask(CORR_Q, chat=fake_chat([("text", "상관을 보면 됩니다")]))
+        self.assertEqual(r["status"], "성공")
+        self.assertTrue(r["trace"][0]["by"].startswith("규칙"))
+
+    def test_wrong_technique_is_sent_back(self):
+        q = "노형동 음식점 매출 변화를 건수와 건당 금액으로 분해해줘"
+        chat = fake_chat([("run_technique", {"technique": "decomp", "dongs": ["노형동"], "target": "음식점"}),
+                          ("run_technique", {"technique": "change", "dongs": ["노형동"], "target": "음식점"}), ("text", "끝")])
+        r = expert.ask(q, chat=chat)
+        self.assertFalse(r["trace"][0]["ok"])
+        self.assertIn("변화 분해", r["trace"][0]["note"])
+        self.assertTrue(r["trace"][1]["ok"])
+
+    def test_local_info_question_ends_with_catalog(self):
+        expert.backend = lambda: "ollama"
+        r = expert.ask("정류소별 시간대 버스 이용 자료는 센터에 있어?", chat=fake_chat([("search_center_catalog", {"keyword": "정류소 시간대"})]))
+        self.assertEqual(r["status"], "성공")
+        self.assertEqual([t["tool"] for t in r["trace"]], ["search_center_catalog"])
+        self.assertEqual(r["result"]["tables"][0]["title"], "센터 자료 찾기 결과")
+
+    def test_bad_dong_is_dropped(self):
+        chat = fake_chat([("run_technique", {"technique": "corr", "dongs": ["43개 동네"], "target": ""}), ("text", "끝")])
+        r = expert.ask(CORR_Q, chat=chat)
+        self.assertEqual(r["status"], "성공")
+        self.assertTrue(any("동네 이름이 아니어서" in n for n in r["result"]["notes"]))
 
     def test_auth_error_is_reported(self):
         def chat(model, messages, tools):

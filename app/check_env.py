@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import envfile  # noqa: E402
 
 EMBED = "bge-m3"
+AGENT = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")  # 전문가 모드 로컬 도구 루프(문서 26)
 CHAT = os.environ.get("JEJU_OLLAMA_MODEL", "qwen3:1.7b")
 
 
@@ -50,6 +51,14 @@ def report(models, has_key, backend=None):
         lines.append(f"[설명 문장] Ollama {CHAT}를 씁니다.")
     else:
         lines.append(f"[설명 문장] LLM이 없어 템플릿 문장으로 답합니다. 숫자 계산은 그대로입니다(선택: 'ollama pull {CHAT}').")
+    if backend == "rule":
+        lines.append("[전문가 모드] LLM_BACKEND=rule이라 꺼져 있습니다.")
+    elif has_key or backend == "claude":
+        lines.append("[전문가 모드] Claude가 도구 5개(자료 확인·통계 기법·코드 실행·센터 자료 찾기·답 제출)를 골라 씁니다.")
+    elif models is not None and AGENT in models:
+        lines.append(f"[전문가 모드] Ollama {AGENT}가 도구 4개(코드 실행 제외)를 골라 씁니다.")
+    else:
+        lines.append(f"[전문가 모드] Claude 키나 로컬 모델이 없어 꺼져 있습니다(선택: 'ollama pull {AGENT}'). 통계 기법 8종은 그대로 씁니다.")
     return lines
 
 

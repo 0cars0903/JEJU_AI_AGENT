@@ -832,6 +832,12 @@ test.describe("전문가 모드(설계 11-2절)", () => {
           n++ === 0
             ? {
                 status: "성공", method: "Pearson 상관", plan: ["월 매출과 방문 지수를 맞춘다", "상관계수를 구한다"], code: "result = {}", by: "AI", sec: 12.3,
+                backend: "claude",
+                trace: [
+                  { step: 1, tool: "describe_data", name: "자료 확인", by: "AI", args: "", ok: true, note: "", sec: 0.1 },
+                  { step: 2, tool: "run_python", name: "코드 실행(격리)", by: "AI", args: "", ok: true, note: "", sec: 1.2 },
+                  { step: 3, tool: "submit_answer", name: "답 제출", by: "AI", args: "", ok: true, note: "", sec: 0 },
+                ],
                 lines: ["상관계수는 0.784입니다."], result: { numbers: { r: 0.784, n: 34 }, notes: ["월 단위 34개월이라 자기상관 주의"],
                   series: [{ title: "산점도", kind: "scatter", x: [1, 2, 3], y: [2, 4, 5] }], tables: [{ title: "표", columns: ["a", "b"], rows: [[1, 2]] }] },
               }
@@ -844,6 +850,8 @@ test.describe("전문가 모드(설계 11-2절)", () => {
     await page.getByTestId("expert-input").fill("노형동 매출과 방문 상관");
     await page.getByTestId("expert-submit").click();
     await expect(page.getByTestId("expert-lines")).toContainText("0.784");
+    await expect(page.getByTestId("expert-trace-step")).toHaveCount(3); // 문서 26 안 A: AI가 고른 도구 순서
+    await expect(page.getByTestId("expert-trace")).toContainText("자료 확인");
     await expect(page.getByTestId("expert-numbers")).toContainText("34");
     await expect(page.getByTestId("expert-chart")).toBeVisible();
     await expect(page.getByTestId("expert-notes")).toContainText("자기상관");
