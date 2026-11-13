@@ -32,8 +32,8 @@ def train_and_save():
     out = {"embed_model": XE.MODEL, "n_train": len(rows), "sources": sorted({s for *_, s in rows}), "trained_at": time.strftime("%Y-%m-%d %H:%M"),
            "sklearn": skv, "low_conf": LOW_CONF, "heads": {}}
     for head in ["type", "expect"]:
-        y = [t[head] for _, t, _ in rows]
-        m = LogisticRegression(max_iter=2000, C=4.0, class_weight="balanced").fit(X, y)
+        idx = [i for i, (_, t, _) in enumerate(rows) if t.get(head)]  # 되묻기 사람 문항은 type이 없다(2026-11-14)
+        m = LogisticRegression(max_iter=2000, C=4.0, class_weight="balanced").fit(X[idx], [rows[i][1][head] for i in idx])
         out["heads"][head] = {"classes": list(m.classes_), "coef": m.coef_.round(6).tolist(), "intercept": m.intercept_.round(6).tolist()}
     MODEL.parent.mkdir(exist_ok=True)
     MODEL.write_text(json.dumps(out), encoding="utf-8")

@@ -51,7 +51,8 @@ def training_rows():
     for line in (X1 / "train.jsonl").read_text(encoding="utf-8").splitlines():
         m = json.loads(line)["messages"]
         rows.append((m[1]["content"], json.loads(m[2]["content"]), "template"))
-    for name, tag in [("b1_train.jsonl", "b1"), ("b1b_train.jsonl", "b1b"), ("v3_train.jsonl", "v3")]:  # B1(짧은 말투) + B1b(긴 문장) + v3 카드 매출 예문
+    for name, tag in [("b1_train.jsonl", "b1"), ("b1b_train.jsonl", "b1b"), ("v3_train.jsonl", "v3"), ("human_train.jsonl", "human")]:
+        # B1(짧은 말투) + B1b(긴 문장) + v3 카드 매출 예문 + human(사람 말투 정답 1,000문항, Gemini 045·046, 2026-11-14. 되묻기는 type 없음)
         f = X1 / name
         if f.exists():
             for line in f.read_text(encoding="utf-8").splitlines():
@@ -62,13 +63,13 @@ def training_rows():
 
 
 class EmbedParser:
-    def __init__(self, use=("template", "b1", "b1b", "v3")):
+    def __init__(self, use=("template", "b1", "b1b", "v3", "human")):
         from sklearn.linear_model import LogisticRegression
         rows = [r for r in training_rows() if r[2] in use]
         X = embed([q for q, _, _ in rows])
-        ty = [t["type"] for _, t, _ in rows]
+        ti = [i for i, (_, t, _) in enumerate(rows) if t.get("type")]  # 되묻기 사람 문항은 type이 없어 type 분류기에서 뺀다
         ex = [t["expect"] for _, t, _ in rows]
-        self.type_clf = LogisticRegression(max_iter=2000, C=4.0, class_weight="balanced").fit(X, ty)
+        self.type_clf = LogisticRegression(max_iter=2000, C=4.0, class_weight="balanced").fit(X[ti], [rows[i][1]["type"] for i in ti])
         self.exp_clf = LogisticRegression(max_iter=2000, C=4.0, class_weight="balanced").fit(X, ex)
         self.n = len(rows)
 
