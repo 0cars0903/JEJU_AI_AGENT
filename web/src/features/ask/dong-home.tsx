@@ -157,7 +157,7 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
       </div>
       {/* 지도 경계는 동네 값을 기다리지 않고 바로 그린다. 값이 오면 색을 칠한다. 예전에는 값 요청이 늦거나 실패하면 지도 자리가 통째로 비었다(운영 '처음 화면' 지도 없음, 2026-11-13) */}
       {(
-        <div className="order-1 lg:order-none lg:max-w-[calc((100dvh-30rem)*1.5)]">
+        <div className="order-1 lg:order-none lg:max-w-[calc((100dvh-32rem)*1.5)]">
         {q.isError && !q.data && (
           <p data-testid="home-map-error" role="alert" className="mb-2 flex flex-wrap items-center gap-2 text-[length:var(--krds-fs-body-medium)]">
             지도 값을 불러오지 못했어요.

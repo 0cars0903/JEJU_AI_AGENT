@@ -483,7 +483,7 @@ export function Report({ r }: { r: AskResult }) {
   const center = a.requests.filter((q) => q.kind === "center");
   return createPortal(
     <div ref={rootRef} className="print-only" data-testid="report" aria-hidden>
-      <h1>제주 상권 EDA 보고서</h1>
+      <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent 보고서</h1>
       <p>질문: {r.question}</p>
       {r.understood && <p>{r.understood.text}</p>}
       {(r.understood?.notes ?? []).map((n) => (
@@ -626,7 +626,7 @@ export function Report({ r }: { r: AskResult }) {
           </tbody>
         </table>
         <p>
-          생성 {now} · 제주 상권 EDA Agent
+          생성 {now} · 제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent
         </p>
       </div>
     </div>,

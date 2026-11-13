@@ -94,7 +94,7 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
   const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
   return createPortal(
     <div ref={rootRef} className="print-only print-expert" data-testid="expert-report" aria-hidden>
-      <h1>제주 상권 EDA 전문가 모드 분석</h1>
+      <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent · 전문가 모드 분석</h1>
       <p>요청: {q}</p>
       <p>
         기법: {r.method} · AI가 짠 코드를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 만든 때 {now}

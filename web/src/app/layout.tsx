@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { AppSidebar } from "@/components/app-sidebar";
 
 export const metadata: Metadata = {
-  title: "제주 상권 EDA",
+  title: "제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent",
   description: "제주빅데이터센터를 찾는 소상공인·예비창업자·중소기업의 상권 질문에 공공 자료로 계산한 답과 보고서를 드립니다.",
 };
 
