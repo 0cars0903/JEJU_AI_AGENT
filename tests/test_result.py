@@ -218,6 +218,31 @@ class Api(unittest.TestCase):
         self.assertIn("process", js)
 
 
+class Escalate(unittest.TestCase):  # 중간안: 일반 경로가 못 풀면 Agent에게 넘긴다
+    def _it(self, rule_type):
+        t = {"type": "T12", "metric": [], "target": None, "space": ["노형동"], "time": None, "time_year": None, "breakdown": None, "cond": [], "form": "수치", "expect": "범위밖"}
+        return lambda q: {"tuple": t, "card": {"text": "지금 자료로는 답할 수 없어요"}, "confidence": 0.4, "needs_confirm": True, "rule_type": rule_type, "path": "B3"}
+
+    def test_classifier_only_out_of_scope_goes_to_agent(self):
+        ok = {"status": "성공", "lines": ["센터 자료로 볼 수 있어요."], "trace": []}
+        with mock.patch("expert.ask", return_value=ok) as ag:
+            r = R.respond("노형동 펫카페 손님 어때", {"agent_ok": True}, llm_on=True, interpret=self._it("T1"))
+        self.assertEqual(r["status"], "Agent")
+        self.assertEqual(ag.call_args.kwargs.get("mode"), "escalate")
+
+    def test_rule_also_out_of_scope_is_blocked(self):
+        with mock.patch("expert.ask") as ag:
+            r = R.respond("노형동 펫카페 손님 어때", {"agent_ok": True}, llm_on=True, interpret=self._it("T12"))
+        self.assertEqual(r["status"], "범위밖")
+        ag.assert_not_called()
+
+    def test_no_agent_without_permission(self):
+        with mock.patch("expert.ask") as ag:
+            r = R.respond("노형동 펫카페 손님 어때", {}, llm_on=True, interpret=self._it("T1"))
+        self.assertEqual(r["status"], "범위밖")
+        ag.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()
 

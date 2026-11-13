@@ -35,10 +35,12 @@ CHOICES = {  # 질문 종류 → LLM에게 보이는 설명(계산 계획은 pla
 SYSTEM = ("너는 제주 상권 질문을 정해진 분석 계획으로 연결하는 계획 담당이다. 질문을 읽고 아래 질문 종류 중 하나를 고른다. "
           "분류기와 사전 규칙의 판단이 함께 주어진다. 분류기 판단이 설명에 맞으면 그대로 고른다. 분류기 판단이 분명히 틀렸을 때만 "
           "사전 규칙 판단이나 다른 종류를 고른다. 변화의 크기(급증·급감·추락·치솟음)를 묻는지, 지금 값의 크기를 묻는지, 조건 여러 개를 함께 거는지 먼저 구분한다. "
-          "이유는 한 문장, 숫자 없이 쓴다.\n질문 종류:\n" + "\n".join(f"- {k}: {v}" for k, v in CHOICES.items()))
+          "질문 하나에 여러 종류가 섞였거나(예: 추세를 보고 다른 동네와 비교) 위 종류로 답할 수 없으면 AGENT를 고른다. "
+          "이유는 한 문장, 숫자 없이 쓴다.\n질문 종류:\n" + "\n".join(f"- {k}: {v}" for k, v in CHOICES.items())
+          + "\n- AGENT: 정해진 종류 하나로 답할 수 없음(여러 단계를 함께 묻거나, 자료를 찾아야 하거나, 위 종류 밖) → Agent에게 넘김")
 TOOL = {"type": "function", "function": {"name": "choose_plan", "description": "질문 종류(분석 계획)를 하나 고른다.", "strict": True,
         "parameters": {"type": "object", "additionalProperties": False, "required": ["type", "reason"],
-                       "properties": {"type": {"type": "string", "enum": list(CHOICES)}, "reason": {"type": "string"}}}}}
+                       "properties": {"type": {"type": "string", "enum": list(CHOICES) + ["AGENT"]}, "reason": {"type": "string"}}}}}
 FORMAT = TOOL["function"]["parameters"]
 _mem = {}
 
@@ -117,6 +119,12 @@ def adjust(question, it, chat=None):
         except Exception as e:  # LLM 오류면 분류기 결과를 그대로 쓴다
             return dict(it, plan_agent={**rec, "to": t["type"], "kept": True, "why": f"AI 호출 실패({type(e).__name__})"})
     new = got.get("type")
+    if new == "AGENT":  # 중간안: 정해진 종류 하나로 답할 수 없으면 Agent에게 넘긴다
+        if not cached and name != "test":
+            cache[key] = {"type": new, "reason": str(got.get("reason") or "")[:200]}
+            _save()
+        return dict(it, escalate=True, plan_agent={**rec, "to": "AGENT", "to_ko": "Agent에게 넘김", "kept": True, "escalate": True,
+                                                   "reason": str(got.get("reason") or "")[:200], "cached": cached})
     if new not in CHOICES:
         return dict(it, plan_agent={**rec, "to": t["type"], "kept": True, "why": "AI가 정해진 종류를 고르지 않음"})
     import verify

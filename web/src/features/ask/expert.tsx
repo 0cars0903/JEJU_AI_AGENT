@@ -163,7 +163,7 @@ function printExpert() {
   window.print();
 }
 
-function ResultView({ r, q }: { r: ExpertResult; q: string }) {
+export function ResultView({ r, q }: { r: ExpertResult; q: string }) {
   if (r.status !== "성공") {
     return (
       <div data-testid="expert-fail" className="flex flex-col gap-1 rounded-(--radius) border border-(--krds-border-gray) p-3">

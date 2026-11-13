@@ -163,6 +163,28 @@ def _catalog(args):
                   "note": "센터 자료는 센터 PC에서 조회한 CSV를 '센터 자료 넣기'로 넣으면 계산할 수 있어요." if hits else "찾지 못했어요. 다른 말로 찾아 보세요."}
 
 
+def _topic(question, args):
+    """answer_topic: 일반 경로를 지정한 질문 종류·칸으로 다시 부른다(LLM 없이, 넘김 없이). 숫자·검수·답 카드는 일반 경로 그대로."""
+    import qparse
+    import qtuple as Q
+    import result
+    import verify
+    t = {"type": args.get("type"), "metric": [m for m in args.get("metric") or [] if m in Q.METRICS],
+         "target": (args.get("target") or None), "space": [d for d in args.get("space") or [] if d in Q.DONGS],
+         "time": None, "time_year": None, "breakdown": None, "cond": [], "form": "수치", "expect": "답함"}
+    dropped = [d for d in args.get("space") or [] if d and d not in Q.DONGS]
+    errs = verify.check_tuple(t)
+    if errs:
+        return False, {"error": "칸이 맞지 않아요: " + "; ".join(e.get("detail", "") for e in errs) + (f" (동네 이름이 아님: {dropped})" if dropped else "")}, None
+    it = {"tuple": t, "card": qparse.card(t), "path": "Agent 지정", "confidence": None, "sec": 0.0}
+    out = result.respond(question, None, llm_on=False, interpret=lambda q: it)
+    card = out.get("card") or {}
+    if out.get("status") in ("범위밖", "선택필요") or not card.get("evidence"):
+        return False, {"status": out.get("status"), "error": card.get("conclusion") or (out.get("choose") or {}).get("message") or "답을 만들지 못했어요"}, out
+    return True, {"status": out.get("status"), "type": t["type"], "conclusion": card.get("conclusion"),
+                  "evidence": [e["text"] for e in card.get("evidence", [])][:6], "limits": card.get("limits")}, out
+
+
 def _views_to_series(ans):
     out = []
     for v in ((ans or {}).get("answer") or {}).get("views") or []:
@@ -186,7 +208,7 @@ TOOL_KO = {"describe_data": "자료 확인", "run_technique": "통계 기법 실
            "search_center_catalog": "센터 자료 찾기", "submit_answer": "답 제출"}
 
 
-def ask(question, chat=None, user="local"):
+def ask(question, chat=None, user="local", mode="expert"):
     """전문가 모드 한 번(도구 루프). 돌려주는 값: status, method, plan, code, result, lines, by, attempts, trace, backend, error, usage, sec."""
     t0 = time.perf_counter()
     name = backend()
@@ -196,14 +218,19 @@ def ask(question, chat=None, user="local"):
         return {"status": "상한", "error": f"오늘 전문가 모드 요청 상한({DAILY}건)에 닿았어요."}
     chat = chat or _chat_fn(name)
     local = name == "ollama"
-    tools = P.AGENT_TOOLS_LOCAL if local else P.AGENT_TOOLS
+    if mode == "escalate":  # 일반 경로가 처리하지 못해 넘어온 질문(중간안): 코드 실행 도구는 주지 않는다
+        tools = [P.TOOL_TOPIC, P.TOOL_TECHNIQUE, P.TOOL_CATALOG, P.TOOL_SUBMIT] + ([] if local else [P.TOOL_DESCRIBE])
+        system = P.ESCALATE_SYSTEM_LOCAL if local else P.ESCALATE_SYSTEM
+    else:
+        tools = P.AGENT_TOOLS_LOCAL if local else P.AGENT_TOOLS
+        system = P.AGENT_SYSTEM_LOCAL if local else P.AGENT_SYSTEM + datadict.describe()
     allowed = {t["function"]["name"] for t in tools}
-    system = P.AGENT_SYSTEM_LOCAL if local else P.AGENT_SYSTEM + datadict.describe()
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": question}]
     usage, trace, attempts = {}, [], []
     got = None  # {"kind", "result", "method", "plan", "code", "answer"}
     lines, nudged, calls, fails, rewrites = None, False, 0, 0, 0
     info = []  # 자료 확인·센터 자료 찾기 결과(정보 질문은 이것으로 답한다)
+    topics = []  # answer_topic으로 만든 일반 답(넘김 모드)
     import techniques
     analysis_q = techniques.detect(question) is not None
 
@@ -235,6 +262,14 @@ def ask(question, chat=None, user="local"):
                          "series": [{**x, "x": x["x"][:60], "y": x["y"][:60]} for x in res.get("series", [])]}
             else:
                 reply = {"error": f"{out.get('stage')} 실패: {out.get('error')}. 규칙을 지켜 고친 코드를 다시 제출하세요."}
+        elif fn == "answer_topic":
+            ok, reply, extra = _topic(question, args)
+            if ok:
+                topics.append(extra)
+                card = extra.get("card") or {}
+                got = {"kind": "topic", "method": "일반 답 경로(" + ", ".join(str(x.get("process", {}).get("type") or "") for x in topics) + ")",
+                       "plan": None, "code": None, "answer": {"topics": topics},
+                       "result": {"numbers": {}, "notes": card.get("limits") or [], "tables": [], "series": []}}
         elif fn == "search_center_catalog":
             ok, reply = _catalog(args)
             if ok and reply.get("found"):
@@ -344,7 +379,12 @@ def ask(question, chat=None, user="local"):
     allowed_src = [result, got.get("answer") or {}, {"q": question, "dict": datadict.describe()}]
     by = "AI"
     if lines is None:  # 답을 제출하지 않았으면(로컬·루프 상한) 해설을 따로 받거나 기법 문장을 쓴다
-        if got["kind"] == "technique":
+        if got["kind"] == "topic":
+            lines, by = [], "프로그램(일반 답 카드의 문장)"
+            for x in topics:
+                c = x.get("card") or {}
+                lines += [c.get("conclusion") or ""] + [e["text"] for e in c.get("evidence", [])][:2]
+        elif got["kind"] == "technique":
             card = (got.get("answer") or {}).get("card") or {}
             lines, by = [card.get("conclusion") or ""] + [e["text"] for e in card.get("evidence", [])][:4], "프로그램(기법 코드의 문장)"
         elif not local:
@@ -360,4 +400,4 @@ def ask(question, chat=None, user="local"):
     if bad and by == "AI":
         attempts.append({"stage": "숫자 대조", "ok": False, "error": f"결과에 없는 숫자 {bad[:5]}"})
         lines, by = _fallback_lines(result), "프로그램(해설 숫자 불일치로 대체)"
-    return {**base, "status": "성공", "result": result, "lines": lines, "by": by, "sec": round(time.perf_counter() - t0, 1)}
+    return {**base, "status": "성공", "result": result, "lines": lines, "by": by, "topics": topics or None, "sec": round(time.perf_counter() - t0, 1)}

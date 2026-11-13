@@ -403,6 +403,18 @@ def _exception(question, t):
     return None
 
 
+def _escalate(question, it, t0, why):
+    """일반 경로가 처리하지 못한 질문을 Agent(expert.ask, mode=escalate)에게 넘긴다. Agent가 실패하면 None(일반 경로 결과를 그대로 쓴다)."""
+    import expert
+    ag = expert.ask(question, mode="escalate")
+    if ag.get("status") != "성공":
+        return None
+    meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}
+    return {"question": question, "status": "Agent", "tuple": it["tuple"], "interpret": meta, "agent": ag, "escalated": why,
+            "card": {"conclusion": (ag.get("lines") or [""])[0], "evidence": [], "intervals": [], "limits": [], "next_questions": []},
+            "sec": round(time.perf_counter() - t0, 3)}
+
+
 def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, path=None, **review_kw):
     t0 = time.perf_counter()
     assumed, notes, typed = False, [], question if not slots or path else None
@@ -497,7 +509,17 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                 t = dict(t, expect="답함")  # 추정해서 답하고 "이렇게 이해했어요"로 보여 준다
                 it = dict(it, tuple=t, card=qparse.card(t))
                 assumed = True
+    agent_ok = llm_on and bool((env or {}).get("agent_ok")) and not slots
+    if agent_ok and it.get("escalate"):  # 중간안: 계획 선택 Agent가 '정해진 종류 하나로 답할 수 없음'을 고름
+        ag = _escalate(question, it, t0, "계획 선택 Agent가 여러 단계·종류 밖으로 판단")
+        if ag:
+            return ag
     rv = V.review(question, env, interpret=lambda q: it, **review_kw)
+    if agent_ok and ((rv["status"] == "범위밖" and it.get("rule_type") != "T12") or (rv["status"] not in ("범위밖", "되묻기") and rv.get("run") is None)):
+        # 중간안: 일반 경로로 해결되지 않으면 Agent에게 넘긴다(분류기만 범위 밖으로 본 질문, 계획·계산 실패). 규칙도 범위 밖이면 그대로 막는다
+        ag = _escalate(question, it, t0, "일반 경로가 범위 밖으로 판단(규칙과 불일치)" if rv["status"] == "범위밖" else "일반 경로 계산 실패")
+        if ag:
+            return ag
     t = rv["tuple"]
     out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}}
     if rv["status"] == "되묻기":  # 검수 단계에서 칸을 채우지 못한 경우

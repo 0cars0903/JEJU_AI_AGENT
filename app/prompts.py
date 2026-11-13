@@ -103,3 +103,28 @@ TOOL_SUBMIT = _tool("submit_answer", "분석을 끝내고 답 문장을 제출�
                     {"lines": {"type": "array", "items": {"type": "string"}, "description": "한국어 문장 3~6개. 숫자는 도구 결과에 있는 값만"}})
 AGENT_TOOLS = [TOOL_DESCRIBE, TOOL_TECHNIQUE, TOOL_PYTHON, TOOL_CATALOG, TOOL_SUBMIT]
 AGENT_TOOLS_LOCAL = [TOOL_DESCRIBE, TOOL_TECHNIQUE, TOOL_CATALOG, TOOL_SUBMIT]  # 로컬 모델에는 코드 작성을 맡기지 않는다(문서 26 8절)
+
+
+# ---------- 일반 경로에서 넘어온 질문(중간안, 2026-11-14 마스터 결정) ----------
+import qtuple as _Q  # noqa: E402
+TOPIC_TYPES = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T13", "T14", "T15"]
+TOOL_TOPIC = _tool("answer_topic", "정해진 질문 종류로 일반 답(계산·검수·근거가 붙은 답 카드)을 만든다. 질문 종류와 칸을 직접 지정한다. "
+                   "종류: T1 현황, T2 동네 비교, T3 순위, T4 추세, T5 구성, T6 조건 효과, T7 관계, T8 예측, T9 비슷한 동네, T10 종합 진단, "
+                   "T13 시간대, T14 조건 탐색, T15 이례 변화", {
+    "type": {"type": "string", "enum": TOPIC_TYPES},
+    "space": {"type": "array", "items": {"type": "string"}, "description": "행정동 이름(예: 노형동). 제주 전체면 빈 배열"},
+    "target": {"type": "string", "description": "업종(예: 카페, 음식점). 없으면 빈 문자열"},
+    "metric": {"type": "array", "items": {"type": "string", "enum": list(_Q.METRICS)}, "description": "지표. 모르면 빈 배열"}})
+
+ESCALATE_SYSTEM = """당신은 제주빅데이터센터 상권 분석 Agent입니다. 일반 답 경로가 한 번에 처리하지 못한 도민의 질문을 받았습니다.
+질문을 나눠 보고 도구를 골라 답을 만듭니다.
+- 정해진 질문 종류로 답할 수 있는 부분은 answer_topic으로 답을 만듭니다. 여러 부분이면 여러 번 부릅니다.
+- 통계 기법이 필요하면 run_technique을 씁니다.
+- 제출본 자료로 답할 수 없으면 search_center_catalog로 센터 자료를 찾아 무엇을 어디서 볼 수 있는지 안내합니다. 없는 자료로 답을 지어내지 않습니다.
+- 숫자는 도구 결과에 있는 값만 그대로 씁니다. 창업 여부 같은 추천·결정은 하지 않습니다.
+- 끝나면 submit_answer로 3~6문장('~예요·~했어요'체)을 제출합니다. 도구는 모두 합쳐 5번까지 부를 수 있습니다."""
+
+ESCALATE_SYSTEM_LOCAL = """너는 제주 상권 자료 분석 도우미다. 반드시 도구를 하나 호출한다. 숫자는 직접 만들지 않는다.
+- 정해진 질문 종류로 답할 수 있으면 answer_topic.
+- 통계 기법 요청은 run_technique.
+- 제출본에 없는 자료가 필요하면 search_center_catalog."""

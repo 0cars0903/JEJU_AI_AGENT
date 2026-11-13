@@ -188,6 +188,25 @@ class ExpertFlowTest(unittest.TestCase):
         self.assertEqual(r["status"], "성공")
         self.assertTrue(any("동네 이름이 아니어서" in n for n in r["result"]["notes"]))
 
+    def test_escalate_two_topics(self):  # 중간안: 일반 경로를 지정 인자로 두 번 불러 답을 묶는다
+        seen = []
+        chat = fake_chat([("answer_topic", {"type": "T4", "space": ["노형동"], "target": "카페", "metric": ["개업수"]}),
+                          ("answer_topic", {"type": "T2", "space": ["노형동", "연동"], "target": "카페", "metric": ["점포수"]}), ("text", "끝")], seen)
+        r = expert.ask("노형동 카페 요즘 어때? 연동이랑 비교하면?", chat=chat, mode="escalate")
+        self.assertEqual(r["status"], "성공", r)
+        self.assertEqual([t["tool"] for t in r["trace"]], ["answer_topic", "answer_topic"])
+        self.assertEqual(len(r["topics"]), 2)
+        self.assertNotIn("run_python", seen[0])  # 도민 경로에는 코드 실행 도구를 주지 않는다
+        self.assertIn("answer_topic", seen[0])
+
+    def test_escalate_bad_args_sent_back(self):
+        chat = fake_chat([("answer_topic", {"type": "T4", "space": [], "target": "카페", "metric": []}),
+                          ("answer_topic", {"type": "T4", "space": ["노형동"], "target": "카페", "metric": []}), ("text", "끝")])
+        r = expert.ask("카페 요즘 어때", chat=chat, mode="escalate")
+        self.assertFalse(r["trace"][0]["ok"])
+        self.assertIn("동네", r["trace"][0]["note"])
+        self.assertEqual(r["status"], "성공")
+
     def test_auth_error_is_reported(self):
         def chat(model, messages, tools):
             raise RuntimeError("Error code: 401 - invalid x-api-key")

@@ -116,6 +116,27 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await expect(plan).toContainText("저장된 결정");
   });
 
+  test("일반 경로가 못 푼 질문은 Agent가 도구를 골라 답한 화면이 보인다(중간안)", async ({ page }) => {
+    await page.route("**/api/ask", (r) =>
+      r.fulfill({
+        json: {
+          question: "노형동 카페 요즘 어때? 연동이랑 비교하면?", status: "Agent", escalated: "계획 선택 Agent가 여러 단계·종류 밖으로 판단",
+          card: { conclusion: "x", evidence: [], intervals: [], limits: [], next_questions: [] },
+          agent: { status: "성공", method: "일반 답 경로(추세, 동네 비교)", by: "프로그램(일반 답 카드의 문장)", sec: 4.1, backend: "claude",
+            lines: ["노형동 카페 개업은 최근 3년 늘었어요.", "연동보다 가게가 많아요."], result: { numbers: {}, notes: [], tables: [], series: [] },
+            trace: [{ step: 1, tool: "answer_topic", name: "일반 답(지정)", by: "AI", args: "", ok: true, note: "", sec: 0.4 },
+                    { step: 2, tool: "answer_topic", name: "일반 답(지정)", by: "AI", args: "", ok: true, note: "", sec: 0.5 }] },
+        },
+      }),
+    );
+    await page.getByTestId("question-input").fill("노형동 카페 요즘 어때? 연동이랑 비교하면?");
+    await page.getByTestId("question-input").press("Enter");
+    const a = page.getByTestId("agent-answer");
+    await expect(a).toContainText("Agent가 도구를 골라 답했어요");
+    await expect(a.getByTestId("expert-trace-step")).toHaveCount(2);
+    await expect(a.getByTestId("expert-lines")).toContainText("연동보다");
+  });
+
   test("② 추천 질문을 누르면 이어서 답한다", async ({ page }) => {
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();

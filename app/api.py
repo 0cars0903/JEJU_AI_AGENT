@@ -109,7 +109,8 @@ def ask(body: Ask, request: Request):
         raise HTTPException(422, "질문을 입력하거나 고를 항목을 골라 주세요.")
     b = llm.backend()  # 계획 해설: 키가 있으면 Claude, 없으면 켜져 있는 Ollama, 둘 다 없으면 템플릿(2026-11-13)
     on = (b == "claude" and _user(request) is not None) or (b == "ollama" and llm._ollama_alive())  # Claude는 로그인 뒤에만(데모)
-    env = {"center_db": False}
+    import expert
+    env = {"center_db": False, "agent_ok": on and expert.enabled() and _user(request) is not None}  # 중간안: 일반 경로가 못 풀면 Agent에게 넘김
     if body.dataset_id:
         import center_csv
         meta = center_csv.get(body.dataset_id)

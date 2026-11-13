@@ -72,6 +72,11 @@ class PlanAgentTest(unittest.TestCase):
         self.assertEqual(ch.call_count, 1)
         self.assertEqual((a["tuple"]["type"], b["tuple"]["type"], b["plan_agent"]["cached"]), ("T4", "T4", True))
 
+    def test_agent_choice_escalates(self):
+        r = PA.adjust("노형동 카페 요즘 어때 연동이랑 비교하면", it_of("T1", "T4", needs_confirm=True), chat=chooser("AGENT"))
+        self.assertTrue(r.get("escalate"))
+        self.assertEqual(r["tuple"]["type"], "T1")
+
     def test_off_switch(self):
         with mock.patch.dict("os.environ", {"JEJU_PLAN_AGENT": "0"}):
             self.assertIsNone(PA._backend())

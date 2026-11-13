@@ -13,7 +13,7 @@ import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMe
 import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
-import { ExpertMode } from "./expert";
+import { ExpertMode, ResultView } from "./expert";
 import { useNav } from "@/components/nav-context";
 import { AnswerCard, BizTabs, CompareWith, Downloads, Process, SourceList, SuggestionList, Understood, Waiting } from "./answer";
 
@@ -409,7 +409,15 @@ export function AskPage() {
                 if (id) document.getElementById(id)?.scrollIntoView();
               }}
             >
-              {(res: AskResult) => (
+              {(res: AskResult) =>
+                res !== SAMPLE && res.status === "Agent" && res.agent ? (
+                  <div className="flex flex-col gap-3" data-testid="agent-answer">
+                    <p className="rounded-(--radius) bg-muted px-3 py-2 text-(--krds-text-bolder)">
+                      정해진 질문 종류 하나로 바로 답하기 어려운 질문이라 Agent가 도구를 골라 답했어요{res.escalated ? ` (${res.escalated})` : ""}.
+                    </p>
+                    <ResultView r={res.agent} q={res.question ?? ""} />
+                  </div>
+                ) : (
                 <div className="flex flex-col gap-4">
                   <Understood key={JSON.stringify(res.understood)} r={res} sample={res === SAMPLE} onChange={(s) => setPicker({ preset: s })} />
                   {res !== SAMPLE && res.answer?.biz_tabs && <BizTabs tabs={res.answer.biz_tabs} onPick={(x) => run({ slots: x.slots }, x.text)} />}
@@ -451,7 +459,8 @@ export function AskPage() {
                   <Downloads r={res} />
                   {res !== SAMPLE && <Report r={res} />}
                 </div>
-              )}
+                )
+              }
             </Skeleton>
           )}
         </div>
