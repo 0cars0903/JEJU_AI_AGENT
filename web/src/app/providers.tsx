@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { NavProvider } from "@/components/nav-context";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [client] = useState(
@@ -14,7 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
   return (
     <QueryClientProvider client={client}>
-      <NuqsAdapter>{children}</NuqsAdapter>
+      <NuqsAdapter>
+        <NavProvider>{children}</NavProvider>
+      </NuqsAdapter>
     </QueryClientProvider>
   );
 }

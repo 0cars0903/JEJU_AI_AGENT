@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import { Suspense } from "react";
 import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export const metadata: Metadata = {
   title: "제주 상권 EDA",
@@ -22,6 +24,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <Providers>
           <SiteHeader />
+          {/* 사이드바 안 1(2026-11-13): PC는 본문 왼쪽 사이드 메뉴, 폰은 머리말 ☰ 서랍 */}
+          <div className="flex w-full flex-1">
+            <Suspense>
+              <AppSidebar />
+            </Suspense>
+            <div className="flex min-w-0 flex-1 flex-col">
           <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[100rem] flex-1 px-4 py-4 outline-none md:px-6 md:py-4">
             {children}
           </main>
@@ -29,6 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <footer data-testid="ai-notice" className="mx-auto w-full max-w-[100rem] px-4 pt-2 pb-4 text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle) print:hidden md:px-6">
             이 서비스는 AI 모델로 질문을 해석하고, 판단 과정의 설명 문장 일부를 AI가 씁니다. 답의 숫자는 공공 자료로 프로그램이 계산한 값입니다. 중요한 결정 전에는 원자료와 전문가 의견을 함께 확인해 주세요.
           </footer>
+            </div>
+          </div>
         </Providers>
       </body>
     </html>

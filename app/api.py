@@ -123,6 +123,9 @@ def ask(body: Ask, request: Request):
     if not body.dataset_id and ((body.slots or {}).get("topic") == "technique" or (not body.slots and techniques.detect(question))):
         if (body.slots or {}).get("topic") == "technique" and not question:
             question = techniques.EXAMPLES.get(body.slots.get("method"), "")
+            sp = body.slots.get("space") or []
+            if sp:  # 사이드바가 지금 보던 동네로 물은 경우: 예시 문장의 동네도 바꾼다(이중 검토 040)
+                question = question.replace("노형동", sp[0]).replace("제주 전체", sp[0])
         return clean(techniques.answer(question, body.slots))
     if body.slots:
         try:

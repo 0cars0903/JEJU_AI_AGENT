@@ -182,7 +182,8 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
   test("보고서: 인쇄용 정리본이 있고 화면에서는 숨김", async ({ page }) => {
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();
-    await expect(page.getByTestId("shortcut-print")).toBeVisible(); // 인쇄는 답 카드 바로 가기 한 곳에만 둔다(UI 검토 2026-11-13)
+    // 인쇄는 한 곳: PC는 사이드바 '이 답', 폰·태블릿은 답 카드 바로 가기(사이드바 안 1, 이중 검토 040)
+    await expect(page.getByTestId("nav-print").or(page.getByTestId("shortcut-print")).locator("visible=true")).toHaveCount(1);
     await expect(page.getByTestId("report")).toBeHidden();
     await page.emulateMedia({ media: "print" });
     await expect(page.getByTestId("report")).toBeVisible();
@@ -418,8 +419,15 @@ test.describe("사용성 점검 반영", () => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]).catch(() => {});
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();
-    await page.getByTestId("copy-link").click();
-    await expect(page.getByTestId("copied")).toHaveText("복사했어요");
+    // PC는 사이드바 '이 답'의 링크 복사, 폰·태블릿은 답 위 단추(사이드바 안 1)
+    const side = page.getByTestId("nav-copy");
+    if (await side.isVisible()) {
+      await side.click();
+      await expect(side).toContainText("복사했어요");
+    } else {
+      await page.getByTestId("copy-link").click();
+      await expect(page.getByTestId("copied")).toHaveText("복사했어요");
+    }
   });
 
   test("A10 그래프에 세로 눈금 단위를 적고 표도 억 원 단위로 보여 준다", async ({ page }) => {
@@ -622,7 +630,8 @@ test.describe("사용성 점검 2차 반영", () => {
     }
   });
 
-  test("B2·B7 답 위쪽 한 줄 바로 가기로 출처·내려받기 칸에 바로 간다", async ({ page }) => {
+  test("B2·B7 답 위쪽 한 줄 바로 가기로 출처·내려받기 칸에 바로 간다", async ({ page }, info) => {
+    test.skip(info.project.name === "desktop", "PC는 사이드바 '이 답'이 맡는다(사이드바 안 1)");
     await page.goto("/");
     await page.getByTestId("question-input").fill("노형동 카페 장사 잘 돼?");
     await page.keyboard.press("Enter");
@@ -865,7 +874,10 @@ test.describe("데모 로그인(2026-11-13)", () => {
       } else await r.fulfill({ status: 401, json: { detail: "아이디 또는 비밀번호가 맞지 않아요." } });
     });
     await page.goto("/");
-    await expect(page.getByTestId("login-open")).toBeVisible();
+    const mobile = !(await page.getByTestId("sidebar").isVisible());
+    if (mobile) await page.getByTestId("nav-open").click();
+    await expect(page.getByTestId(mobile ? "drawer" : "sidebar").getByTestId("login-open")).toBeVisible();
+    if (mobile) await page.keyboard.press("Escape");
     const locked = page.getByTestId("expert-locked");
     await locked.locator("summary").click();
     await locked.getByTestId("login-id").fill("judge1");
@@ -875,25 +887,30 @@ test.describe("데모 로그인(2026-11-13)", () => {
     await locked.getByTestId("login-pw").fill("pw-1");
     await locked.getByTestId("login-submit").click();
     await expect(page.getByTestId("expert")).toBeVisible();
-    await expect(page.getByTestId("login-state")).toContainText("judge1");
+    if (mobile) await page.getByTestId("nav-open").click();
+    await expect(page.getByTestId(mobile ? "drawer" : "sidebar").getByTestId("login-state")).toContainText("judge1");
   });
 
-  test("UI 검토(2026-11-13): 로그인 창은 바깥 누름·Esc로 닫히고, 머리말 [전문가 모드]는 전문가 모드 칸을 펼친다", async ({ page }, info) => {
+  test("사이드바(안 1): 로그인 창은 바깥 누름·Esc로 닫히고, [전문가 모드]는 전문가 모드 칸을 펼친다", async ({ page }, info) => {
     await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: false, id: null, claude: true } }));
     await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: false, available: true, login_required: true, daily_limit: 50 } }));
     await page.goto("/");
-    const pop = page.locator("header").getByTestId("login-form");
-    await page.getByTestId("login-open").click();
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    const desktop = info.project.name === "desktop";
+    const area = desktop ? page.getByTestId("sidebar") : page.getByTestId("drawer");
+    if (!desktop) await page.getByTestId("nav-open").click();
+    const pop = area.getByTestId("login-form");
+    await area.getByTestId("login-open").click();
     await expect(pop).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(pop).toHaveCount(0);
-    await page.getByTestId("login-open").click();
-    await page.mouse.click(4, page.viewportSize()!.height - 4); // 왼쪽 아래 여백(폰에서는 로그인 창이 제목을 덮는다)
-    await expect(pop).toHaveCount(0);
-    if (info.project.name === "desktop") {
-      await page.getByTestId("expert-link").click();
-      await expect(page.getByTestId("expert-locked").getByTestId("login-id")).toBeInViewport();
-    } else await expect(page.getByTestId("expert-link")).toBeHidden(); // 폰은 머리말이 두 줄이 되지 않게 숨긴다
+    if (desktop) {
+      await area.getByTestId("login-open").click();
+      await page.getByRole("heading", { name: "제주 상권, 자료로 물어보세요" }).click();
+      await expect(pop).toHaveCount(0);
+    } else await page.getByTestId("nav-open").click(); // Esc가 서랍도 닫았다
+    await area.getByTestId("nav-expert").click();
+    await expect(page.getByTestId("expert-locked").getByTestId("login-id")).toBeInViewport();
   });
 });
 
@@ -960,4 +977,44 @@ test("(가) 기법 분석: 기법을 지정하면 그 기법으로 계산하고,
   await expect(page.getByTestId("block-analysis")).toContainText("원인과 결과를 뜻하지 않아요");
   await page.getByTestId("view-as-table").click();
   await expect(page.getByTestId("view-table")).toContainText("노형동");
+});
+
+test.describe("사이드바(안 1, 2026-11-13)", () => {
+  test("PC: 접고 펴기, 기법 분석은 지금 보던 동네로, 새 상담 시작은 처음 화면으로", async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop");
+    await page.goto("/");
+    const bar = page.getByTestId("sidebar");
+    await expect(bar).toBeVisible();
+    const wide = (await bar.boundingBox())!.width;
+    await page.getByTestId("nav-collapse").click();
+    expect((await bar.boundingBox())!.width).toBeLessThan(wide / 2);
+    await expect(bar.getByTestId("nav-home")).toHaveAttribute("title", "처음 화면"); // 접힌 아이콘도 이름이 있다
+    await page.getByTestId("nav-collapse").click();
+    await page.getByTestId("question-input").fill("애월읍 음식점 카드 매출 흐름은?");
+    await page.getByTestId("ask-submit").click();
+    await expect(await conclusion(page)).toContainText("애월읍");
+    await expect(bar.getByTestId("nav-print")).toBeVisible(); // '이 답' 묶음은 답이 있을 때만
+    await bar.getByTestId("nav-tech").click();
+    await bar.getByTestId("nav-tech-decomp").click();
+    await expect(await conclusion(page)).toContainText("애월읍");
+    await expect(await conclusion(page)).toContainText("계절지수");
+    await bar.getByTestId("nav-reset").click();
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await expect(bar.getByTestId("nav-print")).toHaveCount(0);
+  });
+
+  test("폰: ☰로 서랍을 열고, Esc로 닫으면 ☰로 초점이 돌아온다. 골라서 묻기를 연다", async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile");
+    await page.goto("/");
+    await expect(page.getByTestId("sidebar")).toBeHidden();
+    await page.getByTestId("nav-open").click();
+    const d = page.getByTestId("drawer");
+    await expect(d).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(d).toHaveCount(0);
+    await expect(page.getByTestId("nav-open")).toBeFocused();
+    await page.getByTestId("nav-open").click();
+    await d.getByTestId("nav-picker").click();
+    await expect(page.getByTestId("step-picker")).toBeVisible();
+  });
 });

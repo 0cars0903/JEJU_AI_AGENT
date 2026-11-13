@@ -1,55 +1,29 @@
 "use client";
 
+/** 머리말(2026-11-13 사이드바 안 1): 서비스 이름과 폰·태블릿의 메뉴(☰) 단추만 둔다.
+ * 탭이 '질문하기' 하나뿐이던 메뉴, 전문가 모드 바로 가기, 로그인은 사이드바로 옮겼다. */
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useIconHover } from "@animateicons/react";
-import { cn } from "cn";
-import { MessageCircleIcon } from "@/components/icons";
-import { LoginButton } from "@/components/login";
-import { ExpertLink } from "@/features/ask/expert";
-
-const NAV = [
-  { href: "/", label: "질문하기", Icon: MessageCircleIcon },
-];
-
-function NavItem({ href, label, Icon, active }: (typeof NAV)[number] & { active: boolean }) {
-  const { ref, triggerProps } = useIconHover();
-  return (
-    <Link
-      href={href}
-      {...triggerProps}
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        "flex min-h-12 items-center gap-1.5 border-b-[3px] px-2 font-semibold whitespace-nowrap no-underline sm:px-3",
-        "text-[length:var(--krds-fs-label-small)]",
-        active
-          ? "border-(--krds-border-primary) text-(--krds-text-primary) hover:text-(--krds-text-primary)"
-          : "border-transparent text-(--krds-text-subtle) hover:bg-muted hover:text-(--krds-text-basic)",
-      )}
-    >
-      <Icon ref={ref} size={20} aria-hidden />
-      {label}
-    </Link>
-  );
-}
+import { Menu } from "lucide-react";
+import { useNav } from "@/components/nav-context";
 
 export function SiteHeader() {
-  const path = usePathname();
+  const nav = useNav();
   return (
-    <header className="border-b border-(--krds-border-gray-light) bg-background print:hidden md:sticky md:top-0 md:z-40">
-      <div className="mx-auto flex w-full max-w-[100rem] flex-wrap items-center gap-x-6 px-4 md:px-6">
-        <Link href="/" className="py-3 text-[length:var(--krds-fs-heading-xsmall)] font-bold text-(--krds-text-bolder) no-underline hover:text-(--krds-text-bolder)">
+    <header className="sticky top-0 z-40 h-[49px] border-b border-(--krds-border-gray-light) bg-background print:hidden">
+      <div className="flex h-full w-full items-center gap-2 px-2 md:px-4">
+        <button
+          type="button"
+          data-testid="nav-open"
+          onClick={() => nav.setDrawer(true)}
+          aria-label="사이드 메뉴 열기"
+          aria-expanded={nav.drawer}
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-(--radius) hover:bg-muted lg:hidden"
+        >
+          <Menu size={22} aria-hidden />
+        </button>
+        <Link href="/" className="px-2 text-[length:var(--krds-fs-heading-xsmall)] font-bold text-(--krds-text-bolder) no-underline hover:text-(--krds-text-bolder)">
           제주 상권 EDA
         </Link>
-        <nav aria-label="주요 메뉴" className="flex flex-wrap gap-x-1">
-          {NAV.map((n) => (
-            <NavItem key={n.href} {...n} active={n.href === "/" ? path === "/" : path.startsWith(n.href.slice(0, -1))} />
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-2 py-2">
-          <ExpertLink />
-          <LoginButton />
-        </div>
       </div>
     </header>
   );

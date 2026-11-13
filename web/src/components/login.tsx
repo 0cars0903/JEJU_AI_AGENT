@@ -3,6 +3,7 @@
 /** 데모 로그인(2026-11-13): 계정이 설정된 데모에서만 보인다. 로그인해야 Claude를 쓰는 기능(판단 과정 AI 설명·전문가 모드)이 켜진다. */
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { LogIn, LogOut, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApiError, getMe, login, logout } from "@/lib/api";
 
@@ -47,7 +48,8 @@ export function LoginForm({ onDone }: { onDone?: () => void }) {
   );
 }
 
-export function LoginButton() {
+/** 사이드바 맨 아래 계정 영역(2026-11-13 사이드바 안 1). compact = 사이드바를 아이콘 폭으로 접었을 때. 로그인 창은 위로 연다. */
+export function LoginButton({ compact = false }: { compact?: boolean }) {
   const qc = useQueryClient();
   const me = useQuery({ queryKey: ["me"], queryFn: getMe, retry: false, staleTime: 60_000 });
   const [open, setOpen] = useState(false);
@@ -72,20 +74,25 @@ export function LoginButton() {
   if (!me.data?.login_required) return null;
   if (me.data.logged_in)
     return (
-      <div className="flex items-center gap-2" data-testid="login-state">
-        <span className="text-(--krds-text-subtle)">{me.data.id} 로그인</span>
-        <Button variant="outline" size="sm" data-testid="logout" onClick={() => out.mutate()}>
-          로그아웃
+      <div className={"flex items-center gap-2 " + (compact ? "flex-col" : "flex-wrap")} data-testid="login-state">
+        <span className="flex items-center gap-1 text-(--krds-text-subtle)" title={`${me.data.id} 로그인`}>
+          <UserRound size={18} aria-hidden />
+          {compact ? <span className="sr-only">{me.data.id} 로그인</span> : `${me.data.id} 로그인`}
+        </span>
+        <Button variant="outline" size="sm" data-testid="logout" onClick={() => out.mutate()} aria-label="로그아웃" title="로그아웃">
+          <LogOut size={16} aria-hidden />
+          {!compact && "로그아웃"}
         </Button>
       </div>
     );
   return (
     <div className="relative" ref={boxRef}>
-      <Button variant="outline" size="sm" data-testid="login-open" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
-        로그인
+      <Button variant="outline" size="sm" data-testid="login-open" aria-expanded={open} onClick={() => setOpen((v) => !v)} aria-label="로그인" title="로그인">
+        <LogIn size={16} aria-hidden />
+        {!compact && "로그인"}
       </Button>
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-72 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) bg-card p-3 shadow-xl">
+        <div className="absolute bottom-full left-0 z-50 mb-2 w-72 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) bg-card p-3 shadow-xl">
           <p className="mb-2 text-[length:var(--krds-fs-body-small)] text-(--krds-text-bolder)">로그인하면 AI 설명과 전문가 모드가 켜져요. 질문과 답은 로그인 없이도 쓸 수 있어요.</p>
           <LoginForm onDone={() => setOpen(false)} />
         </div>

@@ -265,7 +265,7 @@ export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
         )}
         {/* B2·B7: 답이 길어도 결론 가까이에서 출처·내려받기·센터 자료 칸으로 바로 간다(순서는 그대로) */}
         {a && !sample && (
-          <nav aria-label="이 답의 아래쪽 바로 가기" data-testid="answer-shortcuts" className="flex flex-wrap items-center gap-x-1 gap-y-0 text-[length:var(--krds-fs-body-medium)]">
+          <nav aria-label="이 답의 아래쪽 바로 가기" data-testid="answer-shortcuts" className="flex flex-wrap items-center gap-x-1 gap-y-0 text-[length:var(--krds-fs-body-medium)] lg:hidden">
             <span className="text-(--krds-text-bolder)">바로 가기:</span>
             {(a.footer?.length ?? 0) > 0 && (
               <a href="#answer-source" className="inline-flex min-h-11 items-center px-2 underline">

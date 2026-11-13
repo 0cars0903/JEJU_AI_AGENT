@@ -14,6 +14,7 @@ import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
 import { ExpertMode } from "./expert";
+import { useNav } from "@/components/nav-context";
 import { AnswerCard, BizTabs, CompareWith, Downloads, Process, SourceList, SuggestionList, Understood, Waiting } from "./answer";
 
 // 로딩 뼈대의 모양을 그리기 위한 예시 답(화면에 보이지 않는다).
@@ -90,6 +91,7 @@ export function AskPage() {
   const pickerRef = useRef<HTMLElement>(null);
   // 답이 나온 뒤 프로그램이 입력 칸에 초점을 돌려줄 때는 글 전체를 고르지 않는다(파란 칠이 남아 보이는 문제, UI 검토 2026-11-13)
   const quietFocus = useRef(false);
+  const nav = useNav();
   // 마지막으로 답을 요청한 주소. 주소가 바뀐 직후 한 번의 그리기 동안 앞 질문의 답이 새 전환 부품에 들어가지 않게 한다(2026-11-13)
   const askedKey = useRef<string | null>(null);
 
@@ -185,6 +187,18 @@ export function AskPage() {
 
   const r = m.data;
   const answered = r && r.status !== "선택필요";
+  // 사이드바(안 1): '골라서 묻기'를 여기서 열게 등록하고, '이 답' 묶음에 답이 있는지 알린다
+  useEffect(() => {
+    nav.registerPicker(() => setPicker({}));
+    return () => nav.registerPicker(null);
+  }, [nav]);
+  const hasAnswer = Boolean(req && answered && !m.isPending);
+  const hasCenter = Boolean(r?.answer?.requests?.some((q) => q.kind === "center"));
+  const dongNow = r?.understood?.slots?.space?.[0];
+  const { setAnswer } = nav;
+  useEffect(() => {
+    setAnswer({ hasAnswer, hasCenter, dong: dongNow });
+  }, [hasAnswer, hasCenter, dongNow, setAnswer]);
   const asked = req?.label ?? null;
   const showPanel = panel || Boolean(picker);
   const needFile = m.isError && m.error instanceof ApiError && m.error.status === 422 && Boolean(req?.body.dataset_id);
@@ -195,7 +209,7 @@ export function AskPage() {
       <div className="flex min-w-0 flex-col gap-4">
         <section className="relative flex flex-col gap-2" aria-label="질문하기">
           {req ? (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 lg:hidden">
               <a href="/" onClick={goHome} data-testid="go-home" className="inline-flex min-h-11 items-center gap-1 rounded-(--radius) border border-(--krds-border-gray) px-3 font-semibold hover:bg-muted">
                 <House size={18} aria-hidden /> 처음 화면
               </a>
