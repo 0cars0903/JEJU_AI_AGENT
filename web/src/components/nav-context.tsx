@@ -17,6 +17,8 @@ type Nav = {
   setDrawer: (v: boolean) => void;
   collapsed: boolean;
   setCollapsed: (v: boolean) => void;
+  width: number;
+  setWidth: (v: number) => void;
 };
 
 const Ctx = createContext<Nav | null>(null);
@@ -25,6 +27,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
   const [answer, setAnswer] = useState<Answer>({ hasAnswer: false, hasCenter: false });
   const [drawer, setDrawer] = useState(false);
   const [collapsed, setCollapsedState] = useState(false);
+  const [width, setWidth] = useState(240); // 끌어서 200~400px. 저장하지 않는다(사용자 결정 11/13)
   const picker = useRef<(() => void) | null>(null);
   const setCollapsed = useCallback((v: boolean) => setCollapsedState(v), []);
   // KRDS·shadcn과 같은 단축키: Ctrl/Cmd+B로 사이드바를 접고 편다(폰에서는 서랍을 연다).
@@ -51,8 +54,10 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
       setDrawer,
       collapsed,
       setCollapsed,
+      width,
+      setWidth,
     }),
-    [answer, drawer, collapsed, setCollapsed],
+    [answer, drawer, collapsed, setCollapsed, width],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

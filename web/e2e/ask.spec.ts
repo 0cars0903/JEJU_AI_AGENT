@@ -988,8 +988,15 @@ test.describe("사이드바(안 1, 2026-11-13)", () => {
     const wide = (await bar.boundingBox())!.width;
     await page.getByTestId("nav-collapse").click();
     expect((await bar.boundingBox())!.width).toBeLessThan(wide / 2);
-    await expect(bar.getByTestId("nav-home")).toHaveAttribute("title", "처음 화면"); // 접힌 아이콘도 이름이 있다
+    // 접힌 아이콘: 마우스를 올리거나 키보드 초점이 오면 말풍선(펼친 상태에서는 띄우지 않음, 사용자 결정 11/13)
+    await bar.getByTestId("nav-home").hover();
+    await expect(page.getByTestId("tip")).toHaveText("처음 화면");
+    await page.mouse.move(700, 400); // 마우스를 뗀 뒤 키보드 초점
+    await bar.getByTestId("nav-reset").focus();
+    await expect(page.getByTestId("tip")).toHaveText("새 상담 시작");
     await page.getByTestId("nav-collapse").click();
+    await bar.getByTestId("nav-home").hover();
+    await expect(page.getByTestId("tip")).toHaveCount(0);
     await page.getByTestId("question-input").fill("애월읍 음식점 카드 매출 흐름은?");
     await page.getByTestId("ask-submit").click();
     await expect(await conclusion(page)).toContainText("애월읍");
@@ -1017,4 +1024,52 @@ test.describe("사이드바(안 1, 2026-11-13)", () => {
     await d.getByTestId("nav-picker").click();
     await expect(page.getByTestId("step-picker")).toBeVisible();
   });
+});
+
+test("사이드바: 로그인은 접기 단추 아래·처음 화면 위, 너비는 끌기·키보드·두 번 누르기로 바뀐다(2026-11-13)", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop");
+  await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: false, id: null, claude: true } }));
+  await page.goto("/");
+  const bar = page.getByTestId("sidebar");
+  await expect(bar.getByTestId("login-open")).toBeVisible();
+  const yCollapse = (await bar.getByTestId("nav-collapse").boundingBox())!.y;
+  const yLogin = (await bar.getByTestId("login-open").boundingBox())!.y;
+  const yHome = (await bar.getByTestId("nav-home").boundingBox())!.y;
+  expect(yCollapse).toBeLessThan(yLogin);
+  expect(yLogin).toBeLessThan(yHome);
+  await bar.getByTestId("login-open").click();
+  const form = page.getByTestId("login-form").first();
+  await expect(form).toBeVisible();
+  expect((await form.boundingBox())!.y).toBeGreaterThan(yLogin); // 로그인 창은 아래로 열린다
+  await page.keyboard.press("Escape");
+
+  const h = page.getByTestId("nav-resize");
+  const w = async () => Math.round((await bar.boundingBox())!.width);
+  expect(await w()).toBe(240);
+  const box = (await h.boundingBox())!;
+  const x0 = (await bar.boundingBox())!.x;
+  await page.mouse.move(box.x + 2, box.y + 200);
+  await page.mouse.down();
+  await page.mouse.move(x0 + 330, box.y + 200, { steps: 5 });
+  await page.mouse.up();
+  expect(Math.abs((await w()) - 330)).toBeLessThanOrEqual(2);
+  await page.mouse.move(x0 + 328, box.y + 200);
+  await page.mouse.down();
+  await page.mouse.move(x0 + 900, box.y + 200, { steps: 5 });
+  await page.mouse.up();
+  expect(await w()).toBe(400); // 상한
+  await h.dblclick();
+  expect(await w()).toBe(240); // 기본 너비
+  await h.focus();
+  await page.keyboard.press("ArrowRight");
+  expect(await w()).toBe(256);
+  const hb = (await h.boundingBox())!;
+  await page.mouse.move(hb.x + 2, hb.y + 200);
+  await page.mouse.down();
+  await page.mouse.move(x0 + 100, hb.y + 200, { steps: 5 });
+  await page.mouse.up();
+  expect(await w()).toBeLessThan(80); // 160px보다 좁히면 아이콘 폭으로 접힘
+  await expect(page.getByTestId("nav-collapse")).toHaveAttribute("aria-label", /펼치기/);
+  await page.reload();
+  expect(await w()).toBe(240); // 너비는 저장하지 않는다
 });

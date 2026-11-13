@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RotateCcw, ChevronDown, ChevronsLeft, ChevronsRight, Code2, Download, ExternalLink, FlaskConical, House, Link2, ListChecks, Printer, Upload, X } from "lucide-react";
 import { getExpertStatus, writeCenter } from "@/lib/api";
 import { LoginButton } from "@/components/login";
+import { Tip } from "@/components/tip";
 import { useNav } from "@/components/nav-context";
 import { copyText } from "@/features/ask/views";
 
@@ -42,15 +43,17 @@ function Item({ icon, label, onClick, href, current, compact, testId, extra }: {
   );
   return (
     <li>
-      {href ? (
-        <a href={href} data-testid={testId} aria-current={current ? "page" : undefined} title={compact ? label : undefined} className={cls} onClick={onClick}>
-          {body}
-        </a>
-      ) : (
-        <button type="button" data-testid={testId} title={compact ? label : undefined} className={cls} onClick={onClick}>
-          {body}
-        </button>
-      )}
+      <Tip on={compact} text={extra ? `${label} · ${extra}` : label}>
+        {href ? (
+          <a href={href} data-testid={testId} aria-current={current ? "page" : undefined} className={cls} onClick={onClick}>
+            {body}
+          </a>
+        ) : (
+          <button type="button" data-testid={testId} className={cls} onClick={onClick}>
+            {body}
+          </button>
+        )}
+      </Tip>
     </li>
   );
 }
@@ -131,17 +134,18 @@ function Menu({ compact, close }: { compact: boolean; close: () => void }) {
       </Group>
       <Group title="전문 분석" compact={compact}>
         <li>
+          <Tip on={compact} text="통계 기법으로 보기">
           <button
             type="button"
             data-testid="nav-tech"
             aria-expanded={techOpen || Boolean(method)}
-            title={compact ? "통계 기법으로 보기" : undefined}
             onClick={() => (compact ? (nav.setCollapsed(false), setTechOpen(true)) : setTechOpen(!techOpen))}
             className={"flex min-h-11 w-full items-center gap-2 rounded-(--radius) px-3 text-left hover:bg-muted" + (compact ? " justify-center px-0" : "")}
           >
             <FlaskConical size={S} aria-hidden />
             {compact ? <span className="sr-only">통계 기법으로 보기</span> : <><span className="flex-1">통계 기법으로 보기</span><ChevronDown size={16} aria-hidden className={techOpen || method ? "rotate-180" : ""} /></>}
           </button>
+          </Tip>
           {!compact && (techOpen || Boolean(method)) && (
             <ul className="ml-8 flex flex-col gap-0.5 border-l border-(--krds-border-gray-light) pl-2" data-testid="nav-tech-list">
               {TECH.map((t) => (
@@ -150,7 +154,6 @@ function Menu({ compact, close }: { compact: boolean; close: () => void }) {
                     type="button"
                     data-testid={`nav-tech-${t.k}`}
                     aria-current={method === t.k ? "page" : undefined}
-                    title={t.q}
                     onClick={() => {
                       // 지금 보던 동네가 있으면 그 동네로 묻는다(이중 검토 040: 앞 질문 맥락 잇기)
                       const d = nav.answer.dong;
@@ -242,28 +245,34 @@ export function AppSidebar() {
   const c = nav.collapsed;
   return (
     <>
-      {/* PC: 본문 왼쪽 고정 사이드바 */}
+      {/* PC: 본문 왼쪽 고정 사이드바. 오른쪽 경계를 끌어 너비를 바꾼다(200~400px, 160px보다 좁히면 아이콘 폭으로 접힘) */}
       <nav
         aria-label="사이드 메뉴"
         data-testid="sidebar"
-        className={"sticky top-[49px] hidden h-[calc(100dvh-49px)] shrink-0 flex-col justify-between overflow-y-auto border-r border-(--krds-border-gray-light) bg-background py-3 print:hidden lg:flex " + (c ? "w-16 px-1" : "w-60 px-2")}
+        style={c ? undefined : { width: nav.width }}
+        className={"sticky top-[49px] hidden h-[calc(100dvh-49px)] shrink-0 flex-col overflow-y-auto border-r border-(--krds-border-gray-light) bg-background py-3 print:hidden lg:flex " + (c ? "w-16 px-1" : "px-2")}
       >
         <div className="flex flex-col gap-2">
-          <button
-            type="button"
-            data-testid="nav-collapse"
-            onClick={() => nav.setCollapsed(!c)}
-            aria-label={c ? "사이드 메뉴 펼치기(Ctrl+B)" : "사이드 메뉴 접기(Ctrl+B)"}
-            title={c ? "펼치기(Ctrl+B)" : "접기(Ctrl+B)"}
-            className={"flex min-h-9 items-center rounded-(--radius) text-(--krds-text-subtle) hover:bg-muted " + (c ? "justify-center" : "justify-end px-2")}
-          >
-            {c ? <ChevronsRight size={18} aria-hidden /> : <ChevronsLeft size={18} aria-hidden />}
-          </button>
+          <Tip on={c} text="펼치기(Ctrl+B)">
+            <button
+              type="button"
+              data-testid="nav-collapse"
+              onClick={() => nav.setCollapsed(!c)}
+              aria-label={c ? "사이드 메뉴 펼치기(Ctrl+B)" : "사이드 메뉴 접기(Ctrl+B)"}
+              className={"flex min-h-9 w-full items-center rounded-(--radius) text-(--krds-text-subtle) hover:bg-muted " + (c ? "justify-center" : "justify-end px-2")}
+            >
+              {c ? <ChevronsRight size={18} aria-hidden /> : <ChevronsLeft size={18} aria-hidden />}
+            </button>
+          </Tip>
+          {/* 계정 자리: 접기 단추 아래, 처음 화면 위(사용자 결정 11/13) */}
+          <div data-testid="nav-account" className={c ? "flex justify-center" : "px-1"}>
+            <Tip on={c} text="로그인·로그아웃">
+              <LoginButton compact={c} />
+            </Tip>
+          </div>
           <Menu compact={c} close={() => undefined} />
         </div>
-        <div className={"relative border-t border-(--krds-border-gray-light) pt-2 " + (c ? "flex justify-center" : "px-1")}>
-          <LoginButton compact={c} />
-        </div>
+        <Resizer />
       </nav>
       {/* 폰·태블릿: 서랍 */}
       {nav.drawer && (
@@ -281,14 +290,60 @@ export function AppSidebar() {
               <button type="button" data-testid="drawer-close" onClick={() => nav.setDrawer(false)} className="flex min-h-11 items-center gap-1 self-end rounded-(--radius) px-3 hover:bg-muted">
                 <X size={18} aria-hidden /> 닫기
               </button>
+              <div data-testid="nav-account" className="px-1">
+                <LoginButton />
+              </div>
               <Menu compact={false} close={() => nav.setDrawer(false)} />
             </nav>
-            <div className="relative border-t border-(--krds-border-gray-light) pt-2">
-              <LoginButton />
-            </div>
           </div>
         </div>
       )}
     </>
+  );
+}
+
+/** 너비 조절 손잡이: 끌기·두 번 누르기(240px로)·키보드 ←/→(16px). 너비는 저장하지 않는다. */
+function Resizer() {
+  const nav = useNav();
+  const MIN = 200, MAX = 400, SNAP = 160, BASE = 240;
+  const drag = useRef<number | null>(null);
+  const set = (w: number) => {
+    if (w < SNAP) return nav.setCollapsed(true);
+    nav.setCollapsed(false);
+    nav.setWidth(Math.max(MIN, Math.min(MAX, Math.round(w))));
+  };
+  const now = nav.collapsed ? 64 : nav.width;
+  return (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="사이드 메뉴 너비 조절(←/→, 두 번 누르면 기본 너비)"
+      aria-valuemin={MIN}
+      aria-valuemax={MAX}
+      aria-valuenow={now}
+      tabIndex={0}
+      data-testid="nav-resize"
+      className="absolute inset-y-0 right-0 w-1.5 cursor-col-resize hover:bg-(--krds-border-primary) focus-visible:bg-(--krds-border-primary) focus-visible:outline-none"
+      onPointerDown={(e) => {
+        drag.current = (e.currentTarget.parentElement?.getBoundingClientRect().left ?? 0);
+        e.currentTarget.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      }}
+      onPointerMove={(e) => {
+        if (drag.current !== null) set(e.clientX - drag.current);
+      }}
+      onPointerUp={(e) => {
+        drag.current = null;
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }}
+      onDoubleClick={() => {
+        nav.setCollapsed(false);
+        nav.setWidth(BASE);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft") { e.preventDefault(); set(now - 16 < MIN ? SNAP - 1 : now - 16); }
+        if (e.key === "ArrowRight") { e.preventDefault(); set(nav.collapsed ? MIN : now + 16); }
+      }}
+    />
   );
 }
