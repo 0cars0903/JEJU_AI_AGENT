@@ -231,6 +231,7 @@ def ask(question, chat=None, user="local", mode="expert"):
     lines, nudged, calls, fails, rewrites = None, False, 0, 0, 0
     info = []  # 자료 확인·센터 자료 찾기 결과(정보 질문은 이것으로 답한다)
     topics = []  # answer_topic으로 만든 일반 답(넘김 모드)
+    seen_calls = set()
     import techniques
     analysis_q = techniques.detect(question) is not None
 
@@ -310,7 +311,7 @@ def ask(question, chat=None, user="local", mode="expert"):
             msgs += [msg, {"role": "user", "content": "도구를 하나 골라 호출하세요."}]
             continue
         msgs.append(msg)
-        done = False
+        done, repeated = False, False
         for i, c in enumerate(tcs):
             fn = c["function"]["name"]
             args = c["function"].get("arguments") or {}
@@ -320,6 +321,12 @@ def ask(question, chat=None, user="local", mode="expert"):
                 except ValueError:
                     args = {}
             cid = c.get("id") or f"call_{i}"
+            sig = fn + json.dumps(args, ensure_ascii=False, sort_keys=True)
+            if sig in seen_calls and got:
+                repeated = True
+                msgs.append({"role": "tool", "tool_call_id": cid, "content": "이미 같은 도구를 같은 인자로 실행했어요."})
+                continue
+            seen_calls.add(sig)
             calls += 1
             if fn == "submit_answer":
                 if got or info:
@@ -343,7 +350,9 @@ def ask(question, chat=None, user="local", mode="expert"):
                 ok, reply = run_tool(fn, args, "AI")
                 fails = 0 if ok else fails + 1
             msgs.append({"role": "tool", "tool_call_id": cid, "content": json.dumps(reply, ensure_ascii=False, default=str)[:6000]})
-        if done or (local and got):  # 로컬 모델은 스스로 끝내지 못해 분석이 성공하면 코드가 끝낸다
+        if done or (local and got and mode != "escalate"):  # 로컬 모델은 스스로 끝내지 못해 분석이 성공하면 코드가 끝낸다(넘김 모드는 여러 하위 질문을 위해 계속)
+            break
+        if repeated:  # 같은 도구·인자를 되풀이하면 더 할 일이 없다고 보고 끝낸다
             break
         if local and info and not analysis_q:  # 정보 질문(기법 이름 없음)은 찾은 정보로 끝낸다
             break
