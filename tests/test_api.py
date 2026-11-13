@@ -1,5 +1,6 @@
 """API 시험: 질문·해석·자료 탐색 경로가 응답 형식을 지키는지, 잘못된 입력을 안내하는지 본다. 실행: .venv/bin/python -m unittest discover -s tests"""
 import os
+os.environ.setdefault("JEJU_PLAN_AGENT", "0")  # 실제 키로 계획 선택 Agent(안 C)를 부르지 않는다. 동작은 test_plan_agent에서 시험
 import sys
 import unittest
 from pathlib import Path

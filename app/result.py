@@ -428,8 +428,11 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import m1
             interpret = m1.M1().interpret
         it = interpret(question)
+        if llm_on:  # 안 C(문서 26): 해석이 애매하면 LLM이 정해진 질문 종류 중에서 계획을 고른다
+            import plan_agent
+            it = plan_agent.adjust(question, it)
         t = it["tuple"]
-        meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec")}
+        meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}
 
         def stop(r):
             return dict(r, interpret=meta, sec=round(time.perf_counter() - t0, 3))
@@ -496,7 +499,7 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                 assumed = True
     rv = V.review(question, env, interpret=lambda q: it, **review_kw)
     t = rv["tuple"]
-    out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec")}}
+    out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}}
     if rv["status"] == "되묻기":  # 검수 단계에서 칸을 채우지 못한 경우
         ex = _exception(question, t) or _choose(question, t, G.to_slots(t), "질문을 이해하지 못했어요. 궁금한 것을 골라 주세요.", "topic")
         ex["sec"] = round(time.perf_counter() - t0, 3)

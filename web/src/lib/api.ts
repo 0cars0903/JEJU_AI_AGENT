@@ -67,9 +67,12 @@ export type BizTab = { target: string | null; label: string; stores: number | nu
 export type CompareRow = { label: string; unit: string; texts: [string, string, string]; verdict: string; method: string; p?: number; n?: number; ranks?: [number, number]; ci?: [[number, number], [number, number]] };
 export type CompareTable = { dongs: [string, string]; target: string | null; sections: { id: string; title: string; rows: CompareRow[]; note?: string | null }[]; rule: string };
 export type Step = { id: string; sub: string; name: string; status: string; metric?: string | null; recipe?: string | null };
+export type PlanAgent = { by: string; from: string; from_ko: string; to: string; to_ko?: string; kept: boolean; reason?: string; why?: string; cached?: boolean };
 export type AskResult = {
   question: string | null;
   status: string;
+  /** 해석 경로. plan_agent: 안 C(문서 26) 계획 선택 Agent 기록 */
+  interpret?: { path?: string; confidence?: number | null; plan_agent?: PlanAgent | null } | null;
   understood?: { text: string; by: string; assumed: boolean; slots: Slots; notes?: string[] };
   card?: Card;
   answer?: Answer;

@@ -99,6 +99,23 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await expect(trace.getByTestId("trace-plan")).toContainText("계산 단계");
   });
 
+  test("판단 과정: AI가 계획(질문 종류)을 고르면 누가 무엇을 골랐는지 보인다(문서 26 안 C)", async ({ page }) => {
+    await page.route("**/api/ask", async (route) => {
+      const res = await route.fetch();
+      const j = await res.json();
+      j.interpret = { ...(j.interpret ?? {}), plan_agent: { by: "AI(Claude)", from: "T1", from_ko: "현황 조회", to: "T4", to_ko: "추세", kept: false, reason: "흐름을 묻는 질문", cached: true } };
+      await route.fulfill({ response: res, json: j });
+    });
+    await page.getByTestId("representative").getByRole("button").first().click();
+    await expect(await conclusion(page)).toBeVisible();
+    const proc = page.getByTestId("process");
+    await proc.locator("summary").click();
+    const plan = proc.getByTestId("trace-plan");
+    await expect(plan).toContainText("AI(Claude)");
+    await expect(plan).toContainText("'추세'");
+    await expect(plan).toContainText("저장된 결정");
+  });
+
   test("② 추천 질문을 누르면 이어서 답한다", async ({ page }) => {
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();

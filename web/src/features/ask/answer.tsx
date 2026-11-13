@@ -385,7 +385,15 @@ function Trace({ r }: { r: AskResult }) {
   const failed = p.steps.filter((s) => s.status !== "성공").length;
   const rows: { name: string; who: string; text: React.ReactNode; testid: string }[] = [
     { name: "질문 해석", who: r.understood?.by ?? "프로그램", text: `${p.type ?? "-"}${r.understood?.text ? ` · ${r.understood.text}` : ""}`, testid: "trace-interpret" },
-    { name: "계획", who: "프로그램(주제별 계획 표)", text: `계산 단계 ${p.steps.length}개를 골랐어요`, testid: "trace-plan" },
+    (() => {
+      const pa = r.interpret?.plan_agent;
+      const n = `계산 단계 ${p.steps.length}개`;
+      if (pa && !pa.kept)
+        return { name: "계획", who: `${pa.by}가 고르고 프로그램이 검사`, testid: "trace-plan",
+          text: `질문 종류를 '${pa.to_ko}'(으)로 골랐어요(분류기 판단 '${pa.from_ko}')${pa.reason ? ` · 이유: ${pa.reason}` : ""}${pa.cached ? " · 같은 질문의 저장된 결정" : ""} · ${n}` };
+      if (pa) return { name: "계획", who: "프로그램(주제별 계획 표)", testid: "trace-plan", text: `${n} · ${pa.by} 검토: 분류기 판단 '${pa.from_ko}' 유지${pa.why ? `(${pa.why})` : ""}` };
+      return { name: "계획", who: "프로그램(주제별 계획 표)", text: `${n}를 골랐어요`, testid: "trace-plan" };
+    })(),
     {
       name: "계산",
       who: "프로그램(Python)",

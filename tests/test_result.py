@@ -2,6 +2,8 @@
 해석은 규칙 해석기, LLM은 끄거나 가짜 응답으로 바꿔 Ollama 없이도 같은 결과가 나오게 한다.
 실행: .venv/bin/python -m unittest tests.test_result"""
 import json
+import os
+os.environ.setdefault("JEJU_PLAN_AGENT", "0")  # 실제 키로 계획 선택 Agent(안 C)를 부르지 않는다. 동작은 test_plan_agent에서 시험
 import sys
 import unittest
 from pathlib import Path
