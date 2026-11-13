@@ -97,7 +97,7 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
       <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent · 전문가 모드 분석</h1>
       <p>요청: {q}</p>
       <p>
-        기법: {r.method} · AI가 짠 코드를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 만든 때 {now}
+        기법: {r.method} · AI가 작성한 코드를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 만든 때 {now}
       </p>
       <div className="report-part">
         <h2>설명</h2>
@@ -182,7 +182,7 @@ function ResultView({ r, q }: { r: ExpertResult; q: string }) {
         PDF로 저장(인쇄)
       </Button>
       <p className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
-        기법: {r.method} · {r.by === "AI" ? "AI가 짠 코드 · 실행 결과(설명 숫자는 실행 결과와 대조함)" : r.by} · {r.sec}초
+        기법: {r.method} · {r.by === "AI" ? "AI가 작성한 코드 · 실행 결과(설명 숫자는 실행 결과와 대조함)" : r.by} · {r.sec}초
       </p>
       <ul className="flex list-disc flex-col gap-1 pl-5" data-testid="expert-lines">
         {(r.lines ?? []).map((l, i) => (
