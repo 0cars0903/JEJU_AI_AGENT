@@ -67,6 +67,30 @@
 
 **실제 키를 코드, 저장소, 기획서, 영상에 넣지 마세요.**
 
+### 웹 데모(Vercel)와 로그인
+설치 없이 여는 데모는 같은 코드를 Vercel에 올린 것입니다. 센터 PC 탑재본과 다른 점은 아래와 같습니다.
+
+| 항목 | 센터 PC(로컬) | 웹 데모(Vercel) |
+|---|---|---|
+| 질문 해석 | `bge-m3` 임베딩 + 분류기(75%) | Ollama가 없어 사전 규칙(63%) |
+| 설명 문장 | Ollama `qwen3:1.7b` 또는 Claude | Claude(키는 Vercel 환경 변수에만 둠) |
+| Claude 기능(판단 과정 AI 설명, 전문가 모드) | 계정을 정하지 않으면 로그인 없이 씀 | **로그인해야 켜짐.** 질문과 답은 로그인 없이 쓸 수 있음 |
+| 센터 CSV 넣기 | 300MB까지 | 요청 한 번에 4.5MB까지(Vercel 상한) |
+
+데모 서버에 넣는 환경 변수(Vercel 프로젝트 Settings > Environment Variables):
+
+| 변수 | 값 |
+|---|---|
+| `ANTHROPIC_API_KEY` | 데모 전용 Claude 키(사용 한도를 먼저 설정) |
+| `JEJU_ACCOUNTS` | `아이디:해시,아이디:해시`. 해시는 `python -m app.auth hash`로 만듭니다(비밀번호는 저장하지 않음) |
+| `JEJU_SESSION_SECRET` | 로그인 쿠키 서명 값. `python -m app.auth secret`으로 만듭니다 |
+| `JEJU_EXPERT_DAILY` | 전문가 모드 하루 상한(서버 인스턴스마다, 기본 50) |
+| `JEJU_WRITE_DIR` | `/tmp`(Vercel은 이 폴더에만 쓸 수 있음) |
+
+- 공개 서버(Vercel)에서는 `JEJU_ACCOUNTS`가 빠져도 로그인을 요구합니다. 설정이 빠지면 Claude 기능이 꺼지는 쪽으로 동작합니다.
+- 로그인은 한 IP에서 10분에 5번까지 틀릴 수 있습니다. 넘으면 10분 뒤 다시 시도합니다.
+- 심사용 계정의 아이디와 비밀번호는 저장소와 기획서에 적지 않고 제출 ZIP 안내문에만 둡니다.
+
 ## 폴더 구조
 | 경로 | 내용 |
 |---|---|
@@ -96,6 +120,7 @@
 
 ## 시험
 - 시험: `python -m unittest discover -s tests`. LLM 없이 돕니다.
+- 화면 시험: `cd web && npm run build && npx playwright test`(PC·폰 두 크기, LLM 없이 돎).
 - 결과 생성 확인: `python app/result.py "질문"`.
 
 ## 오류와 제약
@@ -110,7 +135,7 @@
 - 유동인구(583) 값은 API 문서에도 집계 단위 설명이 없어 비율·지수로만 씁니다. 손님 수가 아닙니다.
 - 폐업·생존은 음식점(780)만 있습니다. 표본 오차가 커서 순위를 내지 않습니다.
 - 정류소는 이름으로 동네에 연결합니다. 같은 이름이 떨어진 곳에 있으면 구분하지 못합니다.
-- 시험 환경은 macOS, Python 3.9입니다. **Windows와 센터 PC에서는 아직 실행해 보지 않았습니다.**
+- 시험 환경은 macOS, Python 3.9입니다. Windows 실행 시험은 2026-11-13에 이상 없이 마쳤습니다. 센터 PC 실기에서는 아직 실행해 보지 않았습니다.
 
 ## 사용 모델과 오픈소스
 - 실행 중 LLM: Qwen3(`qwen3:1.7b`, Ollama, Apache License 2.0), 선택 시 Anthropic Claude API(`claude-opus-5-5`).
