@@ -58,7 +58,7 @@ def report(models, has_key, backend=None):
     elif models is not None and AGENT in models:
         lines.append(f"[전문가 모드] Ollama {AGENT}가 도구 4개(코드 실행 제외)를 골라 씁니다.")
     else:
-        lines.append(f"[전문가 모드] Claude 키나 로컬 모델이 없어 꺼져 있습니다(선택: 'ollama pull {AGENT}'). 통계 기법 8종은 그대로 씁니다.")
+        lines.append(f"[전문가 모드] Claude 키나 로컬 모델이 없어 꺼져 있습니다(선택: 'ollama pull {AGENT}'). 통계 기법 12종은 그대로 씁니다.")
     return lines
 
 

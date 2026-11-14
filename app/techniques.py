@@ -26,6 +26,11 @@ TECH = {  # 이름 → (보이는 이름, 질문에서 찾을 말)
     "test": ("두 집단 검정", r"검정|유의한 차이|유의미한 차이|통계적으로 차이|통계적으로 다른"),
     "dist": ("분포", r"분포|히스토그램|사분위|치우쳐"),
     "outlier": ("이상치", r"이상치|이상값|튀는 달|특이한 달|이상한 달"),
+    # 2026-11-14 추가(마스터 지시 '추가 기법 조사·반영'): 상권 연구에서 쓰는 기법 중 제출본 자료로 계산할 수 있는 것
+    "lq": ("입지계수", r"입지 ?계수|(?<![A-Za-z])LQ(?![A-Za-z])|특화 ?계수|특화 ?업종|특화도|집적도"),
+    "surv": ("생존분석", r"생존 ?분석|생존 ?곡선|생존 ?함수|카플란|(?i:kaplan)|수명표|생존 ?확률"),
+    "hhi": ("업종 다양성", r"다양성 ?지수|업종 ?다양성|허핀달|(?<![A-Za-z])HHI(?![A-Za-z])|집중도 ?지수|엔트로피"),
+    "shift": ("변이할당", r"변이 ?할당|(?i:shift.?share)|성장 ?요인 ?분해|지역 ?경쟁 ?효과|산업 ?구성 ?효과"),
 }
 METRIC = {  # 지표 → (이름, 질문에서 찾을 말, 단위)
     "sales": ("카드 매출", r"매출|카드|소비", "원"),
@@ -33,13 +38,15 @@ METRIC = {  # 지표 → (이름, 질문에서 찾을 말, 단위)
     "stores": ("가게 수", r"가게|점포|업체|업소", "곳"),
     "surv": ("5년 생존율", r"생존|폐업", "%"),
     "tour": ("관광객 매출 비중", r"관광객", "%"),
+    "sales746": ("카드 매출(746, 2017~2021)", r"$^", "원"),
 }
 CARD_BIZ = {"음식점": "음식점업", "카페": "음식점업", "한식": "음식점업", "일식": "음식점업", "횟집": "음식점업", "중식": "음식점업",
             "치킨": "음식점업", "분식": "음식점업", "주점": "음식점업", "숙박": "숙박업", "소매": "소매업", "편의점": "소매업"}
 STORE_MAJOR = {"음식점업": "음식", "숙박업": "숙박", "소매업": "소매"}
 SRC = {"sales": ("제주관광공사 카드 소비", "card_month"), "visit": ("유동인구(제주데이터허브 583)", "pop_month"),
-       "stores": ("상가 정보(공공데이터포털)", "biz"), "surv": ("음식점 인허가(행정안전부)", "km"), "tour": ("제주관광공사 카드 소비", "card_month")}
-NEXT = {"sales": "매달", "visit": "매달", "stores": "분기마다", "surv": "매년", "tour": "매달"}
+       "stores": ("상가 정보(공공데이터포털)", "biz"), "surv": ("음식점 인허가(행정안전부)", "km"), "tour": ("제주관광공사 카드 소비", "card_month"),
+       "sales746": ("제주데이터허브 746 업종별 카드 매출", "card746_month")}
+NEXT = {"sales": "매달", "visit": "매달", "stores": "분기마다", "surv": "매년", "tour": "매달", "sales746": "갱신 끝남(2021-05)"}
 
 
 def detect(question):
@@ -140,6 +147,8 @@ def as_of(metric):
         return str(T["pop_month"].ym.max())
     if metric == "stores":
         return "2026-09 단면"
+    if metric == "sales746":
+        return str(T["card746_month"].ym.max())
     return "2015~2021 개업 기준"
 
 
@@ -531,10 +540,162 @@ def t_change(p):
         "두 기간의 건수·건당 금액과 몫의 합이 100%인지 함께 봐요.", "24개월보다 짧은 자료는 계산하지 않아요.")
 
 
-RUN = {"change": t_change, "corr": t_corr, "cluster": t_cluster, "decomp": t_decomp, "regress": t_regress, "test": t_test, "dist": t_dist, "outlier": t_outlier}
+# ---------------------------------------------------------------- 상권 기법 4종(2026-11-14 추가)
+def _biz_shares(dong=None):
+    """상가 정보 중분류별 가게 수(동네 또는 제주 전체)."""
+    d = _T()["biz"]
+    d = d[d.dong == dong] if dong else d
+    return d.groupby(["major", "middle"])["count"].sum()
+
+
+def _want_dong(p, why):
+    if not p["dongs"]:
+        raise Reject(f"{why} 동네를 정해야 계산할 수 있어요.", "동네 이름을 넣어 다시 물어보세요(예: 노형동 입지계수).")
+    return p["dongs"][0]
+
+
+def _ida(w):
+    """받침이 있으면 '이에요', 없으면 '예요'(숫자·괄호로 끝나면 앞 낱말 기준)."""
+    c = re.sub(r"[^가-힣]", "", w or "")[-1:] or "가"
+    return "이에요" if (ord(c) - 0xAC00) % 28 else "예요"
+
+
+def t_lq(p):
+    """입지계수 LQ = (동네에서 그 업종이 차지하는 비중) ÷ (제주 전체에서 그 업종이 차지하는 비중). 1보다 크면 그 동네에 몰려 있다."""
+    dong = _want_dong(p, "입지계수는 한 동네의 업종 구성을 제주 전체와 견주는 값이라")
+    loc, tot = _biz_shares(dong), _biz_shares()
+    if loc.sum() < 30:
+        raise Reject(f"{dong} 가게가 {int(loc.sum())}곳뿐이라 업종 비중이 흔들려요.", "가게가 더 많은 동네로 다시 물어보세요.")
+    lq = (loc / loc.sum()) / (tot / tot.sum())
+    lq = lq.dropna()
+    ok = lq[loc.reindex(lq.index).fillna(0) >= 5]  # 5곳 미만 업종은 한두 곳 차이로 값이 크게 바뀌어 순위에서 뺀다
+    top = ok.sort_values(ascending=False).head(5)
+    lq_t = None
+    if p["target"]:  # 업종을 물었으면 그 업종(상가 정보 기준, cross와 같은 묶음)의 입지계수
+        c = cross("stores", p["target"])
+        if dong in c.index and c.sum() > 0:
+            lq_t = (c[dong] / loc.sum()) / (c.sum() / tot.sum())
+    name = f"{dong} 업종 입지계수"
+    first = top.index[0]
+    concl = f"{dong}에서 제주 전체보다 가장 몰려 있는 업종은 {first[1]}{_ida(first[1])}(입지계수 {top.iloc[0]:.2f})."
+    if lq_t is not None:
+        eun = "은" if _ida(p["target"]) == "이에요" else "는"
+        r_ = round(lq_t, 2)  # 보이는 값과 같은 기준으로 판단한다
+        state = "제주 전체보다 몰려 있어요" if r_ > 1.1 else "제주 전체보다 적어요" if r_ < 0.9 else "제주 전체와 비슷해요"
+        concl = f"{dong} {p['target']}{eun} {state}(입지계수 {lq_t:.2f}). " + concl
+    lines = [_line(f"{dong} 가게 {int(loc.sum()):,}곳, 제주 전체 {int(tot.sum()):,}곳을 업종 중분류 {len(tot)}개로 나눠 비중을 견줬어요.", "기준")]
+    for (maj, mid), v in top.items():
+        lines.append(_line(f"{mid}: 입지계수 {v:.2f}({dong} {int(loc[(maj, mid)])}곳, 비중 {loc[(maj, mid)] / loc.sum() * 100:.1f}% · 제주 {tot[(maj, mid)] / tot.sum() * 100:.1f}%).", "몰린 업종"))
+    warn = ["입지계수는 가게 수 비중만 보므로 매출이나 손님이 많다는 뜻은 아니에요.",
+            "1보다 크면 그 동네에 상대적으로 몰려 있다는 뜻이고, 경쟁이 심한지 특화됐는지는 매출·폐업과 함께 봐야 해요.",
+            "가게가 5곳 미만인 업종은 순위에서 뺐어요."]
+    v = _view("lq", "입지계수 상위 업종", "bar", {"입지계수": [(i[1], x) for i, x in top.items()]}, name)
+    nums = {"stores_dong": int(loc.sum()), "lq_top": r2(top.iloc[0])} | ({"lq_target": r2(lq_t)} if lq_t is not None else {})
+    return concl, lines, warn, [v], nums, ["stores"], (
+        "입지계수(LQ)", "업종별로 (동네 비중) ÷ (제주 전체 비중)을 구해요. 1보다 크면 그 동네에 몰려 있어요.",
+        "동네·제주 전체의 가게 수와 비중을 함께 봐요.", "가게가 30곳 미만인 동네는 계산하지 않아요.")
+
+
+def t_hhi(p):
+    """업종 다양성 = 1 − Σ(업종 비중²)(허핀달 지수를 뒤집은 값). 클수록 여러 업종이 고르게 섞여 있다."""
+    d = _T()["biz"].groupby(["dong", "middle"])["count"].sum()
+    share = d / d.groupby(level=0).transform("sum")
+    hhi = (share ** 2).groupby(level=0).sum()
+    div = (1 - hhi) * 100
+    eff = 1 / hhi
+    rank = div.rank(ascending=False).astype(int)
+    if p["dongs"]:
+        dong = p["dongs"][0]
+        if dong not in div.index:
+            raise Reject(f"{dong} 상가 자료가 없어요.", "다른 동네로 다시 물어보세요.")
+        concl = f"{dong}의 업종 다양성은 {div[dong]:.1f}점(43곳 중 {rank[dong]}위)이고, 고르게 섞였다면 업종 {eff[dong]:.0f}개에 해당하는 구성이에요."
+        hl = [dong]
+    else:
+        top = div.sort_values(ascending=False)
+        concl = f"업종이 가장 고르게 섞인 동네는 {top.index[0]}({top.iloc[0]:.1f}점), 가장 쏠린 동네는 {top.index[-1]}({top.iloc[-1]:.1f}점)이에요."
+        hl, dong = [top.index[0], top.index[-1]], None
+    lines = [_line(f"업종 중분류별 가게 비중의 제곱합(허핀달 지수)을 1에서 빼 100점으로 바꿨어요. 43곳 중간값 {div.median():.1f}점.", "기준")]
+    if dong:
+        sub = share[dong].sort_values(ascending=False).head(3)
+        lines.append(_line(f"{dong}에서 비중이 큰 업종: " + ", ".join(f"{k} {v * 100:.1f}%" for k, v in sub.items()) + ".", "쏠린 업종"))
+    warn = ["중분류가 많아 대부분 동네가 높은 점수에 몰려 있으니, 점수 자체보다 동네끼리 견주는 데 쓰세요.",
+            "다양성이 높다고 상권이 좋다는 뜻은 아니에요. 관광지처럼 한두 업종에 특화된 곳은 점수가 낮게 나와요."]
+    v = _view("hhi", "동네별 업종 다양성(점)", "bar", {"다양성": sorted(div.items(), key=lambda x: -x[1])}, "43개 동네", values=div.to_dict(), highlight=hl)
+    nums = {"diversity": r2(div[dong], 1) if dong else r2(div.max(), 1), "median": r2(div.median(), 1)} | ({"rank": int(rank[dong])} if dong else {})
+    return concl, lines, warn, [v], nums, ["stores"], (
+        "업종 다양성(허핀달 지수 역수)", "업종 중분류 비중의 제곱합(HHI)을 구해 1에서 빼고 100을 곱해요.",
+        "43개 동네의 중간값과 순위를 함께 봐요.", "상가 정보 단면(2026-09) 한 시점만 써요.")
+
+
+def t_surv(p):
+    """카플란-마이어 생존 곡선(음식점 인허가, 개업 뒤 1~5년 영업을 이어 간 비율과 95% 신뢰구간)."""
+    k = _T()["km"]
+    dongs = p["dongs"][:2] or []
+    names = dongs + ["제주 전체"] if "제주 전체" in set(k.dong) else dongs
+    if not dongs:
+        names = ["제주 전체"]
+    have = [n for n in names if n in set(k.dong)]
+    if not have:
+        raise Reject("생존 곡선 자료가 없는 동네예요.", "다른 동네로 다시 물어보세요.")
+    pts, lines = {}, []
+    for n in have:
+        g = k[k.dong == n].sort_values("year")
+        pts[n] = list(zip(g.year.astype(str) + "년", g.survival_pct))
+        y5 = g[g.year == g.year.max()].iloc[0]
+        lab = f" · {y5.label}" if y5.label else ""
+        lines.append(_line(f"{n}: 1년 {g.survival_pct.iloc[0]:.1f}% → {int(y5.year)}년 {y5.survival_pct:.1f}%(95% 구간 {y5.lo_pct:.1f}~{y5.hi_pct:.1f}%, 개업 {int(y5.n):,}곳){lab}.", "생존율"))
+    main = have[0]
+    g = k[(k.dong == main) & (k.year == k.year.max())].iloc[0]
+    concl = f"{main} 음식점은 개업 뒤 {int(g.year)}년까지 {g.survival_pct:.1f}%가 영업을 이어 갔어요(카플란-마이어 추정)."
+    warn = ["음식점 인허가 자료라 카페·주점 등 음식점 업태만 포함해요. 다른 업종의 생존율은 아니에요.",
+            "자료 기간 안에 문을 닫지 않은 가게는 '아직 영업 중'으로 처리해(중도 절단) 생존 곡선에 반영했어요.",
+            "구간이 서로 겹치면 두 동네의 차이를 확인하지 못한 거예요."]
+    v = _view("surv", "개업 뒤 영업을 이어 간 비율(%)", "line", pts, " · ".join(have), unit="%")
+    nums = {"surv_last_pct": r2(g.survival_pct, 1), "lo_pct": r2(g.lo_pct, 1), "hi_pct": r2(g.hi_pct, 1), "n": int(g.n)}
+    return concl, lines, warn, [v], nums, ["surv"], (
+        "카플란-마이어 생존분석", "해마다 '그해 초 영업 중인 가게 가운데 그해를 넘긴 비율'을 곱해 생존 곡선을 구하고, 95% 신뢰구간을 붙여요.",
+        "제주 전체 곡선과 신뢰구간이 겹치는지 봐요.", "음식점 인허가 자료만 써요.")
+
+
+def t_shift(p):
+    """변이할당 분석: 동네 매출 변화 = 제주 전체 성장 효과 + 업종 구성 효과 + 동네 고유 효과(746 카드, 업종 42)."""
+    dong = _want_dong(p, "변이할당은 한 동네의 성장을 제주 전체와 견주어 나누는 기법이라")
+    d = _T()["card746_month"]
+    d = d.assign(y=d.ym.str[:4])
+    y0, y1 = "2017", "2019"  # 1년 단위 완결 자료 중 코로나 이전 처음과 끝(2020년 이후는 코로나 충격이라 기본값에서 뺌)
+    g = d[d.y.isin([y0, y1])].groupby(["y", "dong", "biz42"]).amt.sum()
+    jeju = g.groupby(level=["y", "biz42"]).sum()
+    if (y0, dong) not in g.index.droplevel(2):
+        raise Reject(f"{dong}의 746 카드 자료가 없어요.", "다른 동네로 다시 물어보세요.")
+    e0, e1 = g[y0][dong], g[y1][dong].reindex(g[y0][dong].index).fillna(0)
+    j0, j1 = jeju[y0], jeju[y1].reindex(jeju[y0].index).fillna(0)
+    G = j1.sum() / j0.sum() - 1
+    gi = (j1 / j0 - 1).reindex(e0.index)
+    ri = (e1 / e0.replace(0, np.nan) - 1).fillna(0)
+    ns, im, rs = (e0 * G).sum(), (e0 * (gi - G)).sum(), (e0 * (ri - gi)).sum()
+    tot = e1.sum() - e0.sum()
+    rs_i = (e0 * (ri - gi)).sort_values()
+    concl = (f"{dong} 카드 매출은 {y0}→{y1}년 {fmt(tot, 'sales746')} 변했어요. 나눠 보면 제주 전체 성장 효과 {fmt(ns, 'sales746')}, "
+             f"업종 구성 효과 {fmt(im, 'sales746')}, 동네 고유 효과 {fmt(rs, 'sales746')}이에요.")
+    lines = [_line(f"{y0}년 {fmt(e0.sum(), 'sales746')} → {y1}년 {fmt(e1.sum(), 'sales746')}. 같은 기간 제주 전체 {G * 100:+.1f}%.", "매출 변화"),
+             _line(f"동네 고유 효과가 가장 큰 업종: {rs_i.index[-1]}({fmt(rs_i.iloc[-1], 'sales746')}), 가장 작은 업종: {rs_i.index[0]}({fmt(rs_i.iloc[0], 'sales746')}).", "업종별 고유 효과", block="analysis", layer="L3")]
+    warn = ["746 카드 자료는 2021-05에 갱신이 끝났고, 관광공사 카드 자료와 카드사가 달라 금액을 이어 붙이지 않았어요.",
+            "동네 고유 효과는 '업종 구성으로 설명되지 않는 나머지'라 원인(입지·상권 변화 등)은 따로 확인해야 해요.",
+            "코로나 충격을 피하려고 2017년과 2019년을 견줬어요."]
+    v = _view("shift", "매출 변화의 세 효과", "bar", {"효과": [("제주 전체 성장", ns), ("업종 구성", im), ("동네 고유", rs)]}, dong, unit="원")
+    nums = {"total": r2(tot, 0), "national": r2(ns, 0), "mix": r2(im, 0), "local": r2(rs, 0), "jeju_growth_pct": r2(G * 100, 1)}
+    return concl, lines, warn, [v], nums, ["sales746"], (
+        "변이할당 분석(shift-share)", "업종별로 '기준 매출 × 제주 전체 성장률', '기준 매출 × (업종 성장률 − 제주 성장률)', '기준 매출 × (동네 업종 성장률 − 제주 업종 성장률)'을 더해요.",
+        "세 효과의 합이 실제 변화와 같은지 봐요.", "2017·2019년 두 해만 견줘요.")
+
+
+RUN = {"change": t_change, "corr": t_corr, "cluster": t_cluster, "decomp": t_decomp, "regress": t_regress, "test": t_test, "dist": t_dist, "outlier": t_outlier,
+       "lq": t_lq, "surv": t_surv, "hhi": t_hhi, "shift": t_shift}
 EXAMPLES = {"change": "노형동 음식점 매출 변화를 건수와 건당 금액으로 분해해줘", "corr": "43개 동네 방문과 매출의 상관 분석해줘", "cluster": "43개 동네를 군집분석 해줘", "decomp": "노형동 음식점 월 매출 시계열 분해해줘",
             "regress": "동네별 매출에 방문과 가게 수가 미치는 영향 회귀분석해줘", "test": "노형동과 연동 음식점 매출이 통계적으로 차이 있어?",
-            "dist": "43개 동네 음식점 매출 분포 보여줘", "outlier": "제주 전체 음식점 매출에서 튀는 달 찾아줘"}
+            "dist": "43개 동네 음식점 매출 분포 보여줘", "outlier": "제주 전체 음식점 매출에서 튀는 달 찾아줘",
+            "lq": "노형동 업종별 입지계수 구해줘", "surv": "노형동 음식점 생존 곡선 분석해줘", "hhi": "노형동 업종 다양성 지수 알려줘",
+            "shift": "노형동 카드 매출 변이할당 분석해줘"}
 
 
 # ---------------------------------------------------------------- 답 묶기

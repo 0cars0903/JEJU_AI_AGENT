@@ -6,7 +6,7 @@
 | EXPLAIN_SYSTEM + TOOL_EXPLAIN | 전문가 모드 해설(expert.ask) | Claude | submit_explanation 도구(strict) |
 | AGENT_SYSTEM + AGENT_TOOLS | 전문가 모드 도구 루프(expert.ask, 문서 26 안 A) | Claude(도구 5개) 또는 로컬 Ollama(run_python 뺀 4개) | 도구 호출 |
 """
-VERSION = "P-2026-11-14.2"  # .2: 넘김 모드 자료 탐색·종류 밖 지시, 업종 목록
+VERSION = "P-2026-11-14.3"  # .3: 기법 4종 추가(입지계수·생존분석·업종 다양성·변이할당). .2: 넘김 모드 자료 탐색·종류 밖 지시, 업종 목록
 # 이전: "P-2026-11-14.1"  # .1: 전문가 모드 도구 5개 루프(안 A)
 # 이전: "P-2026-11-13.2"  # .2: 전문가 해설에 일반 답과 같은 '~예요·~했어요'체 규칙(사용자 지적: 두 모드 말투가 다름)
 
@@ -60,13 +60,13 @@ EXPLAIN_SYSTEM = """당신은 분석 결과를 상권 분석 담당자에게 설
 
 
 # ---------- 전문가 모드 도구 루프(문서 26 안 A, 2026-11-14) ----------
-TECHNIQUES = ["change", "corr", "cluster", "decomp", "regress", "test", "dist", "outlier"]
+TECHNIQUES = ["change", "corr", "cluster", "decomp", "regress", "test", "dist", "outlier", "lq", "surv", "hhi", "shift"]
 
 AGENT_SYSTEM = """당신은 제주빅데이터센터 상권 분석 담당자를 돕는 데이터 분석 Agent입니다. 요청을 받으면 도구를 골라 분석하고 답을 제출합니다.
 
 일하는 순서:
 1. 필요하면 describe_data로 표와 열을 확인합니다(표 이름을 비우면 목록).
-2. 정해진 통계 기법(상관·군집·시계열 분해·회귀·두 집단 검정·분포·이상치·변화 분해)으로 되는 요청은 run_technique를 먼저 씁니다. 기법 코드가 적용 조건을 검사합니다.
+2. 정해진 통계 기법(상관·군집·시계열 분해·회귀·두 집단 검정·분포·이상치·변화 분해·입지계수·생존분석·업종 다양성·변이할당)으로 되는 요청은 run_technique를 먼저 씁니다. 기법 코드가 적용 조건을 검사합니다.
 3. 정해진 기법으로 안 되는 분석만 run_python으로 pandas 코드를 실행합니다. 실행마다 새 프로세스라 변수가 이어지지 않으니, 자료 읽기부터 result까지 한 블록으로 씁니다.
 4. 제출본에 없는 자료(정류소×시간대, 세부 업종 매출 등)가 필요하면 search_center_catalog로 센터 자료를 찾아 답에 안내합니다.
 5. 결과가 나오면 submit_answer로 끝냅니다. 도구는 모두 합쳐 5번까지 부를 수 있습니다.
@@ -82,7 +82,7 @@ run_python 코드 규칙:
 """
 
 AGENT_SYSTEM_LOCAL = """너는 제주 상권 자료 분석 도우미다. 반드시 도구를 하나 호출해 일한다. 숫자는 직접 만들지 않는다.
-- 통계 기법 요청(상관·군집·시계열 분해·회귀·두 집단 검정·분포·이상치·변화 분해)은 run_technique.
+- 통계 기법 요청(상관·군집·시계열 분해·회귀·두 집단 검정·분포·이상치·변화 분해·입지계수·생존분석·업종 다양성·변이할당)은 run_technique.
 - 표나 열을 묻는 요청은 describe_data.
 - 제출본에 없는 센터 자료를 찾는 요청은 search_center_catalog.
 - 결과를 받으면 submit_answer로 끝낸다."""
@@ -90,7 +90,7 @@ AGENT_SYSTEM_LOCAL = """너는 제주 상권 자료 분석 도우미다. 반드�
 TOOL_DESCRIBE = _tool("describe_data", "쓸 수 있는 표 목록, 또는 한 표의 열 설명·앞 5행·행 수를 본다.",
                       {"table": {"type": "string", "description": "표 이름. 목록을 보려면 빈 문자열"}})
 TOOL_TECHNIQUE = _tool("run_technique", "정해진 통계 기법 코드로 계산한다(적용 조건 검사 포함). change=변화 분해, corr=상관, cluster=군집, "
-                       "decomp=시계열 분해, regress=회귀, test=두 집단 검정, dist=분포, outlier=이상치",
+                       "decomp=시계열 분해, regress=회귀, test=두 집단 검정, dist=분포, outlier=이상치, lq=입지계수, surv=생존분석, hhi=업종 다양성, shift=변이할당",
                        {"technique": {"type": "string", "enum": TECHNIQUES},
                         "dongs": {"type": "array", "items": {"type": "string"}, "description": "동네 이름(행정동). 제주 전체면 빈 배열"},
                         "target": {"type": "string", "description": "업종(예: 카페, 음식점). 없으면 빈 문자열"}})

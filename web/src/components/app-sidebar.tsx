@@ -15,7 +15,7 @@ import { Tip } from "@/components/tip";
 import { useNav } from "@/components/nav-context";
 import { copyText } from "@/features/ask/views";
 
-// 기법 분석 8종(app/techniques.py EXAMPLES와 같은 문장). 누르면 그 예시 질문으로 답한다.
+// 기법 분석 12종(app/techniques.py EXAMPLES와 같은 문장). 누르면 그 예시 질문으로 답한다.
 // 이름 옆에 쉬운 말을 함께 적는다(1차 사용자 도민, 이중 검토 040 요청 1). local = 지금 보던 동네로 바꿔 물을 수 있는 기법.
 const TECH: { k: string; name: string; plain: string; q: string; local?: string }[] = [
   { k: "corr", name: "상관", plain: "같이 움직이는 정도", q: "43개 동네 방문과 매출의 상관 분석해줘" },
@@ -26,6 +26,10 @@ const TECH: { k: string; name: string; plain: string; q: string; local?: string 
   { k: "dist", name: "분포", plain: "43개 동네 값의 흩어짐", q: "43개 동네 음식점 매출 분포 보여줘" },
   { k: "outlier", name: "이상치", plain: "튀는 달 찾기", q: "제주 전체 음식점 매출에서 튀는 달 찾아줘", local: "제주 전체" },
   { k: "change", name: "변화 분해", plain: "건수와 건당 금액", q: "노형동 음식점 매출 변화를 건수와 건당 금액으로 분해해줘", local: "노형동" },
+  { k: "lq", name: "입지계수", plain: "이 동네에 몰린 업종", q: "노형동 업종별 입지계수 구해줘", local: "노형동" },
+  { k: "surv", name: "생존분석", plain: "몇 년 버티는지", q: "노형동 음식점 생존 곡선 분석해줘", local: "노형동" },
+  { k: "hhi", name: "업종 다양성", plain: "업종이 고르게 섞였는지", q: "노형동 업종 다양성 지수 알려줘", local: "노형동" },
+  { k: "shift", name: "변이할당", plain: "성장 원인 나누기", q: "노형동 카드 매출 변이할당 분석해줘", local: "노형동" },
 ];
 
 function Item({ icon, label, onClick, href, current, compact, testId, extra }: {

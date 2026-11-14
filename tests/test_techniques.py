@@ -18,6 +18,11 @@ class Detect(unittest.TestCase):
         self.assertEqual(T.detect("노형동과 연동 매출 t검정"), "test")
         self.assertEqual(T.detect("음식점 매출 분포 보여줘"), "dist")
         self.assertEqual(T.detect("튀는 달 찾아줘"), "outlier")
+        self.assertEqual(T.detect("노형동 업종별 입지계수(LQ) 구해줘"), "lq")
+        self.assertEqual(T.detect("음식점 카플란-마이어 생존 곡선"), "surv")
+        self.assertEqual(T.detect("업종 다양성 지수(HHI) 비교"), "hhi")
+        self.assertEqual(T.detect("노형동 매출 Shift-Share 분석"), "shift")
+        self.assertIsNone(T.detect("노형동 음식점 5년 생존율 알려줘"))  # 생존율 값 하나는 일반 경로가 답한다
         for q in ["노형동 카페 몇 개야?", "노형동과 비슷한 동네는?", "애월읍 음식점 몇 시에 손님이 많아?", "노형동 카페 차려도 될까?"]:
             self.assertIsNone(T.detect(q), q)
 
@@ -40,6 +45,21 @@ class Answers(unittest.TestCase):
         a = T.answer("노형동 음식점 월 매출 시계열 분해해줘")["answer"]
         self.assertIn("5월이 107.8%", a["conclusion"]["text"])
         self.assertIn("2월이 88.7%", a["conclusion"]["text"])
+
+    def test_new_techniques_values(self):  # 2026-11-14 추가 4종: 정의대로 계산되는지
+        import numpy as np
+        b = T._T()["biz"]
+        loc, tot = b[b.dong == "노형동"].groupby("middle")["count"].sum(), b.groupby("middle")["count"].sum()
+        lq = ((loc / loc.sum()) / (tot / tot.sum())).dropna()
+        r = T.answer("노형동 업종별 입지계수 구해줘")
+        self.assertAlmostEqual(r["numbers"]["lq_top"], round(float(lq[loc.reindex(lq.index) >= 5].max()), 2), places=2)
+        n = T.answer("노형동 카드 매출 변이할당 분석해줘")["numbers"]
+        self.assertAlmostEqual(n["national"] + n["mix"] + n["local"], n["total"], delta=abs(n["total"]) * 1e-6 + 2)  # 세 효과의 합 = 실제 변화
+        h = T.answer("노형동 업종 다양성 지수 알려줘")["numbers"]
+        self.assertTrue(0 < h["diversity"] < 100 and 1 <= h["rank"] <= 43)
+        s_ = T.answer("노형동 음식점 생존 곡선 분석해줘")["numbers"]
+        self.assertTrue(s_["lo_pct"] <= s_["surv_last_pct"] <= s_["hi_pct"])
+        self.assertEqual(T.answer("입지계수 알려줘")["answer"]["conclusion"]["tag"], "계산하지 않음")  # 동네가 없으면 계산하지 않음
 
     def test_reject_conditions(self):
         for q, why in [("43개 동네를 9개 군집으로 나눠줘", "2~6개"),
