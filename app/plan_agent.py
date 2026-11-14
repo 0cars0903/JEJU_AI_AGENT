@@ -5,7 +5,7 @@
 2. 선택지: 정해진 질문 종류(enum)만 고를 수 있다. 종류가 같으면 계획(`planner.TYPE_PLAN`)과 숫자가 같다.
 3. 저장: 같은 질문·같은 후보면 저장해 둔 결정을 다시 쓴다(`plan_cache.json`).
 4. 검사: 고른 해석을 검수 규칙(`verify.check_tuple`)이 검사하고, 실패하거나 LLM이 없거나 오류면 분류기 결과를 그대로 쓴다.
-모델: Claude 키가 있으면 Claude, 없으면 로컬 Ollama `JEJU_AGENT_MODEL`(qwen2.5:7b)이 설치돼 있을 때. 끄기: JEJU_PLAN_AGENT=0.
+모델: Claude 키가 있으면 Claude. 로컬 Ollama는 기본으로 쓰지 않는다(측정에서 해로움, 켜기: JEJU_PLAN_AGENT_LOCAL=1). 끄기: JEJU_PLAN_AGENT=0.
 """
 import json
 import os
@@ -51,7 +51,11 @@ def _backend():
     if os.environ.get("JEJU_PLAN_AGENT") == "0" or os.environ.get("LLM_BACKEND") == "rule":
         return None
     import expert
-    return expert.backend()
+    b = expert.backend()
+    # 로컬 모델의 계획 선택은 세 번 측정 모두 해로웠다(평가용 300: 246→242, 고침 2·망침 6). 기본은 끄고, 시험할 때만 JEJU_PLAN_AGENT_LOCAL=1(2026-11-14 마스터 결정)
+    if b == "ollama" and os.environ.get("JEJU_PLAN_AGENT_LOCAL") != "1":
+        return None
+    return b
 
 
 def _load():
@@ -174,3 +178,53 @@ def adjust(question, it, chat=None):
                 plan_agent={**rec, "to": new, "to_ko": ko(new), "kept": new == t["type"] and new_exp == t.get("expect"),
                             "expect_from": t.get("expect"), "expect_to": new_exp, "notes": notes(it, question), "reason": str(got.get("reason") or "")[:200], "cached": cached,
                             "sec": round(time.perf_counter() - t0, 3)})
+
+
+# 넘김 판정(2026-11-14 마스터 결정 (다)): 일반 경로가 답을 정한 뒤, Claude가 '그 답이 질문을 다 다루는가'만 판정한다.
+# 200문항 경로 비교에서 코드 관문은 Agent가 필요한 질문 100 중 23만 넘겼고, 모든 질문을 먼저 판정하는 라우터는 일반 질문 18을 잘못 넘겼다.
+# 로컬 모델 라우터는 일반 질문 83을 넘겨 해로웠으므로(73 < 83) Claude가 있을 때만 켠다. 끄기: JEJU_ROUTE_CHECK=0.
+ROUTE_SYSTEM = ("너는 제주 상권 질문 서비스의 검수 담당이다. 도민의 질문과, 일반 경로(정해진 분석 계획 하나로 답하는 경로)가 그 질문을 어떻게 이해하고 처리하려는지가 주어진다. "
+                "일반 경로의 처리로 질문에 답이 되면 '충분'을 고른다. 다음일 때만 'Agent'를 고른다: "
+                "(1) 질문에 하위 질문이 둘 이상인데 일반 경로는 그중 하나만 다룬다(예: 추세를 보고 다른 동네와 비교, 순위를 뽑고 그 동네의 손님 구성까지). "
+                "(2) 상관·회귀·검정·군집·탄력성 같은 통계 기법을 요구하는데 일반 경로는 단순 조회·비교로 읽었다. "
+                "(3) 서비스에 없는 센터 자료(데이터 목록·보유 자료·어떤 자료가 있는지)를 묻는다. "
+                "(4) 일반 경로가 확신이 없어 고르게 하거나 동네를 되묻지만, 질문이 통계 기법 이름(상관·회귀·생존 곡선·입지계수 등)이나 코드(파이썬) 계산을 분명히 요구해 골라도 답이 되지 않는다. "
+                "서비스에 없는 자료(임대료·교통·날씨 예보 등)라 범위 밖으로 막은 경우, 예측·창업 입지처럼 일반 경로의 질문 종류로 다룰 수 있는 경우, "
+                "동네·업종이 빠졌을 뿐인 질문 하나를 되묻는 경우, 질문 하나를 일반 경로가 그대로 이해한 경우는 '충분'이다. 이유는 한 문장, 숫자 없이 쓴다.")
+ROUTE_TOOL = {"type": "function", "function": {"name": "judge_route", "description": "일반 경로 처리로 충분한지, Agent에게 넘길지 고른다.", "strict": True,
+              "parameters": {"type": "object", "additionalProperties": False, "required": ["route", "reason"],
+                             "properties": {"route": {"type": "string", "enum": ["충분", "Agent"]}, "reason": {"type": "string"}}}}}
+
+
+def route_check(question, it, status, chat=None, said=None):
+    """일반 경로가 정한 처리(it, status)를 보고 Agent에게 넘길지 판정한다. 돌려주는 값: (넘길지, 기록) 또는 (False, None)."""
+    if not question or os.environ.get("JEJU_ROUTE_CHECK") == "0":
+        return False, None
+    name = "test" if chat else _backend()
+    if name not in ("claude", "test"):  # 로컬 모델은 판정하지 않는다(위 측정)
+        return False, None
+    t = it["tuple"]
+    seen = (it.get("card") or {}).get("text") or f"{ko(t.get('type'))} · {', '.join(t.get('space') or []) or '동네 없음'}"
+    what = {"범위밖": "범위 밖이라 답하지 않음", "되묻기": "빠진 조건을 되물음", "선택필요": "답하지 않고 도민에게 고르게 함"}.get(status, "이 이해대로 계산해 답함")
+    if said:
+        what += f"(안내: {said[:80]})"
+    key = f"route|{' '.join(question.split())}|{t.get('type')}|{status}"
+    cache = _load()
+    if key in cache:
+        got, cached = cache[key], True
+    else:
+        user = f"질문: {question}\n일반 경로의 이해: {seen}\n질문 종류: {ko(t.get('type'))}\n일반 경로의 처리: {what}"
+        msgs = [{"role": "system", "content": ROUTE_SYSTEM}, {"role": "user", "content": user}]
+        try:
+            m = (chat(None, msgs, [ROUTE_TOOL]) if chat else llm.chat(None, msgs, [ROUTE_TOOL], name="claude", effort="low"))["message"]
+            got = next((c["function"]["arguments"] for c in m.get("tool_calls") or [] if c["function"]["name"] == "judge_route"), None) or {}
+            if isinstance(got, str):
+                got = json.loads(got)
+        except Exception:  # 판정 실패면 일반 경로 결과를 그대로 쓴다
+            return False, None
+        cached = False
+        if name != "test" and got.get("route") in ("충분", "Agent"):
+            cache[key] = {"route": got["route"], "reason": str(got.get("reason") or "")[:200]}
+            _save()
+    esc = got.get("route") == "Agent"
+    return esc, {"by": "AI(Claude)", "route": got.get("route"), "reason": str(got.get("reason") or "")[:200], "cached": cached}

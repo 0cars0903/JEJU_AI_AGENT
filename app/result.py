@@ -430,6 +430,36 @@ def _escalate(question, it, t0, why):
             "sec": round(time.perf_counter() - t0, 3)}
 
 
+def _split(question, it, interpret, env, t0):
+    """질문 나누기(app/split.py). Claude가 있으면 쓰지 않는다((다) 넘김 판정이 맡음). 나누지 않으면 None."""
+    import expert
+    import split
+    if not split.enabled() or expert._claude_on():
+        return None
+    ag = split.answer(question, interpret, dict(env or {}, _no_split=True))
+    if not ag or ag.get("status") != "성공":
+        return None
+    meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec")}
+    return {"question": question, "status": "Agent", "tuple": it["tuple"], "interpret": meta, "agent": ag, "escalated": "질문을 나눠 조각마다 답함",
+            "card": {"conclusion": (ag.get("lines") or [""])[0], "evidence": [], "intervals": [], "limits": [], "next_questions": []},
+            "sec": round(time.perf_counter() - t0, 3)}
+
+
+def _route_check(question, it, status, t0, said=None):
+    """(다) 넘김 판정: 일반 경로가 정한 처리(계산해 답함·고르게 하기·범위 밖)로 질문이 다 다뤄지는지 Claude가 판정하고, 아니면 Agent에게 넘긴다.
+    로컬 모델은 판정하지 않는다(200문항 비교에서 해로움). 넘기지 않으면 None."""
+    import plan_agent
+    esc, rc = plan_agent.route_check(question, it, status, said=said)
+    if rc:
+        it["route_check"] = rc
+    if not esc:
+        return None
+    ag = _escalate(question, it, t0, "넘김 판정 Agent가 일반 경로로 다 답할 수 없다고 판단")
+    if ag:
+        ag["interpret"]["route_check"] = rc
+    return ag
+
+
 def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, path=None, **review_kw):
     t0 = time.perf_counter()
     assumed, notes, typed = False, [], question if not slots or path else None
@@ -450,19 +480,26 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         un = _unsupported(question, t, env) if t["type"] == "T13" else None
         if un:
             return dict(un, sec=round(time.perf_counter() - t0, 3))
+        agent_ok = False  # 버튼 값은 넘기지 않는다
     else:  # ① 자유 입력
+        agent_ok = llm_on and bool((env or {}).get("agent_ok"))
         if interpret is None:
             import m1
             interpret = m1.M1().interpret
         it = interpret(question)
+        if not (env or {}).get("_no_split"):  # 질문 나누기(049): Claude가 없을 때 하위 질문이 여럿이면 코드가 나눠 조각마다 답한다
+            sp = _split(question, it, interpret, env, t0)
+            if sp:
+                return sp
         if llm_on:  # 안 C(문서 26): 해석이 애매하면 LLM이 정해진 질문 종류 중에서 계획을 고른다
             import plan_agent
             it = plan_agent.adjust(question, it)
         t = it["tuple"]
         meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}
 
-        def stop(r):
-            return dict(r, interpret=meta, sec=round(time.perf_counter() - t0, 3))
+        def stop(r):  # 일반 경로가 계산 전에 끝내는 출구(고르게 하기·범위 밖). (다) 넘김 판정도 여기서 한다
+            r = dict(r, interpret=meta, sec=round(time.perf_counter() - t0, 3))
+            return (_route_check(question, it, r["status"], t0, (r.get("choose") or {}).get("message") or (r.get("card") or {}).get("conclusion")) or r) if agent_ok else r
         od = qparse.DETAIL.get(t.get("detail"), {}).get("word")
         if od in Q.TARGETS_OUT and (qparse.CARD_METRICS | qparse.FOOD_ONLY) & set(t["metric"]):
             # 미용실·약국·학원·병원·부동산중개는 가게 수만 답한다(문서 20 7.5절 3번). 카드 매출·개업·폐업은 다른 업종·동네 전체 값으로 바꿔 답하지 않고 이유를 알린다.
@@ -524,7 +561,6 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                 t = dict(t, expect="답함")  # 추정해서 답하고 "이렇게 이해했어요"로 보여 준다
                 it = dict(it, tuple=t, card=qparse.card(t))
                 assumed = True
-    agent_ok = llm_on and bool((env or {}).get("agent_ok")) and not slots
     if agent_ok and it.get("escalate"):  # 중간안: 계획 선택 Agent가 '정해진 종류 하나로 답할 수 없음'을 고름
         ag = _escalate(question, it, t0, "계획 선택 Agent가 여러 단계·종류 밖으로 판단")
         if ag:
@@ -535,8 +571,13 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         ag = _escalate(question, it, t0, "일반 경로가 범위 밖으로 판단(규칙과 불일치)" if rv["status"] == "범위밖" else "일반 경로 계산 실패")
         if ag:
             return ag
+        agent_ok = False  # 이미 넘겨 봤으면 다시 넘기지 않는다
+    if agent_ok and not it.get("escalate"):  # (다) 넘김 판정(2026-11-14 마스터 결정)
+        ag = _route_check(question, it, rv["status"], t0)
+        if ag:
+            return ag
     t = rv["tuple"]
-    out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}}
+    out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent", "route_check")}}
     if rv["status"] == "되묻기":  # 검수 단계에서 칸을 채우지 못한 경우
         ex = _exception(question, t) or _choose(question, t, G.to_slots(t), "질문을 이해하지 못했어요. 궁금한 것을 골라 주세요.", "topic")
         ex["sec"] = round(time.perf_counter() - t0, 3)

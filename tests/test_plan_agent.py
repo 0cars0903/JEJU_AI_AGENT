@@ -81,6 +81,58 @@ class PlanAgentTest(unittest.TestCase):
         with mock.patch.dict("os.environ", {"JEJU_PLAN_AGENT": "0"}):
             self.assertIsNone(PA._backend())
 
+    def test_local_model_off_by_default(self):  # 로컬 계획 선택은 측정에서 해로워 기본으로 끈다(246→242)
+        import expert
+        with mock.patch.object(expert, "backend", return_value="ollama"), mock.patch.dict("os.environ", {"JEJU_PLAN_AGENT": "1"}):
+            self.assertIsNone(PA._backend())
+            with mock.patch.dict("os.environ", {"JEJU_PLAN_AGENT_LOCAL": "1"}):
+                self.assertEqual(PA._backend(), "ollama")
+
+
+def judge(route, calls=None):
+    def chat(model, messages, tools):
+        if calls is not None:
+            calls.append(messages[-1]["content"])
+        return {"message": {"content": "", "tool_calls": [{"id": "c", "function": {"name": "judge_route", "arguments": {"route": route, "reason": "하위 질문이 둘"}}}]}}
+    return chat
+
+
+class RouteCheckTest(unittest.TestCase):
+    """(다) 넘김 판정: 일반 경로가 정한 처리를 보고 Claude만 판정한다."""
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.cache, PA.CACHE = PA.CACHE, Path(self.tmp.name) / "plan_cache.json"
+        PA._mem.clear()
+
+    def tearDown(self):
+        PA.CACHE = self.cache
+        PA._mem.clear()
+        self.tmp.cleanup()
+
+    def test_agent_judgement_escalates(self):
+        calls = []
+        esc, rec = PA.route_check("노형동 카페 추세 보고 연동이랑 비교해줘", it_of("T4", "T4"), "성공", chat=judge("Agent", calls))
+        self.assertTrue(esc)
+        self.assertEqual(rec["route"], "Agent")
+        self.assertIn("일반 경로의 이해", calls[0])
+
+    def test_enough_keeps_general_path(self):
+        esc, rec = PA.route_check("노형동 카페 몇 개야", it_of("T1", "T1"), "성공", chat=judge("충분"))
+        self.assertFalse(esc)
+        self.assertEqual(rec["route"], "충분")
+
+    def test_local_model_does_not_judge(self):  # 로컬 모델 라우터는 200문항 비교에서 해로웠다(73 < 83)
+        with mock.patch.object(PA, "_backend", return_value="ollama"):
+            self.assertEqual(PA.route_check("노형동 카페 몇 개야", it_of("T1", "T1"), "성공"), (False, None))
+
+    def test_off_switch_and_error(self):
+        with mock.patch.dict("os.environ", {"JEJU_ROUTE_CHECK": "0"}):
+            self.assertEqual(PA.route_check("q", it_of("T1", "T1"), "성공", chat=judge("Agent")), (False, None))
+
+        def broken(*a):
+            raise RuntimeError("x")
+        self.assertEqual(PA.route_check("q", it_of("T1", "T1"), "성공", chat=broken), (False, None))
+
 
 if __name__ == "__main__":
     unittest.main()
