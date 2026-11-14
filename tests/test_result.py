@@ -256,6 +256,34 @@ class CheckLine(unittest.TestCase):  # 검수·재실행 라인 3단계: LLM이 
         self.assertEqual(R._to_check("q", dict(it, plan_agent={"kept": True})), [])  # 계획 선택 Agent가 이미 봤으면 묻지 않는다
 
 
+class RankFix20261115(unittest.TestCase):
+    """최종 평가(2026-11-14) 결함: 폐업·개업 순위가 가나다순, '낮은 동네'가 단일 조회, 지표 순서, '잘 돼'가 점포 수, 동네 생존율 결론이 제주 전체."""
+    def conc(self, q):
+        return R.respond(q, None, llm_on=False)["card"]["conclusion"]
+
+    def test_close_rank_by_value(self):
+        c = self.conc("폐업이 가장 많은 동네는?")
+        self.assertIn("1위 애월읍", c)
+        self.assertNotIn("건입동", c)
+
+    def test_open_rank_low(self):
+        self.assertIn("작은 순서", self.conc("개업이 가장 적은 동네"))
+
+    def test_low_without_superlative_is_rank(self):
+        c = self.conc("생존율 낮은 동네는?")
+        self.assertIn("순위", c)
+        self.assertIn("작은 순서", c)
+
+    def test_metric_named_first(self):
+        self.assertIn("폐업률 순위", self.conc("폐업률이 제일 높은 동네"))
+
+    def test_jal_dwae_is_sales(self):
+        self.assertIn("매출 순위", self.conc("카페 어디가 제일 잘 돼?"))
+
+    def test_dong_survival_conclusion(self):
+        self.assertTrue(self.conc("노형동 생존율 낮아?").startswith("노형동"))
+
+
 if __name__ == "__main__":
     unittest.main()
 

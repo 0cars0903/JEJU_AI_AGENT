@@ -283,9 +283,16 @@ def _table_lines(o, t, metric, v, note):
         last = tab["year"].max()
         rl = v3.meta().get("rest_last", "") if metric in ("개업수", "폐업수") else ""
         part = rl.startswith(str(last)) and not rl.endswith("12-31")  # 아직 덜 찬 해: '곳/년'이 아니라 그날까지 센 수(이중 검토 035)
-        for r in tab[tab["year"] == last].head(6).itertuples():
+        when = f"{last}년({int(rl[5:7])}월 {int(rl[8:10])}일까지)" if part else f"{last}년"
+        cur = tab[tab["year"] == last]
+        if cur["dong"].nunique() > 6:  # 순위(전체 동네): 가나다순 첫 동네가 아니라 값 순서로(2026-11-15 최종 평가 결함)
+            cur = cur.sort_values("value", ascending=t.get("order") == "asc")
+            _rank_head(o, t, f"{when} {word}", label, cur.head(6), cur["dong"].nunique(), "곳" if part else unit)
+            o.map("map", f"지도: {label}", dict(zip(cur["dong"], cur["value"])), "곳" if part else unit, f"{when} 동네별 {_josa(label, '을', '를')} 지도로 보여 줘요", definition=DEFS.get(metric))
+            if part:
+                o.numbers += [float(int(rl[5:7])), float(int(rl[8:10]))]
+        for r in cur.head(6).itertuples():
             v_ = o.num(r.value, "곳" if part else unit)
-            when = f"{last}년({int(rl[5:7])}월 {int(rl[8:10])}일까지)" if part else f"{last}년"
             if part:
                 o.numbers += [float(int(rl[5:7])), float(int(rl[8:10]))]
             o.line("L1", f"{when} {getattr(r, 'dong', '')} {word}{_josa(label)} {v_}{_cop(v_)}.", src, f"{last}년")
@@ -1350,6 +1357,9 @@ def build(t, rv, ev, value_q=False):
         main = [x for x in o.lines if not x.get("side")] or o.lines  # 곁가지 줄(위치·모델 결과)은 결론으로 고르지 않는다(문서 22)
         cmp_ = next((x for x in main if x.get("kind") == "compare"), None)
         lead = next((x for x in main if x.get("kind") == {"T9": "similar", "T15": "anomaly"}.get(t.get("type"), "survival")), None)
+        sp = [d for d in (t.get("space") or []) if isinstance(d, str)]
+        if lead and lead.get("kind") == "survival" and sp and t.get("target") in (None, "음식점") and not any(d in lead["text"] for d in sp):  # 업종 없이 동네를 물었으면(동네 값은 음식점 전체만 있음) 제주 전체 업종 생존율이 아니라 그 동네 값을 결론으로(2026-11-15 최종 평가 결함)
+            lead = next((x for x in main if x["layer"] == "L1" and x["text"].startswith(tuple(sp)) and "생존율" in x["text"]), lead)
         if t.get("type") == "T4":  # 센터 자료의 흐름 줄이 있으면 그것이 결론(문서 20 A6)
             lead = next((x for x in main if x.get("kind") == "flow"), lead)
         csum = next((x for x in main if x.get("kind") == "compare_sum"), None)

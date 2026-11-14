@@ -30,6 +30,8 @@ REGISTRY = _WRITE / "models" / "registry.json"
 PANEL = next((p for p in (Q.ROOT / "data" / "tables" / "panel_v2.parquet", Q.ROOT / "data" / "interim" / "gates" / "panel_v2.parquet") if p.exists()),
              Q.ROOT / "data" / "tables" / "panel_v2.parquet")
 TAB = Q.ROOT / "data" / "tables"
+# 음식점 인허가: 제출본 사본(실행에 쓰는 4열만: 업종·개업일·폐업일·행정동, 2026-11-15)을 먼저 쓴다
+REST = next((p for p in (TAB / "rest_cohort.parquet", Q.ROOT / "data" / "interim" / "restaurants.parquet") if p.exists()), TAB / "rest_cohort.parquet")
 CENTER_ONLY = {"R8", "R9"}
 NO_CHECK = {"R3", "R8", "R9", "R10", "R11"}
 
@@ -256,7 +258,7 @@ def r2(flt, table):
 def _cohort(target):
     from build_dong_tables import IN, KM_END, KM_START
     from places import REST_MAP
-    rest = pd.read_parquet(IN / "restaurants.parquet")
+    rest = pd.read_parquet(REST)
     end = rest[["open_date", "close_date"]].max().max()
     km_end = KM_END or str((end - pd.DateOffset(years=5)).date())  # v3: 관측 끝 − 5년(build_dong_tables와 같은 규칙)
     co = rest[(rest["open_date"] >= KM_START) & (rest["open_date"] <= km_end)].copy()
@@ -334,7 +336,7 @@ def r7(flt, chk, kind="close"):
     tgt = (flt or {}).get("target")
     if tgt and REST_MAP.get(tgt):
         ev = ev[ev["category"].isin(REST_MAP[tgt])]
-    end = pd.read_parquet(IN / "restaurants.parquet", columns=["open_date", "close_date"]).max().max()
+    end = pd.read_parquet(REST, columns=["open_date", "close_date"]).max().max()
     year = end.year if end.month == 12 else end.year - 1  # 관측이 끝난 해가 12월 전이면 그 해는 덜 찼다 → 마지막 완전 연도
     kind_ko = "폐업" if kind == "close" else "개업"
     note = f"관측 종료 {end.date()}, 마지막 완전 연도 {year}년 기준"

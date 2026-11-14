@@ -74,7 +74,7 @@ class S6Policy(unittest.TestCase):
     def test_rain_policy_matches_08(self):
         """08 문서 결과(우도면 효과 있음, 연동 작음 확인)를 같은 정책으로 재현하는지 확인한다."""
         import s6
-        path = ROOT / "data" / "interim" / "gates" / "rain_test.json"
+        path = ROOT / "data" / "tables" / "rain_test.json"  # 제출본 사본(data/interim은 ZIP에 없음)
         if not path.exists():
             self.skipTest("rain_test.json 없음")
         rows = [{"name": r["dong"], "beta": r["beta"], "se": r["se"], "dof": 800} for r in json.loads(path.read_text(encoding="utf-8"))["per_dong"]]

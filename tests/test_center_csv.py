@@ -12,6 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "app"))
 import center_csv  # noqa: E402
 
+# 원본(data/raw)은 재배포 조건이 확인되지 않아 저장소·ZIP에 없다. 없으면 원본을 쓰는 시험은 이유를 밝히고 건너뛴다(2026-11-15)
+RAW_OK = bool(glob.glob(str(ROOT / "data" / "raw" / "*주제1*_21.csv"))) and (ROOT / "data" / "raw" / "이용자유형별버스정류소이용인원현황.csv").exists()
+NO_RAW = "data/raw 원본 CSV가 없음(제출본에는 원본을 넣지 않음)"
+
 KO2EN = {"년월": "base_year_month", "읍면동명": "bjd", "업종명": "biz_nm", "이용자 구분": "user_type", "이용금액": "use_amt"}
 
 
@@ -27,17 +31,20 @@ def sample(english=False):
 
 
 class Load(unittest.TestCase):
+    @unittest.skipUnless(RAW_OK, NO_RAW)
     def test_korean_columns_746(self):
         m = center_csv.load(sample(), "746.csv")
         self.assertEqual(m["dataset"], "P746")  # 746 전용 칸(매장수)이 있으면 시험용 표시
         self.assertIn("노형동", m["dongs"])
         self.assertEqual(center_csv.check_request(m, "노형동", "비알콜 음료점업"), [])
 
+    @unittest.skipUnless(RAW_OK, NO_RAW)
     def test_english_columns_center(self):
         m = center_csv.load(sample(english=True), "center.csv")
         self.assertIn(m["dataset"], ("C1-07", "C1-08"))
         self.assertEqual(m["columns"]["amt"], "use_amt")
 
+    @unittest.skipUnless(RAW_OK, NO_RAW)
     def test_missing_request_condition(self):
         m = center_csv.load(sample(), "746.csv")
         p = center_csv.check_request(m, "연동", None)
@@ -52,6 +59,7 @@ class Load(unittest.TestCase):
 
 
 class Api(unittest.TestCase):
+    @unittest.skipUnless(RAW_OK, NO_RAW)
     def test_upload_and_recompute(self):
         from fastapi.testclient import TestClient
         import api
@@ -72,6 +80,7 @@ class Api(unittest.TestCase):
             self.assertIn("다시 넣어", other.json()["detail"])
         self.assertNotIn(r.json()["key"], json.dumps(q, ensure_ascii=False))  # 답에는 열쇠를 싣지 않는다
 
+    @unittest.skipUnless(RAW_OK, NO_RAW)
     def test_flow_question_compares_first_and_last_month(self):  # 문서 20 A6: 센터 자료로 '흐름'을 물으면 넣은 기간의 처음과 끝을 견준 줄이 결론이다
         from fastapi.testclient import TestClient
         import api
@@ -105,6 +114,7 @@ def bus_sample(center304=False):
 
 class Bus(unittest.TestCase):
     """센터 3-04 버스 정류소별 이용(2026-11-14): 허브 743 실제 자료로 칸 구성을 시험한다."""
+    @unittest.skipUnless(RAW_OK, NO_RAW)
     def test_hub_743_daily(self):
         import result as R
         m = center_csv.load(bus_sample(), "743.csv")
@@ -114,6 +124,7 @@ class Bus(unittest.TestCase):
         self.assertIn("하루 평균", o["card"]["conclusion"])
         self.assertEqual(o["answer"]["conclusion"]["tag"], "센터 자료로 계산")
 
+    @unittest.skipUnless(RAW_OK, NO_RAW)
     def test_center_304_hours(self):
         import result as R
         m = center_csv.load(bus_sample(center304=True), "3-04.csv")

@@ -635,7 +635,10 @@ def _escalate(question, it, t0, why):
             "sec": round(time.perf_counter() - t0, 3)}
 
 
-RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌")
+RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌|(적|낮|작)은\s*(동네|곳|지역|데)|안\s*되는\s*(동네|곳|지역|데)")
+# 동네를 말하지 않고 '높은·낮은·많은 동네', '어디가 제일 잘 돼'처럼 물으면 순위 질문이다(2026-11-15 최종 평가 결함: 단일 조회 T1로 읽음)
+RANK_ADJ = re.compile(r"(높|낮|많|적|큰|작|잘\s*되|안\s*되)(은|는)\s*(동네|곳|지역|데)|어디(가|서|에서|가\s*더)?\s*(가장|제일|젤|더|잘)|(가장|제일)\s*잘\s*(돼|되)")
+SALES_WORD = re.compile(r"잘\s*(돼|되|나가|팔)|장사(가|는)?\s*(잘|안)")
 MULTI_NOTE = "질문에 묻는 것이 여럿일 수 있어요. 위 답은 그중 하나만 다뤘으니, 나머지는 따로 물어 주세요."
 
 
@@ -704,6 +707,16 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import plan_agent
             it = plan_agent.adjust(question, it)
         t = it["tuple"]
+        q_ = question or ""
+        if not t.get("metric") and SALES_WORD.search(q_):  # '잘 돼?'는 매출로 답한다(점포 수로 답하던 결함, 2026-11-15)
+            t = dict(t, metric=["매출"])
+            it = dict(it, tuple=t)
+        if len(t.get("metric") or []) > 1:  # 질문에 그대로 적힌 지표를 앞에(폐업률을 물었는데 폐업 수 순위로 답하던 결함)
+            t = dict(t, metric=sorted(t["metric"], key=lambda m: m not in q_))
+            it = dict(it, tuple=t)
+        if t.get("type") == "T1" and not t.get("space") and RANK_ADJ.search(question or ""):
+            t = dict(t, type="T3", expect="답함")
+            it = dict(it, tuple=t)
         if t.get("type") == "T3" and RANK_LOW.search(question or ""):  # 순위 방향(작은 순서)
             t = dict(t, order="asc")
             it = dict(it, tuple=t)
