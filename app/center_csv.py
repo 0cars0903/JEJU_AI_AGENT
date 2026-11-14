@@ -1,7 +1,8 @@
 """F9 센터 자료 불러오기 (docs/기획/v3_설계.md 4-1절, 2026-11-12 구현).
 
 센터 자료는 Agent가 DB에 붙지 않고, 이용자가 센터 조회 화면에서 받은 CSV를 넣으면 읽는다(데이콘 안내 2026-11-11).
-구현 범위(사용자 결정): 시험할 수 있는 1-07·1-08 카드 이용 현황(읍면동)만. 칸 구성이 같은 허브 746 CSV로 시험한다.
+구현 범위(사용자 결정): 시험할 수 있는 1-07·1-08 카드 이용 현황(읍면동). 칸 구성이 같은 허브 746 CSV로 시험한다.
+2026-11-14 추가(평가 감점 '센터 자료 직접 활용 낮음'): 3-04 버스 정류소별 이용 현황. 칸이 겹치는 허브 743(센터 제공) CSV로 시험한다.
 - 칸 이름은 명세의 영문(base_year_month, bjd, biz_nm, user_type, use_amt …)과 한글(년월, 법정동, 업종명, 이용자구분, 이용금액 …)을 모두 받는다.
 - 법정동 → 행정동은 상가 자료의 법정동·행정동 쌍 비율로 나눈다(build_v3_tables.dong_weights와 같음).
 - 저장: data/interim/uploads/<id>.parquet + <id>.json. 하루 지난 파일은 다음 불러오기 때 지운다(반출 불가 자료를 오래 두지 않음).
@@ -32,7 +33,13 @@ COLS = {
 }
 NEED = ["ym", "bdong", "biz", "amt"]
 CUST = {"제주도민": "도민", "도민": "도민", "내국인": "내국인 관광객", "법인": "법인"}  # 그 밖(중국·일본·동남아·기타외국)은 외국인 관광객
-LABEL = {"C1-07": "센터 1-07 카드 이용 현황(읍면동)_v01", "C1-08": "센터 1-08 카드 이용 현황(읍면동)_v02", "P746": "허브 746(센터 1-07과 같은 칸 구성, 시험용)"}
+LABEL = {"C1-07": "센터 1-07 카드 이용 현황(읍면동)_v01", "C1-08": "센터 1-08 카드 이용 현황(읍면동)_v02", "P746": "허브 746(센터 1-07과 같은 칸 구성, 시험용)",
+         "C3-04": "센터 3-04 버스 정류소별 이용 현황", "P743": "허브 743 정류소별 이용(센터 3-04와 칸이 겹침, 시험용)"}
+BUS_COLS = {  # 센터 3-04 명세(날짜, 년, 월, 요일, 시간대, 정류소 아이디, 정류소명, 승하차유형, 이용자구분, 결제유형, 이용자 수)·허브 743
+    "date": ["날짜", "base_date"], "station": ["정류소명", "station_name"], "n": ["이용자 수", "이용자수", "user_count"],
+    "hour": ["시간대", "base_hour"], "updown": ["승하차유형"], "user": ["이용자구분", "user_type"],
+}
+BUS = ("C3-04", "P743")
 
 
 class CsvError(ValueError):
@@ -73,6 +80,10 @@ def load(raw, filename="upload.csv"):
         raise CsvError("CSV 파일만 넣을 수 있어요.")
     _cleanup()
     d = _read(raw)
+    cols = {c.strip(): c for c in d.columns}
+    bm = {k: next((cols[n] for n in names if n in cols), None) for k, names in BUS_COLS.items()}
+    if bm["date"] and bm["station"] and bm["n"]:
+        return _load_bus(d, bm, filename)
     m, miss = identify(d.columns)
     if miss:
         names = {"ym": "년월", "bdong": "법정동", "biz": "업종명", "amt": "이용금액"}  # 화면 안내는 한글 칸 이름만(문서 20 A10)
@@ -99,6 +110,37 @@ def load(raw, filename="upload.csv"):
     meta = {"id": did, "key": uuid.uuid4().hex, "dataset": kind, "label": LABEL[kind], "file": filename, "rows": int(len(d)), "agg_rows": int(len(out)),
             "period": [out["ym"].min(), out["ym"].max()], "dongs": sorted(out["dong"].unique()), "bdongs": sorted(t["bdong"].unique())[:20],
             "biz": sorted(out["biz"].unique())[:50], "unmapped_bdong": unmapped, "columns": {k: v for k, v in m.items() if v}}
+    (UP / f"{did}.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+    return meta
+
+
+def _load_bus(d, bm, filename):
+    """버스 정류소별 이용 → 월 × 동네(× 시간대) 이용자 수와 그 달의 날짜 수. 정류소 → 동네는 제출본 대응표(data/tables/station_dong.parquet)."""
+    t = pd.DataFrame({k: d[c] for k, c in bm.items() if c})
+    t["date"] = t["date"].str.replace(r"\D", "", regex=True).str[:8]
+    t = t[t["date"].str.len() == 8]
+    t["n"] = pd.to_numeric(t["n"], errors="coerce")
+    t = t.dropna(subset=["n"])
+    if "updown" in t:  # 승하차유형이 있으면 승차만(제출본 743과 같은 기준)
+        up = t["updown"].astype(str).str.contains("승차")
+        t = t[up] if up.any() else t
+    if t.empty:
+        raise CsvError("이용자 수 값이 비어 있어요. 검색 결과가 있는 조건으로 다시 받아 주세요.")
+    t["ym"] = t["date"].str[:4] + "-" + t["date"].str[4:6]
+    sd = pd.read_parquet(ROOT / "data" / "tables" / "station_dong.parquet")
+    keys = ["ym", "station"] + (["hour"] if "hour" in t else [])
+    g = t.groupby(keys + ["date"], as_index=False)["n"].sum().merge(sd, left_on="station", right_on="station_name", how="left")
+    unmapped = sorted(g.loc[g["dong"].isna(), "station"].unique())[:20]
+    g = g.dropna(subset=["dong"])
+    g["n"] = g["n"] * g["weight"]
+    days = t.groupby("ym")["date"].nunique().rename("days").reset_index()
+    out = g.groupby(["ym", "dong"] + (["hour"] if "hour" in t else []), as_index=False)["n"].sum().merge(days, on="ym")
+    kind = "C3-04" if "정류소명" in d.columns or "hour" in t else "P743"
+    did = uuid.uuid4().hex[:12]
+    out.to_parquet(UP / f"{did}.parquet", index=False)
+    meta = {"id": did, "key": uuid.uuid4().hex, "dataset": kind, "label": LABEL[kind], "file": filename, "rows": int(len(d)), "agg_rows": int(len(out)),
+            "period": [out["ym"].min(), out["ym"].max()], "dongs": sorted(out["dong"].unique()), "bdongs": [], "biz": [], "hours": "hour" in out,
+            "unmapped_bdong": unmapped, "columns": {k: v for k, v in bm.items() if v}}
     (UP / f"{did}.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
     return meta
 

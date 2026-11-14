@@ -85,3 +85,45 @@ class Api(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def bus_sample(center304=False):
+    """허브 743(센터 제공) 실제 파일 일부. center304=True면 센터 3-04 명세의 한글 칸으로 바꾸고 시간대 칸을 붙인다(칸 구성 시험)."""
+    d = pd.read_csv(ROOT / "data" / "raw" / "이용자유형별버스정류소이용인원현황.csv", encoding="utf-8-sig", dtype=str, on_bad_lines="skip")
+    sd = pd.read_parquet(ROOT / "data" / "tables" / "station_dong.parquet")
+    names = set(sd.loc[sd["dong"].isin(["노형동", "연동"]), "station_name"])
+    d = d[d["base_date"].str.match(r"^2025(09|10)\d\d$", na=False) & d["station_name"].isin(names)]
+    if center304:
+        d = d.rename(columns={"base_date": "날짜", "station_name": "정류소명", "user_type": "이용자구분", "user_count": "이용자 수"})
+        n = pd.to_numeric(d["이용자 수"])
+        a, b = d.assign(시간대="07시-09시", **{"이용자 수": (n * 0.7).round().astype(int).astype(str)}), d.assign(시간대="18시-20시", **{"이용자 수": (n * 0.3).round().astype(int).astype(str)})
+        d = pd.concat([a, b])
+    b_ = io.BytesIO()
+    d.to_csv(b_, index=False, encoding="utf-8-sig")
+    return b_.getvalue()
+
+
+class Bus(unittest.TestCase):
+    """센터 3-04 버스 정류소별 이용(2026-11-14): 허브 743 실제 자료로 칸 구성을 시험한다."""
+    def test_hub_743_daily(self):
+        import result as R
+        m = center_csv.load(bus_sample(), "743.csv")
+        self.assertEqual(m["dataset"], "P743")
+        self.assertTrue({"노형동", "연동"} <= set(m["dongs"]))  # 같은 이름 정류소는 가중치로 여러 동네에 나뉜다
+        o = R.respond("노형동 버스 많이 다녀?", {"center_bus": m["id"]}, llm_on=False)
+        self.assertIn("하루 평균", o["card"]["conclusion"])
+        self.assertEqual(o["answer"]["conclusion"]["tag"], "센터 자료로 계산")
+
+    def test_center_304_hours(self):
+        import result as R
+        m = center_csv.load(bus_sample(center304=True), "3-04.csv")
+        self.assertEqual(m["dataset"], "C3-04")
+        self.assertTrue(m["hours"])
+        o = R.respond("노형동 버스 몇 시에 붐벼?", {"center_bus": m["id"]}, llm_on=False)
+        self.assertIn("07시-09시", o["card"]["conclusion"])
+
+    def test_bus_hour_blocked_without_center_file(self):
+        import result as R
+        o = R.respond("노형동 버스 몇 시에 붐벼?", {}, llm_on=False)
+        self.assertEqual(o["status"], "범위밖")
+        self.assertIn("3-04", o["card"]["conclusion"])

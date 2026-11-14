@@ -361,15 +361,62 @@ def _blocked(question, t, message, alts):
             "card": {"conclusion": message, "evidence": [], "intervals": [], "limits": [], "next_questions": [x["text"] for x in sug]}, "suggestions": sug}
 
 
+def _center_bus(question, t, env, t0):
+    """센터 3-04 버스 CSV를 넣은 상태의 버스 질문(2026-11-14, 평가 감점 '센터 자료 직접 활용'): 넣은 자료로 동네 하루 평균 이용과
+    순위, 시간대가 있으면 붐비는 시간대를 계산한다. 버스 질문이 아니면 None."""
+    import center_csv
+    did = (env or {}).get("center_bus")
+    if not did or "버스" not in (question or ""):
+        return None
+    meta, d = center_csv.get(did), center_csv.table(did)
+    last = d["ym"].max()
+    cur = d[d["ym"] == last]
+    daily = cur.groupby("dong").agg(n=("n", "sum"), days=("days", "first"))
+    daily = (daily["n"] / daily["days"]).sort_values(ascending=False)
+    dong = (t.get("space") or [None])[0]
+    src = meta["label"]
+    ev = []
+    if dong and dong in daily.index:
+        rank = list(daily.index).index(dong) + 1
+        concl = f"{last} {dong} 버스 승차는 하루 평균 {daily[dong]:,.0f}명이에요(넣은 센터 자료 {len(daily)}개 동네 중 {rank}위)."
+        if meta.get("hours") and TIME_WORDS.search(question or ""):
+            h = cur[cur["dong"] == dong].groupby("hour")["n"].sum()
+            share = (h / h.sum() * 100).sort_values(ascending=False)
+            top = ", ".join(f"{k}({v:.1f}%)" for k, v in share.head(3).items())
+            concl = f"{last} {dong} 버스 승차가 많은 시간대는 {top}{layers._cop(top)}."
+            ev = [{"text": f"{k}: 하루 평균 {h[k] / cur['days'].iloc[0]:,.0f}명({v:.1f}%)", "dataset": src, "as_of": last} for k, v in share.items()]
+        if not meta.get("hours") and TIME_WORDS.search(question or ""):
+            concl += " 넣은 자료에 시간대 칸이 없어 하루 평균만 보여 드려요(3-04를 시간대가 들어가게 받아 주세요)."
+        ev = [{"text": f"{dong} 하루 평균 승차 {daily[dong]:,.0f}명, {len(daily)}개 동네 중 {rank}위", "dataset": src, "as_of": last}] + ev
+    elif dong:
+        return _blocked(question, t, f"넣은 센터 자료에 {dong} 정류소가 없어요. 센터 조회 화면에서 {dong} 정류소가 들어가게 다시 받아 주세요.", [])
+    else:
+        top = ", ".join(f"{i}위 {k}({v:,.0f}명)" for i, (k, v) in enumerate(daily.head(3).items(), 1))
+        concl = f"{last} 하루 평균 버스 승차 순위는 {top}{layers._cop(top)}(넣은 센터 자료 기준)."
+        ev = [{"text": f"{k}: 하루 평균 {v:,.0f}명", "dataset": src, "as_of": last} for k, v in daily.head(10).items()]
+    limits = [f"넣은 파일({meta['file']})로 계산했어요. 정류소 이름으로 동네를 이어서, 같은 이름이 떨어진 곳에 있으면 구분하지 못해요."] + \
+             ([f"동네를 찾지 못한 정류소 {len(meta['unmapped_bdong'])}곳은 뺐어요."] if meta.get("unmapped_bdong") else [])
+    return {"question": question, "status": "성공", "tuple": t, "interpret": {"path": "센터 자료(버스)", "card": None},
+            "understood": {"text": f"이렇게 이해했어요: {dong or '제주'} 버스 이용 — 넣은 센터 자료({src})로 계산", "by": "센터 자료", "assumed": False,
+                           "slots": {}, "notes": [], "check": []},
+            "card": {"conclusion": concl, "evidence": [{**e, "tag": "센터 자료", "layer": "L1", "kind": None} for e in ev], "intervals": [], "limits": limits},
+            "answer": {"conclusion": {"text": concl, "layer": "L1", "tag": "센터 자료로 계산"},
+                       "blocks": [{"id": "facts", "title": "센터 자료로 계산한 값", "lines": [{"layer": "L1", "block": "facts", "tag": "센터 자료", "text": e["text"], "source": src, "as_of": last, "kind": None} for e in ev]},
+                                  {"id": "analysis", "title": "읽는 법과 주의", "lines": [{"layer": "L5", "block": "analysis", "tag": "주의", "text": x, "source": None, "as_of": None, "kind": None} for x in limits]}],
+                       "views": [], "default_views": 0, "value_question": False, "footer": [{"source": src, "as_of": last, "next": "센터에서 다시 조회"}],
+                       "freshness": [], "requests": [], "methods": []},
+            "suggestions": [], "downloads": [], "sec": round(time.perf_counter() - t0, 3)}
+
+
 def _unsupported(question, t, env):
     """질문에 지금 자료로 답할 수 없는 축이 있으면 다른 지표로 바꿔 답하지 않는다(028 대조).
     v3(2026-11-11): 매출과 상권의 시간대는 제주관광공사 카드 자료로 답하므로 막지 않는다. 버스의 시간대만 센터 전용으로 남는다."""
     d = (t.get("space") or [])[:1]
     if t.get("type") == "T8" and "버스" in (question or ""):  # v3: 버스 예상(R2) 제외(문서 18)
         return _blocked(question, t, "버스 이용 예상은 하지 않아요. 상권 분석 범위 밖이고, 예측 모델이 단순 기준보다 정확하지 않았어요.", [{"topic": "visit", "space": d}] if d else [])
-    if TIME_WORDS.search(question or "") and "버스" in (question or "") and not (env or {}).get("center_db"):
+    if TIME_WORDS.search(question or "") and "버스" in (question or "") and not (env or {}).get("center_db") and not (env or {}).get("center_bus"):
         alts = [{"topic": "visit", "space": d}] if d else []
-        return _blocked(question, t, "버스의 시간대별 이용은 빅데이터센터 PC의 센터 자료로만 볼 수 있어요.", alts)
+        return _blocked(question, t, "버스의 시간대별 이용은 빅데이터센터 PC의 센터 자료로만 볼 수 있어요. 센터 PC에서 '버스 정류소별 이용 현황'(3-04)을 조회해 CSV로 받아 '센터 자료 넣기'로 넣으면 시간대별로 계산해 드려요.", alts)
     return None
 
 
@@ -515,6 +562,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             why = OUT_NO_CARD if qparse.CARD_METRICS & set(t["metric"]) else OUT_NO_OPEN
             return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), (OUT_ONLY_COUNT + why).format(w=od, we=_josa(od)),
                                  [{"topic": "stores", "space": d, "detail": od}] if d else []))
+        cb = _center_bus(question, t, env, t0)
+        if cb:
+            return dict(cb, interpret=meta)
         if "외국인매출" in t["metric"] or (FOREIGN_Q.search(question or "") and SPEND_Q.search(question or "")):
             # 외국인 매출은 공개 자료에 제주 전체(업종·출신지역)만 있다. 전체 매출 순위로 바꿔 답하지 않고 있는 값과 받을 곳을 알린다(문서 20 A9)
             t = dict(Q.empty(), type="T5" if t["space"] else "T3", metric=["외국인매출"], space=t["space"][:1],

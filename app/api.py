@@ -149,7 +149,7 @@ def ask(body: Ask, request: Request):
             raise HTTPException(422, "불러온 센터 자료를 찾지 못했습니다(하루가 지나 지워졌을 수 있어요). 파일을 다시 넣어 주세요.")
         if not center_csv.allowed(meta, body.dataset_key):
             raise HTTPException(422, "센터 자료로 계산한 결과는 파일을 넣은 브라우저에서만 볼 수 있어요. 파일을 다시 넣어 주세요.")
-        env["center_card"] = body.dataset_id
+        env["center_bus" if meta.get("dataset") in center_csv.BUS else "center_card"] = body.dataset_id  # 3-04 버스(2026-11-14) 또는 카드 1-07·1-08
     # (가) 기법 목록(설계 11-1절): 질문에 분석 기법 이름이 있으면 정해진 코드로 계산한다. 센터 CSV를 쓰는 질문은 기존 경로로 보낸다
     import techniques
     import split
