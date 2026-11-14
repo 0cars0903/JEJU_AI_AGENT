@@ -51,8 +51,9 @@ def training_rows():
     for line in (X1 / "train.jsonl").read_text(encoding="utf-8").splitlines():
         m = json.loads(line)["messages"]
         rows.append((m[1]["content"], json.loads(m[2]["content"]), "template"))
-    for name, tag in [("b1_train.jsonl", "b1"), ("b1b_train.jsonl", "b1b"), ("v3_train.jsonl", "v3"), ("human_train.jsonl", "human"), ("feedback_train.jsonl", "feedback")]:  # feedback: 사람이 확인·고친 해석(tools/feedback_to_train.py)
+    for name, tag in [("b1_train.jsonl", "b1"), ("b1b_train.jsonl", "b1b"), ("v3_train.jsonl", "v3"), ("human_train.jsonl", "human"), ("fragment_train.jsonl", "fragment"), ("feedback_train.jsonl", "feedback")]:  # feedback: 사람이 확인·고친 해석(tools/feedback_to_train.py)
         # B1(짧은 말투) + B1b(긴 문장) + v3 카드 매출 예문 + human(사람 말투 정답 1,000문항, Gemini 045·046, 2026-11-14. 되묻기는 type 없음)
+        # + fragment(질문 나누기 조각 말투 600, Gemini 051, 평가용 050과 겹침 0. 평가용 300: 246→248, 050 조각 종류 270→274/300)
         f = X1 / name
         if f.exists():
             for line in f.read_text(encoding="utf-8").splitlines():

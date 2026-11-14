@@ -1,0 +1,600 @@
+{"q": "노형동 카페 매장 수를 먼저 확인하고,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "애월읍 한식당 점포 수를 조회한 뒤,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "이도2동 치킨집이 몇 곳인지 파악하고 나서,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "연동 편의점 개수를 알아본 다음에,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "아라동 베이커리 등록 현황을 살핀 후,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "조천읍 일식당 수를 먼저 점검하고,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "한림읍 중식당 매장 숫자를 확인한 다음,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "삼도1동 분식집 점포 수를 뽑아본 뒤,", "tuple": {"type": "T1", "expect": "답함"}, "form": "connective"}
+{"q": "노형동과 연동 상권 규모를 먼저 비교해보고,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "아라동이랑 이도2동 유동인구를 대조한 뒤,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "애월읍과 한림읍 한식당 점포 수를 비교하고 나서,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "삼도1동과 삼도2동 카페 밀집도를 견주어본 다음에,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "화북동이랑 삼양동 거주인구를 비교 점검한 후,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "용담1동과 용담2동 매출 수준을 비교 분석하고,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "중문동과 서홍동 관광객 방문 규모를 비교해본 뒤,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "구좌읍과 조천읍 상가 수를 대조해보고 나서,", "tuple": {"type": "T2", "expect": "답함"}, "form": "connective"}
+{"q": "제주 전체에서 카페가 가장 많은 동네 순위를 뽑고 나서,", "tuple": {"type": "T3", "expect": "답함"}, "form": "connective"}
+{"q": "유동인구가 제일 많은 지역 상위 5곳을 확인한 뒤,", "tuple": {"type": "T3", "expect": "답함"}, "form": "connective"}
+{"q": "음식점 폐업 수가 가장 높은 동네 순위를 먼저 살피고,", "tuple": {"type": "T3", "expect": "답함"}, "form": "connective"}
+{"q": "20대 방문객 비율이 1위인 읍면동을 조회한 다음에,", "tuple": {"type": "T3", "expect": "답함"}, "form": "connective"}
+{"q": "점포 수 상위 동네 목록을 먼저 파악한 후,", "tuple": {"type": "T3", "expect": "답함"}, "form": "connective"}
+{"q": "버스 승하차량이 가장 많은 정류소가 있는 동네 순위를 매겨보고,", "tuple": {"type": "T3", "expect": "답함"}, "form": "connective"}
+{"q": "치킨집 밀집도 상위 동네들을 먼저 추려낸 뒤,", "tuple": {"type": "T3", "expect": "답함"}, "form": "connective"}
+{"q": "노형동 카페 폐업 추이를 먼저 살펴보고,", "tuple": {"type": "T4", "expect": "답함"}, "form": "connective"}
+{"q": "연동 일반음식점 개업 증감세를 확인한 뒤,", "tuple": {"type": "T4", "expect": "답함"}, "form": "connective"}
+{"q": "아라동 방문인구 변화 추세를 점검하고 나서,", "tuple": {"type": "T4", "expect": "답함"}, "form": "connective"}
+{"q": "이도2동 치킨집 최근 3년간 폐업률 흐름을 살핀 다음에,", "tuple": {"type": "T4", "expect": "답함"}, "form": "connective"}
+{"q": "애월읍 음식점 증가 추이를 먼저 파악한 후,", "tuple": {"type": "T4", "expect": "답함"}, "form": "connective"}
+{"q": "삼도1동 상가 수 변동 추이를 확인해보고,", "tuple": {"type": "T4", "expect": "답함"}, "form": "connective"}
+{"q": "한림읍 유동인구 감소 흐름을 먼저 분석한 뒤,", "tuple": {"type": "T4", "expect": "답함"}, "form": "connective"}
+{"q": "연동 유동인구의 연령대별 구성 비중을 확인하고,", "tuple": {"type": "T5", "expect": "답함"}, "form": "connective"}
+{"q": "노형동 방문객 중 도민과 관광객 비율을 살핀 뒤,", "tuple": {"type": "T5", "expect": "답함"}, "form": "connective"}
+{"q": "이도2동 상권의 주 연령층 구성을 먼저 파악한 다음,", "tuple": {"type": "T5", "expect": "답함"}, "form": "connective"}
+{"q": "아라동 거주인구와 직장인구 비중을 대조해보고 나서,", "tuple": {"type": "T5", "expect": "답함"}, "form": "connective"}
+{"q": "애월읍 유동인구 성별·연령별 비율을 점검한 후,", "tuple": {"type": "T5", "expect": "답함"}, "form": "connective"}
+{"q": "중문동 카드 소비의 관광객 비중을 먼저 알아본 뒤,", "tuple": {"type": "T5", "expect": "답함"}, "form": "connective"}
+{"q": "삼양동 생활인구 구성 비율을 먼저 확인하고,", "tuple": {"type": "T5", "expect": "답함"}, "form": "connective"}
+{"q": "비 오는 날 아라동 방문인구가 얼마나 줄어드는지 확인하고,", "tuple": {"type": "T6", "expect": "답함"}, "form": "connective"}
+{"q": "우천 시 노형동 카페 손님 변화를 먼저 살핀 뒤,", "tuple": {"type": "T6", "expect": "답함"}, "form": "connective"}
+{"q": "주말에 연동 음식점 유동인구가 늘어나는 효과를 점검한 다음에,", "tuple": {"type": "T6", "expect": "답함"}, "form": "connective"}
+{"q": "궂은 날씨가 애월읍 관광지 방문에 미치는 영향을 알아보고 나서,", "tuple": {"type": "T6", "expect": "답함"}, "form": "connective"}
+{"q": "강수량에 따른 이도2동 점포 이용객 증감을 파악한 후,", "tuple": {"type": "T6", "expect": "답함"}, "form": "connective"}
+{"q": "눈 오는 날 조천읍 버스 승차량 변화를 먼저 분석하고,", "tuple": {"type": "T6", "expect": "답함"}, "form": "connective"}
+{"q": "평일 대비 주말의 삼도1동 유동인구 변동 효과를 살핀 뒤,", "tuple": {"type": "T6", "expect": "답함"}, "form": "connective"}
+{"q": "유동인구 수와 카드 매출 사이 상관관계를 먼저 확인하고,", "tuple": {"type": "T7", "expect": "답함"}, "form": "connective"}
+{"q": "동네별 점포 수와 방문객 수 간의 관계를 살핀 뒤,", "tuple": {"type": "T7", "expect": "답함"}, "form": "connective"}
+{"q": "버스 정류소 수와 상가 밀집도 사이 연관성을 분석하고 나서,", "tuple": {"type": "T7", "expect": "답함"}, "form": "connective"}
+{"q": "주말 유동인구 증가와 식당 폐업률 간 상관성을 파악한 다음에,", "tuple": {"type": "T7", "expect": "답함"}, "form": "connective"}
+{"q": "거주인구 규모와 편의점 매출 간의 관계를 점검한 후,", "tuple": {"type": "T7", "expect": "답함"}, "form": "connective"}
+{"q": "청년 인구 비율과 카페 개업 수 간 상관관계를 알아보고,", "tuple": {"type": "T7", "expect": "답함"}, "form": "connective"}
+{"q": "동네 상권 매출과 버스 이용객 수의 상관계수를 먼저 뽑아본 뒤,", "tuple": {"type": "T7", "expect": "답함"}, "form": "connective"}
+{"q": "다음 달 노형동 유동인구 예측치를 먼저 산출하고,", "tuple": {"type": "T8", "expect": "답함"}, "form": "connective"}
+{"q": "다음 분기 애월읍 버스 이용 예상량을 조회한 뒤,", "tuple": {"type": "T8", "expect": "답함"}, "form": "connective"}
+{"q": "향후 3개월간 연동 음식점 방문객 전망을 살펴보고 나서,", "tuple": {"type": "T8", "expect": "답함"}, "form": "connective"}
+{"q": "내년 상반기 아라동 상가 수 변화를 예측해본 다음에,", "tuple": {"type": "T8", "expect": "답함"}, "form": "connective"}
+{"q": "다음 달 이도2동 카페 매출 예상치를 점검한 후,", "tuple": {"type": "T8", "expect": "답함"}, "form": "connective"}
+{"q": "다음 분기 조천읍 유동인구 모델 예측값을 확인하고,", "tuple": {"type": "T8", "expect": "답함"}, "form": "connective"}
+{"q": "향후 6개월간 한림읍 식당 개폐업 전망을 먼저 알아본 뒤,", "tuple": {"type": "T8", "expect": "답함"}, "form": "connective"}
+{"q": "노형동과 상권 특성이 비슷한 동네들을 먼저 추출하고,", "tuple": {"type": "T9", "expect": "답함"}, "form": "connective"}
+{"q": "연동과 유동인구 패턴이 유사한 지역을 찾아본 뒤,", "tuple": {"type": "T9", "expect": "답함"}, "form": "connective"}
+{"q": "아라동이랑 업종 분포가 닮은 동네 목록을 뽑고 나서,", "tuple": {"type": "T9", "expect": "답함"}, "form": "connective"}
+{"q": "이도2동과 인구 구조가 유사한 읍면동을 검색한 다음에,", "tuple": {"type": "T9", "expect": "답함"}, "form": "connective"}
+{"q": "애월읍과 관광 소비 특성이 닮은 상권을 추려낸 후,", "tuple": {"type": "T9", "expect": "답함"}, "form": "connective"}
+{"q": "화북동과 상가 구성이 유사한 지역을 먼저 분류하고,", "tuple": {"type": "T9", "expect": "답함"}, "form": "connective"}
+{"q": "삼도1동과 점포 밀집도가 유사한 상권을 확인한 뒤,", "tuple": {"type": "T9", "expect": "답함"}, "form": "connective"}
+{"q": "노형동 상권 전반을 종합 진단해보고,", "tuple": {"type": "T10", "expect": "답함"}, "form": "connective"}
+{"q": "연동 생활 상권 현황을 종합적으로 먼저 분석한 뒤,", "tuple": {"type": "T10", "expect": "답함"}, "form": "connective"}
+{"q": "아라동 지역 상권 지표들을 종합 진단하고 나서,", "tuple": {"type": "T10", "expect": "답함"}, "form": "connective"}
+{"q": "이도2동의 영업 환경과 상권을 한눈에 종합 점검한 다음에,", "tuple": {"type": "T10", "expect": "답함"}, "form": "connective"}
+{"q": "애월읍 음식점 상권을 총체적으로 진단한 후,", "tuple": {"type": "T10", "expect": "답함"}, "form": "connective"}
+{"q": "삼도2동 구도심 상권을 종합 진단 리포트로 살펴보고,", "tuple": {"type": "T10", "expect": "답함"}, "form": "connective"}
+{"q": "한림읍 생활권 경제 현황을 먼저 종합 분석한 뒤,", "tuple": {"type": "T10", "expect": "답함"}, "form": "connective"}
+{"q": "센터에 버스 승하차 관련 데이터가 있는지 먼저 조회하고,", "tuple": {"type": "T11", "expect": "답함"}, "form": "connective"}
+{"q": "빅데이터센터 보유 자료 중 유동인구 API 목록을 확인한 뒤,", "tuple": {"type": "T11", "expect": "답함"}, "form": "connective"}
+{"q": "데이터허브에 카드 소비 통계 자료가 개방되어 있는지 살피고 나서,", "tuple": {"type": "T11", "expect": "답함"}, "form": "connective"}
+{"q": "센터 데이터 카탈로그에서 소상공인 상가 목록을 검색한 다음에,", "tuple": {"type": "T11", "expect": "답함"}, "form": "connective"}
+{"q": "공공데이터 포털과 센터의 음식점 인허가 자료 목록을 점검한 후,", "tuple": {"type": "T11", "expect": "답함"}, "form": "connective"}
+{"q": "센터에 등록된 기상 관측 자료 명세를 먼저 알아보고,", "tuple": {"type": "T11", "expect": "답함"}, "form": "connective"}
+{"q": "데이터허브에 와이파이 위치 데이터셋이 있는지 찾아본 뒤,", "tuple": {"type": "T11", "expect": "답함"}, "form": "connective"}
+{"q": "노형동 카페 손님이 가장 몰리는 시간대를 먼저 확인하고,", "tuple": {"type": "T13", "expect": "답함"}, "form": "connective"}
+{"q": "연동 유동인구가 피크를 이루는 시간을 살핀 뒤,", "tuple": {"type": "T13", "expect": "답함"}, "form": "connective"}
+{"q": "아라동 식당가가 몇 시에 가장 붐비는지 파악하고 나서,", "tuple": {"type": "T13", "expect": "답함"}, "form": "connective"}
+{"q": "이도2동 점심시간과 저녁시간 방문객 분포를 비교 점검한 다음에,", "tuple": {"type": "T13", "expect": "답함"}, "form": "connective"}
+{"q": "애월읍 관광객 이동이 집중되는 시간대를 알아본 후,", "tuple": {"type": "T13", "expect": "답함"}, "form": "connective"}
+{"q": "삼도1동 정류소별 버스 승차 피크 시간대를 먼저 분석하고,", "tuple": {"type": "T13", "expect": "답함"}, "form": "connective"}
+{"q": "중문동 음식점 매출이 가장 많이 발생하는 시간대를 확인한 뒤,", "tuple": {"type": "T13", "expect": "답함"}, "form": "connective"}
+{"q": "청년 인구 비중이 높고 카페 폐업률이 낮은 동네를 먼저 탐색하고,", "tuple": {"type": "T14", "expect": "답함"}, "form": "connective"}
+{"q": "유동인구 1만 명 이상이면서 점포 수가 100개 미만인 지역을 찾은 뒤,", "tuple": {"type": "T14", "expect": "답함"}, "form": "connective"}
+{"q": "도민 소비 비율이 80% 이상인 안정 상권 후보지를 선별하고 나서,", "tuple": {"type": "T14", "expect": "답함"}, "form": "connective"}
+{"q": "거주인구 대비 식당 수가 적어 진입 여유가 있는 동네를 조회한 다음에,", "tuple": {"type": "T14", "expect": "답함"}, "form": "connective"}
+{"q": "최근 1년간 폐업률이 5% 이하인 동네 목록을 먼저 추려낸 후,", "tuple": {"type": "T14", "expect": "답함"}, "form": "connective"}
+{"q": "버스 접근성이 우수하고 공실률이 낮은 후보 동네를 탐색하고,", "tuple": {"type": "T14", "expect": "답함"}, "form": "connective"}
+{"q": "2030 유동인구 밀도가 높고 경쟁 매장이 적은 지역을 뽑아본 뒤,", "tuple": {"type": "T14", "expect": "답함"}, "form": "connective"}
+{"q": "최근 1년 새 음식점 폐업이 급증한 동네가 있는지 먼저 확인하고,", "tuple": {"type": "T15", "expect": "답함"}, "form": "connective"}
+{"q": "지난 분기 유동인구가 이례적으로 급감한 지역을 살핀 뒤,", "tuple": {"type": "T15", "expect": "답함"}, "form": "connective"}
+{"q": "카페 개업이 갑자기 크게 늘어난 이상 상권을 조사하고 나서,", "tuple": {"type": "T15", "expect": "답함"}, "form": "connective"}
+{"q": "최근 6개월간 카드 소비가 급격히 튄 동네를 점검한 다음에,", "tuple": {"type": "T15", "expect": "답함"}, "form": "connective"}
+{"q": "월별 방문객 수가 평소 대비 급변한 이상치 발생 지역을 파악한 후,", "tuple": {"type": "T15", "expect": "답함"}, "form": "connective"}
+{"q": "폐업률 지표가 갑자기 치솟은 경보 지역을 먼저 검색해보고,", "tuple": {"type": "T15", "expect": "답함"}, "form": "connective"}
+{"q": "단기간에 매장 수가 급격히 줄어든 이례 변화 상권을 추려본 뒤,", "tuple": {"type": "T15", "expect": "답함"}, "form": "connective"}
+{"q": "외도동 카페 매장 수도 알려줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "also"}
+{"q": "삼도2동 한식당 점포 수도 같이 보여줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "also"}
+{"q": "구좌읍 베이커리 등록 수도 함께 알려줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "also"}
+{"q": "성산읍 편의점 개수도 알려줄래?", "tuple": {"type": "T1", "expect": "답함"}, "form": "also"}
+{"q": "대정읍 치킨집 매장 수도 같이 확인해줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "also"}
+{"q": "남원읍 일식당 수도 함께 뽑아줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "also"}
+{"q": "안덕면 중식당 점포 수도 같이 알려줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "also"}
+{"q": "삼도1동과 용담1동 상권도 같이 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "also"}
+{"q": "외도동이랑 이호동 유동인구도 함께 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "also"}
+{"q": "조천읍과 구좌읍 카페 현황도 같이 대조해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "also"}
+{"q": "대정읍과 안덕면 점포 수도 함께 비교해줄래?", "tuple": {"type": "T2", "expect": "답함"}, "form": "also"}
+{"q": "성산읍과 표선면 음식점 수도 같이 견주어봐줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "also"}
+{"q": "서홍동이랑 동홍동 상가 규모도 함께 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "also"}
+{"q": "중문동과 대천동 관광 유동인구도 같이 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "also"}
+{"q": "유동인구가 가장 많은 동네 순위도 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "치킨집 매장 수가 제일 많은 지역 순위도 같이 알려줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "외식업 폐업률이 가장 높은 동네 순위도 함께 뽑아줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "청년 인구 비율이 높은 지역 순위도 같이 확인해줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "버스 승하차 인원이 가장 많은 정류장 동네 순위도 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "카페 밀집도 상위 동네 순위도 함께 알려줄래?", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "카드 결제 금액이 가장 큰 읍면동 순위도 같이 뽑아줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "상가 총 점포 수 상위권 지역 순위도 함께 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "also"}
+{"q": "아라동 한식당 폐업 추이도 같이 확인해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "삼도1동 카페 개업 증감세도 함께 보여줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "외도동 유동인구 최근 2년 변화 추세도 알려줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "구좌읍 음식점 폐업 흐름도 같이 분석해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "조천읍 상가 점포 수 변동 추이도 함께 보여줄래?", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "화북동 방문객 증가세 추이도 같이 점검해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "한림읍 식당 개폐업 추세 흐름도 함께 알려줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "서홍동 카페 개업률 변동 추이도 같이 뽑아줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "also"}
+{"q": "삼양동 유동인구 연령대별 구성비도 함께 알려줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "also"}
+{"q": "외도동 거주인구와 유동인구 비중도 같이 보여줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "also"}
+{"q": "성산읍 관광객 소비와 도민 소비 비율도 함께 분석해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "also"}
+{"q": "구좌읍 오가는 사람들의 연령층 구성도 같이 알려줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "also"}
+{"q": "봉개동 생활인구 구성 비중도 함께 확인해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "also"}
+{"q": "대정읍 직장인과 거주민 비율도 같이 보여줄래?", "tuple": {"type": "T5", "expect": "답함"}, "form": "also"}
+{"q": "남원읍 카드 이용자의 내국인·외국인 비중도 함께 뽑아줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "also"}
+{"q": "비 올 때 외도동 방문객 감소 효과도 같이 분석해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "also"}
+{"q": "주말에 조천읍 카페 손님이 얼마나 늘어나는지도 함께 알려줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "also"}
+{"q": "눈 오는 날 한림읍 버스 이용객 변동도 같이 보여줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "also"}
+{"q": "궂은 날씨가 삼도1동 음식점 매출에 미치는 영향도 함께 파악해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "also"}
+{"q": "비 오는 주말에 아라동 유동인구 변화 효과도 같이 알아봐줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "also"}
+{"q": "흐린 날 성산읍 관광객 유입 감소율도 함께 알려줄래?", "tuple": {"type": "T6", "expect": "답함"}, "form": "also"}
+{"q": "평일 대비 주말의 구좌읍 방문객 증가 폭도 같이 뽑아줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "also"}
+{"q": "유동인구 수와 카드 매출 간의 상관관계도 함께 보여줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "also"}
+{"q": "상가 밀집도와 버스 승하차량 사이의 관계도 같이 분석해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "also"}
+{"q": "청년층 인구 비중과 디저트 매장 수의 연관성도 함께 확인해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "also"}
+{"q": "동네별 점포 수와 식당 폐업률 사이의 상관성도 같이 알려줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "also"}
+{"q": "주말 방문객 증가율과 매출액 변동 간 관계도 함께 검증해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "also"}
+{"q": "거주인구 수와 편의점 매출 간의 상관계수도 같이 뽑아줄래?", "tuple": {"type": "T7", "expect": "답함"}, "form": "also"}
+{"q": "정류소 접근성과 유동인구 밀도 간의 관계도 함께 분석해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "also"}
+{"q": "다음 달 삼도1동 유동인구 예상치도 함께 알려줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "also"}
+{"q": "다음 분기 구좌읍 버스 승하차 예상 규모도 같이 보여줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "also"}
+{"q": "향후 3개월간 외도동 카페 개업 전망도 함께 예측해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "also"}
+{"q": "내년 상반기 조천읍 방문객 수 전망도 같이 계산해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "also"}
+{"q": "다음 달 성산읍 음식점 매출 예상치도 함께 분석해줄래?", "tuple": {"type": "T8", "expect": "답함"}, "form": "also"}
+{"q": "다음 분기 한림읍 상가 수 변동 전망도 같이 보여줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "also"}
+{"q": "향후 6개월간 대정읍 인구 이동 예측도 함께 확인해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "also"}
+{"q": "외도동이랑 상권 구성이 비슷한 동네도 같이 찾아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "also"}
+{"q": "화북동과 인구 특성이 유사한 지역도 함께 보여줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "also"}
+{"q": "조천읍이랑 카페 밀집도가 닮은 동네도 같이 추천해줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "also"}
+{"q": "삼도2동과 구도심 상권 구조가 유사한 곳도 함께 검색해줄래?", "tuple": {"type": "T9", "expect": "답함"}, "form": "also"}
+{"q": "구좌읍과 관광 유동 패턴이 닮은 동네도 같이 알려줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "also"}
+{"q": "성산읍과 카드 소비 형태가 비슷한 읍면동도 함께 뽑아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "also"}
+{"q": "대정읍과 상가 점포 규모가 유사한 지역도 같이 보여줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "also"}
+{"q": "외도동 상권 전반에 대한 종합 진단도 같이 해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "also"}
+{"q": "삼도1동 생활 상권 현황도 함께 종합적으로 진단해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "also"}
+{"q": "조천읍 지역 상권 지표 종합 진단 리포트도 같이 보여줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "also"}
+{"q": "구좌읍 식당가 영업 환경 종합 진단도 함께 분석해줄래?", "tuple": {"type": "T10", "expect": "답함"}, "form": "also"}
+{"q": "화북동 상업 지역 종합 진단 평가도 같이 내려줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "also"}
+{"q": "성산읍 관광 상권 전반을 종합 진단해주는 내용도 함께 알려줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "also"}
+{"q": "대정읍 생활 상권 경쟁력도 같이 종합 진단해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "also"}
+{"q": "데이터허브에 카드 소비 통계 데이터도 있는지 같이 찾아줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "also"}
+{"q": "빅데이터센터에 등록된 버스 노선 자료도 함께 안내해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "also"}
+{"q": "센터 데이터 카탈로그에 유동인구 API도 있는지 같이 알려줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "also"}
+{"q": "제주 공공데이터에 음식점 인허가 내역도 있는지 함께 확인해줄래?", "tuple": {"type": "T11", "expect": "답함"}, "form": "also"}
+{"q": "센터에 상가 업종별 좌표 데이터셋도 열려 있는지 같이 보여줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "also"}
+{"q": "데이터허브의 기상 관측 및 강수량 자료도 함께 검색해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "also"}
+{"q": "센터 보유 데이터 중 주차장 위치 정보도 같이 알려줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "also"}
+{"q": "외도동 카페는 어느 시간대에 가장 붐비는지도 같이 알려줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "also"}
+{"q": "삼도1동 유동인구가 피크를 찍는 시간대도 함께 보여줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "also"}
+{"q": "조천읍 음식점 손님이 가장 많은 시간대도 같이 확인해줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "also"}
+{"q": "구좌읍 버스 정류소 이용객이 집중되는 시간도 함께 알아봐줄래?", "tuple": {"type": "T13", "expect": "답함"}, "form": "also"}
+{"q": "성산읍 관광객 유동인구 시간대별 분포도 같이 분석해줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "also"}
+{"q": "화북동 식당가 점심 피크 시간대 현황도 함께 뽑아줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "also"}
+{"q": "대정읍 상가 시간대별 결제 건수 추이도 같이 보여줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "also"}
+{"q": "60대 이상 인구 비율이 높으면서 병의원이 많은 동네도 같이 찾아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "also"}
+{"q": "도민 비중 70% 이상이고 카페 폐업률이 낮은 지역도 함께 검색해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "also"}
+{"q": "유동인구 5천 명 이상이면서 경쟁 식당이 적은 동네도 같이 뽑아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "also"}
+{"q": "청년층 거주 비율이 높고 버스 노선이 많은 상권도 함께 알아봐줄래?", "tuple": {"type": "T14", "expect": "답함"}, "form": "also"}
+{"q": "최근 1년 폐업률 3% 미만인 안정적인 동네도 같이 추천해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "also"}
+{"q": "상가 밀집도가 낮으면서 유동인구 유입이 활발한 곳도 함께 탐색해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "also"}
+{"q": "음식점 점포당 평균 유동인구 수가 많은 알짜 동네도 같이 찾아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "also"}
+{"q": "최근 음식점 폐업 건수가 급증한 이상 지역도 같이 확인해줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "also"}
+{"q": "지난달 유동인구가 평소 대비 급감한 동네도 함께 보여줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "also"}
+{"q": "단기간에 카페 개업이 갑자기 튄 이례적인 동네도 같이 찾아줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "also"}
+{"q": "최근 3개월간 카드 결제액이 비정상적으로 급증한 곳도 함께 점검해줄래?", "tuple": {"type": "T15", "expect": "답함"}, "form": "also"}
+{"q": "월별 방문객 수가 평월에 비해 이례적으로 폭증한 동네도 같이 뽑아줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "also"}
+{"q": "폐업률 수치가 전년 대비 급격히 치솟은 경보 지역도 함께 알려줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "also"}
+{"q": "매장 수가 급격하게 줄어든 이상 징후 상권도 같이 분석해줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "also"}
+{"q": "그 동네 카페 매장 수는 현재 총 몇 개야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "ref"}
+{"q": "거기 한식당 점포 수는 몇 곳 등록되어 있어?", "tuple": {"type": "T1", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 치킨집 개수는 총 몇 개야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 베이커리 매장 숫자는 몇 곳이야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 편의점 등록 현황은 몇 개소야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "ref"}
+{"q": "거기 일식당 매장은 몇 군데 운영 중이야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네 중식당 점포 수는 총 몇 곳이야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네랑 노형동 상권을 서로 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "ref"}
+{"q": "거기와 연동의 유동인구 규모를 비교 분석해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역과 아라동의 카페 점포 수를 대조해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "ref"}
+{"q": "그곳이랑 이도2동의 매출 수준을 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네와 애월읍의 상가 밀집도를 비교해줄래?", "tuple": {"type": "T2", "expect": "답함"}, "form": "ref"}
+{"q": "거기랑 조천읍의 방문객 규모를 서로 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네와 삼도1동의 폐업률을 맞비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 안에서 매장 수가 가장 많은 업종 순위를 매겨줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "ref"}
+{"q": "거기서 카드 결제액이 가장 높은 업종 순위는 어떻게 돼?", "tuple": {"type": "T3", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역에서 폐업이 가장 자주 일어나는 업종 순위 알려줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "ref"}
+{"q": "그곳에서 청년층이 가장 많이 찾는 매장 업종 순위 뽑아줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 주요 상권 블록별 유동인구 순위 알려줄래?", "tuple": {"type": "T3", "expect": "답함"}, "form": "ref"}
+{"q": "거기 등록된 식음료 매장 중 점포 수 상위 업종 순위 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네에서 직장인 방문이 많은 구역 순위 알려줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 카페의 최근 3년간 폐업 추이는 어때?", "tuple": {"type": "T4", "expect": "답함"}, "form": "ref"}
+{"q": "거기 한식당 개업 증감 흐름을 알려줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 유동인구가 최근 늘어나는 추세야?", "tuple": {"type": "T4", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 음식점 폐업률 변동 추이를 분석해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 상가 점포 수의 연도별 증감 추세는 어때?", "tuple": {"type": "T4", "expect": "답함"}, "form": "ref"}
+{"q": "거기 방문객 유입량의 월별 변화 추이를 보여줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네 외식업 개폐업 흐름 추이를 알려줄래?", "tuple": {"type": "T4", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 유동인구의 연령대별 구성 비중은 어떻게 돼?", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "거기 방문객 중 도민과 관광객 비율은 몇 대 몇이야?", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 오가는 사람들의 성별·연령층 구성 알려줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 거주인구와 직장인구의 구성 비율을 보여줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 상권 카드 소비의 내국인 대 관광객 비중 분석해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "거기 주 이용 고객층의 세대별 구성비는 어때?", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네 생활인구의 주간·야간 인구 구성 비율 알려줄래?", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 방문 인구의 연령대 분포 비율을 뽑아줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "ref"}
+{"q": "비 올 때 그 동네 유동인구는 얼마나 줄어들어?", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "거기 우천 시 카페 매출 감소 효과는 어때?", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "주말에 해당 지역 방문객이 얼마나 늘어나는지 분석해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "눈 오는 날 그곳 버스 승하차 변화 영향은 어때?", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "궂은 날씨가 그 동네 식당가 손님 수에 미치는 효과 알려줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "비 오는 주말에 거기 음식점 유동인구 증감 폭은 얼마야?", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "강수량에 따른 해당 지역 점포 방문객 변화율을 보여줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "흐린 날 그곳 관광객 방문객 수 감소 효과를 계산해줄래?", "tuple": {"type": "T6", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 유동인구랑 카드 매출 사이에 상관관계가 있어?", "tuple": {"type": "T7", "expect": "답함"}, "form": "ref"}
+{"q": "거기 상가 밀집도와 버스 승차량 간의 연관성은 어때?", "tuple": {"type": "T7", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 청년 인구 비율과 카페 개업 수의 관계를 분석해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 점포 수 규모와 식당 폐업률 사이의 상관계수는 얼마야?", "tuple": {"type": "T7", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 거주인구 수와 편의점 매출액 간에 유의미한 관계가 있어?", "tuple": {"type": "T7", "expect": "답함"}, "form": "ref"}
+{"q": "거기 주말 방문객 증가와 외식업 매출 간의 상관성을 보여줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 음식점 수와 일평균 유동인구 간 관계를 알아봐줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 다음 달 유동인구는 어떻게 될지 예측해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "ref"}
+{"q": "거기 다음 분기 버스 이용객 예상치는 얼마야?", "tuple": {"type": "T8", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 향후 3개월간 카페 폐업 전망을 알려줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 내년 상반기 방문객 수 모델 예측값 보여줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 다음 달 음식점 매출액 예상 규모는 얼마야?", "tuple": {"type": "T8", "expect": "답함"}, "form": "ref"}
+{"q": "거기 향후 6개월 상가 점포 수 변동을 예측해줄래?", "tuple": {"type": "T8", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 다음 분기 유동인구 증감 전망치를 뽑아줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네랑 상권 특성이 비슷한 다른 동네 추천해줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "ref"}
+{"q": "거기와 유동인구 패턴이 유사한 지역은 어디야?", "tuple": {"type": "T9", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역이랑 업종 분포가 닮은 동네 목록을 알려줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "ref"}
+{"q": "그곳과 인구 구조 및 상가 규모가 유사한 읍면동 찾아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네와 카페 창업 환경이 비슷한 대체 지역을 뽑아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "ref"}
+{"q": "거기와 관광 소비 특성이 유사한 상권은 어디 어디 있어?", "tuple": {"type": "T9", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네와 생활 상권 구성이 닮은 지역들을 보여줄래?", "tuple": {"type": "T9", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 상권 전반에 대한 종합 진단 리포트를 작성해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "ref"}
+{"q": "거기 생활 상권 현황을 한 번에 종합 진단해줄래?", "tuple": {"type": "T10", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역의 종합적인 상권 경쟁력을 평가해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 식음료 상권의 전반적인 여건을 종합 분석해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 점포 현황과 유동인구를 묶어서 종합 진단해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "ref"}
+{"q": "거기 상권의 강약점을 종합 진단 결과로 보여줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네 예비 창업자를 위한 종합 상권 진단을 내려줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네에 대해 센터에서 조회할 수 있는 데이터 목록 보여줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "ref"}
+{"q": "거기 유동인구 관련해서 빅데이터센터에 어떤 자료가 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 카드 소비 데이터를 센터나 허브에서 볼 수 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 상가 업종별 좌표 정보가 센터 DB에 있는지 찾아봐줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 버스 승하차 이력 데이터가 데이터허브에 개방되어 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "ref"}
+{"q": "거기 음식점 인허가 내역 원천 데이터 명세를 안내해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 기상 및 강수량 관측 데이터셋이 센터에 있는지 확인해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 카페는 몇 시에 손님이 가장 붐벼?", "tuple": {"type": "T13", "expect": "답함"}, "form": "ref"}
+{"q": "거기 유동인구가 가장 집중되는 피크 시간대는 언제야?", "tuple": {"type": "T13", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 음식점 매출이 가장 많이 일어나는 시간대 알려줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 버스 정류소 이용객이 제일 많은 시간대는 몇 시야?", "tuple": {"type": "T13", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 점심시간과 저녁시간 중 어디가 더 혼잡해?", "tuple": {"type": "T13", "expect": "답함"}, "form": "ref"}
+{"q": "거기 관광객 유동인구의 시간대별 방문 패턴을 보여줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "ref"}
+{"q": "해당 동네 상가 결제 건수가 피크를 찍는 시간대 알려줄래?", "tuple": {"type": "T13", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네처럼 청년층 비중 높고 폐업률 낮은 다른 상권도 찾아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "ref"}
+{"q": "거기 수준으로 유동인구 1만 명 이상인 조건 만족 지역을 탐색해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역과 비슷하게 도민 소비 70% 이상인 안정 동네를 검색해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "ref"}
+{"q": "그곳처럼 상가 밀집도 낮고 정류소 가까운 후보 동네들을 추려줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 기준으로 폐업률 5% 미만인 유사 조건 지역을 찾아줄래?", "tuple": {"type": "T14", "expect": "답함"}, "form": "ref"}
+{"q": "거기와 조건이 부합하는 음식점 창업 유망 동네들을 골라줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역과 유사한 인구밀도 및 점포 수를 가진 후보지를 찾아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네에서 최근 음식점 폐업이 급증한 이례적인 변화가 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "ref"}
+{"q": "거기 유동인구가 최근 갑자기 급감한 이상 징후가 나타났어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역 카드 소비액이 단기간에 비정상적으로 튄 적이 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "ref"}
+{"q": "그곳 상가 점포 수가 갑자기 줄어든 이상치 현상이 있는지 봐줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "ref"}
+{"q": "그 동네 방문객 수가 최근 평월 대비 이상 급변한 기록이 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "ref"}
+{"q": "거기 폐업률 지표에 갑작스러운 이상 경보가 뜬 적이 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "ref"}
+{"q": "해당 지역에서 최근 일어난 특이한 상권 지표 급변 현상을 짚어줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "ref"}
+{"q": "이도1동 카페 등록 매장 수 현황까지 연계해서 확인해줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "until"}
+{"q": "용담2동 한식당 점포 수까지 이어서 알려줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "until"}
+{"q": "건입동 치킨집 개수 현황까지 함께 확인해줄래?", "tuple": {"type": "T1", "expect": "답함"}, "form": "until"}
+{"q": "도두동 편의점 점포 수까지 연계해서 파악해줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "until"}
+{"q": "이호동 베이커리 매장 수까지 이어서 보여줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "until"}
+{"q": "봉개동 일식당 매장 수까지 함께 집계해줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "until"}
+{"q": "삼양동 중식당 점포 숫자까지 연계해서 알려줘", "tuple": {"type": "T1", "expect": "답함"}, "form": "until"}
+{"q": "용담1동과 용담2동 상권 비교 분석표까지 이어서 보여줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "until"}
+{"q": "건입동이랑 일도1동 유동인구 비교까지 연계해서 분석해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "until"}
+{"q": "도두동과 이호동 카페 현황 비교까지 함께 정리해줄래?", "tuple": {"type": "T2", "expect": "답함"}, "form": "until"}
+{"q": "봉개동과 삼양동 점포 수 대조표까지 이어서 확인해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "until"}
+{"q": "대륜동과 대천동 상가 규모 비교까지 연계해서 검토해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "until"}
+{"q": "동홍동이랑 서홍동 음식점 수 맞비교까지 함께 보여줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "until"}
+{"q": "중문동과 예래동 관광 유동인구 비교까지 이어서 분석해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "until"}
+{"q": "제주 전체 유동인구 1위부터 순위표까지 연계해서 뽑아줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "until"}
+{"q": "외식업 폐업률 상위 10개 동네 순위까지 이어서 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "until"}
+{"q": "치킨집 매장 수가 가장 많은 지역 순위까지 함께 알려줄래?", "tuple": {"type": "T3", "expect": "답함"}, "form": "until"}
+{"q": "청년 인구 밀집 상위 읍면동 순위까지 연계해서 정리해줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "until"}
+{"q": "버스 승하차량이 많은 정류소 동네 순위까지 이어서 확인해줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "until"}
+{"q": "카페 총 점포 수 기준 전체 읍면동 순위까지 함께 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "until"}
+{"q": "카드 결제 총액이 가장 높은 지역 순위까지 연계해서 뽑아줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "until"}
+{"q": "용담2동 카페 폐업 추이까지 이어서 분석해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "until"}
+{"q": "건입동 한식당 개업 증감세까지 연계해서 살펴봐줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "until"}
+{"q": "도두동 유동인구 최근 3년간 변화 추이까지 함께 확인해줄래?", "tuple": {"type": "T4", "expect": "답함"}, "form": "until"}
+{"q": "이호동 음식점 폐업 흐름 추세선까지 이어서 보여줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "until"}
+{"q": "봉개동 상가 점포 수 변동 추이까지 연계해서 점검해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "until"}
+{"q": "삼양동 방문객 증감률 추세까지 함께 분석해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "until"}
+{"q": "서홍동 카페 개폐업 변동 흐름까지 이어서 알려줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "until"}
+{"q": "건입동 유동인구의 연령대별 구성비까지 연계해서 분석해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "until"}
+{"q": "도두동 방문객 중 도민과 관광객 비율까지 이어서 보여줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "until"}
+{"q": "이호동 상권 주 이용층의 세대 구성 비중까지 함께 알려줄래?", "tuple": {"type": "T5", "expect": "답함"}, "form": "until"}
+{"q": "봉개동 거주인구와 직장인구 비율까지 연계해서 정리해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "until"}
+{"q": "용담1동 생활인구 연령 분포 구성까지 이어서 확인해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "until"}
+{"q": "동홍동 카드 소비의 관광객 비중까지 함께 집계해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "until"}
+{"q": "대천동 유동인구 성별·연령별 비율까지 연계해서 보여줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "until"}
+{"q": "비 오는 날 도두동 방문객 감소 효과까지 연계해서 계산해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "until"}
+{"q": "우천 시 용담2동 카페 손님 감소율까지 이어서 분석해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "until"}
+{"q": "주말에 건입동 음식점 유동인구 증가 효과까지 함께 알아봐줄래?", "tuple": {"type": "T6", "expect": "답함"}, "form": "until"}
+{"q": "궂은 날씨가 이호동 관광객 유입에 미치는 영향까지 연계해서 살펴봐줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "until"}
+{"q": "비 오는 날 삼양동 버스 이용객 변화폭까지 이어서 확인해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "until"}
+{"q": "눈 오는 날 봉개동 상권 방문객 변동 효과까지 함께 평가해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "until"}
+{"q": "평일 대비 주말의 동홍동 손님 증가 효과까지 연계해서 뽑아줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "until"}
+{"q": "유동인구 수와 카드 매출 간의 상관관계까지 연계해서 분석해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "상가 밀집도와 버스 승차량 사이의 연관성까지 이어서 검증해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "청년층 비중과 디저트 매장 수 사이의 상관분석까지 함께 진행해줄래?", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "점포 수 규모와 음식점 폐업률 간의 상관계수까지 연계해서 도출해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "거주인구 규모와 편의점 매출액 간의 유의성까지 이어서 확인해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "주말 방문객 증가와 외식업 결제액 상관관계까지 함께 점검해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "동네별 버스 노선 수와 상권 활성화 간의 연관성까지 연계해서 살펴봐줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "정류소 밀도와 유동인구 상관관계 그래프까지 이어서 보여줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "until"}
+{"q": "다음 달 용담2동 유동인구 모델 예측치까지 연계해서 산출해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "다음 분기 건입동 버스 이용객 예상 규모까지 이어서 제시해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "향후 3개월간 도두동 카페 개업 전망치까지 함께 예측해줄래?", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "내년 상반기 이호동 방문객 수 예측치까지 연계해서 확인해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "다음 달 봉개동 음식점 매출 예상액까지 이어서 계산해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "다음 분기 삼양동 상가 수 변동 전망까지 함께 제시해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "향후 6개월간 동홍동 유동인구 예측 추이까지 연계해서 알려줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "내년 1분기 대천동 방문 수요 전망치까지 이어서 뽑아줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "until"}
+{"q": "도두동이랑 상권 구성이 유사한 다른 동네들까지 연계해서 찾아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "until"}
+{"q": "이호동과 유동인구 패턴이 닮은 상권까지 이어서 매칭해줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "until"}
+{"q": "용담2동과 인구 구조가 비슷한 읍면동 목록까지 함께 추천해줄래?", "tuple": {"type": "T9", "expect": "답함"}, "form": "until"}
+{"q": "건입동과 상가 밀집도가 유사한 지역군까지 연계해서 분류해줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "until"}
+{"q": "봉개동과 외식업 상권 형태가 닮은 동네들까지 이어서 골라줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "until"}
+{"q": "삼양동과 카드 소비 성향이 유사한 지역까지 함께 찾아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "until"}
+{"q": "동홍동과 생활 상권 규모가 닮은 동네 목록까지 연계해서 보여줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "until"}
+{"q": "용담2동 상권 전반에 대한 종합 진단 리포트까지 연계해서 작성해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "until"}
+{"q": "건입동 생활 상권 현황 종합 진단 결과까지 이어서 보여줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "until"}
+{"q": "도두동 지역 상권의 종합적인 경쟁력 분석까지 함께 도출해줄래?", "tuple": {"type": "T10", "expect": "답함"}, "form": "until"}
+{"q": "이호동 식음료 상권 종합 진단 평가서까지 연계해서 정리해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "until"}
+{"q": "봉개동 상업 환경 전반을 종합 진단하는 표까지 이어서 제시해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "until"}
+{"q": "삼양동 생활권 경제 현황 종합 진단까지 함께 분석해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "until"}
+{"q": "동홍동 상권의 다각도 종합 진단 요약본까지 연계해서 내려줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "until"}
+{"q": "센터 보유 데이터 중 버스 노선 데이터셋 목록까지 함께 탐색해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "until"}
+{"q": "빅데이터센터 유동인구 API 명세서까지 연계해서 찾아줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "until"}
+{"q": "데이터허브의 카드 소비 통계 자료 목록까지 이어서 확인해줄래?", "tuple": {"type": "T11", "expect": "답함"}, "form": "until"}
+{"q": "공공데이터 포털 상가 정보 데이터셋 위치까지 함께 안내해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "until"}
+{"q": "센터 데이터 카탈로그 음식점 인허가 자료까지 연계해서 조회해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "until"}
+{"q": "데이터허브 기상 및 강수량 원천 데이터까지 이어서 찾아줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "until"}
+{"q": "센터 DB의 주차장 및 와이파이 관련 목록까지 함께 검색해줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "until"}
+{"q": "용담2동 카페 손님이 가장 몰리는 피크 시간대까지 이어서 확인해줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "until"}
+{"q": "건입동 유동인구가 집중되는 시간대별 분포까지 연계해서 분석해줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "until"}
+{"q": "도두동 식당가 점심시간 손님 집중도까지 함께 파악해줄래?", "tuple": {"type": "T13", "expect": "답함"}, "form": "until"}
+{"q": "이호동 저녁 시간대 방문객 집중 패턴까지 이어서 보여줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "until"}
+{"q": "봉개동 버스 정류소 이용 피크 시간대까지 연계해서 확인해줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "until"}
+{"q": "삼양동 상가 결제 건수 시간대별 추이까지 함께 점검해줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "until"}
+{"q": "동홍동 음식점 매출 집중 시간대 패턴까지 이어서 정리해줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "until"}
+{"q": "청년층 비중 높고 폐업률 5% 미만인 후보 동네 목록까지 연계해서 검색해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "until"}
+{"q": "유동인구 5천 명 이상이면서 점포 수가 적은 유망 지역까지 이어서 찾아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "until"}
+{"q": "도민 소비 70% 이상이고 정류소 가까운 안정 상권까지 함께 탐색해줄래?", "tuple": {"type": "T14", "expect": "답함"}, "form": "until"}
+{"q": "거주인구 대비 카페 수가 적은 진입 추천 동네까지 연계해서 선별해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "until"}
+{"q": "최근 1년 폐업률 최저 수준인 알짜 상권들까지 이어서 골라줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "until"}
+{"q": "상가 밀집도 적정하고 유동 유입이 좋은 동네까지 함께 추출해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "until"}
+{"q": "소자본 창업에 적합한 조건을 충족하는 지역까지 연계해서 추천해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "until"}
+{"q": "최근 1년 음식점 폐업이 급증한 이례적인 경보 지역까지 연계해서 짚어줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "until"}
+{"q": "지난 분기 유동인구가 갑자기 급감한 이상 동네까지 이어서 확인해줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "until"}
+{"q": "단기간에 카페 개업이 비정상적으로 튄 지역까지 함께 분석해줄래?", "tuple": {"type": "T15", "expect": "답함"}, "form": "until"}
+{"q": "최근 6개월간 카드 결제액이 급변한 이상치 동네까지 연계해서 점검해줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "until"}
+{"q": "월별 방문객 수가 평소 대비 급격히 변동한 곳까지 이어서 찾아줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "until"}
+{"q": "폐업률 지표가 단기간에 치솟은 이상 상권까지 함께 감지해줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "until"}
+{"q": "점포 수가 갑자기 크게 줄어든 이례 변화 읍면동까지 연계해서 알려줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "until"}
+{"q": "현재 등록된 총 매장 수는?", "tuple": {"type": "T1", "expect": "답함"}, "form": "short"}
+{"q": "점포 수는 몇 곳이야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "short"}
+{"q": "지금 운영 중인 가게 수는?", "tuple": {"type": "T1", "expect": "답함"}, "form": "short"}
+{"q": "치킨집 매장 수는 몇 개야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "short"}
+{"q": "카페 점포 수 현황은?", "tuple": {"type": "T1", "expect": "답함"}, "form": "short"}
+{"q": "한식당 개수는 총 몇 개?", "tuple": {"type": "T1", "expect": "답함"}, "form": "short"}
+{"q": "편의점 수는 몇 군데야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "short"}
+{"q": "연동이랑 비교하면 어때?", "tuple": {"type": "T2", "expect": "답함"}, "form": "short"}
+{"q": "노형동과의 차이는?", "tuple": {"type": "T2", "expect": "답함"}, "form": "short"}
+{"q": "아라동이랑 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "short"}
+{"q": "이도2동과 대조해보면?", "tuple": {"type": "T2", "expect": "답함"}, "form": "short"}
+{"q": "애월읍이랑 비교했을 때는?", "tuple": {"type": "T2", "expect": "답함"}, "form": "short"}
+{"q": "삼도1동과의 상권 차이는?", "tuple": {"type": "T2", "expect": "답함"}, "form": "short"}
+{"q": "조천읍이랑 비교하면?", "tuple": {"type": "T2", "expect": "답함"}, "form": "short"}
+{"q": "전체 순위는 몇 위야?", "tuple": {"type": "T3", "expect": "답함"}, "form": "short"}
+{"q": "가장 많은 곳 순위는?", "tuple": {"type": "T3", "expect": "답함"}, "form": "short"}
+{"q": "상위 5개 동네 순위는?", "tuple": {"type": "T3", "expect": "답함"}, "form": "short"}
+{"q": "폐업률 순위는 어떻게 돼?", "tuple": {"type": "T3", "expect": "답함"}, "form": "short"}
+{"q": "유동인구 1위 지역은 어디야?", "tuple": {"type": "T3", "expect": "답함"}, "form": "short"}
+{"q": "매출 상위 순위도 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "short"}
+{"q": "점포 밀집도 순위는?", "tuple": {"type": "T3", "expect": "답함"}, "form": "short"}
+{"q": "최근 3년간 폐업 추이는?", "tuple": {"type": "T4", "expect": "답함"}, "form": "short"}
+{"q": "개업 증가세야 감소세야?", "tuple": {"type": "T4", "expect": "답함"}, "form": "short"}
+{"q": "유동인구 변화 추세는 어때?", "tuple": {"type": "T4", "expect": "답함"}, "form": "short"}
+{"q": "점포 수 증감 흐름은?", "tuple": {"type": "T4", "expect": "답함"}, "form": "short"}
+{"q": "월별 방문객 추이는?", "tuple": {"type": "T4", "expect": "답함"}, "form": "short"}
+{"q": "식당 폐업률 변동 추세는?", "tuple": {"type": "T4", "expect": "답함"}, "form": "short"}
+{"q": "최근 개폐업 흐름은?", "tuple": {"type": "T4", "expect": "답함"}, "form": "short"}
+{"q": "연령대별 구성비는?", "tuple": {"type": "T5", "expect": "답함"}, "form": "short"}
+{"q": "도민과 관광객 비율은?", "tuple": {"type": "T5", "expect": "답함"}, "form": "short"}
+{"q": "성별 이용자 비중은 어떻게 돼?", "tuple": {"type": "T5", "expect": "답함"}, "form": "short"}
+{"q": "거주인구와 직장인구 비율은?", "tuple": {"type": "T5", "expect": "답함"}, "form": "short"}
+{"q": "방문객 연령층 분포는?", "tuple": {"type": "T5", "expect": "답함"}, "form": "short"}
+{"q": "카드 소비의 관광객 비중은?", "tuple": {"type": "T5", "expect": "답함"}, "form": "short"}
+{"q": "주간과 야간 인구 비율은?", "tuple": {"type": "T5", "expect": "답함"}, "form": "short"}
+{"q": "비 오면 얼마나 줄어?", "tuple": {"type": "T6", "expect": "답함"}, "form": "short"}
+{"q": "우천 시 손님 감소 효과는?", "tuple": {"type": "T6", "expect": "답함"}, "form": "short"}
+{"q": "주말 효과는 얼마나 돼?", "tuple": {"type": "T6", "expect": "답함"}, "form": "short"}
+{"q": "눈 올 때 방문객 변화는?", "tuple": {"type": "T6", "expect": "답함"}, "form": "short"}
+{"q": "비 오는 날 유동인구 영향은?", "tuple": {"type": "T6", "expect": "답함"}, "form": "short"}
+{"q": "궂은 날씨 효과는 어때?", "tuple": {"type": "T6", "expect": "답함"}, "form": "short"}
+{"q": "평일 대비 주말 증가율은?", "tuple": {"type": "T6", "expect": "답함"}, "form": "short"}
+{"q": "유동인구랑 매출 간 상관관계는?", "tuple": {"type": "T7", "expect": "답함"}, "form": "short"}
+{"q": "점포 수와 방문객 사이 연관성은?", "tuple": {"type": "T7", "expect": "답함"}, "form": "short"}
+{"q": "버스 승차량과 매출의 관계는?", "tuple": {"type": "T7", "expect": "답함"}, "form": "short"}
+{"q": "청년 인구와 카페 수의 상관계수는?", "tuple": {"type": "T7", "expect": "답함"}, "form": "short"}
+{"q": "매출액과 폐업률 사이 관계는?", "tuple": {"type": "T7", "expect": "답함"}, "form": "short"}
+{"q": "거주인구와 편의점 수의 상관성은?", "tuple": {"type": "T7", "expect": "답함"}, "form": "short"}
+{"q": "상가 밀집도와 유동인구의 상관관계는?", "tuple": {"type": "T7", "expect": "답함"}, "form": "short"}
+{"q": "다음 달 예상치는?", "tuple": {"type": "T8", "expect": "답함"}, "form": "short"}
+{"q": "다음 분기 예측 모델 결과는?", "tuple": {"type": "T8", "expect": "답함"}, "form": "short"}
+{"q": "향후 3개월간 전망은 어때?", "tuple": {"type": "T8", "expect": "답함"}, "form": "short"}
+{"q": "내년 상반기 방문객 예상은?", "tuple": {"type": "T8", "expect": "답함"}, "form": "short"}
+{"q": "다음 달 매출 예측액은?", "tuple": {"type": "T8", "expect": "답함"}, "form": "short"}
+{"q": "다음 분기 버스 이용 예상량은?", "tuple": {"type": "T8", "expect": "답함"}, "form": "short"}
+{"q": "향후 유동인구 전망치는?", "tuple": {"type": "T8", "expect": "답함"}, "form": "short"}
+{"q": "비슷한 다른 동네는 어디야?", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "닮은 상권 추천해줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "유사한 상권 특성을 가진 곳은?", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "인구 구성이 유사한 지역은?", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "동일 유형으로 묶이는 동네는?", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "카페 밀집도 닮은 다른 지역은?", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "상권 형태가 비슷한 읍면동은?", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "유사 동네 목록 뽑아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "short"}
+{"q": "종합 진단 결과는 어때?", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "상권 종합 진단 리포트 보여줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "전체적인 종합 분석은?", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "종합적인 상권 평가 내려줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "한눈에 보는 종합 진단은?", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "종합 진단 요약 결과는?", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "지역 상권 종합 리포트는?", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "전반적인 상권 경쟁력 진단은?", "tuple": {"type": "T10", "expect": "답함"}, "form": "short"}
+{"q": "관련 원천 데이터 목록은?", "tuple": {"type": "T11", "expect": "답함"}, "form": "short"}
+{"q": "센터에 어떤 자료가 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "short"}
+{"q": "데이터허브 공개 데이터셋은?", "tuple": {"type": "T11", "expect": "답함"}, "form": "short"}
+{"q": "보유 중인 API 목록 보여줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "short"}
+{"q": "카드 소비 원본 데이터도 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "short"}
+{"q": "버스 승하차 통계 자료는?", "tuple": {"type": "T11", "expect": "답함"}, "form": "short"}
+{"q": "상가 위치 데이터 명세는?", "tuple": {"type": "T11", "expect": "답함"}, "form": "short"}
+{"q": "몇 시에 제일 붐벼?", "tuple": {"type": "T13", "expect": "답함"}, "form": "short"}
+{"q": "피크 시간대는 언제야?", "tuple": {"type": "T13", "expect": "답함"}, "form": "short"}
+{"q": "점심시간 손님 집중도는?", "tuple": {"type": "T13", "expect": "답함"}, "form": "short"}
+{"q": "시간대별 방문객 분포는?", "tuple": {"type": "T13", "expect": "답함"}, "form": "short"}
+{"q": "저녁에 손님이 더 많아?", "tuple": {"type": "T13", "expect": "답함"}, "form": "short"}
+{"q": "시간대별 결제 피크는?", "tuple": {"type": "T13", "expect": "답함"}, "form": "short"}
+{"q": "가장 한산한 시간대는?", "tuple": {"type": "T13", "expect": "답함"}, "form": "short"}
+{"q": "조건에 맞는 동네 목록은?", "tuple": {"type": "T14", "expect": "답함"}, "form": "short"}
+{"q": "청년층 많고 폐업 적은 곳은?", "tuple": {"type": "T14", "expect": "답함"}, "form": "short"}
+{"q": "유동인구 5천 이상 후보지는?", "tuple": {"type": "T14", "expect": "답함"}, "form": "short"}
+{"q": "도민 비중 70% 넘는 상권은?", "tuple": {"type": "T14", "expect": "답함"}, "form": "short"}
+{"q": "경쟁 적고 유입 많은 지역은?", "tuple": {"type": "T14", "expect": "답함"}, "form": "short"}
+{"q": "폐업률 5% 미만인 동네는?", "tuple": {"type": "T14", "expect": "답함"}, "form": "short"}
+{"q": "창업 추천 조건 만족 상권은?", "tuple": {"type": "T14", "expect": "답함"}, "form": "short"}
+{"q": "최근 급증한 곳은 어디야?", "tuple": {"type": "T15", "expect": "답함"}, "form": "short"}
+{"q": "폐업이 갑자기 튄 동네는?", "tuple": {"type": "T15", "expect": "답함"}, "form": "short"}
+{"q": "이례적인 급변 지역은 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "short"}
+{"q": "유동인구 급감 이상치는?", "tuple": {"type": "T15", "expect": "답함"}, "form": "short"}
+{"q": "단기간 이상 급증 상권은?", "tuple": {"type": "T15", "expect": "답함"}, "form": "short"}
+{"q": "이상치 경보 뜬 동네는?", "tuple": {"type": "T15", "expect": "답함"}, "form": "short"}
+{"q": "최근 급격한 변화 지표는?", "tuple": {"type": "T15", "expect": "답함"}, "form": "short"}
+{"q": "오라동 카페 매장 수는 현재 총 몇 개야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "full"}
+{"q": "봉개동 한식당 점포 수는 몇 곳 등록되어 있어?", "tuple": {"type": "T1", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동 치킨집 개수는 총 몇 개야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "full"}
+{"q": "용담1동 편의점 점포 수는 몇 군데야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "full"}
+{"q": "건입동 베이커리 매장 숫자는 몇 곳이야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "full"}
+{"q": "도두동 일식당 매장은 몇 군데 운영 중이야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "full"}
+{"q": "이호동 중식당 점포 수는 총 몇 곳이야?", "tuple": {"type": "T1", "expect": "답함"}, "form": "full"}
+{"q": "오라동과 봉개동 카페 상권을 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동이랑 건입동 한식당 유동인구를 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "full"}
+{"q": "용담1동과 용담2동 치킨집 점포 수를 대조해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "full"}
+{"q": "도두동이랑 이호동 베이커리 매출을 비교해줄래?", "tuple": {"type": "T2", "expect": "답함"}, "form": "full"}
+{"q": "삼양동과 화북동 일식당 상가 규모를 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "full"}
+{"q": "서홍동이랑 동홍동 편의점 개수를 맞비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "full"}
+{"q": "중문동과 대천동 중식당 방문객 규모를 서로 비교해줘", "tuple": {"type": "T2", "expect": "답함"}, "form": "full"}
+{"q": "제주도 전체 읍면동 중 카페 매장 수가 가장 많은 동네 순위는?", "tuple": {"type": "T3", "expect": "답함"}, "form": "full"}
+{"q": "제주 전체에서 음식점 폐업률이 제일 높은 동네 순위 알려줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "full"}
+{"q": "유동인구가 가장 많은 동네 상위 5곳 순위를 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "full"}
+{"q": "치킨집 점포 수가 가장 많은 지역 순위는 어떻게 돼?", "tuple": {"type": "T3", "expect": "답함"}, "form": "full"}
+{"q": "청년층 방문객 비율이 1위인 읍면동 순위 뽑아줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "full"}
+{"q": "버스 승하차량이 가장 많은 정류소 동네 순위 알려줄래?", "tuple": {"type": "T3", "expect": "답함"}, "form": "full"}
+{"q": "카드 결제 금액이 가장 큰 읍면동 순위 목록 보여줘", "tuple": {"type": "T3", "expect": "답함"}, "form": "full"}
+{"q": "오라동 카페의 최근 3년간 폐업 추이를 알려줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "full"}
+{"q": "봉개동 한식당 개업 증감 흐름 추세를 분석해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동 치킨집 폐업률 변동 추이는 어때?", "tuple": {"type": "T4", "expect": "답함"}, "form": "full"}
+{"q": "용담1동 편의점 점포 수 증가세야 감소세야?", "tuple": {"type": "T4", "expect": "답함"}, "form": "full"}
+{"q": "건입동 베이커리 매장의 최근 폐업 흐름을 보여줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "full"}
+{"q": "도두동 일식당 방문객 수 증감 추이를 확인해줘", "tuple": {"type": "T4", "expect": "답함"}, "form": "full"}
+{"q": "이호동 중식당 매장 수 연도별 변동 추세 알려줄래?", "tuple": {"type": "T4", "expect": "답함"}, "form": "full"}
+{"q": "오라동 카페 이용객의 연령대별 구성 비중은 어떻게 돼?", "tuple": {"type": "T5", "expect": "답함"}, "form": "full"}
+{"q": "봉개동 한식당 방문객 중 도민과 관광객 비율은 몇 대 몇이야?", "tuple": {"type": "T5", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동 치킨집 고객의 성별·연령층 구성을 보여줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "full"}
+{"q": "용담1동 상권 생활인구의 거주인구와 직장인구 비율 알려줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "full"}
+{"q": "건입동 음식점 카드 결제의 관광객 소비 비중은 얼마야?", "tuple": {"type": "T5", "expect": "답함"}, "form": "full"}
+{"q": "도두동 카페 방문객의 주 연령대 분포 비율을 분석해줘", "tuple": {"type": "T5", "expect": "답함"}, "form": "full"}
+{"q": "이호동 식당가 유동인구의 세대별 구성비를 뽑아줄래?", "tuple": {"type": "T5", "expect": "답함"}, "form": "full"}
+{"q": "비 오는 날 오라동 카페 방문객은 얼마나 줄어들어?", "tuple": {"type": "T6", "expect": "답함"}, "form": "full"}
+{"q": "우천 시 봉개동 한식당 손님 감소 효과를 분석해줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "full"}
+{"q": "주말에 삼도2동 치킨집 유동인구가 얼마나 늘어나는지 알려줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "full"}
+{"q": "눈 오는 날 용담1동 편의점 이용객 변동 효과는 어때?", "tuple": {"type": "T6", "expect": "답함"}, "form": "full"}
+{"q": "궂은 날씨가 건입동 베이커리 매출에 미치는 영향 보여줘", "tuple": {"type": "T6", "expect": "답함"}, "form": "full"}
+{"q": "비 오는 주말에 도두동 일식당 손님 증감 폭은 얼마야?", "tuple": {"type": "T6", "expect": "답함"}, "form": "full"}
+{"q": "강수량에 따른 이호동 중식당 방문객 변화율을 계산해줄래?", "tuple": {"type": "T6", "expect": "답함"}, "form": "full"}
+{"q": "오라동 카페 유동인구 수와 카드 매출 간의 상관관계는 어때?", "tuple": {"type": "T7", "expect": "답함"}, "form": "full"}
+{"q": "봉개동 한식당 점포 수와 방문객 수 사이의 연관성을 분석해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동 치킨집 상가 밀집도와 버스 승차량 간 상관계수는?", "tuple": {"type": "T7", "expect": "답함"}, "form": "full"}
+{"q": "용담1동 편의점 거주인구 수와 매출액 사이 관계가 있어?", "tuple": {"type": "T7", "expect": "답함"}, "form": "full"}
+{"q": "건입동 베이커리 청년층 비중과 매장 수 간의 상관성을 보여줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "full"}
+{"q": "도두동 일식당 주말 방문객 증가와 매출 간의 관계를 분석해줘", "tuple": {"type": "T7", "expect": "답함"}, "form": "full"}
+{"q": "이호동 중식당 점포 수 규모와 폐업률 사이 상관관계 알아봐줄래?", "tuple": {"type": "T7", "expect": "답함"}, "form": "full"}
+{"q": "다음 달 오라동 카페 유동인구 모델 예측치를 알려줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "full"}
+{"q": "다음 분기 봉개동 한식당 버스 이용객 예상 규모는 얼마야?", "tuple": {"type": "T8", "expect": "답함"}, "form": "full"}
+{"q": "향후 3개월간 삼도2동 치킨집 폐업 전망치를 예측해줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "full"}
+{"q": "내년 상반기 용담1동 편의점 방문객 수 예상치를 보여줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "full"}
+{"q": "다음 달 건입동 베이커리 매출 예상액은 어떻게 돼?", "tuple": {"type": "T8", "expect": "답함"}, "form": "full"}
+{"q": "다음 분기 도두동 일식당 상가 수 변동 전망을 알려줄래?", "tuple": {"type": "T8", "expect": "답함"}, "form": "full"}
+{"q": "향후 6개월간 이호동 중식당 방문 수요 예측치를 뽑아줘", "tuple": {"type": "T8", "expect": "답함"}, "form": "full"}
+{"q": "오라동과 카페 상권 특성이 비슷한 다른 동네 추천해줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "full"}
+{"q": "봉개동과 한식당 유동인구 패턴이 유사한 지역은 어디야?", "tuple": {"type": "T9", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동과 치킨집 업종 분포가 닮은 동네 목록을 알려줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "full"}
+{"q": "용담1동과 편의점 상권 규모 및 인구 구조가 유사한 곳 찾아줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "full"}
+{"q": "건입동과 베이커리 창업 환경이 비슷한 대체 지역은 어디야?", "tuple": {"type": "T9", "expect": "답함"}, "form": "full"}
+{"q": "도두동과 일식당 관광 소비 특성이 유사한 상권을 골라줘", "tuple": {"type": "T9", "expect": "답함"}, "form": "full"}
+{"q": "이호동과 중식당 생활 상권 구성이 닮은 지역들을 보여줄래?", "tuple": {"type": "T9", "expect": "답함"}, "form": "full"}
+{"q": "오라동 카페 및 음식점 상권 전반에 대한 종합 진단 리포트 보여줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "full"}
+{"q": "봉개동 한식당 생활 상권 현황을 종합적으로 진단해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동 치킨집 상권의 종합적인 경쟁력을 평가해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "full"}
+{"q": "용담1동 편의점 및 소매 상권 영업 환경을 종합 분석해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "full"}
+{"q": "건입동 베이커리 상권의 점포 현황과 유동인구를 묶어 종합 진단해줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "full"}
+{"q": "도두동 일식당 관광 상권의 강약점을 종합 진단 결과로 알려줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "full"}
+{"q": "이호동 중식당 골목 상권 예비 창업자를 위한 종합 상권 진단을 내려줘", "tuple": {"type": "T10", "expect": "답함"}, "form": "full"}
+{"q": "빅데이터센터에 오라동 카페 유동인구 관련 데이터가 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "데이터허브에 봉개동 한식당 카드 매출 통계 자료가 개방되어 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "센터 데이터 카탈로그에서 삼도2동 치킨집 상가 업종별 좌표를 찾을 수 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "공공데이터 포털에 용담1동 편의점 관련 데이터셋이 등록되어 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "센터에 건입동 베이커리 음식점 인허가 내역 원천 데이터가 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "데이터허브에 도두동 일식당 인근 버스 승하차 이력 자료가 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "센터 DB에 이호동 중식당 주변 기상 및 강수량 관측치가 있어?", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "빅데이터센터 포털에서 제주 전역 상가 업종별 데이터셋 목록 보여줘", "tuple": {"type": "T11", "expect": "답함"}, "form": "full"}
+{"q": "오라동 카페는 어느 시간대에 손님이 가장 많이 몰려?", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "봉개동 한식당 유동인구가 가장 집중되는 피크 시간대는 언제야?", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동 치킨집 매출이 가장 많이 발생하는 시간대를 알려줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "용담1동 편의점 결제 건수가 피크를 찍는 시간대는 몇 시야?", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "건입동 베이커리 방문객이 가장 많은 시간대별 분포는 어때?", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "도두동 일식당 점심시간과 저녁시간 중 손님이 언제 더 붐벼?", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "이호동 중식당 관광객 유동인구의 시간대별 집중 패턴 보여줘", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "오라동 음식점 골목 시간대별 유동인구 변화 현황을 알려줄래?", "tuple": {"type": "T13", "expect": "답함"}, "form": "full"}
+{"q": "청년층 비중 높고 카페 폐업률이 5% 미만인 동네 3곳 찾아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "full"}
+{"q": "유동인구 1만 명 이상이면서 한식당 경쟁이 덜한 후보 지역 탐색해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "full"}
+{"q": "도민 소비 70% 이상이고 치킨집 점포 수가 적은 안정 상권 검색해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "full"}
+{"q": "거주인구 대비 편의점 수가 적어 진입 여유가 있는 동네 추천해줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "full"}
+{"q": "최근 1년 베이커리 폐업률이 가장 낮은 유망 읍면동을 골라줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "full"}
+{"q": "버스 접근성 우수하고 일식당 밀집도 낮은 후보 동네를 찾아줄래?", "tuple": {"type": "T14", "expect": "답함"}, "form": "full"}
+{"q": "2030 유동인구 많고 중식당 경쟁 매장이 적은 지역을 뽑아줘", "tuple": {"type": "T14", "expect": "답함"}, "form": "full"}
+{"q": "최근 1년 새 오라동에서 카페 폐업이 급증한 이례적인 변화가 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "full"}
+{"q": "지난 분기 봉개동 한식당 유동인구가 갑자기 급감한 이상 징후가 나타났어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "full"}
+{"q": "삼도2동 치킨집 개업이 단기간에 비정상적으로 튄 이상 상권이야?", "tuple": {"type": "T15", "expect": "답함"}, "form": "full"}
+{"q": "최근 6개월간 용담1동 편의점 카드 결제액이 급변한 기록이 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "full"}
+{"q": "건입동 베이커리 월별 방문객 수가 평소 대비 급격히 변동한 곳이 있어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "full"}
+{"q": "도두동 일식당 폐업률 지표가 단기간에 치솟은 이상 경보가 떴어?", "tuple": {"type": "T15", "expect": "답함"}, "form": "full"}
+{"q": "이호동 중식당 점포 수가 갑자기 크게 줄어든 이례 변화 현상을 알려줘", "tuple": {"type": "T15", "expect": "답함"}, "form": "full"}
