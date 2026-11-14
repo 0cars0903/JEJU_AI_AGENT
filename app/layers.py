@@ -309,6 +309,11 @@ def _table_lines(o, t, metric, v, note):
             same = float(g["value"].iloc[0]) == float(g["value"].iloc[-1])
             more = "높아요" if unit == "%" else "많아요"
             body = "동네마다 같아요" if same else f"{_josa(g['dong'].iloc[0], '이', '가')} {', '.join(g['dong'].iloc[1:])}보다 {more}"
+            ci = _rate_ci(metric, list(g["dong"]))
+            if ci and not same:  # 생존율·폐업률은 95% 구간이 겹치면 차이를 단정하지 않는다(미처리 결함 D5)
+                (a_lo, a_hi), (b_lo, b_hi) = ci[g["dong"].iloc[0]], ci[g["dong"].iloc[-1]]
+                if a_lo <= b_hi and b_lo <= a_hi:
+                    body = f"{'·'.join(g['dong'])}의 차이는 자료로 확인되지 않아요(신뢰 구간이 겹쳐요)"
             o.line("L2", f"{word}{label}: {body}({vals}).", src, asof, kind="compare")
             if metric in ("5년생존율", "조건부생존", "폐업률") and t.get("target") and t.get("target") != "음식점":
                 o.line("L5", f"{t['target']}만의 동네별 값은 자료에 없어 음식점 전체 값으로 비교했어요. {t['target']}의 제주 전체 값은 아래에 있어요.", None, None)
@@ -1241,8 +1246,23 @@ def _summary_cells(o, sig, lvl):
     return cells
 
 
-def _summary_conclusion(o, sig, lvl):
-    """결론 한 문장에 실제 수치를 넣는다(문서 23 B 기준: 판단을 미루지 않는다). 같은 수준끼리 묶는다."""
+def _rate_ci(metric, dongs):
+    """생존율(5년)·3년 폐업률의 동네별 95% 구간. 없으면 None."""
+    try:
+        T = {"5년생존율": ("km", lambda d: d[d.year == d.year.max()]), "폐업률": ("close_3y", lambda d: d)}.get(metric)
+        if not T:
+            return None
+        d = T[1](pd.read_parquet(v3.ROOT / "data" / "tables" / f"{T[0]}.parquet"))
+        d = d[d.dong.isin(dongs)].set_index("dong")
+        return {k: (float(r.lo_pct), float(r.hi_pct)) for k, r in d.iterrows()} if set(dongs) <= set(d.index) else None
+    except Exception:
+        return None
+
+
+def _summary_conclusion(o, sig, lvl, tgt=None):
+    """결론 한 문장에 실제 수치를 넣는다(문서 23 B 기준: 판단을 미루지 않는다). 같은 수준끼리 묶는다.
+    가게 수는 물은 업종 이름을 붙인다('치킨 가게 수', 미처리 결함 D6 2026-11-14)."""
+    nm = lambda s: f"{tgt} 가게 수" if tgt and s["short"] == "가게 수(경쟁)" else SUM_NAME.get(s["short"], s["name"])  # noqa: E731
     groups = {}
     for s in sig["items"]:
         groups.setdefault(lvl.get(s["level"], s["level"]), []).append(s)
@@ -1251,9 +1271,9 @@ def _summary_conclusion(o, sig, lvl):
         if len(items) == 1:
             s = items[0]
             v = o.num(s["value"], s["unit"])
-            parts.append(f"{_josa(SUM_NAME.get(s['short'], s['name']))} {v}({s['rank']}위){_ro(v)} {lv}")
+            parts.append(f"{_josa(nm(s))} {v}({s['rank']}위){_ro(v)} {lv}")
         else:
-            names = "·".join(SUM_NAME.get(s["short"], s["name"]) for s in items)
+            names = "·".join(nm(s) for s in items)
             rs = sorted(s["rank"] for s in items)
             r = f"{rs[0]}위" if rs[0] == rs[-1] else f"{rs[0]}~{rs[-1]}위"
             parts.append(f"{_josa(names, '이', '가')} {r}{_ro(r)} {lv}")
@@ -1324,7 +1344,7 @@ def build(t, rv, ev, value_q=False):
         dong = sig["dong"]
         lvl = {"많음": "많은 편", "적음": "적은 편", "높음": "높은 편", "낮음": "낮은 편", "보통": "보통"}
         summary = _summary_cells(o, sig, lvl)
-        conclusion = {"text": _summary_conclusion(o, sig, lvl), "layer": "L5", "tag": GUIDE}
+        conclusion = {"text": _summary_conclusion(o, sig, lvl, qparse.DETAIL.get(t.get("detail"), {}).get("word") or t.get("target")), "layer": "L5", "tag": GUIDE}
     else:
         rank = {"L4": 4, "L3": 3, "L1": 1, "L2": 0, "L5": 0}
         main = [x for x in o.lines if not x.get("side")] or o.lines  # 곁가지 줄(위치·모델 결과)은 결론으로 고르지 않는다(문서 22)

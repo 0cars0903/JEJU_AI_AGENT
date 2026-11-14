@@ -683,3 +683,35 @@ class Persona20261114(unittest.TestCase):
         self.assertEqual(r["status"], "범위밖")
         self.assertIn("맛·후기", r["card"]["conclusion"])
         self.assertTrue(all("노형동" not in x["text"] for x in r["suggestions"]))
+
+
+class Pending20261114(unittest.TestCase):
+    """미처리 결함 D1~D7(2026-11-14)."""
+    def test_d1_sales_change_rank(self):
+        r = R.respond("최근 매출이 급증한 동네는?", None, llm_on=False)
+        self.assertIn("카드 매출", r["card"]["conclusion"])
+        self.assertNotIn("폐업", r["card"]["conclusion"])
+        self.assertIn("1위 서홍동(+11.9%)", r["card"]["conclusion"])
+
+    def test_d2_outside_jeju(self):
+        r = R.respond("부산 해운대 카페 몇 개야?", None, llm_on=False)
+        self.assertEqual(r["status"], "범위밖")
+        self.assertIn("제주 밖", r["card"]["conclusion"])
+
+    def test_d3_metric_inherited(self):
+        r = R.respond("노형동 방문 추이 확인하고 연동이랑도 비교해줘", None, llm_on=False)
+        ls = [l for l in r["agent"]["lines"] if not l.startswith("   ")]
+        self.assertIn("방문", ls[1])
+        self.assertNotIn("11개 지표", ls[1])
+
+    def test_d4_rain_rank_states_basis(self):
+        r = R.respond("비 올 때 버스 이용이 가장 줄어드는 동네는?", None, llm_on=False)
+        self.assertTrue(r["card"]["conclusion"].startswith("버스 이용의 동네별 비 효과는 계산하지 않아"))
+
+    def test_d5_overlapping_ci_not_asserted(self):
+        r = R.respond("노형동 음식점 생존율 연동이랑 비교해줘", None, llm_on=False)
+        self.assertIn("확인되지 않아요", r["card"]["conclusion"])
+
+    def test_d6_store_count_label(self):
+        r = R.respond("대정읍 치킨집 창업 어때?", None, llm_on=False)
+        self.assertIn("치킨 가게 수", r["answer"]["conclusion"]["text"])

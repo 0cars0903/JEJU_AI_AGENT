@@ -396,11 +396,47 @@ def _rain_rank(question, t, t0):
     word = "덜 줄어드는" if less else "많이 줄어드는"
     top = ", ".join(f"{i}위 {r['dong']}({r['effect_pct']:+.1f}%)" for i, r in enumerate(rows[:3], 1))
     concl = f"비 오는 날 하루 방문이 가장 {word} 동네는 {top}{layers._cop(top)}."
+    asked = "버스 이용" if "버스" in (question or "") else "카드 매출" if re.search(r"매출|장사|팔", question or "") else None
+    if asked:  # 물은 지표와 답한 지표가 다르면 결론에 먼저 밝힌다(미처리 결함 D4)
+        concl = f"{asked}의 동네별 비 효과는 계산하지 않아 하루 방문 기준으로 답해요. " + concl
     ev = [f"{r['dong']}: 비 오는 날 방문 {r['effect_pct']:+.1f}%(95% 구간 {r['lo95']:+.1f}~{r['hi95']:+.1f}%){'' if r['diff_sig'] else ', 0과 구분되지 않음'}" for r in rows[:8]]
     n_sig = sum(bool(r["diff_sig"]) for r in rows)
     limits = [f"동네별 비 효과는 하루 방문(유동인구 지수) 기준이에요. 카드 매출의 동네별 비 효과는 계산하지 않아요.",
               f"43곳 중 {n_sig}곳만 0과 구분되는 차이가 있었어요. 구간이 겹치는 동네끼리는 순위 차이를 단정할 수 없어요."]
     return _plain_answer(question, t, concl, ev, limits, "비 오는 날 방문 변화 순위", "유동인구(제주데이터허브 583)·기상(579·ASOS) 가설 검정", "2023-11~2026-08", t0, "비 효과 순위(코드)")
+
+
+SALES_CHG = re.compile(r"(매출|카드|소비|장사)\S*\s*.*(급증|급감|늘|줄|떨어|올랐|오른|뛰|증가|감소|하락|상승|치솟|추락)")
+SALES_UP = re.compile(r"급증|늘|올랐|오른|뛰|증가|상승|치솟")
+
+
+def _sales_change_rank(question, t, t0):
+    """'매출이 급증·급감한 동네'(미처리 결함 D1, 2026-11-14): 이례 변화 경로는 음식점 폐업 수만 다뤄 매출을 물으면 폐업으로 답했다.
+    카드 매출(관광공사, 업종 대분류)로 최근 12개월과 그 전 12개월을 견준 증감률 순위를 낸다."""
+    if t.get("space") or not SALES_CHG.search(question or "") or not re.search(r"동네|곳|어디|지역", question or ""):
+        return None
+    import techniques as TQ
+    d = TQ._T()["card_month"]
+    b = TQ._biz(t.get("target"))
+    d = d[d.biz == b] if b else d
+    ms = sorted(d.ym.unique())
+    if len(ms) < 24:
+        return None
+    cur, prev = ms[-12:], ms[-24:-12]
+    d = d[d.ym.isin(cur + prev)]  # 비교 기간을 최근 24개월로 제한한다
+    g = d.groupby(["dong", d.ym.isin(cur)]).amt.sum().unstack()
+    g = g[(g.get(False, 0) > 0)]
+    chg = ((g[True] / g[False] - 1) * 100).dropna()
+    up = bool(SALES_UP.search(question or ""))
+    chg = chg.sort_values(ascending=not up)
+    word = "많이 늘어난" if up else "많이 줄어든"
+    top = ", ".join(f"{i}위 {k}({v:+.1f}%)" for i, (k, v) in enumerate(chg.head(3).items(), 1))
+    who = f"{b} " if b else ""
+    concl = f"최근 12개월({cur[0]}~{cur[-1]}) {who}카드 매출이 그 전 12개월보다 가장 {word} 동네는 {top}{layers._cop(top)}."
+    ev = [f"{k}: {v:+.1f}%" for k, v in chg.head(8).items()] + [f"43곳 중간값 {chg.median():+.1f}%"]
+    limits = ["카드 매출은 제주관광공사 자료(업종 대분류)예요. 카페 같은 세부 업종만의 값이 아니에요."] if t.get("target") and t.get("target") not in ("음식점",) else []
+    limits += ["이 순위는 1년 단위 증감률이에요. 평소 범위를 벗어난 '이례 변화' 판정(경보)은 음식점 폐업 수로만 해요."]
+    return _plain_answer(question, t, concl, ev, limits, "매출 증감 순위", "제주관광공사 카드 소비", cur[-1], t0, "매출 증감 순위(코드)")
 
 
 def _extreme_month(question, t, t0):
@@ -432,6 +468,8 @@ def _extreme_month(question, t, t0):
                          notes=[REASON_NOTE] if REASON_Q.search(question or "") else [])
 
 
+OUTSIDE_Q = re.compile(r"서울|부산|대구|인천|광주광역|대전|울산|세종시|경기|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|강남역|해운대|홍대|명동|여의도|판교")
+OUTSIDE_MSG = "제주 43개 읍면동 자료만 있어서 제주 밖 지역은 답할 수 없어요. 제주의 동네로 물어 주세요."
 MATJIP_Q = re.compile(r"맛집|맛있|맛\s*좋|후기|리뷰|평점|추천\s*(해|좀)?\s*줘")
 MATJIP_MSG = "맛·후기·평점 자료가 없어 맛집을 고르거나 가게를 추천할 수 없어요. 대신 그 지역 음식점 수, 카드 매출, 생존율을 볼 수 있어요."
 CITY_Q = re.compile(r"제주시|서귀포시|서귀포\s*(쪽|지역|시내)|제주\s*시내")
@@ -676,9 +714,11 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             why = OUT_NO_CARD if qparse.CARD_METRICS & set(t["metric"]) else OUT_NO_OPEN
             return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), (OUT_ONLY_COUNT + why).format(w=od, we=_josa(od)),
                                  [{"topic": "stores", "space": d, "detail": od}] if d else []))
+        if OUTSIDE_Q.search(question or "") and not t.get("space"):  # 제주 밖 지역(미처리 결함 D2, 2026-11-14)
+            return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), OUTSIDE_MSG, []))
         if MATJIP_Q.search(question or ""):  # 맛집·추천은 자료가 없어 막고, 이유와 주변 동네 질문을 보여 준다(평가 2026-11-14 A7)
             return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), MATJIP_MSG, [x["slots"] for x in _near_suggestions(question, t)]))
-        cb = _center_bus(question, t, env, t0) or _rain_rank(question, t, t0) or _extreme_month(question, t, t0)
+        cb = _center_bus(question, t, env, t0) or _rain_rank(question, t, t0) or _sales_change_rank(question, t, t0) or _extreme_month(question, t, t0)
         if cb:
             return dict(cb, interpret=meta)
         if CITY_Q.search(question or "") and not t.get("space") and (t.get("expect") == "되묻기" or t.get("type") in qparse.NEED_DONG):
@@ -831,7 +871,8 @@ if __name__ == "__main__":
             c = r["card"]
             print("  결론:", c["conclusion"])
             for e in c["evidence"][:5]:
-                print("  근거:", e["text"], f"[{e.get('dataset')}, {e.get('as_of')}]")
+                src = ", ".join(str(x) for x in (e.get("dataset"), e.get("as_of")) if x)  # 출처가 없으면 괄호째 생략(D7)
+                print("  근거:", e["text"], f"[{src}]" if src else "")
             for x in c["intervals"]:
                 print("  구간:", x)
             for x in c["limits"]:

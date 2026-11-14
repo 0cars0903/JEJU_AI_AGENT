@@ -28,6 +28,7 @@ WISH_AFTER = re.compile(r"^\s*(싶|있)")
 SHORT = 10  # 이보다 짧은 조각(예: '분석해줘', '그 다음')은 따로 묻는 것이 아니라 앞 조각에 붙인다. 단 내용어가 있으면 붙이지 않는다
 CONTENT = re.compile(r"매출|폐업|개업|생존|방문|유동|점포|가게|매장|버스|손님|관광객|비중|순위|추이|흐름|인구|거기|그곳|그 동네|해당")
 REF_POINT = re.compile(r"거기|그곳|이곳|(그|해당|이)\s*(동네|곳|지역)")  # 앞 결과를 가리키는 말만(순위 단서 제외)
+METRIC_WORD = re.compile(r"카드 매출|매출|하루 방문|방문|유동인구|점포 수|가게 수|매장 수|생존율|폐업률|폐업|개업|버스 이용|관광객 비중")  # 뒤 조각이 물려받을 지표(미처리 결함 D3)
 RANK_CUE = re.compile(r"(1위|가장|제일|최고|최대|최소|꼴찌)\s*\S*\s*(동네|곳|지역)")
 # 병렬 최상급: '방문이 가장 적은 동네와 가장 많은 동네 알려줘' → 둘로(평가 2026-11-14 A1)
 PARALLEL = re.compile(r"((?:가장|제일)\s*\S+\s*(?:동네|곳))\s*(?:와|과|랑|하고|이랑)\s*((?:가장|제일)\s*\S+\s*(?:동네|곳))")
@@ -112,6 +113,10 @@ def plan(q, interpret):
                 part["dongs"], part["inherited"] = list(prev["dongs"]), part["inherited"] + ["동네"]
         if prev and not tgt and prev["target"]:
             part["target"], part["inherited"] = prev["target"], part["inherited"] + ["업종"]
+        mw = METRIC_WORD.search(p)
+        part["metric_word"] = mw.group(0) if mw else None
+        if prev and not mw and prev.get("metric_word") and part["ref"] is None:  # '추이 보고 연동이랑 비교'는 앞 조각의 지표로 비교한다
+            part["metric_word"], part["inherited"] = prev["metric_word"], part["inherited"] + ["지표"]
         # 종류는 물려받은 칸을 붙인 문장으로 읽는다. 앞 결과를 쓰는 조각은 동네 자리에 대표 동네를 넣어 읽는다(종류만 보려는 것)
         t = interpret(_text_for(part, "노형동" if part["ref"] is not None else None))["tuple"]
         part["type"], part["expect"] = t.get("type"), t.get("expect")
@@ -164,6 +169,8 @@ def _text_for(part, dong=None):
         add.append(part["dongs"][0])
     if "업종" in part["inherited"] and part["target"]:
         add.append(part["target"])
+    if "지표" in part["inherited"] and part.get("metric_word"):
+        add.append(part["metric_word"])
     return (" ".join(add) + " " + p).strip() if add else p
 
 
