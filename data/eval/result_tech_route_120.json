@@ -3,12 +3,16 @@
   "file": "tech_route_eval_120.jsonl",
   "checks": true,
   "n": 120,
-  "정답": 107,
-  "기법 문항": "87/96",
-  "기법 아닌 요청": "20/24",
+  "정답": 111,
+  "기법 문항": "89/96",
+  "기법 아닌 요청": "22/24",
   "이름 있음": "24/24",
-  "이름 없음": "63/72",
-  "지연 중앙값": 1.66
+  "이름 없음": "65/72",
+  "지연 중앙값": 1.74,
+  "모델 첫 판단 정답": 105,
+  "검사가 바꾼 건수": 10,
+  "바꿔서 맞음": 8,
+  "바꿔서 틀림": 2
  },
  "rows": [
   {
@@ -16,438 +20,603 @@
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.79
+   "sec": 1.74
   },
   {
    "id": "X1-R002",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": false,
+   "changed": true,
    "named": true,
-   "sec": 3.45
+   "sec": 3.36
   },
   {
    "id": "X1-R003",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.82
+   "sec": 1.86
   },
   {
    "id": "X1-R004",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.6
+   "sec": 1.58
   },
   {
    "id": "X1-R005",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.95
+   "sec": 1.92
   },
   {
    "id": "X1-R006",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.35
+   "sec": 1.49
   },
   {
    "id": "X1-R007",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 3.17
+   "sec": 3.24
   },
   {
    "id": "X1-R008",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.33
+   "sec": 1.45
   },
   {
    "id": "X1-R009",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.2
+   "sec": 2.15
   },
   {
    "id": "X1-R010",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.96
+   "sec": 1.9
   },
   {
    "id": "X1-R011",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.04
+   "sec": 1.96
   },
   {
    "id": "X1-R012",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.02
+   "sec": 1.94
   },
   {
    "id": "X1-R013",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.43
+   "sec": 2.38
   },
   {
    "id": "X1-R014",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.72
+   "sec": 2.77
   },
   {
    "id": "X1-R015",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.59
+   "sec": 2.68
   },
   {
    "id": "X1-R016",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.84
+   "sec": 1.93
   },
   {
    "id": "X1-R017",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.45
+   "sec": 2.36
   },
   {
    "id": "X1-R018",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.01
+   "sec": 0.97
   },
   {
    "id": "X1-R019",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.93
+   "sec": 2.02
   },
   {
    "id": "X1-R020",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.41
+   "sec": 1.39
   },
   {
    "id": "X1-R021",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.67
+   "sec": 1.78
   },
   {
    "id": "X1-R022",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.65
+   "sec": 1.73
   },
   {
    "id": "X1-R023",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.5
+   "sec": 1.62
   },
   {
    "id": "X1-R024",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.82
+   "sec": 1.94
   },
   {
    "id": "X1-R025",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.43
+   "sec": 1.4
   },
   {
    "id": "X1-R026",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.77
+   "sec": 1.68
   },
   {
    "id": "X1-R027",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.85
+   "sec": 1.78
   },
   {
    "id": "X1-R028",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.64
+   "sec": 1.6
   },
   {
    "id": "X1-R029",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.36
+   "sec": 2.28
   },
   {
    "id": "X1-R030",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.06
+   "sec": 4.37
   },
   {
    "id": "X1-R031",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.83
+   "sec": 4.98
   },
   {
    "id": "X1-R032",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.76
+   "sec": 1.73
   },
   {
    "id": "X1-R033",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.6
+   "sec": 1.54
   },
   {
    "id": "X1-R034",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.82
+   "sec": 1.74
   },
   {
    "id": "X1-R035",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.65
+   "sec": 1.62
   },
   {
    "id": "X1-R036",
    "want": "test",
    "got": "surv",
    "ok": false,
+   "model_first": "surv",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.15
+   "sec": 1.27
   },
   {
    "id": "X1-R037",
    "want": "test",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.13
+   "sec": 1.11
   },
   {
    "id": "X1-R038",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.65
+   "sec": 1.59
   },
   {
    "id": "X1-R039",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.66
+   "sec": 1.61
   },
   {
    "id": "X1-R040",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.68
+   "sec": 1.75
   },
   {
    "id": "X1-R041",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.37
+   "sec": 2.3
   },
   {
    "id": "X1-R042",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.34
+   "sec": 1.3
   },
   {
    "id": "X1-R043",
    "want": "dist",
-   "got": "hhi",
-   "ok": false,
+   "got": "dist",
+   "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": false,
+   "changed": true,
    "named": false,
-   "sec": 1.31
+   "sec": 3.29
   },
   {
    "id": "X1-R044",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.81
+   "sec": 1.77
   },
   {
    "id": "X1-R045",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.74
+   "sec": 1.68
   },
   {
    "id": "X1-R046",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.69
+   "sec": 2.6
   },
   {
    "id": "X1-R047",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.77
+   "sec": 1.71
   },
   {
    "id": "X1-R048",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.87
+   "sec": 2.96
   },
   {
    "id": "X1-R049",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.25
+   "sec": 1.22
   },
   {
    "id": "X1-R050",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.53
+   "sec": 1.52
   },
   {
    "id": "X1-R051",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.48
+   "sec": 1.44
   },
   {
    "id": "X1-R052",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.16
+   "sec": 1.13
   },
   {
    "id": "X1-R053",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.1
+   "sec": 1.07
   },
   {
    "id": "X1-R054",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.79
+   "sec": 1.92
   },
   {
    "id": "X1-R055",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.15
   },
@@ -456,166 +625,229 @@
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.07
+   "sec": 2.0
   },
   {
    "id": "X1-R057",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": true,
    "named": true,
-   "sec": 3.29
+   "sec": 3.19
   },
   {
    "id": "X1-R058",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.09
+   "sec": 1.05
   },
   {
    "id": "X1-R059",
    "want": "change",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 2.1
+   "sec": 5.02
   },
   {
    "id": "X1-R060",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.22
+   "sec": 1.36
   },
   {
    "id": "X1-R061",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.83
+   "sec": 1.95
   },
   {
    "id": "X1-R062",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.65
+   "sec": 1.78
   },
   {
    "id": "X1-R063",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": true,
    "named": false,
-   "sec": 3.41
+   "sec": 3.33
   },
   {
    "id": "X1-R064",
    "want": "change",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 2.33
+   "sec": 2.42
   },
   {
    "id": "X1-R065",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.44
+   "sec": 1.42
   },
   {
    "id": "X1-R066",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.58
+   "sec": 2.52
   },
   {
    "id": "X1-R067",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.16
+   "sec": 1.28
   },
   {
    "id": "X1-R068",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.23
+   "sec": 1.38
   },
   {
    "id": "X1-R069",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.66
+   "sec": 1.67
   },
   {
    "id": "X1-R070",
    "want": "lq",
    "got": "dist",
    "ok": false,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": true,
    "named": false,
-   "sec": 4.34
+   "sec": 4.21
   },
   {
    "id": "X1-R071",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.55
+   "sec": 1.51
   },
   {
    "id": "X1-R072",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.71
+   "sec": 1.8
   },
   {
    "id": "X1-R073",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.58
+   "sec": 1.54
   },
   {
    "id": "X1-R074",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.43
+   "sec": 1.37
   },
   {
    "id": "X1-R075",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.87
+   "sec": 2.01
   },
   {
    "id": "X1-R076",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.34
   },
@@ -624,6 +856,9 @@
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.42
   },
@@ -632,190 +867,262 @@
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.33
+   "sec": 1.29
   },
   {
    "id": "X1-R079",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.58
+   "sec": 1.68
   },
   {
    "id": "X1-R080",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.5
+   "sec": 1.65
   },
   {
    "id": "X1-R081",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.84
+   "sec": 2.78
   },
   {
    "id": "X1-R082",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.72
+   "sec": 2.64
   },
   {
    "id": "X1-R083",
    "want": "hhi",
    "got": "lq",
    "ok": false,
+   "model_first": "lq",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 2.14
+   "sec": 2.25
   },
   {
    "id": "X1-R084",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.9
+   "sec": 2.04
   },
   {
    "id": "X1-R085",
    "want": "hhi",
-   "got": "lq",
-   "ok": false,
+   "got": "hhi",
+   "ok": true,
+   "model_first": "lq",
+   "model_first_ok": false,
+   "changed": true,
    "named": false,
-   "sec": 2.32
+   "sec": 4.32
   },
   {
    "id": "X1-R086",
    "want": "hhi",
    "got": "dist",
    "ok": false,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": true,
    "named": false,
-   "sec": 4.38
+   "sec": 4.28
   },
   {
    "id": "X1-R087",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.87
+   "sec": 2.01
   },
   {
    "id": "X1-R088",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.64
+   "sec": 2.59
   },
   {
    "id": "X1-R089",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.62
+   "sec": 1.58
   },
   {
    "id": "X1-R090",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.18
+   "sec": 2.12
   },
   {
    "id": "X1-R091",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.09
+   "sec": 1.21
   },
   {
    "id": "X1-R092",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.19
+   "sec": 1.33
   },
   {
    "id": "X1-R093",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.05
+   "sec": 2.15
   },
   {
    "id": "X1-R094",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.79
+   "sec": 1.93
   },
   {
    "id": "X1-R095",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.56
+   "sec": 1.69
   },
   {
    "id": "X1-R096",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.37
+   "sec": 1.36
   },
   {
    "id": "X1-R097",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.76
+   "sec": 1.74
   },
   {
    "id": "X1-R098",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.24
+   "sec": 2.21
   },
   {
    "id": "X1-R099",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.33
+   "sec": 1.43
   },
   {
    "id": "X1-R100",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.28
+   "sec": 1.46
   },
   {
    "id": "X1-R101",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.58
   },
@@ -824,38 +1131,53 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.01
+   "sec": 4.88
   },
   {
    "id": "X1-R103",
    "want": null,
    "got": "change",
    "ok": false,
+   "model_first": "change",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.45
+   "sec": 1.43
   },
   {
    "id": "X1-R104",
    "want": null,
-   "got": "change",
-   "ok": false,
+   "got": "general",
+   "ok": true,
+   "model_first": "change",
+   "model_first_ok": false,
+   "changed": true,
    "named": false,
-   "sec": 1.12
+   "sec": 2.73
   },
   {
    "id": "X1-R105",
    "want": null,
-   "got": "lq",
-   "ok": false,
+   "got": "general",
+   "ok": true,
+   "model_first": "lq",
+   "model_first_ok": false,
+   "changed": true,
    "named": false,
-   "sec": 1.29
+   "sec": 3.07
   },
   {
    "id": "X1-R106",
    "want": null,
    "got": "surv",
    "ok": false,
+   "model_first": "surv",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
    "sec": 1.4
   },
@@ -864,6 +1186,9 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.1
   },
@@ -872,22 +1197,31 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.05
+   "sec": 1.06
   },
   {
    "id": "X1-R109",
    "want": null,
    "got": "catalog",
    "ok": true,
+   "model_first": "catalog",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 0.99
+   "sec": 0.98
   },
   {
    "id": "X1-R110",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.1
   },
@@ -896,30 +1230,42 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.29
+   "sec": 1.28
   },
   {
    "id": "X1-R112",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.97
+   "sec": 4.45
   },
   {
    "id": "X1-R113",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.04
+   "sec": 1.03
   },
   {
    "id": "X1-R114",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.32
   },
@@ -928,6 +1274,9 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.29
   },
@@ -936,14 +1285,20 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.12
+   "sec": 1.1
   },
   {
    "id": "X1-R117",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.17
   },
@@ -952,24 +1307,33 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 0.92
+   "sec": 2.66
   },
   {
    "id": "X1-R119",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": null,
+   "model_first_ok": false,
+   "changed": true,
    "named": false,
-   "sec": 6.33
+   "sec": 6.14
   },
   {
    "id": "X1-R120",
    "want": null,
    "got": "catalog",
    "ok": true,
+   "model_first": "catalog",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.84
+   "sec": 2.79
   }
  ]
 }

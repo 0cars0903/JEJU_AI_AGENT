@@ -50,6 +50,8 @@ def build_restaurants(rest, dongs):
     ev = pd.concat([o, c]).groupby(["admin_dong", "업종구분소분류", "year", "kind"]).size().rename("count").reset_index()
     ev.columns = ["dong", "category", "year", "kind", "count"]
     ev.to_parquet(OUT / "rest_events.parquet", index=False)
+    # 업종 생존율·관측 끝 날짜 계산용 사본(recipes.REST): 실행에 쓰는 4열만, 상호·주소는 넣지 않는다(2026-11-15, data/interim은 제출본에 없음)
+    rest[["업종구분소분류", "open_date", "close_date", "admin_dong"]].to_parquet(OUT / "rest_cohort.parquet", index=False)
     # 3년 묶음 폐업률
     k, n = pd.Series(0.0, index=dongs), pd.Series(0.0, index=dongs)
     for y in close_years:

@@ -83,7 +83,9 @@ def _ask(chat, system, user, schema, max_tokens=300):
         return {}
 
 
-RAG_MODE = os.environ.get("JEJU_ANALYST_RAG", "off")  # 질문 기록 찾기: off·add(분류기 의견에 더함)·replace(분류기 의견 대신)
+# 질문 기록 찾기(RAG): replace(기본, 분류기 의견 대신)·add(분류기 의견에 더함)·off. 055 판정 120: 분류기 의견 107 → replace 111·add 111
+# (기법 기록 786문장: 조정용 132 + Gemini 058 654, 기준값은 기록 안 leave-one-out). 기록이 132문장일 때는 107로 효과 없었음(2026-11-15)
+RAG_MODE = os.environ.get("JEJU_ANALYST_RAG", "replace")
 
 
 def _kind_ko(k):

@@ -1,7 +1,8 @@
 "use client";
 
-/** 전문가 모드(설계 11-2절, 2026-11-13): 센터 담당자가 자유 문장으로 분석을 요청하면 Claude가 계획·코드를 짜고 격리 실행한다.
- * Claude 키가 있을 때만 보인다. 코드·결과표·그래프를 함께 보여 주고 코드·결과를 내려받게 한다. */
+/** 전문가 모드(설계 11-2절, 2026-11-13; 2026-11-14 구조 수정): 센터 담당자가 자유 문장으로 분석을 요청하면
+ * 로컬 분석 담당 Agent(qwen2.5:7b, app/analyst.py)가 요청을 기법 12종에 연결해 계산·해석한다(Claude 없이 동작).
+ * Claude는 담당자 계정으로 로그인한 뒤 [Claude로 분석]을 누른 요청에만 쓴다. 코드·결과표·그래프를 함께 보여 주고 내려받게 한다. */
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";

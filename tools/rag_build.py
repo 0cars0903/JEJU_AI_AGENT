@@ -24,7 +24,7 @@ import x1_embed as XE  # noqa: E402
 # test_std150b·c(일반 요청 조정용 60의 출처)는 조정용이다. 예전 실험 문항(test_gold·test_final_gold)도 보수적으로 뺀다.
 JUDGE = [ROOT / "data" / "eval" / n for n in ("route_eval_200.jsonl", "split_eval_150.jsonl", "tech_route_eval_120.jsonl")] + \
         [ROOT / "data" / "x1" / n for n in ("test_std150_gold.jsonl", "test_std150d_gold.jsonl", "test_gold.jsonl", "test_final_gold.jsonl")]
-TECH_DEV = ["tech_dev_24.jsonl", "tech_dev_052_48.jsonl", "tech_dev_general_60.jsonl"]
+TECH_DEV = ["tech_dev_24.jsonl", "tech_dev_052_48.jsonl", "tech_dev_general_60.jsonl", "tech_dev_rag_654.jsonl"]  # 654: Gemini 058 조정 문장(055 판정과 유사도 0.9 이상 6문장 뺌)
 
 
 def _jsonl(p):
