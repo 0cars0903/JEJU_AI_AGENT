@@ -6,7 +6,7 @@
 | EXPLAIN_SYSTEM + TOOL_EXPLAIN | 전문가 모드 해설(expert.ask) | Claude | submit_explanation 도구(strict) |
 | AGENT_SYSTEM + AGENT_TOOLS | 전문가 모드 도구 루프(expert.ask, 문서 26 안 A) | Claude(도구 5개) 또는 로컬 Ollama(run_python 뺀 4개) | 도구 호출 |
 """
-VERSION = "P-2026-11-14.3"  # .3: 기법 4종 추가(입지계수·생존분석·업종 다양성·변이할당). .2: 넘김 모드 자료 탐색·종류 밖 지시, 업종 목록
+VERSION = "P-2026-11-14.4"  # .4: 기법 도구 설명에 고르는 기준. .3: 기법 4종 추가(입지계수·생존분석·업종 다양성·변이할당). .2: 넘김 모드 자료 탐색·종류 밖 지시, 업종 목록
 # 이전: "P-2026-11-14.1"  # .1: 전문가 모드 도구 5개 루프(안 A)
 # 이전: "P-2026-11-13.2"  # .2: 전문가 해설에 일반 답과 같은 '~예요·~했어요'체 규칙(사용자 지적: 두 모드 말투가 다름)
 
@@ -89,8 +89,13 @@ AGENT_SYSTEM_LOCAL = """너는 제주 상권 자료 분석 도우미다. 반드�
 
 TOOL_DESCRIBE = _tool("describe_data", "쓸 수 있는 표 목록, 또는 한 표의 열 설명·앞 5행·행 수를 본다.",
                       {"table": {"type": "string", "description": "표 이름. 목록을 보려면 빈 문자열"}})
-TOOL_TECHNIQUE = _tool("run_technique", "정해진 통계 기법 코드로 계산한다(적용 조건 검사 포함). change=변화 분해, corr=상관, cluster=군집, "
-                       "decomp=시계열 분해, regress=회귀, test=두 집단 검정, dist=분포, outlier=이상치, lq=입지계수, surv=생존분석, hhi=업종 다양성, shift=변이할당",
+TOOL_TECHNIQUE = _tool("run_technique", "정해진 통계 기법 코드로 계산한다(적용 조건 검사 포함). 고르는 기준: "
+                       "corr=두 지표가 같이 움직이는 정도(관계의 세기만), regress=여러 요인이 매출을 얼마나 설명하는지(영향·설명력·식), "
+                       "cluster=동네를 비슷한 무리로 묶기, decomp=한 곳의 월별 값에서 계절 몫과 긴 흐름 떼어 내기, "
+                       "test=두 동네·두 집단의 값이 정말 다른지, dist=여러 동네 값이 어떻게 퍼져 있는지(구간·치우침), "
+                       "outlier=평소와 다르게 튀거나 떨어진 달 찾기, change=매출 변화를 결제 건수와 건당 금액(손님 수와 한 번에 쓰는 돈)으로 나누기, "
+                       "lq=한 동네에 제주 전체보다 많이 몰린 업종(비중 비교), surv=개업 뒤 몇 년 살아남는지(생존 곡선), "
+                       "hhi=업종이 고르게 섞였는지(다양성 점수), shift=매출 변화를 제주 전체 성장·업종 구성·동네 고유 효과로 나누기",
                        {"technique": {"type": "string", "enum": TECHNIQUES},
                         "dongs": {"type": "array", "items": {"type": "string"}, "description": "동네 이름(행정동). 제주 전체면 빈 배열"},
                         "target": {"type": "string", "description": "업종(예: 카페, 음식점). 없으면 빈 문자열"}})

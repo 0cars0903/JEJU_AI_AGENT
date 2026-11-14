@@ -73,13 +73,15 @@ def fake_chat(answers, seen=None):
 
 PY = lambda code: ("run_python", {"method": "추이", "plan": ["월 합계"], "code": code})  # noqa: E731
 CORR_Q = "43개 동네 방문과 매출의 상관 분석해줘"
+PLAIN_Q = "동네별로 방문이 많을수록 매출도 높은 편인지 숫자로 보여줘"  # 기법 이름이 없는 요청(로컬 모델이 기법을 고름)
 
 
 class ExpertFlowTest(unittest.TestCase):
     """도구 루프(문서 26 안 A): 도구 선택·고치기·단계 상한·시간 예산·로컬 종료·규칙 대체."""
     def setUp(self):
-        self.env = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "LLM_BACKEND", "JEJU_LOCAL_AGENT")}
+        self.env = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "LLM_BACKEND", "JEJU_LOCAL_AGENT", "JEJU_CLAUDE")}
         os.environ["ANTHROPIC_API_KEY"] = "test"
+        os.environ["JEJU_CLAUDE"] = "auto"  # 이 묶음은 Claude 도구 루프를 시험한다(기본은 요청 단위)
         os.environ.pop("LLM_BACKEND", None)
         os.environ["JEJU_LOCAL_AGENT"] = "0"
         self.budget, self.backend = expert.BUDGET, expert.backend
@@ -154,7 +156,7 @@ class ExpertFlowTest(unittest.TestCase):
     def test_local_backend_stops_after_result(self):
         expert.backend = lambda: "ollama"
         seen = []
-        r = expert.ask(CORR_Q, chat=fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""})], seen))
+        r = expert.ask(PLAIN_Q, chat=fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""})], seen))
         self.assertEqual(r["status"], "성공")
         self.assertEqual(len(seen), 1)  # 코드가 루프를 끝냄(로컬 모델은 스스로 끝내지 못함)
         self.assertNotIn("run_python", seen[0])  # 로컬에는 코드 실행 도구를 주지 않음
@@ -221,9 +223,17 @@ class ExpertFlowTest(unittest.TestCase):
     def test_tool_call_written_as_text(self):
         expert.backend = lambda: "ollama"
         txt = '도구를 부를게요 {"name": "run_technique", "arguments": {"technique": "corr", "dongs": [], "target": ""}}'
-        r = expert.ask(CORR_Q, chat=fake_chat([("text", txt)]))
+        r = expert.ask(PLAIN_Q, chat=fake_chat([("text", txt)]))
         self.assertEqual(r["status"], "성공")
         self.assertEqual((r["trace"][0]["tool"], r["trace"][0]["by"]), ("run_technique", "AI"))
+
+    def test_local_named_technique_run_by_code(self):  # 기법 이름이 있으면 로컬 경로는 코드가 바로 실행한다(모델이 '보여줘'를 자료 확인으로 읽던 결함)
+        expert.backend = lambda: "ollama"
+        seen = []
+        r = expert.ask("43개 동네 음식점 매출 분포 보여줘", chat=fake_chat([("describe_data", {"table": "card_month"})], seen))
+        self.assertEqual(r["status"], "성공")
+        self.assertEqual(r["trace"][0]["by"], "규칙(질문에 기법 이름)")
+        self.assertEqual(seen, [])  # 모델을 부르지 않음
 
     def test_escalate_nearest_analysis_is_labeled(self):
         chat = fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""}), ("text", "끝")])

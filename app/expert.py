@@ -33,8 +33,19 @@ AGENT_MODEL = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")
 _local = {"t": 0.0, "ok": False}
 
 
-def _claude_on():
+def claude_key():
+    """Claude 키가 있고 막혀 있지 않은가(켤 수 있는가)."""
     return bool(os.environ.get("ANTHROPIC_API_KEY")) and os.environ.get("LLM_BACKEND") not in ("rule", "ollama")
+
+
+def claude_auto():
+    """Claude를 자동으로 쓰는가. 기본은 '요청 단위'(JEJU_CLAUDE=request): 담당자가 [Claude로 분석]을 누른 요청에만 쓴다(2026-11-14 마스터 결정).
+    JEJU_CLAUDE=auto면 키가 있을 때 계획 선택·넘김 판정·설명 문장·Agent에 자동으로 쓴다(예전 동작)."""
+    return os.environ.get("JEJU_CLAUDE", "request") == "auto"
+
+
+def _claude_on():
+    return claude_key() and claude_auto()
 
 
 def _local_on():
@@ -211,10 +222,11 @@ TOOL_KO = {"describe_data": "자료 확인", "run_technique": "통계 기법 실
            "search_center_catalog": "센터 자료 찾기", "submit_answer": "답 제출"}
 
 
-def ask(question, chat=None, user="local", mode="expert"):
-    """전문가 모드 한 번(도구 루프). 돌려주는 값: status, method, plan, code, result, lines, by, attempts, trace, backend, error, usage, sec."""
+def ask(question, chat=None, user="local", mode="expert", use_claude=False):
+    """전문가 모드 한 번(도구 루프). use_claude: 담당자가 [Claude로 분석]을 누른 요청(키가 있을 때만).
+    돌려주는 값: status, method, plan, code, result, lines, by, attempts, trace, backend, error, usage, sec."""
     t0 = time.perf_counter()
-    name = backend()
+    name = "claude" if use_claude and claude_key() else backend()
     if name is None:
         return {"status": "꺼짐", "error": "Claude API 키나 로컬 분석 모델이 없어 전문가 모드를 쓸 수 없어요. 기법 목록이나 일반 질문을 써 주세요."}
     if not _quota(user):
@@ -283,7 +295,13 @@ def ask(question, chat=None, user="local", mode="expert"):
                       "sec": round(time.perf_counter() - t1, 2)})
         return ok, reply
 
-    while calls < MAX_STEPS:
+    if local and mode == "expert" and analysis_q:
+        # 질문에 기법 이름이 있으면 코드가 그 기법을 바로 실행한다(2026-11-14: 소형 모델이 '분포 보여줘'를 자료 확인으로 읽어 5번 헤맴).
+        # 마스터 원칙 '정해진 것은 코드, 문장 파악은 모델': 모델은 기법 이름이 없는 요청에서만 기법을 고른다
+        p_ = techniques.parse(question)
+        run_tool("run_technique", {"technique": p_["tech"], "dongs": p_["dongs"], "target": p_["target"] or ""}, "규칙(질문에 기법 이름)")
+        calls += 1
+    while calls < MAX_STEPS and not (got and local and mode == "expert" and analysis_q):
         if time.perf_counter() - t0 > BUDGET:
             trace.append({"step": len(trace) + 1, "tool": "-", "name": "시간 예산 초과", "by": "프로그램", "args": "", "ok": False,
                           "note": f"{BUDGET:.0f}초를 넘어 루프를 멈췄어요", "sec": 0})

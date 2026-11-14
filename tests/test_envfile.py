@@ -46,7 +46,7 @@ class ReportTest(unittest.TestCase):
         self.assertIn("qwen3:1.7b", full[1])
         no_embed = check_env.report({"qwen3:1.7b"}, True)
         self.assertIn("ollama pull bge-m3", no_embed[0])
-        self.assertIn("Claude", no_embed[1])
+        self.assertIn("Claude", " ".join(no_embed))  # 키가 있으면 요청 단위 Claude 안내(2026-11-14)
         self.assertIn("템플릿", check_env.report({"bge-m3"}, True, "rule")[1])
 
 

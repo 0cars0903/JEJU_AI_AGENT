@@ -882,7 +882,7 @@ test.describe("전문가 모드(설계 11-2절)", () => {
   });
 
   test("켜져 있으면 요청 → 설명·숫자·그래프·코드가 보이고, 실패하면 이유와 안내가 보인다", async ({ page }) => {
-    await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: true, daily_limit: 50 } }));
+    await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: true, available: true, backend: "ollama", daily_limit: 50 } }));
     let n = 0;
     await page.route("**/api/expert", (r) =>
       r.fulfill({
@@ -942,7 +942,7 @@ test.describe("데모 로그인(2026-11-13)", () => {
     let logged = false;
     await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: logged, id: logged ? "judge1" : null, claude: true } }));
     await page.route("**/api/expert/status", (r) =>
-      r.fulfill({ json: { enabled: logged, available: true, login_required: !logged, daily_limit: 50 } }),
+      r.fulfill({ json: { enabled: false, available: true, backend: null, claude: logged, claude_locked: !logged, login_required: !logged, daily_limit: 50 } }),
     );
     await page.route("**/api/login", async (r) => {
       const b = r.request().postDataJSON();
@@ -971,7 +971,7 @@ test.describe("데모 로그인(2026-11-13)", () => {
 
   test("사이드바(안 1): 로그인 창은 바깥 누름·Esc로 닫히고, [전문가 모드]는 전문가 모드 칸을 펼친다", async ({ page }, info) => {
     await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: false, id: null, claude: true } }));
-    await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: false, available: true, login_required: true, daily_limit: 50 } }));
+    await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: false, available: true, backend: null, claude: false, claude_locked: true, login_required: true, daily_limit: 50 } }));
     await page.goto("/");
     await expect(page.getByTestId("dong-home")).toBeVisible();
     const desktop = info.project.name === "desktop";

@@ -20,7 +20,7 @@ def backend():
     b = os.environ.get("LLM_BACKEND")
     if b:
         return b
-    if os.environ.get("ANTHROPIC_API_KEY"):
+    if os.environ.get("ANTHROPIC_API_KEY") and os.environ.get("JEJU_CLAUDE", "request") == "auto":  # 기본은 요청 단위(expert.claude_auto)
         return "claude"
     return "ollama" if _ollama_alive() else "rule"
 

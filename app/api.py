@@ -153,8 +153,8 @@ def ask(body: Ask, request: Request):
     # (가) 기법 목록(설계 11-1절): 질문에 분석 기법 이름이 있으면 정해진 코드로 계산한다. 센터 CSV를 쓰는 질문은 기존 경로로 보낸다
     import techniques
     import split
-    # 기법 + 다른 질문이 섞였고 Claude가 없으면 질문 나누기(result.respond)로 보낸다. 기법 하나로만 답하면 나머지 질문이 빠진다(2026-11-14)
-    multi_q = not body.slots and split.enabled() and not expert._claude_on() and len(split.pieces(question)) >= 2
+    # 기법 + 다른 질문이 섞였으면 질문 나누기(result.respond)로 보낸다. 기법 하나로만 답하면 나머지 질문이 빠진다(2026-11-14)
+    multi_q = not body.slots and split.enabled() and len(split.pieces(question)) >= 2
     if not body.dataset_id and ((body.slots or {}).get("topic") == "technique" or (not body.slots and techniques.detect(question) and not multi_q)):
         if (body.slots or {}).get("topic") == "technique" and not question:
             question = techniques.EXAMPLES.get(body.slots.get("method"), "")
@@ -231,6 +231,7 @@ def catalog(q: str = Query(default="", max_length=50)):
 
 class Expert(BaseModel):
     question: str = Field(..., max_length=500)
+    use_claude: bool = False  # 담당자가 [Claude로 분석]을 누른 요청
 
 
 class Login(BaseModel):
@@ -245,7 +246,7 @@ def me(request: Request):
     import expert
     uid = _user(request)
     return {"login_required": auth.required(), "logged_in": uid is not None and uid != "local", "id": uid if uid != "local" else None,
-            "claude": expert._claude_on()}
+            "claude": expert.claude_key()}
 
 
 @app.post("/api/login")
@@ -282,7 +283,10 @@ def expert_status(request: Request):
     import auth
     import expert
     uid = _user(request)
-    return {"enabled": expert.enabled() and uid is not None, "available": expert.enabled(), "backend": expert.backend(),
+    staff = uid is not None and uid != "local"  # 계정으로 로그인한 담당자
+    return {"enabled": expert.enabled() and uid is not None, "available": expert.enabled() or expert.claude_key(), "backend": expert.backend(),
+            "claude": expert.claude_key() and staff,  # [Claude로 분석] 단추를 보일지(요청 단위 켜기, 담당자만)
+            "claude_locked": expert.claude_key() and not staff,  # 키는 있으나 담당자 로그인 전
             "login_required": auth.required() and uid is None, "daily_limit": expert.DAILY, "max_steps": expert.MAX_STEPS}
 
 
@@ -291,12 +295,14 @@ def expert_ask(body: Expert, request: Request):
     """전문가 모드: 도구 루프(자료 확인·기법 실행·격리 코드 실행·센터 자료 찾기·답 제출) → 숫자 대조. 데모에서는 로그인 필요."""
     import expert
     uid = _user(request)
-    if uid is None:
+    if body.use_claude and (uid is None or uid == "local"):
+        raise HTTPException(401, "Claude 분석은 담당자 계정으로 로그인한 뒤에 쓸 수 있어요.")
+    if uid is None and not body.use_claude:
         raise HTTPException(401, "전문가 모드는 로그인한 뒤에 쓸 수 있어요.")
     q = body.question.strip()
     if not q:
         raise HTTPException(422, "요청을 입력해 주세요.")
-    return clean(expert.ask(q, user=uid))
+    return clean(expert.ask(q, user=uid, use_claude=body.use_claude))
 
 
 @app.get("/api/health")

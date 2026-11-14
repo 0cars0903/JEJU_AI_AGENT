@@ -179,11 +179,13 @@ export type ExpertResult = {
   sec?: number;
   usage?: { input_tokens?: number; output_tokens?: number };
 };
-export type ExpertStatus = { enabled: boolean; available?: boolean; backend?: "claude" | "ollama" | null; login_required?: boolean; daily_limit: number; max_steps?: number };
+/** 요청 단위 Claude(2026-11-14): claude = 담당자 로그인 상태라 [Claude로 분석]을 보임, claude_locked = 키는 있으나 로그인 전 */
+export type ExpertStatus = { enabled: boolean; available?: boolean; backend?: "claude" | "ollama" | null; claude?: boolean; claude_locked?: boolean; login_required?: boolean; daily_limit: number; max_steps?: number };
 export const getExpertStatus = () => call<ExpertStatus>("/api/expert/status");
 /** 데모 로그인(2026-11-13): 계정이 설정된 환경에서만 login_required가 true. 로그인해야 Claude 기능이 켜진다. */
 export type Me = { login_required: boolean; logged_in: boolean; id: string | null; claude: boolean };
 export const getMe = () => call<Me>("/api/me");
 export const login = (id: string, password: string) => call<{ logged_in: boolean; id: string }>("/api/login", { method: "POST", body: JSON.stringify({ id, password }) });
 export const logout = () => call<{ logged_in: boolean }>("/api/logout", { method: "POST" });
-export const askExpert = (question: string) => call<ExpertResult>("/api/expert", { method: "POST", body: JSON.stringify({ question }) });
+export const askExpert = ({ question, useClaude = false }: { question: string; useClaude?: boolean }) =>
+  call<ExpertResult>("/api/expert", { method: "POST", body: JSON.stringify({ question, use_claude: useClaude }) });

@@ -61,7 +61,7 @@ class AuthApi(unittest.TestCase):
         import api
         self.api = api
         self.env = mock.patch.dict(os.environ, {"JEJU_ACCOUNTS": f"judge1:{auth.make_hash('pw-1')}", "JEJU_SESSION_SECRET": "s3cret",
-                                                "ANTHROPIC_API_KEY": "test"})
+                                                "ANTHROPIC_API_KEY": "test", "JEJU_CLAUDE": "auto"})
         self.env.start()
         os.environ.pop("LLM_BACKEND", None)
         auth._fails.clear()
@@ -95,6 +95,38 @@ class AuthApi(unittest.TestCase):
             self.c.post("/api/login", json={"id": "judge1", "password": "pw-1"})
             self.c.post("/api/ask", json={"slots": {"topic": "stores", "space": ["노형동"]}})
         self.assertEqual(seen, [False, True])
+
+
+class ClaudeOnRequest(unittest.TestCase):
+    """요청 단위 Claude(2026-11-14 마스터 결정): 키가 있어도 자동으로 쓰지 않고, 로그인한 담당자가 [Claude로 분석]을 누른 요청에만 쓴다."""
+    def setUp(self):
+        from fastapi.testclient import TestClient
+        import api
+        self.env = mock.patch.dict(os.environ, {"JEJU_ACCOUNTS": f"staff1:{auth.make_hash('pw-1')}", "JEJU_SESSION_SECRET": "s3cret",
+                                                "ANTHROPIC_API_KEY": "test", "JEJU_CLAUDE": "request", "JEJU_LOCAL_AGENT": "0"})
+        self.env.start()
+        os.environ.pop("LLM_BACKEND", None)
+        auth._fails.clear()
+        self.c = TestClient(api.app)
+
+    def tearDown(self):
+        self.env.stop()
+
+    def test_not_automatic(self):
+        import expert
+        import llm
+        self.assertIsNone(expert.backend())  # 로컬 모델이 없으면 자동 경로는 없음(Claude를 자동으로 고르지 않음)
+        self.assertNotEqual(llm.backend(), "claude")
+
+    def test_staff_button_only_after_login(self):
+        st = self.c.get("/api/expert/status").json()
+        self.assertEqual((st["claude"], st["claude_locked"]), (False, True))
+        self.assertEqual(self.c.post("/api/expert", json={"question": "상관", "use_claude": True}).status_code, 401)
+        self.c.post("/api/login", json={"id": "staff1", "password": "pw-1"})
+        self.assertTrue(self.c.get("/api/expert/status").json()["claude"])
+        with mock.patch("expert.ask", return_value={"status": "성공"}) as ex:
+            self.c.post("/api/expert", json={"question": "상관", "use_claude": True})
+        self.assertTrue(ex.call_args.kwargs["use_claude"])
 
 
 if __name__ == "__main__":

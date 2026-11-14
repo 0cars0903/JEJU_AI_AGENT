@@ -431,10 +431,10 @@ def _escalate(question, it, t0, why):
 
 
 def _split(question, it, interpret, env, t0):
-    """질문 나누기(app/split.py). Claude가 있으면 쓰지 않는다((다) 넘김 판정이 맡음). 나누지 않으면 None."""
-    import expert
+    """질문 나누기(app/split.py). Claude 유무와 상관없이 먼저 돈다(2026-11-14 마스터 결정: 센터 PC·Vercel 같은 구조, Claude 한도 절약).
+    나누지 않은 질문만 계획 선택·(다) 넘김 판정(Claude)이 맡는다. 나누지 않으면 None."""
     import split
-    if not split.enabled() or expert._claude_on():
+    if not split.enabled():
         return None
     ag = split.answer(question, interpret, dict(env or {}, _no_split=True))
     if not ag or ag.get("status") != "성공":
@@ -487,7 +487,7 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import m1
             interpret = m1.M1().interpret
         it = interpret(question)
-        if not (env or {}).get("_no_split"):  # 질문 나누기(049): Claude가 없을 때 하위 질문이 여럿이면 코드가 나눠 조각마다 답한다
+        if not (env or {}).get("_no_split"):  # 질문 나누기(049): 하위 질문이 여럿이면 코드가 나눠 조각마다 답한다(Claude 유무 무관)
             sp = _split(question, it, interpret, env, t0)
             if sp:
                 return sp

@@ -296,23 +296,27 @@ export function ExpertMode() {
   const st = useQuery({ queryKey: ["expert-status"], queryFn: getExpertStatus, staleTime: Infinity, retry: false });
   const [q, setQ] = useState("");
   const m = useMutation({ mutationFn: askExpert });
-  if (st.data?.available && st.data.login_required)
+  const local = !!st.data?.enabled && st.data.backend === "ollama";
+  // 요청 단위 Claude(2026-11-14 마스터 결정): 기본은 로컬 모델, 담당자가 로그인한 뒤 [Claude로 분석]을 누른 요청에만 Claude
+  if (!st.data?.available || (!local && !st.data.claude && !st.data.claude_locked)) return null;
+  if (!local && !st.data.claude)
     return (
       <details id={AREA} data-testid="expert-locked" className="scroll-mt-24 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
-        <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(로그인 필요)</summary>
+        <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(담당자 로그인 필요)</summary>
         <div className="mt-2 flex max-w-sm flex-col gap-2">
-          <p className="text-(--krds-text-bolder)">AI가 분석 코드를 짜서 실행하는 기능이라 로그인한 사용자만 쓸 수 있어요.</p>
+          <p className="text-(--krds-text-bolder)">이 화면에는 로컬 분석 모델이 없어요. 센터 담당자가 로그인하면 Claude로 분석할 수 있어요.</p>
           <LoginForm />
         </div>
       </details>
     );
-  if (!st.data?.enabled) return null;
+  const send = (useClaude: boolean) => m.mutate({ question: q.trim(), useClaude });
   return (
     <details id={AREA} data-testid="expert" className="scroll-mt-24 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
       <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(AI가 도구를 골라 실행)</summary>
       <div className="mt-2 flex flex-col gap-2">
         <p className="text-(--krds-text-bolder)">
-          센터 담당자처럼 분석 기법을 정해 묻고 싶을 때 써요. AI가 자료 확인·통계 기법·코드 실행·센터 자료 찾기 가운데 필요한 도구를 골라 제출본 표로 실행하고, 고른 순서와 결과를 모두 보여 드려요.
+          센터 담당자처럼 분석 기법을 정해 묻고 싶을 때 써요. AI가 자료 확인·통계 기법 12종·센터 자료 찾기 가운데 필요한 도구를 골라 제출본 표로 실행하고, 고른 순서와 결과를 모두 보여 드려요.
+          {local && " 기본은 이 PC의 로컬 모델이 처리해요."}
         </p>
         <Textarea data-testid="expert-input" value={q} onChange={(e) => setQ(e.target.value)} rows={2} maxLength={500} placeholder={EXAMPLES[0]} />
         <div className="flex flex-wrap gap-2">
@@ -322,11 +326,28 @@ export function ExpertMode() {
             </button>
           ))}
         </div>
-        <Button data-testid="expert-submit" disabled={!q.trim() || m.isPending} onClick={() => m.mutate(q.trim())} className="self-start">
-          {m.isPending ? "분석하는 중이에요(30초~1분)" : "분석 요청"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {local && (
+            <Button data-testid="expert-submit" disabled={!q.trim() || m.isPending} onClick={() => send(false)}>
+              {m.isPending && !m.variables?.useClaude ? "분석하는 중이에요" : "분석 요청"}
+            </Button>
+          )}
+          {st.data.claude && (
+            <Button data-testid="expert-claude" variant={local ? "outline" : "default"} disabled={!q.trim() || m.isPending} onClick={() => send(true)}>
+              {m.isPending && m.variables?.useClaude ? "Claude가 분석하는 중이에요(30초~1분)" : "Claude로 분석(담당자)"}
+            </Button>
+          )}
+        </div>
+        {local && st.data.claude_locked && (
+          <details data-testid="expert-claude-login">
+            <summary className="cursor-pointer text-(--krds-text-subtle)">목록에 없는 분석(AI가 코드 작성)은 담당자 로그인 뒤 Claude로 할 수 있어요</summary>
+            <div className="mt-2 max-w-sm">
+              <LoginForm />
+            </div>
+          </details>
+        )}
         {m.isError && <p data-testid="expert-fail">요청을 보내지 못했어요. 다시 시도해 주세요.</p>}
-        {m.data && <ResultView r={m.data} q={m.variables ?? q} />}
+        {m.data && <ResultView r={m.data} q={m.variables?.question ?? q} />}
       </div>
     </details>
   );
