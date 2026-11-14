@@ -631,3 +631,55 @@ class RankOrder(unittest.TestCase):
         r = R.respond("카페가 가장 적은 동네는?", None, llm_on=False)
         self.assertIn("작은 순서", r["card"]["conclusion"])
         self.assertIn("1위 추자면", r["card"]["conclusion"])
+
+
+class Persona20261114(unittest.TestCase):
+    """현 시점 약점 A1~A7(2026-11-14 페르소나·Gemini 재평가): 도민 질문 정확성."""
+    def lines(self, r):
+        return [l for l in ((r.get("agent") or {}).get("lines") or []) if not l.startswith("   ")]
+
+    def test_a1_parallel_superlatives(self):
+        r = R.respond("방문이 가장 적은 동네와 가장 많은 동네 알려줘", None, llm_on=False)
+        ls = self.lines(r)
+        self.assertIn("작은 순서", ls[0])
+        self.assertIn("큰 순서", ls[1])
+
+    def test_a1_ellipsis_follow_up(self):
+        r = R.respond("연동 매출 늘었어? 그리고 노형동은?", None, llm_on=False)
+        ls = self.lines(r)
+        self.assertTrue(ls[0].startswith("1. 연동") and "2. 노형동" in ls[1], ls)
+
+    def test_a1_rank_then_ref(self):
+        r = R.respond("관광객 비중 1위 동네 알려주고 거기 카페 폐업은", None, llm_on=False)
+        ls = self.lines(r)
+        self.assertEqual(len(ls), 2)
+        self.assertIn("순위", ls[0])
+
+    def test_a2_extreme_month_and_reason(self):
+        r = R.respond("한림읍 음식점 매출이 가장 적은 달과 이유", None, llm_on=False)
+        self.assertIn("가장 적은 달", r["card"]["conclusion"])
+        self.assertTrue(any("원인은 자료만으로" in n for n in r["understood"]["notes"]))
+
+    def test_a3_compare_has_both_dongs(self):
+        r = R.respond("노형동 카페 생존율 연동이랑 비교해줘", None, llm_on=False)
+        self.assertIn("노형동", r["card"]["conclusion"])
+        self.assertIn("연동", r["card"]["conclusion"])
+
+    def test_a4_rain_rank(self):
+        r = R.respond("비 오는 날 매출이 가장 많이 줄어드는 동네는?", None, llm_on=False)
+        self.assertIn("1위", r["card"]["conclusion"])
+        self.assertTrue(any("방문" in x for x in r["card"]["limits"]))
+
+    def test_a5_city_notice(self):
+        r = R.respond("제주시 음식점 매출 추이 알려줘", None, llm_on=False)
+        self.assertIn("시 단위", r["choose"]["message"])
+
+    def test_a6_stop_notice(self):
+        r = R.respond("연동 버스 정류소 중 승객이 제일 많은 곳", None, llm_on=False)
+        self.assertTrue(any("정류소별 자료" in n for n in r["understood"]["notes"]))
+
+    def test_a7_matjip_and_near_suggestions(self):
+        r = R.respond("서귀포 맛집 추천해줘", None, llm_on=False)
+        self.assertEqual(r["status"], "범위밖")
+        self.assertIn("맛·후기", r["card"]["conclusion"])
+        self.assertTrue(all("노형동" not in x["text"] for x in r["suggestions"]))

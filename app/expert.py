@@ -191,7 +191,7 @@ def _topic(question, args):
     if errs:
         return False, {"error": "칸이 맞지 않아요: " + "; ".join(e.get("detail", "") for e in errs) + (f" (동네 이름이 아님: {dropped})" if dropped else "")}, None
     it = {"tuple": t, "card": qparse.card(t), "path": "Agent 지정", "confidence": None, "sec": 0.0}
-    out = result.respond(question, None, llm_on=False, interpret=lambda q: it)
+    out = result.respond(question, {"_no_split": True}, llm_on=False, interpret=lambda q: it)  # 지정한 해석으로만 답한다(질문 나누기 끔)
     card = out.get("card") or {}
     if out.get("status") in ("범위밖", "선택필요") or not card.get("evidence"):
         return False, {"status": out.get("status"), "error": card.get("conclusion") or (out.get("choose") or {}).get("message") or "답을 만들지 못했어요"}, out

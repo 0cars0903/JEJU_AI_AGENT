@@ -361,6 +361,106 @@ def _blocked(question, t, message, alts):
             "card": {"conclusion": message, "evidence": [], "intervals": [], "limits": [], "next_questions": [x["text"] for x in sug]}, "suggestions": sug}
 
 
+MONTH_EXT = re.compile(r"(가장|제일|최고|최저)\s*(많|적|높|낮|잘|안\s*되|붐비|한산)\S*\s*(달|월)|(몇\s*월|어느\s*달|무슨\s*달)\S*\s*(가장|제일)?\s*(많|적|높|낮|잘|안)")
+REASON_Q = re.compile(r"이유|왜|원인|때문")
+REASON_NOTE = "원인은 자료만으로 단정할 수 없어요. 결제 건수와 건당 금액의 변화(변화 분해), 비 온 날의 차이를 함께 보면 짐작하는 데 도움이 돼요."
+
+
+def _plain_answer(question, t, concl, ev, limits, tag, src, as_of, t0, path, notes=()):
+    """코드가 직접 계산한 짧은 답(센터 버스·가장 많은/적은 달)의 공통 모양."""
+    return {"question": question, "status": "성공", "tuple": t, "interpret": {"path": path, "card": None},
+            "understood": {"text": f"이렇게 이해했어요: {', '.join(t.get('space') or []) or '제주'} {tag}", "by": path, "assumed": False, "slots": {}, "notes": list(notes), "check": []},
+            "card": {"conclusion": concl, "evidence": [{"text": e, "tag": tag, "layer": "L1", "dataset": src, "as_of": as_of, "kind": None} for e in ev], "intervals": [], "limits": list(limits)},
+            "answer": {"conclusion": {"text": concl, "layer": "L1", "tag": tag},
+                       "blocks": [{"id": "facts", "title": "계산한 값", "lines": [{"layer": "L1", "block": "facts", "tag": tag, "text": e, "source": src, "as_of": as_of, "kind": None} for e in ev]},
+                                  {"id": "analysis", "title": "읽는 법과 주의", "lines": [{"layer": "L5", "block": "analysis", "tag": "주의", "text": x, "source": None, "as_of": None, "kind": None} for x in limits]}],
+                       "views": [], "default_views": 0, "value_question": False, "footer": [{"source": src, "as_of": as_of, "next": "매달"}], "freshness": [], "requests": [], "methods": []},
+            "suggestions": [], "downloads": [], "sec": round(time.perf_counter() - t0, 3)}
+
+
+RAIN_RANK = re.compile(r"(비|우천|눈|장마)\S*\s.*(가장|제일|어디|어느\s*동네|순위|많이\s*줄|덜\s*줄)")
+
+
+def _rain_rank(question, t, t0):
+    """'비 오는 날 가장 많이 줄어드는 동네'(평가 2026-11-14 A4): 동네별 비 효과 검정 결과(방문 기준)로 43곳 순위."""
+    if t.get("space") or not RAIN_RANK.search(question or ""):
+        return None
+    import deep
+    import v3
+    f = next((p for p in (v3.ROOT / "data" / "tables" / "rain_test.json", v3.ROOT / "data" / "interim" / "gates" / "rain_test.json") if p.exists()), None)
+    if not f:
+        return None
+    rows = json.loads(f.read_text(encoding="utf-8"))["per_dong"]
+    less = bool(re.search(r"덜|늘|잘\s*되|영향\s*(이\s*)?(적|작)", question or ""))
+    rows = sorted(rows, key=lambda r: r["effect_pct"], reverse=less)
+    word = "덜 줄어드는" if less else "많이 줄어드는"
+    top = ", ".join(f"{i}위 {r['dong']}({r['effect_pct']:+.1f}%)" for i, r in enumerate(rows[:3], 1))
+    concl = f"비 오는 날 하루 방문이 가장 {word} 동네는 {top}{layers._cop(top)}."
+    ev = [f"{r['dong']}: 비 오는 날 방문 {r['effect_pct']:+.1f}%(95% 구간 {r['lo95']:+.1f}~{r['hi95']:+.1f}%){'' if r['diff_sig'] else ', 0과 구분되지 않음'}" for r in rows[:8]]
+    n_sig = sum(bool(r["diff_sig"]) for r in rows)
+    limits = [f"동네별 비 효과는 하루 방문(유동인구 지수) 기준이에요. 카드 매출의 동네별 비 효과는 계산하지 않아요.",
+              f"43곳 중 {n_sig}곳만 0과 구분되는 차이가 있었어요. 구간이 겹치는 동네끼리는 순위 차이를 단정할 수 없어요."]
+    return _plain_answer(question, t, concl, ev, limits, "비 오는 날 방문 변화 순위", "유동인구(제주데이터허브 583)·기상(579·ASOS) 가설 검정", "2023-11~2026-08", t0, "비 효과 순위(코드)")
+
+
+def _extreme_month(question, t, t0):
+    """'가장 많은·적은 달'(평가 2026-11-14 A2): 한 동네의 월별 카드 매출 또는 방문에서 최댓값·최솟값 달과, 같은 달끼리 평균한 계절 순위."""
+    if not MONTH_EXT.search(question or "") or len(t.get("space") or []) > 1:
+        return None
+    import techniques as TQ
+    dong = (t.get("space") or [None])[0]
+    metric = "visit" if re.search(r"방문|유동|사람|인구", question or "") else "sales"
+    s = TQ.monthly(metric, dong, t.get("target")).dropna()
+    s = s[s > 0]
+    if len(s) < 12:
+        return None
+    low = bool(re.search(r"적|낮|안\s*되|안\s*팔|한산|최저", question or ""))
+    last = s.iloc[-24:]
+    pick = last.idxmin() if low else last.idxmax()
+    cal = s.groupby(s.index.str[5:7]).mean()
+    cm = cal.idxmin() if low else cal.idxmax()
+    name = TQ.METRIC[metric][0]
+    who = f"{dong or '제주 전체'} {(t.get('target') + ' ') if t.get('target') and metric == 'sales' else ''}{name}"
+    word = "적은" if low else "많은"
+    concl = f"{layers._josa(who, '이', '가')} 가장 {word} 달은 최근 {len(last)}개월 중 {pick}({TQ.fmt(last[pick], metric)})이고, 해마다 같은 달끼리 평균하면 {int(cm)}월이 가장 {word}요."
+    concl = concl.replace("많은요", "많아요").replace("적은요", "적어요")
+    ev = [f"{m}: {TQ.fmt(v, metric)}" for m, v in (last.nsmallest(3) if low else last.nlargest(3)).items()] + \
+         [f"같은 달끼리 평균({s.index[0]}~{s.index[-1]}): " + ", ".join(f"{int(k)}월 {TQ.fmt(v, metric)}" for k, v in (cal.nsmallest(3) if low else cal.nlargest(3)).items())]
+    limits = (["카드 매출은 업종 대분류 단위예요."] if metric == "sales" and t.get("target") else []) + ([REASON_NOTE] if REASON_Q.search(question or "") else [])
+    src = TQ.SRC[metric][0]
+    return _plain_answer(question, t, concl, ev, limits, f"{name} 월별 비교", src, s.index[-1], t0, "가장 많은·적은 달(코드)",
+                         notes=[REASON_NOTE] if REASON_Q.search(question or "") else [])
+
+
+MATJIP_Q = re.compile(r"맛집|맛있|맛\s*좋|후기|리뷰|평점|추천\s*(해|좀)?\s*줘")
+MATJIP_MSG = "맛·후기·평점 자료가 없어 맛집을 고르거나 가게를 추천할 수 없어요. 대신 그 지역 음식점 수, 카드 매출, 생존율을 볼 수 있어요."
+CITY_Q = re.compile(r"제주시|서귀포시|서귀포\s*(쪽|지역|시내)|제주\s*시내")
+CITY_MSG = "제주시·서귀포시처럼 시 단위로 합친 값은 계산하지 않아요(자료가 동네 단위예요). 동네를 하나 고르거나, '제주 전체'로 물어 주세요."
+STOP_Q = re.compile(r"정류소|정류장")
+STOP_NOTE = "정류소별 자료는 제출본에 없어 동네 전체 값으로 답했어요. 센터 PC에서 '버스 정류소별 이용 현황'(3-04)을 넣으면 정류소·시간대별로 볼 수 있어요."
+
+
+def _near_suggestions(question, t):
+    """범위 밖 답의 추천 질문(평가 2026-11-14 A7): 질문에서 찾은 동네(또는 지역 이름의 후보 동네)로 만든다. 없으면 대표 질문."""
+    dongs = list(t.get("space") or [])
+    if not dongs:
+        found, amb = qparse.find_places(question or "")
+        dongs = found or [d for c in amb.values() for d in c][:2]
+    if not dongs and re.search(r"서귀포", question or ""):  # 시 이름만 있으면 그 시의 중심 동네로(서귀포시 17곳 중)
+        dongs = [d for d in ("동홍동", "중앙동") if d in Q.DONGS]
+    elif not dongs and re.search(r"제주시", question or ""):
+        dongs = [d for d in ("연동", "이도2동") if d in Q.DONGS]
+    if not dongs:
+        return [{"text": x["text"], "slots": x["slots"]} for x in G.representative()[:3]]
+    tgt = t.get("target") if t.get("target") in G.TOPIC["stores"]["options"].get("target", []) else None
+    out = []
+    for d in dongs[:2]:  # 동네 하나면 진단·가게 수·방문, 둘이면 앞의 셋
+        for sl in ({"topic": "diagnose", "space": [d]}, {"topic": "stores", "space": [d], **({"target": tgt} if tgt else {"target": "음식점"})}, {"topic": "visit", "space": [d]}):
+            if not G.missing(sl):
+                out.append({"text": G.sentence(sl), "slots": sl})
+    return out[:3] or [{"text": x["text"], "slots": x["slots"]} for x in G.representative()[:3]]
+
+
 def _center_bus(question, t, env, t0):
     """센터 3-04 버스 CSV를 넣은 상태의 버스 질문(2026-11-14, 평가 감점 '센터 자료 직접 활용'): 넣은 자료로 동네 하루 평균 이용과
     순위, 시간대가 있으면 붐비는 시간대를 계산한다. 버스 질문이 아니면 None."""
@@ -562,9 +662,14 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             why = OUT_NO_CARD if qparse.CARD_METRICS & set(t["metric"]) else OUT_NO_OPEN
             return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), (OUT_ONLY_COUNT + why).format(w=od, we=_josa(od)),
                                  [{"topic": "stores", "space": d, "detail": od}] if d else []))
-        cb = _center_bus(question, t, env, t0)
+        if MATJIP_Q.search(question or ""):  # 맛집·추천은 자료가 없어 막고, 이유와 주변 동네 질문을 보여 준다(평가 2026-11-14 A7)
+            return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), MATJIP_MSG, [x["slots"] for x in _near_suggestions(question, t)]))
+        cb = _center_bus(question, t, env, t0) or _rain_rank(question, t, t0) or _extreme_month(question, t, t0)
         if cb:
             return dict(cb, interpret=meta)
+        if CITY_Q.search(question or "") and not t.get("space") and (t.get("expect") == "되묻기" or t.get("type") in qparse.NEED_DONG):
+            ps = G.to_slots(t) if t.get("expect") != "범위밖" else {}  # 시 단위는 합치지 않는다는 것을 알리고 동네를 고르게 한다(평가 2026-11-14 A5)
+            return stop(_choose(question, t, ps if ps.get("topic") else {"topic": "diagnose"}, CITY_MSG, "space"))
         if "외국인매출" in t["metric"] or (FOREIGN_Q.search(question or "") and SPEND_Q.search(question or "")):
             # 외국인 매출은 공개 자료에 제주 전체(업종·출신지역)만 있다. 전체 매출 순위로 바꿔 답하지 않고 있는 값과 받을 곳을 알린다(문서 20 A9)
             t = dict(Q.empty(), type="T5" if t["space"] else "T3", metric=["외국인매출"], space=t["space"][:1],
@@ -640,9 +745,10 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         ex["sec"] = round(time.perf_counter() - t0, 3)
         return ex
     if rv["status"] == "범위밖" or rv.get("run") is None:  # 범위 밖은 답하지 않는다(차단)
-        out["card"] = {"conclusion": (it.get("card") or {}).get("text") or "지금 자료로는 답할 수 없는 질문이에요.", "evidence": [], "intervals": [], "limits": [],
-                       "next_questions": [x["text"] for x in G.representative()[:3]]}
-        out["suggestions"] = [{"text": x["text"], "slots": x["slots"]} for x in G.representative()[:3]]
+        sug = _near_suggestions(question, t)
+        concl = MATJIP_MSG if MATJIP_Q.search(question or "") else (it.get("card") or {}).get("text") or "지금 자료로는 답할 수 없는 질문이에요."
+        out["card"] = {"conclusion": concl, "evidence": [], "intervals": [], "limits": [], "next_questions": [x["text"] for x in sug]}
+        out["suggestions"] = sug
     else:
         if any("이용자 불러옴" in str(v.get("dataset")) for v in rv["run"]["store"].values() if isinstance(v, dict)):
             notes = [x for x in notes if x != FOREIGN_NOTE]  # 넣은 센터 파일로 동네 값을 답했으면 '제주 전체로 답해요' 안내를 뺀다
@@ -650,6 +756,10 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import plan_agent
             if plan_agent.multi(question):  # 여러 단계 표지가 있는데 나누지 못하고 하나로 답한 경우 알린다(둘째 조각이 조용히 빠지던 문제, 페르소나 평가 2026-11-14)
                 notes = notes + [MULTI_NOTE]
+        if question and REASON_Q.search(question):  # '이유·왜'는 자료로 단정할 수 없음을 알린다(평가 2026-11-14 A2)
+            notes = notes + [REASON_NOTE]
+        if question and STOP_Q.search(question) and not (env or {}).get("center_bus"):  # 정류소를 물었는데 동네 값으로 답한 경우(A6)
+            notes = notes + [STOP_NOTE]
         out["understood"] = {"text": (it.get("card") or {}).get("text"), "by": it.get("path"), "assumed": assumed or bool(it.get("needs_confirm")),
                              "slots": slots or ({"space": t["space"]} if "외국인매출" in t["metric"] else G.to_slots(t)),
                              "notes": list(dict.fromkeys(notes + (qparse.notes(typed, t) if typed else []))),

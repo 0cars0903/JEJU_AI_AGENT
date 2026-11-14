@@ -25,7 +25,14 @@ CUT = re.compile(PA.MULTI.pattern + r"|(?:[한은던]\s*(?:후|뒤|다음)(?:에
 # 자르지 않는 경우: 시점의 '다음'(다음 달), 바람·진행의 '-고 싶다/있다', 명사를 잇는 '및', 범위의 '~부터 ~까지'
 TIME_AFTER = re.compile(r"^\s*(달|주말|주|분기|해|년|날|번|시즌|개월)(?![가-힣])|^\s*(달|주말|주|분기|해|년|날)(에|의|도|쯤|부터|까지)")
 WISH_AFTER = re.compile(r"^\s*(싶|있)")
-SHORT = 10  # 이보다 짧은 조각(예: '분석해줘', '그 다음')은 따로 묻는 것이 아니라 앞 조각에 붙인다
+SHORT = 10  # 이보다 짧은 조각(예: '분석해줘', '그 다음')은 따로 묻는 것이 아니라 앞 조각에 붙인다. 단 내용어가 있으면 붙이지 않는다
+CONTENT = re.compile(r"매출|폐업|개업|생존|방문|유동|점포|가게|매장|버스|손님|관광객|비중|순위|추이|흐름|인구|거기|그곳|그 동네|해당")
+REF_POINT = re.compile(r"거기|그곳|이곳|(그|해당|이)\s*(동네|곳|지역)")  # 앞 결과를 가리키는 말만(순위 단서 제외)
+RANK_CUE = re.compile(r"(1위|가장|제일|최고|최대|최소|꼴찌)\s*\S*\s*(동네|곳|지역)")
+# 병렬 최상급: '방문이 가장 적은 동네와 가장 많은 동네 알려줘' → 둘로(평가 2026-11-14 A1)
+PARALLEL = re.compile(r"((?:가장|제일)\s*\S+\s*(?:동네|곳))\s*(?:와|과|랑|하고|이랑)\s*((?:가장|제일)\s*\S+\s*(?:동네|곳))")
+# 생략형 후속: '그리고 노형동은?' → 앞 질문에서 동네만 바꿈
+ELLIPSIS = re.compile(r"^(?:그리고|그럼|또|그러면)?\s*(\S+?)(?:은|는|도)\s*(?:어때|어때요|요)?\s*[?？]?$")
 
 
 def enabled():
@@ -49,8 +56,16 @@ def _cut(s):
     return None
 
 
+def _content(x):
+    return bool(CONTENT.search(x) or qparse.find_target(x) or qparse.find_places(x)[0])
+
+
 def pieces(q):
-    """코드 규칙으로 자른 조각(문장 끝 → 자를 자리)."""
+    """코드 규칙으로 자른 조각(병렬 최상급 → 문장 끝 → 자를 자리 → 생략형 후속)."""
+    m = PARALLEL.search(q or "")
+    if m:  # 앞말(지표)과 뒷말(동사)을 두 조각이 함께 쓴다
+        head, tail = q[:m.start()], q[m.end():]
+        return [f"{head}{m.group(1)}{tail}".strip(), f"{head}{m.group(2)}{tail}".strip()]
     out = []
     for s in [x.strip() for x in SENT.split(q or "") if x and x.strip()]:
         while True:
@@ -60,13 +75,21 @@ def pieces(q):
             out.append(s[:i].strip(" ,"))
             s = s[i:].strip(" ,")
         out.append(s)
+    out = [x for x in out if len(x) >= 2]
     merged = []
     for x in out:
-        if merged and len(x.replace(" ", "")) < SHORT:
+        e = ELLIPSIS.match(x)
+        if merged and e:
+            dongs, _ = qparse.find_places(e.group(1))
+            prev_dongs, _ = qparse.find_places(merged[-1])
+            if dongs and prev_dongs:  # 앞 질문을 그대로 두고 동네만 바꾼다
+                merged.append(merged[-1].replace(prev_dongs[0], dongs[0], 1))
+                continue
+        if merged and len(x.replace(" ", "")) < SHORT and not _content(x):
             merged[-1] = f"{merged[-1]} {x}"
         else:
             merged.append(x)
-    if len(merged) >= 2 and len(merged[0].replace(" ", "")) < SHORT:  # 첫 조각이 짧으면 다음 조각에 붙인다(조각 2개일 때 IndexError 수정, 페르소나 평가 2026-11-14)
+    if len(merged) >= 2 and len(merged[0].replace(" ", "")) < SHORT and not _content(merged[0]):  # 첫 조각이 짧으면 다음 조각에 붙인다(IndexError 수정, 2026-11-14)
         first = merged.pop(0)
         merged[0] = f"{first} {merged[0]}"
     return merged if len(merged) >= 2 else [q]
@@ -81,7 +104,8 @@ def plan(q, interpret):
         part = {"text": p, "type": None, "expect": None, "dongs": list(dongs), "target": tgt, "ref": None, "inherited": []}
         prev = parts[-1] if parts else None
         if prev and not dongs:
-            if prev["type"] in DONG_LISTS and not prev["dongs"] or REF.search(p) and prev["type"] in DONG_LISTS:
+            own_rank = RANK_CUE.search(p) and not REF_POINT.search(p)  # 자기 순위 단서가 있는 조각(병렬 최상급의 둘째 등)은 앞 결과를 이어받지 않는다
+            if not own_rank and ((prev["type"] in DONG_LISTS and not prev["dongs"]) or (REF_POINT.search(p) and not prev["dongs"])):
                 part["ref"] = i - 1  # 앞 조각이 낸 동네를 쓴다(값은 실행할 때 코드가 넣는다)
             elif prev["dongs"]:
                 part["dongs"], part["inherited"] = list(prev["dongs"]), part["inherited"] + ["동네"]
@@ -90,6 +114,8 @@ def plan(q, interpret):
         # 종류는 물려받은 칸을 붙인 문장으로 읽는다. 앞 결과를 쓰는 조각은 동네 자리에 대표 동네를 넣어 읽는다(종류만 보려는 것)
         t = interpret(_text_for(part, "노형동" if part["ref"] is not None else None))["tuple"]
         part["type"], part["expect"] = t.get("type"), t.get("expect")
+        if not dongs and part["ref"] is None and RANK_CUE.search(p) and part["type"] != "T3":  # '1위·가장 ~ 동네'는 순위 질문이다
+            part["type"], part["force"] = "T3", True
         if part["type"] == "T2" and len(part["dongs"]) == 1 and prev and prev["dongs"] and prev["dongs"][0] not in part["dongs"]:
             part["dongs"], part["inherited"] = [prev["dongs"][0]] + part["dongs"], part["inherited"] + ["비교 동네"]
         parts.append(part)
@@ -176,7 +202,12 @@ def answer(question, interpret, env=None):
             tool = "run_technique"
         else:
             env2 = dict(env or {}, agent_ok=False, _no_split=True)
-            out = result.respond(text, env2, llm_on=False, interpret=interpret)
+            interp = interpret
+            if part.get("force"):  # 순위 단서로 종류를 바로잡은 조각: 실행할 때도 순위(T3)로 읽는다
+                def interp(q, _f=interpret):
+                    it = _f(q)
+                    return dict(it, tuple=dict(it["tuple"], type="T3", expect="답함"), card=qparse.card(dict(it["tuple"], type="T3", expect="답함")))
+            out = result.respond(text, env2, llm_on=False, interpret=interp)
             pre = (out.get("choose") or {}).get("preset") or {}
             if out.get("status") == "선택필요" and pre.get("topic") and not G.missing(pre):
                 # 혼자 묻는 질문이면 고르게 하지만, 나눈 조각에서는 고를 화면이 없다. 읽은 뜻대로 계산하고 확실하지 않다고 밝힌다

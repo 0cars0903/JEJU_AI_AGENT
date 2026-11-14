@@ -177,6 +177,7 @@ def main():
            "n_abs_ge10": int((r["effect_pct"].abs() >= 10).sum())}
     (IN / "gates").mkdir(exist_ok=True)
     (IN / "gates" / "rain_test.json").write_text(json.dumps(out, ensure_ascii=False, indent=1, default=float), encoding="utf-8")
+    (IN.parent / "tables" / "rain_test.json").write_text(json.dumps(out, ensure_ascii=False, indent=1, default=float), encoding="utf-8")  # 제출본 사본
     print(json.dumps({k: out[k] for k in ["info", "class_counts", "heterogeneity", "interaction", "median_effect_pct", "n_diff_sig", "n_equiv_sig", "n_abs_ge10"]}, ensure_ascii=False, indent=1))
     print(r.sort_values("effect_pct")[["effect_pct", "lo95", "hi95", "p_zero", "p_tost", "class", "r1_pct", "r2_pct", "r3_pct"]].round(2).to_string())
 

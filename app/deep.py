@@ -173,7 +173,8 @@ def spread(values):
 
 def rain_rank(dong):
     """비 효과(R3, 08 문서 검정 결과)의 43곳 중 순위(감소가 큰 순)와 판정 등급."""
-    f = v3.ROOT / "data" / "interim" / "gates" / "rain_test.json"
+    f = next((p for p in (v3.ROOT / "data" / "tables" / "rain_test.json", v3.ROOT / "data" / "interim" / "gates" / "rain_test.json") if p.exists()),
+             v3.ROOT / "data" / "tables" / "rain_test.json")  # 제출본 사본을 먼저(data/interim은 ZIP에 없음)
     if not f.exists():
         return None
     rows = json.loads(f.read_text(encoding="utf-8"))["per_dong"]

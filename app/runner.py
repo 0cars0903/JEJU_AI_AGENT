@@ -339,7 +339,8 @@ def s2_describe(task, store, env):
 def s3_recipe(task, store, env):
     r = task.get("recipe")
     if r == "R3":  # 조건 효과: 08 문서의 동네별 비 효과(가설 검정 결과)
-        f = Q.ROOT / "data" / "interim" / "gates" / "rain_test.json"
+        f = next((p for p in (Q.ROOT / "data" / "tables" / "rain_test.json", Q.ROOT / "data" / "interim" / "gates" / "rain_test.json") if p.exists()),
+                 Q.ROOT / "data" / "tables" / "rain_test.json")  # 제출본 사본을 먼저(data/interim은 ZIP에 없음, 2026-11-14 발견)
         if not f.exists():
             raise TaskError("실행", "R3 결과표 없음")
         rt = json.loads(f.read_text(encoding="utf-8"))["per_dong"]

@@ -303,12 +303,15 @@ def _table_lines(o, t, metric, v, note):
             o.line("L1", f"{r.dong} {word}{_josa(label)} {v_}{_cop(v_)}.", src, asof)
         if tab["dong"].nunique() == 1 and metric == "점포수":
             _median_compare(o, metric, tab["dong"].iloc[0], t.get("target"), note, unit, float(tab["value"].iloc[0]), word=word, det=det)
-        if 2 <= tab["dong"].nunique() <= 6 and metric == "점포수":  # 동네 비교의 결론은 그 업종 가게 수 비교부터(문서 20 A4)
+        if 2 <= tab["dong"].nunique() <= 6 and (metric == "점포수" or t.get("type") == "T2"):  # 동네 비교의 결론은 동네끼리 비교(문서 20 A4, 2026-11-14 평가 A3: 모든 지표로 넓힘)
             g = tab.sort_values("value", ascending=False)
             vals = ", ".join(f"{d} {o.num(x, unit)}" for d, x in zip(g["dong"], g["value"]))
             same = float(g["value"].iloc[0]) == float(g["value"].iloc[-1])
-            body = "동네마다 같아요" if same else f"{_josa(g['dong'].iloc[0], '이', '가')} {', '.join(g['dong'].iloc[1:])}보다 많아요"
+            more = "높아요" if unit == "%" else "많아요"
+            body = "동네마다 같아요" if same else f"{_josa(g['dong'].iloc[0], '이', '가')} {', '.join(g['dong'].iloc[1:])}보다 {more}"
             o.line("L2", f"{word}{label}: {body}({vals}).", src, asof, kind="compare")
+            if metric in ("5년생존율", "조건부생존", "폐업률") and t.get("target") and t.get("target") != "음식점":
+                o.line("L5", f"{t['target']}만의 동네별 값은 자료에 없어 음식점 전체 값으로 비교했어요. {t['target']}의 제주 전체 값은 아래에 있어요.", None, None)
         if tab["dong"].nunique() > 6:
             _rank_head(o, t, word, label, cur, tab["dong"].nunique(), unit)
             top = cur.iloc[0]
