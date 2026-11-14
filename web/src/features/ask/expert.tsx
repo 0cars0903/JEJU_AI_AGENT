@@ -346,6 +346,11 @@ export function ExpertMode() {
             </div>
           </details>
         )}
+        {local && st.data.claude_setup && (
+          <p data-testid="expert-claude-setup" className="text-(--krds-text-subtle)">
+            목록에 없는 분석(AI가 코드 작성)은 담당자 계정(JEJU_ACCOUNTS)을 설정하고 로그인하면 Claude로 할 수 있어요.
+          </p>
+        )}
         {m.isError && <p data-testid="expert-fail">요청을 보내지 못했어요. 다시 시도해 주세요.</p>}
         {m.data && <ResultView r={m.data} q={m.variables?.question ?? q} />}
       </div>

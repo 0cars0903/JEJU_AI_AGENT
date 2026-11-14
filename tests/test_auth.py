@@ -128,6 +128,12 @@ class ClaudeOnRequest(unittest.TestCase):
             self.c.post("/api/expert", json={"question": "상관", "use_claude": True})
         self.assertTrue(ex.call_args.kwargs["use_claude"])
 
+    def test_no_accounts_shows_setup_not_login(self):  # Gemini 053: 계정이 없으면 로그인 API가 404라 로그인 칸을 띄우면 교착
+        with mock.patch.dict(os.environ, {"JEJU_ACCOUNTS": ""}):
+            os.environ.pop("VERCEL", None)
+            st = self.c.get("/api/expert/status").json()
+        self.assertEqual((st["claude"], st["claude_locked"], st["claude_setup"]), (False, False, True))
+
 
 if __name__ == "__main__":
     unittest.main()

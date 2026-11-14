@@ -286,7 +286,8 @@ def expert_status(request: Request):
     staff = uid is not None and uid != "local"  # 계정으로 로그인한 담당자
     return {"enabled": expert.enabled() and uid is not None, "available": expert.enabled() or expert.claude_key(), "backend": expert.backend(),
             "claude": expert.claude_key() and staff,  # [Claude로 분석] 단추를 보일지(요청 단위 켜기, 담당자만)
-            "claude_locked": expert.claude_key() and not staff,  # 키는 있으나 담당자 로그인 전
+            "claude_locked": expert.claude_key() and not staff and auth.required(),  # 키와 계정이 있으나 담당자 로그인 전
+            "claude_setup": expert.claude_key() and not auth.required(),  # 키는 있으나 담당자 계정(JEJU_ACCOUNTS)이 없음: 로그인 칸 대신 설정 안내(Gemini 053 교착 지적)
             "login_required": auth.required() and uid is None, "daily_limit": expert.DAILY, "max_steps": expert.MAX_STEPS}
 
 
