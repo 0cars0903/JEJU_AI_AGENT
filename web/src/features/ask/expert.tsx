@@ -183,7 +183,7 @@ export function ResultView({ r, q }: { r: ExpertResult; q: string }) {
         PDF로 저장(인쇄)
       </Button>
       <p className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
-        기법: {r.method} · {r.code ? "AI가 작성한 코드 · 실행 결과" : "정해진 기법 코드 · 실행 결과"} · 설명: {r.by === "AI" ? "AI(숫자는 실행 결과와 대조함)" : r.by} · {r.sec}초
+        기법: {r.method} · {r.code ? "AI가 작성한 코드 · 실행 결과" : r.backend === "code" ? "조각마다 일반 경로 계산" : "정해진 기법 코드 · 실행 결과"} · 설명: {r.by === "AI" ? "AI(숫자는 실행 결과와 대조함)" : r.by} · {r.sec}초
       </p>
       <AgentTrace r={r} />
       <ul className="flex list-disc flex-col gap-1 pl-5" data-testid="expert-lines">
@@ -268,11 +268,11 @@ export function ResultView({ r, q }: { r: ExpertResult; q: string }) {
 /** Agent 처리 기록(문서 26 안 A·D): AI가 고른 도구를 순서대로 보인다. */
 function AgentTrace({ r }: { r: ExpertResult }) {
   if (!r.trace?.length) return null;
-  const who = r.backend === "ollama" ? "로컬 모델(qwen2.5:7b)" : "Claude";
+  const who = r.backend === "ollama" ? "로컬 모델(qwen2.5:7b)" : r.backend === "code" ? "프로그램" : "Claude";
   return (
     <div data-testid="expert-trace" className="rounded-(--radius) border border-(--krds-border-gray-light) p-2">
       <p className="font-semibold">
-        Agent 처리 기록 <span className="font-normal text-(--krds-text-subtle)">· {who}가 도구를 골라 실행했어요</span>
+        Agent 처리 기록 <span className="font-normal text-(--krds-text-subtle)">· {r.backend === "code" ? "질문을 나눠 조각마다 일반 경로로 답했어요" : `${who}가 도구를 골라 실행했어요`}</span>
       </p>
       <ol className="mt-1 flex flex-col gap-1 text-[length:var(--krds-fs-body-small)]">
         {r.trace.map((t) => (

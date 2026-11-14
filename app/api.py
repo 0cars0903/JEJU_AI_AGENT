@@ -152,7 +152,10 @@ def ask(body: Ask, request: Request):
         env["center_card"] = body.dataset_id
     # (가) 기법 목록(설계 11-1절): 질문에 분석 기법 이름이 있으면 정해진 코드로 계산한다. 센터 CSV를 쓰는 질문은 기존 경로로 보낸다
     import techniques
-    if not body.dataset_id and ((body.slots or {}).get("topic") == "technique" or (not body.slots and techniques.detect(question))):
+    import split
+    # 기법 + 다른 질문이 섞였고 Claude가 없으면 질문 나누기(result.respond)로 보낸다. 기법 하나로만 답하면 나머지 질문이 빠진다(2026-11-14)
+    multi_q = not body.slots and split.enabled() and not expert._claude_on() and len(split.pieces(question)) >= 2
+    if not body.dataset_id and ((body.slots or {}).get("topic") == "technique" or (not body.slots and techniques.detect(question) and not multi_q)):
         if (body.slots or {}).get("topic") == "technique" and not question:
             question = techniques.EXAMPLES.get(body.slots.get("method"), "")
             sp = body.slots.get("space") or []

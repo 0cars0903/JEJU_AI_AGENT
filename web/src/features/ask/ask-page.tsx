@@ -416,7 +416,9 @@ export function AskPage() {
                 res !== SAMPLE && res.status === "Agent" && res.agent ? (
                   <div className="flex flex-col gap-3" data-testid="agent-answer">
                     <p className="rounded-(--radius) bg-muted px-3 py-2 text-(--krds-text-bolder)">
-                      정해진 질문 종류 하나로 바로 답하기 어려운 질문이라 Agent가 도구를 골라 답했어요{res.escalated ? ` (${res.escalated})` : ""}.
+                      {res.agent.backend === "code"
+                        ? "묻는 것이 여럿인 질문이라 하나씩 나눠, 조각마다 정해진 계산으로 답했어요."
+                        : `정해진 질문 종류 하나로 바로 답하기 어려운 질문이라 Agent가 도구를 골라 답했어요${res.escalated ? ` (${res.escalated})` : ""}.`}
                     </p>
                     <ResultView r={res.agent} q={res.question ?? ""} />
                   </div>

@@ -173,7 +173,7 @@ export type ExpertResult = {
   attempts?: { stage?: string; ok?: boolean; error?: string }[];
   /** 도구 루프 기록(문서 26 안 A): 단계·도구·누가 골랐는지·성공·메모 */
   trace?: { step: number; tool: string; name: string; by: string; args: string; ok: boolean; note: string; sec: number }[];
-  backend?: "claude" | "ollama";
+  backend?: "claude" | "ollama" | "code";
   error?: string;
   hint?: string;
   sec?: number;

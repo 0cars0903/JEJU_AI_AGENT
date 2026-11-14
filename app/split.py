@@ -150,9 +150,10 @@ def answer(question, interpret, env=None):
         if note and not dong:
             outs.append({"ok": False, "out": None})
             lines.append(f"{k + 1}. {part['text']} → {note}")
-            trace.append({"tool": "split", "ok": False, "note": note, "args": part["text"]})
+            trace.append({"step": k + 1, "tool": "split", "name": f"{k + 1}번 질문 건너뜀", "by": "코드", "ok": False, "note": note, "args": part["text"], "sec": 0.0})
             continue
         text = _text_for(part, dong)
+        t1 = time.perf_counter()
         tech = techniques.detect(text)
         if tech:
             import expert
@@ -182,11 +183,13 @@ def answer(question, interpret, env=None):
             lines.append(f"{head} → {why}")
         if note:
             lines.append(f"   · {note}")
-        trace.append({"tool": tool, "ok": ok, "note": note or "", "args": text})
+        trace.append({"step": k + 1, "tool": tool, "name": f"{k + 1}번 질문 · " + ("통계 기법" if tool == "run_technique" else "일반 답"), "by": "코드(질문 나누기)",
+                      "ok": ok, "note": note or "", "args": text, "sec": round(time.perf_counter() - t1, 1)})
     n_ok = sum(o["ok"] for o in outs)
     ag = {"status": "성공" if n_ok else "실패", "method": f"질문 나누기({len(parts)}개)", "lines": lines, "by": "프로그램(조각별 일반 답을 묶음)",
           "result": {"numbers": {}, "notes": [], "series": [], "tables": []}, "trace": trace, "topics": topics or None, "backend": "code",
-          "plan": [{"text": p["text"], "type": p["type"], "ref": p["ref"], "inherited": p["inherited"]} for p in parts],
+          "plan": [f"{i + 1}. {p['text']}" + (f" (앞 {p['ref'] + 1}번 답의 동네를 씀)" if p["ref"] is not None else "")
+                   + (f" (물려받음: {', '.join(p['inherited'])})" if p["inherited"] else "") for i, p in enumerate(parts)],
           "sec": round(time.perf_counter() - t0, 1)}
     if not n_ok:
         ag["error"] = "나눈 질문 어느 것도 답하지 못했어요."
