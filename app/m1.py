@@ -13,6 +13,8 @@ import sys
 import time
 from pathlib import Path
 
+import os
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -20,6 +22,7 @@ import qparse  # noqa: E402
 import qtuple as Q  # noqa: E402
 
 MODEL = Q.ROOT / "models" / "m1_intent.json"
+EMBED_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat").replace("/api/chat", "/api/embed")  # 대화 모델과 같은 Ollama(기본 11434)
 LOW_CONF = 0.5
 
 
@@ -47,8 +50,10 @@ def _softmax(z):
 
 
 class M1:
-    def __init__(self, path=MODEL):
+    def __init__(self, path=MODEL, rag_on=None):
         self.ok = path.exists()
+        # 질문 기록 찾기(RAG): 기본 끔(JEJU_RAG=1이면 켬). 교차 검증(tools/rag_cv_type.py)에서 분류기와 어긋날 때 이웃이 더 자주 틀려(최선 10건 중 3 대 6) 판정 300도 248→246, 2026-11-15
+        self.rag_on = (os.environ.get("JEJU_RAG", "0") == "1") if rag_on is None else rag_on
         if self.ok:
             m = json.loads(path.read_text(encoding="utf-8"))
             self.heads = {h: (v["classes"], np.array(v["coef"]), np.array(v["intercept"])) for h, v in m["heads"].items()}
@@ -57,7 +62,7 @@ class M1:
 
     def _embed(self, q):
         import requests
-        r = requests.post("http://localhost:11434/api/embed", json={"model": self.embed_model, "input": [q], "options": {"num_gpu": 0}}, timeout=10)
+        r = requests.post(EMBED_URL, json={"model": self.embed_model, "input": [q], "options": {"num_gpu": 0}}, timeout=10)
         return np.array(r.json()["embeddings"][0], dtype=np.float64)
 
     def _predict(self, head, v):
@@ -75,13 +80,22 @@ class M1:
         t0 = time.perf_counter()
         base = qparse.parse(q)
         t = dict(base)
-        path, conf = "A2′(사전 규칙)", None
+        path, conf, rag_info = "A2′(사전 규칙)", None, None
         if self.ok:
             try:
                 v = self._embed(q)
                 t["type"], conf = self._predict("type", v)
                 t["expect"], _ = self._predict("expect", v)
                 path = "B3(임베딩 + 분류기)"
+                if getattr(self, "rag_on", False) and t["expect"] == "답함":  # 질문 기록 찾기(RAG): 비슷한 과거 질문의 종류와 크게 어긋나면 모델에 다시 판단을 요청한다(2026-11-15)
+                    import rag
+                    chk = rag.check(v, t["type"], "type")
+                    if chk.get("differ"):
+                        chk["chosen"] = rag.rejudge_type(q, chk)
+                        if chk["chosen"] and chk["chosen"] != t["type"]:
+                            t["type"] = chk["chosen"]
+                            t["_why"] = list(t.get("_why") or []) + [f"비슷한 과거 질문과 어긋나 모델이 다시 판단: {chk['first']} → {chk['chosen']}"]
+                    rag_info = {k: chk.get(k) for k in ("used", "first", "vote", "share", "best_sim", "differ", "chosen", "examples")}
                 if base.get("_out_rule"):  # 사전 규칙이 자료에 없는 분류로 확정한 질문(애견 미용)은 분류기가 덮지 않는다
                     t["type"], t["expect"] = "T12", "범위밖"
                 elif t["expect"] == "범위밖" and base["expect"] == "답함" and {"매출성장", "시장추이", "업종비교"} & set(base["metric"]):
@@ -122,7 +136,7 @@ class M1:
         if low:
             card["text"] += " (확인이 필요해요)"
         return {"tuple": {k: v for k, v in t.items() if not k.startswith("_")}, "card": card, "confidence": conf, "needs_confirm": low or t["expect"] != "답함", "rule_type": base["type"], "rule_expect": base["expect"],
-                "path": path, "why": t.get("_why", []), "sec": round(time.perf_counter() - t0, 4)}
+                "path": path, "why": t.get("_why", []), "rag": rag_info, "sec": round(time.perf_counter() - t0, 4)}
 
 
 if __name__ == "__main__":

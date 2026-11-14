@@ -12,6 +12,7 @@
 | ⑤ 다음 분석 | 이어서 볼 기법 1~2개와 이유 | 목록 밖이면 버림 |
 """
 import json
+import os
 import re
 import time
 
@@ -58,7 +59,7 @@ def _classifier(question):
     try:
         if "m" not in _M:
             import m1
-            _M["m"] = m1.M1()
+            _M["m"] = m1.M1(rag_on=False)  # 두 번째 의견은 분류기만(종류 기록 다시 판단은 일반 경로에서)
         return _M["m"].interpret(question)
     except Exception:
         return None
@@ -80,6 +81,39 @@ def _ask(chat, system, user, schema, max_tokens=300):
         return json.loads(m.get("content") or "{}")
     except ValueError:
         return {}
+
+
+RAG_MODE = os.environ.get("JEJU_ANALYST_RAG", "off")  # 질문 기록 찾기: off·add(분류기 의견에 더함)·replace(분류기 의견 대신)
+
+
+def _kind_ko(k):
+    return f"{T.TECH[k][0]}({k})" if k in T.TECH else "통계 기법이 필요 없는 일반 질문(general)"
+
+
+def _rag_check(question, kind, chat, log):
+    """질문 기록(RAG, 2026-11-15): 비슷한 과거 요청이 받은 기법과 크게 어긋나면 예시를 붙여 모델에 다시 판단을 요청한다. 최종 판단은 모델."""
+    import rag
+    try:
+        vec = _classifier_embed(question)
+    except Exception:
+        return kind
+    g = lambda k: k if k in TECHS else "general"  # noqa: E731
+    chk = rag.check(vec, g(kind), "tech", group=g)
+    if not chk.get("differ"):
+        return kind
+    t1 = time.perf_counter()
+    again = _ask(chat, S_UNDERSTAND, f"{question}\n{rag.note(chk, _kind_ko)}", F_UNDERSTAND)
+    k2 = again.get("kind") if again.get("kind") in KINDS else kind
+    log.append({"tool": "understand", "name": "요청 이해(질문 기록과 대조해 다시 판단)", "by": BY, "ok": True, "args": json.dumps({"kind": k2, "past": chk["vote"]}, ensure_ascii=False),
+                "note": f"비슷한 과거 요청 {len(chk['examples'])}개는 {_kind_ko(chk['vote'])}(유사도 {chk['best_sim']})", "sec": round(time.perf_counter() - t1, 2)})
+    return k2
+
+
+def _classifier_embed(question):
+    if "m" not in _M:
+        import m1
+        _M["m"] = m1.M1(rag_on=False)
+    return _M["m"]._embed(question)
 
 
 def understand(question, chat=None, checks=True):
@@ -105,6 +139,8 @@ def understand(question, chat=None, checks=True):
                             "note": f"요청에 적힌 '{T.TECH[named][0]}'(으)로 바로잡음", "sec": 0.0})
                 k2 = named
             kind, a = k2, {**a, **{k: v for k, v in again.items() if k in ("dongs", "target", "keyword") and v}}
+        elif kind in TECHS and not named and RAG_MODE == "replace":
+            pass  # 질문 기록(RAG)으로 분류기 의견을 대신한다(아래)
         elif kind in TECHS and not named:  # 분류기의 두 번째 의견(평가 2026-11-14 B2): 일반 질문을 기법으로 보내는 오류를 막는다
             it = _classifier(question)
             gt = (it or {}).get("tuple", {}).get("type")
@@ -116,6 +152,8 @@ def understand(question, chat=None, checks=True):
                 log.append({"tool": "understand", "name": "요청 이해(다시 판단)", "by": BY, "ok": True, "args": json.dumps({"kind": k2}, ensure_ascii=False),
                             "note": str(again.get("reason") or "")[:120], "sec": round(time.perf_counter() - t1, 2)})
                 kind = k2  # 최종 판단은 모델이 한다(강제로 일반 경로로 보내면 기법 질문 43→22/48로 무너짐, 조정용 측정 2026-11-14)
+    if checks and RAG_MODE in ("add", "replace") and not (T.detect(question) and kind == T.detect(question)):
+        kind = _rag_check(question, kind, chat, log)
     dongs = [d for d in (a.get("dongs") or []) if d in Q.DONGS]
     target = (a.get("target") or "").strip()
     target = target if target in Q.TARGETS_BIZ else ""
