@@ -79,7 +79,7 @@ PLAIN_Q = "동네별로 방문이 많을수록 매출도 높은 편인지 숫자
 class ExpertFlowTest(unittest.TestCase):
     """도구 루프(문서 26 안 A): 도구 선택·고치기·단계 상한·시간 예산·로컬 종료·규칙 대체."""
     def setUp(self):
-        self.env = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "LLM_BACKEND", "JEJU_LOCAL_AGENT", "JEJU_CLAUDE")}
+        self.env = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "LLM_BACKEND", "JEJU_LOCAL_AGENT", "JEJU_CLAUDE", "JEJU_ANALYST")}
         os.environ["ANTHROPIC_API_KEY"] = "test"
         os.environ["JEJU_CLAUDE"] = "auto"  # 이 묶음은 Claude 도구 루프를 시험한다(기본은 요청 단위)
         os.environ.pop("LLM_BACKEND", None)
@@ -154,6 +154,7 @@ class ExpertFlowTest(unittest.TestCase):
         self.assertEqual(r["trace"][0]["name"], "시간 예산 초과")
 
     def test_local_backend_stops_after_result(self):
+        os.environ["JEJU_ANALYST"] = "0"  # 예전 로컬 루프(넘김 모드와 같은 루프)를 시험한다
         expert.backend = lambda: "ollama"
         seen = []
         r = expert.ask(PLAIN_Q, chat=fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""})], seen))
@@ -163,6 +164,7 @@ class ExpertFlowTest(unittest.TestCase):
         self.assertEqual(r["by"], "프로그램(기법 코드의 문장)")
 
     def test_local_no_tool_rule_picks(self):
+        os.environ["JEJU_ANALYST"] = "0"  # 예전 로컬 루프(넘김 모드와 같은 루프)를 시험한다
         expert.backend = lambda: "ollama"
         r = expert.ask(CORR_Q, chat=fake_chat([("text", "상관을 보면 됩니다")]))
         self.assertEqual(r["status"], "성공")
@@ -178,6 +180,7 @@ class ExpertFlowTest(unittest.TestCase):
         self.assertTrue(r["trace"][1]["ok"])
 
     def test_local_info_question_ends_with_catalog(self):
+        os.environ["JEJU_ANALYST"] = "0"  # 예전 로컬 루프(넘김 모드와 같은 루프)를 시험한다
         expert.backend = lambda: "ollama"
         r = expert.ask("정류소별 시간대 버스 이용 자료는 센터에 있어?", chat=fake_chat([("search_center_catalog", {"keyword": "정류소 시간대"})]))
         self.assertEqual(r["status"], "성공")
@@ -221,19 +224,12 @@ class ExpertFlowTest(unittest.TestCase):
         self.assertNotIn("아이스", " ".join(r["lines"]))
 
     def test_tool_call_written_as_text(self):
+        os.environ["JEJU_ANALYST"] = "0"  # 예전 로컬 루프(넘김 모드와 같은 루프)를 시험한다
         expert.backend = lambda: "ollama"
         txt = '도구를 부를게요 {"name": "run_technique", "arguments": {"technique": "corr", "dongs": [], "target": ""}}'
         r = expert.ask(PLAIN_Q, chat=fake_chat([("text", txt)]))
         self.assertEqual(r["status"], "성공")
         self.assertEqual((r["trace"][0]["tool"], r["trace"][0]["by"]), ("run_technique", "AI"))
-
-    def test_local_named_technique_run_by_code(self):  # 기법 이름이 있으면 로컬 경로는 코드가 바로 실행한다(모델이 '보여줘'를 자료 확인으로 읽던 결함)
-        expert.backend = lambda: "ollama"
-        seen = []
-        r = expert.ask("43개 동네 음식점 매출 분포 보여줘", chat=fake_chat([("describe_data", {"table": "card_month"})], seen))
-        self.assertEqual(r["status"], "성공")
-        self.assertEqual(r["trace"][0]["by"], "규칙(질문에 기법 이름)")
-        self.assertEqual(seen, [])  # 모델을 부르지 않음
 
     def test_escalate_nearest_analysis_is_labeled(self):
         chat = fake_chat([("run_technique", {"technique": "corr", "dongs": [], "target": ""}), ("text", "끝")])

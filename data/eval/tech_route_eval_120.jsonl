@@ -1,0 +1,120 @@
+{"id": "X1-R001", "q": "노형동에서 일별 유동인구 지수와 식당 카드 매출액 간의 피어슨 상관계수를 산출해 줘", "technique": "corr", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R002", "q": "연동 지역의 버스 정류소 승차 건수와 소매업 매출 데이터 간에 유의미한 상관관계가 있는지 분석해 줘", "technique": "corr", "named": true, "speaker": "담당자", "args": {"dongs": ["연동"], "target": "소매"}}
+{"id": "X1-R003", "q": "노형동에 사람 많이 돌아다니는 날에 카페 매상도 덩달아 같이 올라가는 거야?", "technique": "corr", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "카페"}}
+{"id": "X1-R004", "q": "비 많이 오는 날씨에는 애월읍 식당 장사랑 날씨가 어떻게 같이 움직이는지 궁금해", "technique": "corr", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "음식점"}}
+{"id": "X1-R005", "q": "조천읍에서 버스 타고 오는 손님이 많아지면 편의점 장사도 함께 잘 되는 관계야?", "technique": "corr", "named": false, "speaker": "도민", "args": {"dongs": ["조천읍"], "target": "편의점"}}
+{"id": "X1-R006", "q": "아라동의 월간 거주인구 지수 변동과 한식 음식점 결제액 지표가 서로 연동되어 움직이는 크기를 계산해 줘", "technique": "corr", "named": false, "speaker": "담당자", "args": {"dongs": ["아라동"], "target": "한식"}}
+{"id": "X1-R007", "q": "이도2동 상권에서 직장인 유동인구와 주점 카드 소비 지표가 상호 선형적인 공변성을 보이는지 측정해 줘", "technique": "corr", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": "주점"}}
+{"id": "X1-R008", "q": "한림읍 숙박업 결제 금액과 내국인 관광객 방문 지표 사이의 동행성 강도를 수치로 평가해 줘", "technique": "corr", "named": false, "speaker": "담당자", "args": {"dongs": ["한림읍"], "target": "숙박"}}
+{"id": "X1-R009", "q": "제주도 43개 행정동을 유동인구와 카드 매출 패턴을 기준으로 k-평균 군집 분석해 줘", "technique": "cluster", "named": true, "speaker": "담당자", "args": {"dongs": [], "target": null}}
+{"id": "X1-R010", "q": "외식업 상권 특성 변수들을 종합해서 도내 읍면동을 3개의 클러스터로 묶어 분류해 줘", "technique": "cluster", "named": true, "speaker": "담당자", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R011", "q": "제주도 동네들을 장사 분위기랑 손님 특성 비슷한 곳끼리 4개 무리로 끼리끼리 묶어줄래?", "technique": "cluster", "named": false, "speaker": "도민", "args": {"dongs": [], "target": null}}
+{"id": "X1-R012", "q": "도내 읍면동 중에 카페 상권 돌아가는 모양새가 서로 닮은 동네끼리 몇 개 그룹으로 나눠줘", "technique": "cluster", "named": false, "speaker": "도민", "args": {"dongs": [], "target": "카페"}}
+{"id": "X1-R013", "q": "식당 장사 잘되는 동네랑 안 되는 동네를 성격 비슷한 동네 무리로 갈라서 보고 싶어", "technique": "cluster", "named": false, "speaker": "도민", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R014", "q": "도내 43개 행정동 상권을 방문 인구수와 매출액, 점포 밀도를 기준으로 유사한 성격의 상권 유형 군으로 분할해 줘", "technique": "cluster", "named": false, "speaker": "담당자", "args": {"dongs": [], "target": null}}
+{"id": "X1-R015", "q": "행정동별 소매업 결제 규모와 관광객 비중 데이터를 활용하여 동질적인 특성을 가진 하위 그룹 집합으로 편성해 줘", "technique": "cluster", "named": false, "speaker": "담당자", "args": {"dongs": [], "target": "소매"}}
+{"id": "X1-R016", "q": "읍면 지역과 동 지역의 외식 소비 성향이 비슷한 지역들을 데이터 기반으로 같은 패턴의 집단들로 범주화해 줘", "technique": "cluster", "named": false, "speaker": "담당자", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R017", "q": "애월읍 카페 카드 매출의 월별 시계열 분해를 수행해서 추세와 계절 성분을 분리해 줘", "technique": "decomp", "named": true, "speaker": "담당자", "args": {"dongs": ["애월읍"], "target": "카페"}}
+{"id": "X1-R018", "q": "노형동 외식업 월간 매출 데이터에서 계절성 요인을 분해해 기본 추세선을 도출해 줘", "technique": "decomp", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R019", "q": "애월읍 식당 매출에서 여름 휴가철에만 반짝 뛰는 계절 거품을 빼면 실제 바닥 성장세는 어때?", "technique": "decomp", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "음식점"}}
+{"id": "X1-R020", "q": "연동 옷가게 매출이 매년 계절마다 반복해서 오르내리는 주기 빼고 진짜 길게 보면 크고 있어?", "technique": "decomp", "named": false, "speaker": "도민", "args": {"dongs": ["연동"], "target": "소매"}}
+{"id": "X1-R021", "q": "조천읍 숙박업 장사에서 해마다 타는 성수기 비수기 효과를 싹 걷어내고 원래 기초 흐름만 보여줘", "technique": "decomp", "named": false, "speaker": "도민", "args": {"dongs": ["조천읍"], "target": "숙박"}}
+{"id": "X1-R022", "q": "성산읍 카페 월별 결제액 시계열에서 매년 주기적으로 반복되는 계절 변동분을 제거한 기저 추세 변동치를 추출해 줘", "technique": "decomp", "named": false, "speaker": "담당자", "args": {"dongs": ["성산읍"], "target": "카페"}}
+{"id": "X1-R023", "q": "이도2동 음식점 소비 지출 데이터에서 장기적인 경기 방향성과 월별 계절 패턴 및 잔차 요인을 분리 산출해 줘", "technique": "decomp", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": "음식점"}}
+{"id": "X1-R024", "q": "중문동 관광 소비 매출액 시계열의 계절적 진폭 크기를 정량적으로 떼어내고 순수 성장 추세 성분을 격리해 줘", "technique": "decomp", "named": false, "speaker": "담당자", "args": {"dongs": ["중문동"], "target": null}}
+{"id": "X1-R025", "q": "노형동 카페 매출을 종속변수로 두고 유동인구와 점포 수를 설명변수로 하는 다중 선형 회귀분석을 해줘", "technique": "regress", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "카페"}}
+{"id": "X1-R026", "q": "연동 외식업 카드 매출액에 대해 방문 인구 지수가 미치는 영향을 단순 회귀 모델로 추정해 줘", "technique": "regress", "named": true, "speaker": "담당자", "args": {"dongs": ["연동"], "target": "음식점"}}
+{"id": "X1-R027", "q": "노형동에서 하루 유동인구랑 주변 경쟁 가게 수가 우리 식당 매출을 얼마나 크게 좌우하고 영향을 줘?", "technique": "regress", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R028", "q": "애월읍 카페 매출 변동 중에서 지나다니는 방문객 숫자가 몇 퍼센트나 설명해 줄 수 있는 거야?", "technique": "regress", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "카페"}}
+{"id": "X1-R029", "q": "아라동에서 버스 정류장 이용객 수와 주민 수가 편의점 매출을 얼마나 결정짓는지 알고 싶어", "technique": "regress", "named": false, "speaker": "도민", "args": {"dongs": ["아라동"], "target": "편의점"}}
+{"id": "X1-R030", "q": "이도2동 음식점 매출을 유동인구 지표와 기존 등록 점포 수 지표로 설명할 때 각 요인의 영향력 계수와 결정계수를 산출해 줘", "technique": "regress", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": "음식점"}}
+{"id": "X1-R031", "q": "삼도1동 소매업 결제 규모의 증감 요인을 분석하기 위해 유동인구와 정류소 승차 수가 미치는 개별 기여도를 수식으로 추정해 줘", "technique": "regress", "named": false, "speaker": "담당자", "args": {"dongs": ["삼도1동"], "target": "소매"}}
+{"id": "X1-R032", "q": "한림읍 숙박업 매출 변동에 대해 관광객 방문 지표가 가지는 통계적 설명력과 영향 계수를 구해줘", "technique": "regress", "named": false, "speaker": "담당자", "args": {"dongs": ["한림읍"], "target": "숙박"}}
+{"id": "X1-R033", "q": "노형동과 연동의 카페 월평균 매출액 차이에 대해 독립표본 t-검정을 수행해 줘", "technique": "test", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동", "연동"], "target": "카페"}}
+{"id": "X1-R034", "q": "애월읍과 조천읍 간 외식업 결제 건수 평균값의 통계적 유의성 검정을 실시해 줘", "technique": "test", "named": true, "speaker": "담당자", "args": {"dongs": ["애월읍", "조천읍"], "target": "음식점"}}
+{"id": "X1-R035", "q": "노형동이랑 연동 식당 매출 차이가 단순한 운이나 우연이 아니라 진짜 통계적으로 확실히 다른 거야?", "technique": "test", "named": false, "speaker": "도민", "args": {"dongs": ["노형동", "연동"], "target": "음식점"}}
+{"id": "X1-R036", "q": "애월읍이랑 한림읍 카페 5년 버티는 생존율 차이가 오차 범위인지 진짜 유의미하게 벌어진 차이야?", "technique": "test", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍", "한림읍"], "target": "카페"}}
+{"id": "X1-R037", "q": "구좌읍이랑 성산읍 편의점 손님 결제 금액 차이가 우연히 생긴 게 아니라 실제로 다른 게 맞아?", "technique": "test", "named": false, "speaker": "도민", "args": {"dongs": ["구좌읍", "성산읍"], "target": "편의점"}}
+{"id": "X1-R038", "q": "이도2동과 아라동 두 지역 간 월별 유동인구 지수 차이가 유의수준 5%에서 통계적으로 유의한 차이를 나타내는지 판정해 줘", "technique": "test", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동", "아라동"], "target": null}}
+{"id": "X1-R039", "q": "삼양동과 화북동의 음식점 건당 결제 단가 평균의 차이가 통계적 가설 검정 기준에서 유의미한지 검증해 줘", "technique": "test", "named": false, "speaker": "담당자", "args": {"dongs": ["삼양동", "화북동"], "target": "음식점"}}
+{"id": "X1-R040", "q": "서홍동과 동홍동 두 상권 간 소매업 매출액 평균치가 오차 수준을 넘어 실제 집단 간 차이가 존재하는지 판별해 줘", "technique": "test", "named": false, "speaker": "담당자", "args": {"dongs": ["서홍동", "동홍동"], "target": "소매"}}
+{"id": "X1-R041", "q": "제주도 43개 행정동별 카페 점포 수 데이터의 사분위수와 히스토그램 분포를 분석해 줘", "technique": "dist", "named": true, "speaker": "담당자", "args": {"dongs": [], "target": "카페"}}
+{"id": "X1-R042", "q": "외식업 월 매출액 지표에 대해 왜도와 첨도를 포함한 기술통계 분포 분석을 수행해 줘", "technique": "dist", "named": true, "speaker": "담당자", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R043", "q": "제주도 전체 동네들 식당 매출이 골고루 고르게 퍼져 있어, 아니면 특정 몇 군데만 엄청 쏠려 있어?", "technique": "dist", "named": false, "speaker": "도민", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R044", "q": "동네마다 카페 하루 유동인구가 보통 어느 구간대에 제일 많이 몰려 있는지 퍼진 형태를 보여줘", "technique": "dist", "named": false, "speaker": "도민", "args": {"dongs": [], "target": "카페"}}
+{"id": "X1-R045", "q": "도내 읍면동별 편의점 가게 수가 전반적으로 어떻게 퍼져 있고 치우쳐 있는지 퍼짐새를 알려줘", "technique": "dist", "named": false, "speaker": "도민", "args": {"dongs": [], "target": "편의점"}}
+{"id": "X1-R046", "q": "43개 행정동의 월별 음식점 카드 결제액 데이터의 구간별 빈도 분포와 산포도 및 편포 상태를 파악해 줘", "technique": "dist", "named": false, "speaker": "담당자", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R047", "q": "제주 전역의 동네별 유동인구 지표가 정규분포를 따르는지 아니면 우측으로 길게 꼬리를 늘어뜨린 치우친 형태인지 확인해 줘", "technique": "dist", "named": false, "speaker": "담당자", "args": {"dongs": [], "target": null}}
+{"id": "X1-R048", "q": "읍면동별 숙박업소 등록 수치들의 중위수 기준 산포 범위와 25%, 75% 분위수 퍼짐 상태를 요약해 줘", "technique": "dist", "named": false, "speaker": "담당자", "args": {"dongs": [], "target": "숙박"}}
+{"id": "X1-R049", "q": "노형동 외식업 월간 카드 매출 시계열에서 IQR 방식으로 이상치 탐지를 해줘", "technique": "outlier", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R050", "q": "애월읍 카페 매출 데이터에서 3시그마 기준을 벗어나는 통계적 아웃라이어 월을 찾아줘", "technique": "outlier", "named": true, "speaker": "담당자", "args": {"dongs": ["애월읍"], "target": "카페"}}
+{"id": "X1-R051", "q": "노형동 식당 매출 중에서 유독 말도 안 되게 비정상적으로 튀거나 뚝 떨어진 특이한 달이 있었어?", "technique": "outlier", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R052", "q": "연동 카페 장사에서 평소 계절 흐름이랑 완전 딴판으로 이상하게 튄 별난 달이 언제야?", "technique": "outlier", "named": false, "speaker": "도민", "args": {"dongs": ["연동"], "target": "카페"}}
+{"id": "X1-R053", "q": "조천읍 숙박업 결제 금액 통계 중에 평상시 범위를 한참 벗어나서 혼자 튀는 달이 있는지 봐줘", "technique": "outlier", "named": false, "speaker": "도민", "args": {"dongs": ["조천읍"], "target": "숙박"}}
+{"id": "X1-R054", "q": "성산읍 음식점 카드 매출 시계열에서 통상적인 예측 신뢰구간을 현저히 이탈한 이상 관측치를 식별해 줘", "technique": "outlier", "named": false, "speaker": "담당자", "args": {"dongs": ["성산읍"], "target": "음식점"}}
+{"id": "X1-R055", "q": "이도2동 유동인구 월별 통계 수치에서 과거 평균 궤적과 비교해 극단적으로 튀는 달을 색출해 줘", "technique": "outlier", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": null}}
+{"id": "X1-R056", "q": "한림읍 소매업 카드 결제액 데이터에서 계절 추세 모델의 잔차가 비정상적으로 큰 이상치를 추출해 줘", "technique": "outlier", "named": false, "speaker": "담당자", "args": {"dongs": ["한림읍"], "target": "소매"}}
+{"id": "X1-R057", "q": "노형동 음식점의 최근 매출 변화를 카드 결제 건수와 건당 결제 금액으로 요인 분해해 줘", "technique": "change", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R058", "q": "연동 카페 매출액 변동분에 대해 거래 건수 효과와 단가 효과로 변화 분해 분석을 해줘", "technique": "change", "named": true, "speaker": "담당자", "args": {"dongs": ["연동"], "target": "카페"}}
+{"id": "X1-R059", "q": "노형동 식당 매출 오른 게 손님들이 많이 와서야, 아니면 음식값이 비싸져서 객단가가 뛴 거야?", "technique": "change", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R060", "q": "연동 카페 매출이 깎인 이유가 손님 발길이 끊긴 탓인지 한 번에 쓰는 결제액이 줄어든 탓인지 쪼개어 알려줘", "technique": "change", "named": false, "speaker": "도민", "args": {"dongs": ["연동"], "target": "카페"}}
+{"id": "X1-R061", "q": "애월읍 치킨집 매출 증가분을 사 먹은 손님 수 증가 몫이랑 1인당 쓴 돈 증가 몫으로 나눠서 보여줘", "technique": "change", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "치킨"}}
+{"id": "X1-R062", "q": "아라동 한식 업종 매출 증감액을 이용 건수 변동에 기인한 효과와 건당 단가 변동에 기인한 효과로 나누어 산출해 줘", "technique": "change", "named": false, "speaker": "담당자", "args": {"dongs": ["아라동"], "target": "한식"}}
+{"id": "X1-R063", "q": "이도2동 소매업 매출액의 전년 대비 변동률을 결제 거래량 기여도와 객단가 기여도로 각각 분해해 줘", "technique": "change", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": "소매"}}
+{"id": "X1-R064", "q": "조천읍 숙박업 카드 소비 총액 성장을 방문 체류 건수 요인과 회당 지출 단가 요인으로 세분화해 줘", "technique": "change", "named": false, "speaker": "담당자", "args": {"dongs": ["조천읍"], "target": "숙박"}}
+{"id": "X1-R065", "q": "노형동 상권의 업종별 점포 집적도를 제주도 전체 대비 입지계수(LQ)로 계산해 줘", "technique": "lq", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": null}}
+{"id": "X1-R066", "q": "연동의 외식업 세부 분류별 특화계수를 산출해서 특화 업종을 도출해 줘", "technique": "lq", "named": true, "speaker": "담당자", "args": {"dongs": ["연동"], "target": "음식점"}}
+{"id": "X1-R067", "q": "제주도 다른 동네들에 비해서 우리 노형동에 유난히 집중되어 몰려 있는 특화된 장사 업종이 뭐야?", "technique": "lq", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": null}}
+{"id": "X1-R068", "q": "애월읍이 제주 전체 평균에 비해 유독 카페 비중이 빽빽하게 특화된 동네가 맞는지 확인해 줘", "technique": "lq", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "카페"}}
+{"id": "X1-R069", "q": "조천읍에서 다른 제주 지역보다 상대적으로 더 많이 밀집해 있는 대표적인 업종을 찾아줘", "technique": "lq", "named": false, "speaker": "도민", "args": {"dongs": ["조천읍"], "target": null}}
+{"id": "X1-R070", "q": "이도2동 상권이 제주 전역의 산업 분포 대비 상대적으로 높은 점유 비중을 보이는 특화 업종군을 식별해 줘", "technique": "lq", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": null}}
+{"id": "X1-R071", "q": "한림읍의 음식점 구성비가 제주도 전체 외식업 평균 점유율 대비 얼마나 과밀하게 집중되어 있는지 특화도를 측정해 줘", "technique": "lq", "named": false, "speaker": "담당자", "args": {"dongs": ["한림읍"], "target": "음식점"}}
+{"id": "X1-R072", "q": "성산읍 상가 데이터에서 제주도 기준 비중 대비 해당 읍면의 점포 구성 비율이 높은 집적 업종을 분석해 줘", "technique": "lq", "named": false, "speaker": "담당자", "args": {"dongs": ["성산읍"], "target": null}}
+{"id": "X1-R073", "q": "노형동 일반음식점 인허가 자료를 바탕으로 카플란-마이어 생존분석을 수행해 줘", "technique": "surv", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R074", "q": "연동 카페의 영업 지속 기간에 따른 생존함수 곡선을 도출해 줘", "technique": "surv", "named": true, "speaker": "담당자", "args": {"dongs": ["연동"], "target": "카페"}}
+{"id": "X1-R075", "q": "노형동에 식당 하나 새로 차리면 1년, 3년, 5년 뒤까지 문 안 닫고 끝까지 버틸 확률이 얼마나 돼?", "technique": "surv", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R076", "q": "애월읍 카페들이 가게 문 열고 나서 연차별로 얼마나 살아남고 폐업하지 않는지 생존율을 알려줘", "technique": "surv", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "카페"}}
+{"id": "X1-R077", "q": "아라동에서 한식집 열었을 때 몇 년 버티다 나가는지 가게 생존 기간 추이를 보고 싶어", "technique": "surv", "named": false, "speaker": "도민", "args": {"dongs": ["아라동"], "target": "한식"}}
+{"id": "X1-R078", "q": "이도2동 외식업소들의 개업 시점 코호트를 추적하여 영업 연수별 누적 생존 확률과 유지 궤적을 산정해 줘", "technique": "surv", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": "음식점"}}
+{"id": "X1-R079", "q": "삼도1동 음식점의 개업 후 경과 기간에 따른 폐업 위험률과 연차별 생존 비율을 분석해 줘", "technique": "surv", "named": false, "speaker": "담당자", "args": {"dongs": ["삼도1동"], "target": "음식점"}}
+{"id": "X1-R080", "q": "조천읍 카페 점포의 최초 등록일 이후 시간 경과에 따른 지속 생존율 곡선을 산출해 줘", "technique": "surv", "named": false, "speaker": "담당자", "args": {"dongs": ["조천읍"], "target": "카페"}}
+{"id": "X1-R081", "q": "노형동 상권 내 업종별 점포 점유율을 바탕으로 허핀달-허쉬만 지수(HHI)를 구해줘", "technique": "hhi", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": null}}
+{"id": "X1-R082", "q": "연동 상권의 업종 다양성 지수를 계산하여 상권 과점 여부를 분석해 줘", "technique": "hhi", "named": true, "speaker": "담당자", "args": {"dongs": ["연동"], "target": null}}
+{"id": "X1-R083", "q": "노형동은 온갖 장사 업종이 다채롭게 골고루 섞여 있어, 아니면 한두 가지 업종만 독점하고 있어?", "technique": "hhi", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": null}}
+{"id": "X1-R084", "q": "애월읍 상가가 카페랑 식당에만 너무 편중되어 쏠려 있는지, 여러 업종이 고루 공존하는지 다양성을 봐줘", "technique": "hhi", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": null}}
+{"id": "X1-R085", "q": "연동 길거리 가게들이 특정 아이템에만 몰빵되어 있는지 아니면 골고루 분산되어 있는지 알고 싶어", "technique": "hhi", "named": false, "speaker": "도민", "args": {"dongs": ["연동"], "target": null}}
+{"id": "X1-R086", "q": "이도2동 상권 점포들의 업종별 분포 집중도를 수치화하여 상권 업종 구성의 다양성 지표를 산출해 줘", "technique": "hhi", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": null}}
+{"id": "X1-R087", "q": "아라동 상권 내 업종별 시장 점유 집중도를 평가하여 특정 업종 과밀 쏠림 상태인지 균등 분산 상태인지 측정해 줘", "technique": "hhi", "named": false, "speaker": "담당자", "args": {"dongs": ["아라동"], "target": null}}
+{"id": "X1-R088", "q": "일도2동 상업지역의 업종 엔트로피 지수를 측정하여 상권 내 업종 다변화 수준을 계량화해 줘", "technique": "hhi", "named": false, "speaker": "담당자", "args": {"dongs": ["일도2동"], "target": null}}
+{"id": "X1-R089", "q": "노형동 외식업 카드 매출 성장에 대해 3요인 변이할당분석(Shift-Share Analysis)을 적용해 줘", "technique": "shift", "named": true, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R090", "q": "연동 소매업 매출 증감액을 변이할당 모델로 제주 전체 성장 효과와 지역 할당 효과로 분해해 줘", "technique": "shift", "named": true, "speaker": "담당자", "args": {"dongs": ["연동"], "target": "소매"}}
+{"id": "X1-R091", "q": "노형동 식당 매출이 뛴 게 제주도 전체 경기가 좋아서야, 외식업 바람을 타서야, 아니면 노형동 자체 경쟁력 덕분이야?", "technique": "shift", "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R092", "q": "애월읍 카페 매출 늘어난 이유를 제주도 전체 관광 성장 몫이랑 애월읍 동네만의 고유한 인기 몫으로 쪼개어 보여줘", "technique": "shift", "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "카페"}}
+{"id": "X1-R093", "q": "조천읍 숙박업 매출 성장에서 전국 여행 경기 호황 몫이랑 조천읍만의 로컬 경쟁력 기여분을 따로 갈라줘", "technique": "shift", "named": false, "speaker": "도민", "args": {"dongs": ["조천읍"], "target": "숙박"}}
+{"id": "X1-R094", "q": "아라동 외식업 카드 매출액 변화량을 제주 전역의 거시 성장 효과, 업종 믹스 구성 효과, 동네 로컬 경쟁 효과로 분리 계산해 줘", "technique": "shift", "named": false, "speaker": "담당자", "args": {"dongs": ["아라동"], "target": "음식점"}}
+{"id": "X1-R095", "q": "이도2동 소매업 매출 증가분을 광역 전체 성장 기여분과 산업별 성장 효과, 해당 행정동의 고유 경쟁 우위 효과로 분해 산출해 줘", "technique": "shift", "named": false, "speaker": "담당자", "args": {"dongs": ["이도2동"], "target": "소매"}}
+{"id": "X1-R096", "q": "한림읍 카페 매출액 변동에서 제주 전체 성장 몫과 커피 음료 산업 구성 효과 및 한림읍 자체 경쟁력 효과를 분해해 줘", "technique": "shift", "named": false, "speaker": "담당자", "args": {"dongs": ["한림읍"], "target": "카페"}}
+{"id": "X1-R097", "q": "노형동 하루 유동인구 수치랑 음식점 카드 매출액 둘 다 표로 나란히 보여줘", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R098", "q": "제주도 43개 동네 중에서 카페 많은 순서대로 상위 5곳 이름만 뽑아줘", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": [], "target": "카페"}}
+{"id": "X1-R099", "q": "노형동 식당 월별 카드 매출액이 지난 2년간 어떻게 변해왔는지 단순 추세선 그래프를 그려줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R100", "q": "애월읍의 월평균 유동인구 지수와 등록된 카페 점포 수가 각각 몇 개인지 수치를 확인해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["애월읍"], "target": "카페"}}
+{"id": "X1-R101", "q": "노형동이랑 연동 중에서 카페 한 달 매출 총액이 어디가 더 많아?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["노형동", "연동"], "target": "카페"}}
+{"id": "X1-R102", "q": "제주도 전체 행정동별 음식점 평균 매출액과 총매출액 합계를 요약 표로 출력해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R103", "q": "올해 들어서 노형동 식당 매출이 제일 높았던 최고 피크 달이 몇 월이야?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "음식점"}}
+{"id": "X1-R104", "q": "연동 카페 매출이 작년 지난달에 비해 이번 달에 몇 퍼센트 증가했는지 증감률만 알려줘", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["연동"], "target": "카페"}}
+{"id": "X1-R105", "q": "노형동 상권에서 점포 수 기준으로 가장 큰 비중을 차지하는 1위 업종 명칭을 제시해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["노형동"], "target": null}}
+{"id": "X1-R106", "q": "애월읍에서 문 연 지 5년 넘게 지금까지 계속 장사하고 있는 식당이 총 몇 군데야?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["애월읍"], "target": "음식점"}}
+{"id": "X1-R107", "q": "아라동 상권에 입점해 있는 업종 종류의 가짓수가 모두 몇 개인지 세어줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["아라동"], "target": null}}
+{"id": "X1-R108", "q": "조천읍 숙박업 카드 매출의 전년 동기 대비 단순 증감액 차이를 보고해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["조천읍"], "target": "숙박"}}
+{"id": "X1-R109", "q": "노형동에 지금 영업하고 있는 카페가 모두 몇 개나 있어?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["노형동"], "target": "카페"}}
+{"id": "X1-R110", "q": "연동에서 한식집 하다가 작년에 폐업한 가게가 몇 곳이야?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["연동"], "target": "한식"}}
+{"id": "X1-R111", "q": "제주도 전체에서 음식점 점포 수가 제일 많은 동네가 어디야?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": [], "target": "음식점"}}
+{"id": "X1-R112", "q": "아라동 하루 평균 유동인구 지수가 대략 얼마 정도 나와?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["아라동"], "target": null}}
+{"id": "X1-R113", "q": "이도2동에 편의점 새로 생기는 개업 추세가 요즘 어때?", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["이도2동"], "target": "편의점"}}
+{"id": "X1-R114", "q": "애월읍이랑 조천읍 카페 점포 수 차이가 몇 개나 나는지 비교해 줘", "technique": null, "named": false, "speaker": "도민", "args": {"dongs": ["애월읍", "조천읍"], "target": "카페"}}
+{"id": "X1-R115", "q": "삼도1동 음식점의 연도별 개업 건수와 폐업 건수 시계열 현황을 조회해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["삼도1동"], "target": "음식점"}}
+{"id": "X1-R116", "q": "구좌읍 소매업의 최근 월평균 카드 이용 금액을 보고해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["구좌읍"], "target": "소매"}}
+{"id": "X1-R117", "q": "한림읍에서 최근 3년간 신규 인허가를 받은 일반음식점 총수를 산정해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["한림읍"], "target": "음식점"}}
+{"id": "X1-R118", "q": "화북동 치킨집 점포 수가 제주도 43개 행정동 중에서 몇 번째 순위인지 확인해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["화북동"], "target": "치킨"}}
+{"id": "X1-R119", "q": "중문동 상권의 관광객 대상 카드 소비 매출액 비중이 몇 퍼센트인지 제시해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["중문동"], "target": null}}
+{"id": "X1-R120", "q": "서홍동 주민들이 주로 이용하는 버스 정류소의 월간 총 승차 건수 통계를 제공해 줘", "technique": null, "named": false, "speaker": "담당자", "args": {"dongs": ["서홍동"], "target": null}}

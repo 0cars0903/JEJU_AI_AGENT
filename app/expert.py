@@ -231,6 +231,10 @@ def ask(question, chat=None, user="local", mode="expert", use_claude=False):
         return {"status": "꺼짐", "error": "Claude API 키나 로컬 분석 모델이 없어 전문가 모드를 쓸 수 없어요. 기법 목록이나 일반 질문을 써 주세요."}
     if not _quota(user):
         return {"status": "상한", "error": f"오늘 전문가 모드 요청 상한({DAILY}건)에 닿았어요."}
+    if name == "ollama" and mode == "expert" and os.environ.get("JEJU_ANALYST") != "0":
+        # 로컬 전문가 모드는 단계형 분석 담당 Agent(app/analyst.py): 단계마다 모델이 판단하고 코드가 검사한다(2026-11-14 마스터 지시)
+        import analyst
+        return analyst.run(question, chat=chat)
     chat = chat or _chat_fn(name)
     local = name == "ollama"
     if mode == "escalate":  # 일반 경로가 처리하지 못해 넘어온 질문(중간안): 코드 실행 도구는 주지 않는다
@@ -295,13 +299,7 @@ def ask(question, chat=None, user="local", mode="expert", use_claude=False):
                       "sec": round(time.perf_counter() - t1, 2)})
         return ok, reply
 
-    if local and mode == "expert" and analysis_q:
-        # 질문에 기법 이름이 있으면 코드가 그 기법을 바로 실행한다(2026-11-14: 소형 모델이 '분포 보여줘'를 자료 확인으로 읽어 5번 헤맴).
-        # 마스터 원칙 '정해진 것은 코드, 문장 파악은 모델': 모델은 기법 이름이 없는 요청에서만 기법을 고른다
-        p_ = techniques.parse(question)
-        run_tool("run_technique", {"technique": p_["tech"], "dongs": p_["dongs"], "target": p_["target"] or ""}, "규칙(질문에 기법 이름)")
-        calls += 1
-    while calls < MAX_STEPS and not (got and local and mode == "expert" and analysis_q):
+    while calls < MAX_STEPS:
         if time.perf_counter() - t0 > BUDGET:
             trace.append({"step": len(trace) + 1, "tool": "-", "name": "시간 예산 초과", "by": "프로그램", "args": "", "ok": False,
                           "note": f"{BUDGET:.0f}초를 넘어 루프를 멈췄어요", "sec": 0})

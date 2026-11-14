@@ -1,0 +1,24 @@
+{"id": "DEV-T01", "q": "일도2동 방문과 카드 매출의 상관계수 구해줘", "technique": "corr"}
+{"id": "DEV-T02", "q": "동네마다 사람이 많이 오는 곳일수록 매출도 높은 편인지 같이 움직이는 정도를 숫자로 보여줘", "technique": "corr"}
+{"id": "DEV-T03", "q": "43개 동네를 군집으로 묶어줘", "technique": "cluster"}
+{"id": "DEV-T04", "q": "동네들을 성격이 비슷한 몇 개 묶음으로 나눠서 어떤 무리가 있는지 보여줘", "technique": "cluster"}
+{"id": "DEV-T05", "q": "삼도1동 음식점 매출 시계열 분해해줘", "technique": "decomp"}
+{"id": "DEV-T06", "q": "애월읍 음식점 매출에서 계절에 따라 오르내리는 몫과 긴 흐름을 떼어서 보여줘", "technique": "decomp"}
+{"id": "DEV-T07", "q": "가게 수와 방문이 매출에 미치는 영향 회귀분석", "technique": "regress"}
+{"id": "DEV-T08", "q": "동네 매출을 방문 수랑 가게 수로 얼마나 설명할 수 있는지 식으로 추정해줘", "technique": "regress"}
+{"id": "DEV-T09", "q": "이도2동과 노형동 음식점 매출 통계적으로 차이 있어?", "technique": "test"}
+{"id": "DEV-T10", "q": "연동과 아라동 음식점 월 매출이 정말 다르다고 볼 수 있는지 따져줘", "technique": "test"}
+{"id": "DEV-T11", "q": "43개 동네 카페 매출 분포 보여줘", "technique": "dist"}
+{"id": "DEV-T12", "q": "동네별 음식점 매출이 어떻게 퍼져 있는지 몰려 있는 구간과 치우침을 보여줘", "technique": "dist"}
+{"id": "DEV-T13", "q": "노형동 음식점 매출 이상치 찾아줘", "technique": "outlier"}
+{"id": "DEV-T14", "q": "화북동 음식점 매출에서 평소와 다르게 갑자기 뛰거나 떨어진 달을 골라줘", "technique": "outlier"}
+{"id": "DEV-T15", "q": "외도동 음식점 매출 변화를 건수와 건당 금액으로 분해", "technique": "change"}
+{"id": "DEV-T16", "q": "애월읍 음식점 매출이 바뀐 게 손님 수 때문인지 한 번에 쓰는 돈 때문인지 나눠줘", "technique": "change"}
+{"id": "DEV-T17", "q": "용담2동 입지계수 계산해줘", "technique": "lq"}
+{"id": "DEV-T18", "q": "삼양동에 제주 전체에 비해 유독 많이 몰려 있는 업종이 뭔지 비율로 따져줘", "technique": "lq"}
+{"id": "DEV-T19", "q": "한림읍 음식점 카플란-마이어 생존곡선", "technique": "surv"}
+{"id": "DEV-T20", "q": "구좌읍에서 문을 연 식당들이 해가 지날수록 얼마나 살아남는지 곡선으로 보여줘", "technique": "surv"}
+{"id": "DEV-T21", "q": "건입동 업종 다양성 지수 알려줘", "technique": "hhi"}
+{"id": "DEV-T22", "q": "어느 동네가 업종이 한쪽에 쏠리지 않고 골고루 섞여 있는지 점수로 비교해줘", "technique": "hhi"}
+{"id": "DEV-T23", "q": "연동 매출 변이할당 분석", "technique": "shift"}
+{"id": "DEV-T24", "q": "노형동 매출 증가를 제주 전체가 커진 몫, 업종 구성 덕분인 몫, 동네 자체 경쟁력 몫으로 나눠줘", "technique": "shift"}
