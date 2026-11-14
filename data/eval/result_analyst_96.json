@@ -4,11 +4,11 @@
   "① 요청 이해 정답": 86,
   "② 대안 고른 건수": 0,
   "② 대안 뒤 계산 성공": 0,
-  "③ 기법 계산 성공": 95,
-  "④ 해석 채택": "89/95",
-  "⑤ 다음 분석 제안": "77/95",
+  "③ 기법 계산 성공": 96,
+  "④ 해석 채택": "89/96",
+  "⑤ 다음 분석 제안": "78/96",
   "성공으로 끝남": 96,
-  "지연 중앙값": 6.45
+  "지연 중앙값": 6.54
  },
  "rows": [
   {
@@ -22,7 +22,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.28
+   "sec": 8.86
   },
   {
    "id": "X1-R002",
@@ -35,7 +35,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.62
+   "sec": 7.98
   },
   {
    "id": "X1-R003",
@@ -48,7 +48,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.82
+   "sec": 7.06
   },
   {
    "id": "X1-R004",
@@ -61,7 +61,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.45
+   "sec": 7.9
   },
   {
    "id": "X1-R005",
@@ -74,7 +74,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.51
+   "sec": 8.04
   },
   {
    "id": "X1-R006",
@@ -87,7 +87,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.41
+   "sec": 8.07
   },
   {
    "id": "X1-R007",
@@ -100,7 +100,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 8.44
+   "sec": 9.15
   },
   {
    "id": "X1-R008",
@@ -113,7 +113,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.64
+   "sec": 6.13
   },
   {
    "id": "X1-R009",
@@ -126,7 +126,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.33
+   "sec": 7.84
   },
   {
    "id": "X1-R010",
@@ -139,7 +139,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 7.94
+   "sec": 8.56
   },
   {
    "id": "X1-R011",
@@ -152,7 +152,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 8.12
+   "sec": 8.5
   },
   {
    "id": "X1-R012",
@@ -165,7 +165,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 6.09
+   "sec": 6.28
   },
   {
    "id": "X1-R013",
@@ -178,7 +178,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.6
+   "sec": 5.79
   },
   {
    "id": "X1-R014",
@@ -191,7 +191,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.43
+   "sec": 7.75
   },
   {
    "id": "X1-R015",
@@ -204,7 +204,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 7.38
+   "sec": 7.66
   },
   {
    "id": "X1-R016",
@@ -217,7 +217,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.96
+   "sec": 6.25
   },
   {
    "id": "X1-R017",
@@ -230,7 +230,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.35
+   "sec": 6.46
   },
   {
    "id": "X1-R018",
@@ -243,7 +243,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.18
+   "sec": 5.31
   },
   {
    "id": "X1-R019",
@@ -256,7 +256,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.47
+   "sec": 6.8
   },
   {
    "id": "X1-R020",
@@ -269,7 +269,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.9
+   "sec": 6.05
   },
   {
    "id": "X1-R021",
@@ -282,7 +282,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.64
+   "sec": 7.0
   },
   {
    "id": "X1-R022",
@@ -295,7 +295,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.59
+   "sec": 5.89
   },
   {
    "id": "X1-R023",
@@ -308,7 +308,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.8
+   "sec": 6.14
   },
   {
    "id": "X1-R024",
@@ -321,7 +321,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.71
+   "sec": 6.11
   },
   {
    "id": "X1-R025",
@@ -334,7 +334,7 @@
    "explain": false,
    "suggest": true,
    "status": "성공",
-   "sec": 5.5
+   "sec": 5.64
   },
   {
    "id": "X1-R026",
@@ -347,7 +347,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.21
+   "sec": 6.36
   },
   {
    "id": "X1-R027",
@@ -360,7 +360,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.91
+   "sec": 7.09
   },
   {
    "id": "X1-R028",
@@ -373,7 +373,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.94
+   "sec": 6.11
   },
   {
    "id": "X1-R029",
@@ -386,7 +386,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.8
+   "sec": 6.98
   },
   {
    "id": "X1-R030",
@@ -399,7 +399,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 7.08
+   "sec": 9.72
   },
   {
    "id": "X1-R031",
@@ -412,7 +412,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.72
+   "sec": 10.23
   },
   {
    "id": "X1-R032",
@@ -425,7 +425,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.41
+   "sec": 5.57
   },
   {
    "id": "X1-R033",
@@ -438,7 +438,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.75
+   "sec": 6.91
   },
   {
    "id": "X1-R034",
@@ -451,7 +451,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 6.4
+   "sec": 6.54
   },
   {
    "id": "X1-R035",
@@ -464,7 +464,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.25
+   "sec": 6.41
   },
   {
    "id": "X1-R036",
@@ -477,7 +477,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.68
+   "sec": 5.67
   },
   {
    "id": "X1-R037",
@@ -486,11 +486,11 @@
    "understand_ok": false,
    "alt": false,
    "alt_ok": false,
-   "calc_ok": false,
-   "explain": null,
-   "suggest": null,
+   "calc_ok": true,
+   "explain": false,
+   "suggest": true,
    "status": "성공",
-   "sec": 2.44
+   "sec": 7.38
   },
   {
    "id": "X1-R038",
@@ -503,7 +503,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.09
+   "sec": 6.14
   },
   {
    "id": "X1-R039",
@@ -516,7 +516,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.01
+   "sec": 6.1
   },
   {
    "id": "X1-R040",
@@ -529,7 +529,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.02
+   "sec": 5.17
   },
   {
    "id": "X1-R041",
@@ -542,7 +542,7 @@
    "explain": false,
    "suggest": true,
    "status": "성공",
-   "sec": 6.48
+   "sec": 6.54
   },
   {
    "id": "X1-R042",
@@ -555,7 +555,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.04
+   "sec": 6.17
   },
   {
    "id": "X1-R043",
@@ -568,7 +568,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 4.52
+   "sec": 9.36
   },
   {
    "id": "X1-R044",
@@ -581,7 +581,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.87
+   "sec": 6.92
   },
   {
    "id": "X1-R045",
@@ -594,7 +594,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.25
+   "sec": 7.27
   },
   {
    "id": "X1-R046",
@@ -607,7 +607,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.53
+   "sec": 7.58
   },
   {
    "id": "X1-R047",
@@ -620,7 +620,7 @@
    "explain": false,
    "suggest": true,
    "status": "성공",
-   "sec": 5.46
+   "sec": 5.51
   },
   {
    "id": "X1-R048",
@@ -633,7 +633,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.98
+   "sec": 8.19
   },
   {
    "id": "X1-R049",
@@ -646,7 +646,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.45
+   "sec": 6.49
   },
   {
    "id": "X1-R050",
@@ -659,7 +659,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.77
+   "sec": 5.42
   },
   {
    "id": "X1-R051",
@@ -672,7 +672,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.84
+   "sec": 5.89
   },
   {
    "id": "X1-R052",
@@ -685,7 +685,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.45
+   "sec": 6.59
   },
   {
    "id": "X1-R053",
@@ -698,7 +698,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 4.99
+   "sec": 5.05
   },
   {
    "id": "X1-R054",
@@ -711,7 +711,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.42
+   "sec": 6.59
   },
   {
    "id": "X1-R055",
@@ -724,7 +724,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 4.71
+   "sec": 4.76
   },
   {
    "id": "X1-R056",
@@ -737,7 +737,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.17
+   "sec": 6.2
   },
   {
    "id": "X1-R057",
@@ -750,7 +750,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 8.58
+   "sec": 8.61
   },
   {
    "id": "X1-R058",
@@ -763,7 +763,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 4.81
+   "sec": 4.83
   },
   {
    "id": "X1-R059",
@@ -776,7 +776,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 8.52
+   "sec": 11.62
   },
   {
    "id": "X1-R060",
@@ -789,7 +789,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.62
+   "sec": 7.79
   },
   {
    "id": "X1-R061",
@@ -802,7 +802,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 6.67
+   "sec": 6.84
   },
   {
    "id": "X1-R062",
@@ -815,7 +815,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 6.45
+   "sec": 6.61
   },
   {
    "id": "X1-R063",
@@ -841,7 +841,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 10.72
+   "sec": 10.9
   },
   {
    "id": "X1-R065",
@@ -854,7 +854,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.06
+   "sec": 6.11
   },
   {
    "id": "X1-R066",
@@ -880,7 +880,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.27
+   "sec": 5.45
   },
   {
    "id": "X1-R068",
@@ -893,7 +893,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.27
+   "sec": 5.5
   },
   {
    "id": "X1-R069",
@@ -906,7 +906,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.66
+   "sec": 5.14
   },
   {
    "id": "X1-R070",
@@ -919,7 +919,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 9.96
+   "sec": 10.01
   },
   {
    "id": "X1-R071",
@@ -932,7 +932,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.49
+   "sec": 5.52
   },
   {
    "id": "X1-R072",
@@ -945,7 +945,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.49
+   "sec": 5.67
   },
   {
    "id": "X1-R073",
@@ -958,7 +958,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.07
+   "sec": 6.1
   },
   {
    "id": "X1-R074",
@@ -971,7 +971,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.65
+   "sec": 5.66
   },
   {
    "id": "X1-R075",
@@ -984,7 +984,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.14
+   "sec": 6.38
   },
   {
    "id": "X1-R076",
@@ -997,7 +997,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.47
+   "sec": 5.52
   },
   {
    "id": "X1-R077",
@@ -1010,7 +1010,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 4.62
+   "sec": 4.65
   },
   {
    "id": "X1-R078",
@@ -1023,7 +1023,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.99
+   "sec": 6.03
   },
   {
    "id": "X1-R079",
@@ -1036,7 +1036,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.91
+   "sec": 6.09
   },
   {
    "id": "X1-R080",
@@ -1049,7 +1049,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 5.32
+   "sec": 5.51
   },
   {
    "id": "X1-R081",
@@ -1062,7 +1062,7 @@
    "explain": true,
    "suggest": false,
    "status": "성공",
-   "sec": 6.77
+   "sec": 6.84
   },
   {
    "id": "X1-R082",
@@ -1088,7 +1088,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.27
+   "sec": 6.53
   },
   {
    "id": "X1-R084",
@@ -1101,7 +1101,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.7
+   "sec": 5.95
   },
   {
    "id": "X1-R085",
@@ -1114,7 +1114,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 5.26
+   "sec": 8.57
   },
   {
    "id": "X1-R086",
@@ -1127,7 +1127,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 8.72
+   "sec": 8.9
   },
   {
    "id": "X1-R087",
@@ -1140,7 +1140,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.71
+   "sec": 7.1
   },
   {
    "id": "X1-R088",
@@ -1153,7 +1153,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.46
+   "sec": 7.48
   },
   {
    "id": "X1-R089",
@@ -1166,7 +1166,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 8.19
+   "sec": 8.23
   },
   {
    "id": "X1-R090",
@@ -1179,7 +1179,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 7.49
+   "sec": 7.5
   },
   {
    "id": "X1-R091",
@@ -1192,7 +1192,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.22
+   "sec": 6.41
   },
   {
    "id": "X1-R092",
@@ -1205,7 +1205,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 8.43
+   "sec": 8.57
   },
   {
    "id": "X1-R093",
@@ -1218,7 +1218,7 @@
    "explain": false,
    "suggest": true,
    "status": "성공",
-   "sec": 6.76
+   "sec": 6.98
   },
   {
    "id": "X1-R094",
@@ -1231,7 +1231,7 @@
    "explain": false,
    "suggest": true,
    "status": "성공",
-   "sec": 9.99
+   "sec": 10.18
   },
   {
    "id": "X1-R095",
@@ -1244,7 +1244,7 @@
    "explain": true,
    "suggest": true,
    "status": "성공",
-   "sec": 6.81
+   "sec": 7.0
   },
   {
    "id": "X1-R096",
@@ -1257,7 +1257,7 @@
    "explain": false,
    "suggest": true,
    "status": "성공",
-   "sec": 6.5
+   "sec": 6.53
   }
  ]
 }
