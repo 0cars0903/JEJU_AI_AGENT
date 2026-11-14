@@ -32,6 +32,11 @@ TECH = {  # 이름 → (보이는 이름, 질문에서 찾을 말)
     "hhi": ("업종 다양성", r"다양성 ?지수|업종 ?다양성|허핀달|(?<![A-Za-z])HHI(?![A-Za-z])|집중도 ?지수|엔트로피"),
     "shift": ("변이할당", r"변이 ?할당|(?i:shift.?share)|성장 ?요인 ?분해|지역 ?경쟁 ?효과|산업 ?구성 ?효과"),
 }
+PLAIN = {  # 기법 → 도민용 쉬운 말(사이드바와 같은 말, 2026-11-14 평가 지적 '도민에게 어려운 통계 용어')
+    "corr": "같이 움직이는 정도", "cluster": "비슷한 동네끼리 묶기", "change": "건수와 건당 금액으로 나누기", "decomp": "추세와 계절 나누기",
+    "regress": "매출에 미치는 영향", "test": "차이가 우연인지", "dist": "동네 값의 흩어짐", "outlier": "튀는 달 찾기",
+    "lq": "이 동네에 몰린 업종", "surv": "몇 년 버티는지", "hhi": "업종이 고르게 섞였는지", "shift": "성장 원인 나누기",
+}
 METRIC = {  # 지표 → (이름, 질문에서 찾을 말, 단위)
     "sales": ("카드 매출", r"매출|카드|소비", "원"),
     "visit": ("하루 방문", r"방문|유동|인구|사람", "지수"),
@@ -710,7 +715,7 @@ def answer(question, slots=None):
     tech = p["tech"]
     tname = TECH[tech][0]
     who = " · ".join(x for x in [", ".join(p["dongs"]) or None, p["target"], "·".join(METRIC[m][0] for m in p["metrics"]) or None] if x)
-    understood = {"text": f"이렇게 이해했어요: {tname} 분석{(' — ' + who) if who else ''}", "by": "기법 사전", "assumed": False,
+    understood = {"text": f"이렇게 이해했어요: {tname}({PLAIN[tech]}) 분석{(' — ' + who) if who else ''}", "by": "기법 사전", "assumed": False,
                   "slots": {"topic": "technique", "method": tech, "space": p["dongs"], "target": p["target"]}, "notes": []}
     others = [k for k in RUN if k != tech][:3]
     sugg = [{"text": EXAMPLES[k], "slots": {"topic": "technique", "method": k}} for k in others]
@@ -737,7 +742,7 @@ def answer(question, slots=None):
     blocks = [{"id": "facts", "title": "계산 결과", "lines": [x for x in lines if x["block"] == "facts"]},
               {"id": "analysis", "title": "읽는 법과 주의", "lines": [x for x in lines if x["block"] == "analysis"] + warn_lines}]
     method = {"kind": f"tech_{tech}", "title": mtitle, "how": how, "check": check, "result": ", ".join(f"{k} {v}" for k, v in nums.items()), "limit": limit}
-    a = {"conclusion": {"text": concl, "layer": "L3", "tag": f"Agent 계산 · {tname}"}, "blocks": blocks, "views": views, "default_views": len(views),
+    a = {"conclusion": {"text": concl, "layer": "L3", "tag": f"Agent 계산 · {tname}({PLAIN[tech]})"}, "blocks": blocks, "views": views, "default_views": len(views),
          "value_question": False, "footer": srcs, "freshness": [{"source": s["source"], "as_of": s["as_of"], "months_old": 0, "stale": False} for s in srcs],
          "requests": [], "methods": [method]}
     rows = [["지표", "값"]] + [[k, v] for k, v in nums.items()]

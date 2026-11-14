@@ -1050,7 +1050,7 @@ test("(가) 기법 분석: 기법을 지정하면 그 기법으로 계산하고,
   await page.getByTestId("question-input").fill("43개 동네 방문과 매출의 상관 분석해줘");
   await page.getByTestId("ask-submit").click();
   await expect(await conclusion(page)).toContainText("상관계수");
-  await expect(page.getByTestId("understood")).toContainText("상관 분석");
+  await expect(page.getByTestId("understood")).toContainText("상관(같이 움직이는 정도) 분석");
   await expect(page.getByTestId("view-chart").getByTestId("chart-unit")).toContainText("가로: 하루 방문");
   await expect(page.getByTestId("block-analysis")).toContainText("원인과 결과를 뜻하지 않아요");
   await page.getByTestId("view-as-table").click();
