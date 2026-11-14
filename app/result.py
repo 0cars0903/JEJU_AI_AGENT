@@ -378,7 +378,9 @@ def _plain_answer(question, t, concl, ev, limits, tag, src, as_of, t0, path, not
             "suggestions": [], "downloads": [], "sec": round(time.perf_counter() - t0, 3)}
 
 
-RAIN_RANK = re.compile(r"(비|우천|눈|장마)\S*\s.*(가장|제일|어디|어느\s*동네|순위|많이\s*줄|덜\s*줄)")
+# 비(雨)를 뜻하는 말만 잡는다. '비교'·'비중'·'눈에 띄게'를 비로 읽던 결함(최종 평가 2026-11-14) 수정
+RAIN_WORD = r"(비\s*(가|오|올|와|내리|온|많)|빗|우천|강수|강우|장마|폭우|눈\s*(이\s*)?(오|올|와|내리|온))"
+RAIN_RANK = re.compile(RAIN_WORD + r".*(가장|제일|어디|어느\s*동네|순위|많이\s*줄|덜\s*줄)")
 
 
 def _rain_rank(question, t, t0):
@@ -468,11 +470,15 @@ def _extreme_month(question, t, t0):
                          notes=[REASON_NOTE] if REASON_Q.search(question or "") else [])
 
 
-OUTSIDE_Q = re.compile(r"서울|부산|대구|인천|광주광역|대전|울산|세종시|경기|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|강남역|해운대|홍대|명동|여의도|판교")
+OUTSIDE_Q = re.compile(r"서울|부산|대구|인천|광주광역|대전|울산|세종시|경기도|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|강남역|해운대|홍대|명동|여의도|판교")
 OUTSIDE_MSG = "제주 43개 읍면동 자료만 있어서 제주 밖 지역은 답할 수 없어요. 제주의 동네로 물어 주세요."
-MATJIP_Q = re.compile(r"맛집|맛있|맛\s*좋|후기|리뷰|평점|추천\s*(해|좀)?\s*줘")
+MATJIP_Q = re.compile(r"맛집|맛있|맛\s*좋|후기|리뷰|평점|(가게|식당|카페|집)\S*\s*추천")
 MATJIP_MSG = "맛·후기·평점 자료가 없어 맛집을 고르거나 가게를 추천할 수 없어요. 대신 그 지역 음식점 수, 카드 매출, 생존율을 볼 수 있어요."
+RECO_Q = re.compile(r"(업종|창업|아이템|뭐\s*하|무엇을\s*하)\S*\s*.*추천|추천\s*(해|좀)?\s*줘")
+RECO_MSG = "이 서비스는 어떤 업종을 할지 추천하거나 정하지 않아요(판단은 도민이 해요). 대신 업종별 가게 수·카드 매출·생존율을 견주어 판단 재료를 보여 드려요."
 CITY_Q = re.compile(r"제주시|서귀포시|서귀포\s*(쪽|지역|시내)|제주\s*시내")
+SEOGWIPO = ["대정읍", "남원읍", "성산읍", "안덕면", "표선면", "송산동", "정방동", "중앙동", "천지동", "효돈동", "영천동", "동홍동", "서홍동",
+            "대륜동", "대천동", "중문동", "예래동"]  # 서귀포시 17곳(12동·3읍·2면)
 CITY_MSG = "제주시·서귀포시처럼 시 단위로 합친 값은 계산하지 않아요(자료가 동네 단위예요). 동네를 하나 고르거나, '제주 전체'로 물어 주세요."
 STOP_Q = re.compile(r"정류소|정류장")
 STOP_NOTE = "정류소별 자료는 제출본에 없어 동네 전체 값으로 답했어요. 센터 PC에서 '버스 정류소별 이용 현황'(3-04)을 넣으면 정류소·시간대별로 볼 수 있어요."
@@ -716,12 +722,22 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                                  [{"topic": "stores", "space": d, "detail": od}] if d else []))
         if OUTSIDE_Q.search(question or "") and not t.get("space"):  # 제주 밖 지역(미처리 결함 D2, 2026-11-14)
             return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), OUTSIDE_MSG, []))
-        if MATJIP_Q.search(question or ""):  # 맛집·추천은 자료가 없어 막고, 이유와 주변 동네 질문을 보여 준다(평가 2026-11-14 A7)
-            return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), MATJIP_MSG, [x["slots"] for x in _near_suggestions(question, t)]))
+        if MATJIP_Q.search(question or "") or RECO_Q.search(question or ""):  # 맛집·추천은 막고, 이유와 주변 동네 질문을 보여 준다(평가 2026-11-14 A7)
+            msg = MATJIP_MSG if MATJIP_Q.search(question or "") else RECO_MSG  # 업종 추천은 '추천하지 않는다' 원칙으로 안내(최종 평가)
+            sl = [x["slots"] for x in _near_suggestions(question, t)]
+            if msg is RECO_MSG:
+                sl = [{"topic": "bizcompare", "space": (t.get("space") or ["노형동"])[:1]}] + sl
+            return stop(_blocked(question, dict(t, type="T12", expect="범위밖"), msg, [x for x in sl if not G.missing(x)][:3]))
         cb = _center_bus(question, t, env, t0) or _rain_rank(question, t, t0) or _sales_change_rank(question, t, t0) or _extreme_month(question, t, t0)
         if cb:
             return dict(cb, interpret=meta)
-        if CITY_Q.search(question or "") and not t.get("space") and (t.get("expect") == "되묻기" or t.get("type") in qparse.NEED_DONG):
+        if CITY_Q.search(question or "") and not t.get("space") and t.get("type") in ("T3", "T14", "T15"):
+            # '서귀포시 동네 중 ~가 가장 많은 곳'은 그 시의 동네로 범위를 좁힌다(제주 전체 순위로 답하던 결함, 최종 평가 2026-11-14)
+            city = [d for d in SEOGWIPO if d in Q.DONGS] if re.search(r"서귀포", question or "") else [d for d in Q.DONGS if d not in SEOGWIPO]
+            t = dict(t, space=city)
+            it = dict(it, tuple=t, card=qparse.card(t))
+            notes.append(f"{'서귀포시' if re.search(r'서귀포', question or '') else '제주시'} {len(city)}개 동네 안에서 견줬어요.")
+        elif CITY_Q.search(question or "") and not t.get("space") and (t.get("expect") == "되묻기" or t.get("type") in qparse.NEED_DONG):
             ps = G.to_slots(t) if t.get("expect") != "범위밖" else {}  # 시 단위는 합치지 않는다는 것을 알리고 동네를 고르게 한다(평가 2026-11-14 A5)
             return stop(_choose(question, t, ps if ps.get("topic") else {"topic": "diagnose"}, CITY_MSG, "space"))
         if "외국인매출" in t["metric"] or (FOREIGN_Q.search(question or "") and SPEND_Q.search(question or "")):

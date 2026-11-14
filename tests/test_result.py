@@ -715,3 +715,24 @@ class Pending20261114(unittest.TestCase):
     def test_d6_store_count_label(self):
         r = R.respond("대정읍 치킨집 창업 어때?", None, llm_on=False)
         self.assertIn("치킨 가게 수", r["answer"]["conclusion"]["text"])
+
+
+class FinalEvalRegressions(unittest.TestCase):
+    """최종 평가(2026-11-14)에서 찾은 회귀: 특수 규칙이 일상어에 걸리던 결함."""
+    def test_bigyo_bijung_not_rain(self):
+        for q in ["관광객 비중이 제일 높은 곳 어디야?", "업종별로 비교해서 가게가 가장 많은 곳은?"]:
+            r = R.respond(q, None, llm_on=False)
+            self.assertNotIn("비 오는 날", (r.get("card") or {}).get("conclusion") or "", q)
+
+    def test_gyeonggi_economy_not_outside(self):
+        r = R.respond("요즘 제주 경기 어때?", None, llm_on=False)
+        self.assertNotIn("제주 밖", (r.get("card") or {}).get("conclusion") or "")
+
+    def test_business_recommend_message(self):
+        r = R.respond("창업할 업종 추천해줘", None, llm_on=False)
+        self.assertIn("추천하거나 정하지 않아요", r["card"]["conclusion"])
+
+    def test_city_rank_scoped(self):
+        r = R.respond("서귀포시 동네 중 카페 가장 많은 곳은?", None, llm_on=False)
+        self.assertIn("17곳", r["card"]["conclusion"])
+        self.assertNotIn("애월읍", r["card"]["conclusion"])
