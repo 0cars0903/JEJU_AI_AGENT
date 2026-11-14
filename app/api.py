@@ -6,7 +6,7 @@ import math
 import re
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 import pandas as pd
@@ -86,6 +86,7 @@ class Feedback(BaseModel):
     slots: Optional[dict] = None  # 확인한(또는 고친 뒤의) 버튼 값
     before: Optional[dict] = None  # 고치기 전 버튼 값([조건 바꾸기])
     ok: bool = True  # True: [맞아요], False: [조건 바꾸기]로 고침
+    expect: Optional[Literal["답함", "되묻기", "범위밖"]] = None  # '답할지' 신호(2026-11-15): 범위 밖 안내 확인·되묻기 뒤 조건 고름
 
 
 def _log_feedback(rec):
@@ -107,7 +108,10 @@ def _log_feedback(rec):
 def feedback(body: Feedback):
     """[맞아요] 확인 또는 [조건 바꾸기]로 고친 해석을 기록한다(검수·재실행 라인 4단계)."""
     if body.question.strip():
-        _log_feedback({"kind": "확인" if body.ok else "고침", "question": body.question.strip(), "before": body.before, "slots": body.slots})
+        rec = {"kind": "확인" if body.ok else "고침", "question": body.question.strip(), "before": body.before, "slots": body.slots}
+        if body.expect:
+            rec["expect"] = body.expect
+        _log_feedback(rec)
     return {"ok": True}
 
 

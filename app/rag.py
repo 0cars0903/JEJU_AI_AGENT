@@ -35,6 +35,8 @@ def load():
         meta = json.loads(ROWS.read_text(encoding="utf-8"))
         _lib = {}
         for name, m in meta["libs"].items():
+            if name == "untyped":  # 재학습 바탕(종류 없는 되묻기 문장)은 질문 기록 대조에 쓰지 않는다
+                continue
             v = z[name].astype(np.float32)
             v /= np.linalg.norm(v, axis=1, keepdims=True) + 1e-9
             _lib[name] = {"vec": v, "q": m["q"], "label": m["label"], "param": meta["param"].get(name, {})}

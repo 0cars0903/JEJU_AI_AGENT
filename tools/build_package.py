@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NAME = "jeju_bigdata_consulting_agent"  # 서비스 이름: 제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent
-INCLUDE = ["README.md", "docs/제출", "notebooks", "requirements.txt", ".env.example", "app", "scripts", "tests", "tools/retrain.py", "tools/feedback_to_train.py", "data/x1/test_std150_gold.jsonl", "data/x1/test_std150d_gold.jsonl", "models/m1_intent.json", "models/recipes.json", "models/rag_index.npz", "models/rag_rows.json", "data/tables", "data/manual", "data/lexicon", "data/catalog.json", "data/metric_dict.json",
+INCLUDE = ["README.md", "docs/제출", "notebooks", "requirements.txt", ".env.example", "app", "scripts", "tests", "tools/retrain.py", "tools/feedback_to_train.py", "tools/lexicon_candidates.py", "data/x1/test_std150_gold.jsonl", "data/x1/test_std150d_gold.jsonl", "models/m1_intent.json", "models/recipes.json", "models/rag_index.npz", "models/rag_rows.json", "data/tables", "data/manual", "data/lexicon", "data/catalog.json", "data/metric_dict.json",
            "web/out", "web/src", "web/public", "web/package.json", "web/package-lock.json", "web/next.config.ts", "web/tsconfig.json", "web/postcss.config.mjs", "web/components.json", "web/playwright.config.ts"]
 SKIP = {"__pycache__", ".DS_Store", "node_modules", ".next", "test-results"}
 # 실행에 쓰지 않는 실험 스크립트(채택하지 않은 LoRA 판정, 개발 PC 경로 포함). 마스터 결정 2026-11-13.

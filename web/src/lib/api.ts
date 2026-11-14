@@ -117,7 +117,8 @@ export const getMap = () => call<JejuMapData>("/api/map");
 export const getSummary = (dong: string) => call<DongSummary>(`/api/summary?dong=${encodeURIComponent(dong)}`);
 export type AskBody = { question?: string; slots?: Slots; dataset_id?: string; dataset_key?: string };
 /** 검수·재실행 라인 4단계: [맞아요](ok) 또는 [조건 바꾸기]로 고친 해석을 서버에 남긴다. 실패해도 화면은 그대로 둔다. */
-export const sendFeedback = (b: { question: string; slots?: Slots; before?: Slots; ok: boolean }) =>
+/** expect: '답할지' 신호(2026-11-15). 범위 밖 안내의 [맞아요]=범위밖·[답할 수 있는 질문이에요]=답함, 되묻기 화면에서 조건을 고름=되묻기. */
+export const sendFeedback = (b: { question: string; slots?: Slots; before?: Slots; ok: boolean; expect?: "답함" | "되묻기" | "범위밖" }) =>
   call<{ ok: boolean }>("/api/feedback", { method: "POST", body: JSON.stringify(b) }).catch(() => undefined);
 export const ask = (body: AskBody) => call<AskResult>("/api/ask", { method: "POST", body: JSON.stringify(body) });
 

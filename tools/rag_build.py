@@ -41,20 +41,28 @@ def judge_set():
     return s
 
 
+EXPECT = {}  # 기록별 '답할지' 정답(답함·되묻기·범위밖), 재학습용
+
+
 def libraries():
     bad = judge_set()
     out, dropped = {}, {}
-    rows, seen = [], set()
+    rows, seen, untyped = [], set(), []
     for q, t, _ in XE.training_rows():
         n = rag.norm(q)
-        if not t.get("type") or n in seen:
+        if n in seen:
             continue
         if n in bad:
             dropped["type"] = dropped.get("type", 0) + 1
             continue
         seen.add(n)
-        rows.append((q, t["type"]))
+        if t.get("type"):
+            rows.append((q, t["type"]))
+            EXPECT.setdefault("type", []).append(t["expect"])
+        else:  # 종류 없는 되묻기 문장: 질문 기록에는 쓰지 않고, 센터 PC 재학습의 '답할지' 판단 학습 바탕으로만 쓴다(tools/retrain.py)
+            untyped.append((q, t["expect"]))
     out["type"] = rows
+    out["untyped"] = untyped
     rows, seen = [], set()
     for name in TECH_DEV:
         for r in _jsonl(ROOT / "data" / "eval" / name):
@@ -99,6 +107,10 @@ def main():
         X = XE.embed([q for q, _ in rows])
         arrays[name] = X.astype(np.float16)
         meta["libs"][name] = {"q": [q for q, _ in rows], "label": [lab for _, lab in rows], "n": len(rows)}
+        if name in EXPECT:
+            meta["libs"][name]["expect"] = EXPECT[name]
+        if name == "untyped":  # 질문 기록 대조에는 쓰지 않으므로 기준값을 정하지 않는다
+            continue
         if "--tune" in sys.argv:
             best, _ = tune(X.astype(np.float32), [lab for _, lab in rows])
             meta["param"][name] = {k: best[k] for k in ("k", "sim", "share")}

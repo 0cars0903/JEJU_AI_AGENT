@@ -15,7 +15,7 @@ import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
 import { ExpertMode, ResultView } from "./expert";
 import { useNav } from "@/components/nav-context";
-import { AnswerCard, BizTabs, CompareWith, Downloads, Process, SourceList, SuggestionList, Understood, Waiting } from "./answer";
+import { AnswerCard, BizTabs, CompareWith, Downloads, Process, ScopeCheck, SourceList, SuggestionList, Understood, Waiting } from "./answer";
 
 // 로딩 뼈대의 모양을 그리기 위한 예시 답(화면에 보이지 않는다).
 const SAMPLE: AskResult = {
@@ -96,10 +96,14 @@ export function AskPage() {
   // 마지막으로 답을 요청한 주소. 주소가 바뀐 직후 한 번의 그리기 동안 앞 질문의 답이 새 전환 부품에 들어가지 않게 한다(2026-11-13)
   const askedKey = useRef<string | null>(null);
 
+  const askedBack = useRef<string | null>(null);
   const m = useMutation({
     mutationFn: ask,
     onSuccess: (r) => {
-      if (r.status === "선택필요" && r.choose) setPicker({ preset: r.choose.preset, notice: r.choose.message });
+      if (r.status === "선택필요" && r.choose) {
+        setPicker({ preset: r.choose.preset, notice: r.choose.message });
+        askedBack.current = r.question ?? null; // 되묻기 뒤 조건을 고르면 '되묻기가 맞았다'는 기록으로 남긴다(2026-11-15)
+      }
     },
   });
 
@@ -330,6 +334,8 @@ export function AskPage() {
                         closePanel();
                         if (correction.current) sendFeedback({ ...correction.current, slots: s, ok: false }); // 검수·재실행 라인 4단계: 고친 해석 기록
                         correction.current = null;
+                        if (askedBack.current) sendFeedback({ question: askedBack.current, slots: s, ok: true, expect: "되묻기" });
+                        askedBack.current = null;
                         run({ slots: s }, PICK_LABEL);
                       }}
                       onClose={closePanel}
@@ -445,6 +451,7 @@ export function AskPage() {
                   {/* 출처 목록은 근거 차트 뒤에 둔다(UI 검토 2026-11-13) */}
                   {res !== SAMPLE && <SourceList r={res} />}
                   {/* 이어서 물어보기는 자료 요청·내려받기보다 앞에 둔다(B2) */}
+                  {res !== SAMPLE && res.status === "범위밖" && res.question && <ScopeCheck key={res.question} question={res.question} />}
                   {res !== SAMPLE && res.suggestions && (
                     <SuggestionList
                       testId="suggestions"

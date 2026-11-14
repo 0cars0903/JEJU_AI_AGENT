@@ -34,9 +34,13 @@ TIME_W = _load("time")
 INTENT_W = _load("intent")
 OUT_W = _load("out_of_scope")
 COMMON_NOUNS = {"상가", "해안", "해변", "시내", "항구", "시장", "오름", "대비", "이용", "평소", "주변", "근처", "중앙", "바다", "공원", "학교"}  # 지명과 겹치는 일반 명사
+# 담당자가 채택한 낱말(tools/lexicon_candidates.py --apply, 2026-11-15): 고친 해석에서 나온 '낱말 → 동네·업종'. 파일을 지우면 원래 사전으로 돌아간다
+LEARNED = json.loads((LEX / "learned.json").read_text(encoding="utf-8")) if (LEX / "learned.json").exists() else {}
+for _w, _d in (LEARNED.get("places") or {}).items():
+    PLACES.setdefault(_w, {"dong": _d, "share": 1.0, "learned": True})
 PLACE_KEYS = sorted((k for k in PLACES if k not in COMMON_NOUNS), key=len, reverse=True)
-BIZ_KEYS = sorted([(w, g) for g, ws in BIZ["colloquial"].items() for w in ws] + [(c, (v.get("rest_group") or c)) for c, v in BIZ["categories"].items() if len(c) >= 2],
-                  key=lambda x: -len(x[0]))
+BIZ_KEYS = sorted([(w, g) for g, ws in BIZ["colloquial"].items() for w in ws] + [(c, (v.get("rest_group") or c)) for c, v in BIZ["categories"].items() if len(c) >= 2]
+                  + list((LEARNED.get("targets") or {}).items()), key=lambda x: -len(x[0]))  # 채택 낱말(업종)도 더한다
 FOOD_ONLY = {"개업수", "폐업수", "폐업률", "5년생존율", "조건부생존"}  # 780 음식점에서만 계산되는 지표
 FOOD_GROUPS = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점", "편의점", "음식점", "기타"}
 # 유형별 필수 칸: 동네가 있어야 답하는 유형(그 밖은 동네 없이 제주 전체·동네 전체로 답함)

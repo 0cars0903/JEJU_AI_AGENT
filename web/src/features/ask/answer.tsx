@@ -81,6 +81,28 @@ export function Understood({ r, onChange, sample }: { r: AskResult; onChange: (s
   );
 }
 
+/** 범위 밖 안내가 맞는지 묻는다(2026-11-15): '답할지' 판단을 다시 학습할 기록(tools/retrain.py). 누르면 질문 문장만 이 PC에 남는다. */
+export function ScopeCheck({ question }: { question: string }) {
+  const [done, setDone] = useState(false);
+  const send = (expect: "범위밖" | "답함") => {
+    setDone(true);
+    sendFeedback({ question, ok: expect === "범위밖", expect });
+  };
+  return (
+    <div className="flex flex-wrap items-center gap-2" data-testid="scope-check">
+      {done ? (
+        <p role="status" className="text-(--krds-text-bolder)">알려 주셔서 고마워요. 질문 해석을 고치는 데 쓸게요.</p>
+      ) : (
+        <>
+          <span className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">지금 자료로 답할 수 없는 질문으로 봤어요. 맞나요?</span>
+          <Button variant="outline" size="sm" onClick={() => send("범위밖")} data-testid="scope-ok">맞아요</Button>
+          <Button variant="outline" size="sm" onClick={() => send("답함")} data-testid="scope-answerable">답할 수 있는 질문이에요</Button>
+        </>
+      )}
+    </div>
+  );
+}
+
 function Tag({ text, layer }: { text: string; layer: string | null }) {
   // 판단 층(L3·L4)은 굵은 글씨, 사실(L1·L2)·판단 재료(L5)는 보통 글씨. 둘 다 회색 바탕이다.
   // 강조색 윤곽은 버튼처럼 보여 누르려는 사람이 있어 뺐다(UI 검토 2026-11-13, 색은 강조색 하나만 버튼에 쓴다).

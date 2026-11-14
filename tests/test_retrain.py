@@ -22,11 +22,12 @@ class Retrain(unittest.TestCase):
             scores = iter([(old, 300), (new, 300)])
             with mock.patch.object(R.m1, "MODEL", model), mock.patch.object(R, "CAND", d / "cand.json"), \
                     mock.patch.object(R, "PREV", d / "prev.json"), mock.patch.object(R, "LOG", d / "log.jsonl"), \
-                    mock.patch.object(R, "feedback_rows", return_value=[("노형동 카페 몇 개야?", "T1")]), \
+                    mock.patch.object(R, "feedback_rows", return_value=[("노형동 카페 몇 개야?", "T1", "답함")]), \
                     mock.patch.object(R, "build", return_value={"tag": "new"}), \
                     mock.patch.object(R, "score", side_effect=lambda p, v: next(scores)), \
                     mock.patch.object(R.m1.M1, "_embed", lambda self, q: [0.0]), \
-                    mock.patch("feedback_to_train.main", return_value=0), mock.patch("envfile.load", return_value=[]):
+                    mock.patch("feedback_to_train.main", return_value=0), mock.patch("envfile.load", return_value=[]), \
+                    mock.patch("lexicon_candidates.main", return_value=0):
                 self.assertEqual(R.main(), 0)
             log = json.loads((d / "log.jsonl").read_text(encoding="utf-8").splitlines()[-1])
             return json.loads(model.read_text(encoding="utf-8"))["tag"], (d / "prev.json").exists(), (d / "cand.json").exists(), log

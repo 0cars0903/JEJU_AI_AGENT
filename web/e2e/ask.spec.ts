@@ -179,6 +179,11 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await page.getByTestId("ask-submit").click();
     await expect(page.getByTestId("suggestions")).toContainText("대신 이런 걸 물어볼 수 있어요");
     await expect(page.getByTestId("understood")).toHaveCount(0);
+    // '답할지' 신호(2026-11-15): 범위 밖 판단이 맞는지 묻고, 누르면 고마움 안내로 바뀐다
+    const fb = page.waitForRequest((r) => r.url().endsWith("/api/feedback") && r.method() === "POST");
+    await page.getByTestId("scope-answerable").click();
+    expect((await fb).postDataJSON()).toMatchObject({ question: "노형동 임대료 얼마야?", expect: "답함" });
+    await expect(page.getByTestId("scope-check")).toContainText("질문 해석을 고치는 데 쓸게요");
   });
 });
 
