@@ -17,7 +17,8 @@ import guide as G  # noqa: E402
 
 
 def main(src=None):
-    src = Path(src or ROOT / "data" / "interim" / "feedback.jsonl")
+    import os
+    src = Path(src or (Path(os.environ["JEJU_WRITE_DIR"]) if os.environ.get("JEJU_WRITE_DIR") else ROOT / "data" / "interim") / "feedback.jsonl")  # 서버(api._log_feedback)와 같은 곳
     if not src.exists():
         print(f"기록 없음: {src}")
         return 0

@@ -41,3 +41,9 @@ models/registry.json
 
 # 개발 도구 skill 설치 기록(.claude/skills는 로컬 전용, 2026-11-11)
 skills-lock.json
+
+# 센터 PC 재학습 산출물(tools/retrain.py, 2026-11-15)
+models/m1_intent.prev.json
+models/m1_intent.candidate.json
+models/retrain_log.jsonl
+data/x1/feedback_train.jsonl
