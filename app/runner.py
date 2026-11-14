@@ -10,6 +10,7 @@
   센터 경로(S1 center)는 W9 어댑터 전이라 '센터 DB 미연결' 실행 오류로 처리한다.
 """
 import json
+import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -296,8 +297,23 @@ def s0_catalog(task, store, env):
     rows = json.loads((Q.ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))
     q = (env.get("question") or "").replace("센터에", "").replace("자료", "").replace("데이터", "")
     words = [w for w in q.replace("?", " ").split() if len(w) >= 2 and w not in ("있어", "있나요", "있어요", "도", "기간")]
-    hit = [r for r in rows if any(w in f"{r['name']} {r.get('domain', '')} {r.get('columns') or ''}" for w in words)]
-    return {"table": pd.DataFrame([{k: r.get(k) for k in ("name", "source", "space", "time", "period", "export")} for r in hit]), "dataset": "자료 목록", "unit": "-"}
+    text = lambda r: f"{r['name']} {r.get('domain', '')} {r.get('columns') or ''}"  # noqa: E731
+    stop = ("어떤", "무슨", "뭐가", "있는지", "알려줘", "알려", "목록", "센터", "있니", "있을까")
+    kept = []
+    for w in words:  # 낱말 그대로 찾고, 없으면 끝의 조사를 떼고 찾는다('숙박은'·'버스가', '와이파이'는 그대로)
+        cut = re.sub(r"(은|는|이|가|을|를|도|만|에|의|관련|관한)$", "", w)
+        w2 = w if any(w in text(r) for r in rows) else cut
+        if len(w2) >= 2 and w2 not in stop:
+            kept.append(w2)
+    words = list(dict.fromkeys(kept))
+    hit = [r for r in rows if any(w in text(r) for w in words)]
+    how = "이름"
+    tgt = (task.get("filter") or {}).get("target") or env.get("_target")
+    if not hit and tgt in Q.TARGETS_BIZ:  # 업종 이름으로 된 자료는 없어도 업종 칸이 있는 자료로 그 업종을 볼 수 있다(2026-11-15 최종 평가 결함)
+        hit = [r for r in rows if "업종" in (r.get("breakdown") or []) or "업종" in str(r.get("columns") or "")]
+        how = f"업종 칸({tgt})"
+    df = pd.DataFrame([{k: r.get(k) for k in ("no", "name", "source", "space", "time", "period", "export")} for r in hit])
+    return {"table": df, "dataset": "자료 목록", "unit": "-", "catalog": {"words": words, "how": how, "target": tgt}}
 
 
 def s2_describe(task, store, env):

@@ -284,6 +284,58 @@ class RankFix20261115(unittest.TestCase):
         self.assertTrue(self.conc("노형동 생존율 낮아?").startswith("노형동"))
 
 
+class Misfire20261115(unittest.TestCase):
+    """최종 내부 평가(2026-11-14)의 오작동 질문 20개: 기간·대체 지표 안내·조건·과차단·자료 찾기."""
+    @classmethod
+    def setUpClass(cls):
+        cls.r = {}
+
+    def ask(self, q):
+        if q not in self.r:
+            self.r[q] = R.respond(q, None, llm_on=False)
+        return self.r[q]
+
+    def conc(self, q):
+        return self.ask(q)["card"]["conclusion"]
+
+    def notes(self, q):
+        return " ".join((self.ask(q).get("understood") or {}).get("notes", []))
+
+    def test_period(self):
+        self.assertTrue(self.conc("2024년 노형동 카드 매출").startswith("2024년 노형동"))
+        self.assertTrue(self.conc("작년 노형동 매출").startswith(f"{__import__('datetime').date.today().year - 1}년"))
+        self.assertTrue(self.conc("2025년 7월 노형동 매출").startswith("2025년 7월"))
+        self.assertIn("7월", self.conc("7월 연동 방문객"))
+        self.assertIn("자료는 없어요", self.conc("2019년 노형동 매출"))
+        self.assertTrue(self.conc("2024년 노형동 폐업").startswith("2024년"))
+
+    def test_catalog(self):
+        self.assertIn("6종", self.conc("센터에 와이파이 자료 있어?"))
+        self.assertIn("업종 칸", self.conc("센터에 숙박 자료 있어?"))
+        self.assertIn("찾지 못했어요", self.conc("센터에 주차장 자료 있어?"))
+        self.assertEqual(self.ask("버스 자료 뭐 있어?")["tuple"]["type"], "T11")
+
+    def test_substitute_metric_with_note(self):
+        self.assertIn("1건당 금액", self.conc("비싼 식당 많은 동네"))
+        self.assertIn("메뉴 가격", self.notes("비싼 식당 많은 동네"))
+        self.assertIn("연령", self.conc("노형동 인구"))
+        self.assertIn("인구 수", self.notes("노형동 인구"))
+        self.assertIn("관광객 매출 비중 순위", self.conc("관광객 많은 동네 순위"))
+        self.assertIn("15시", self.conc("오후 3시에 노형동 사람 많아?"))
+        self.assertIn("센터 유동인구", self.notes("오후 3시에 노형동 사람 많아?"))
+
+    def test_conditions(self):
+        self.assertIn("눈 온 날", self.notes("눈 오는 날 매출 많은 동네"))
+        self.assertNotIn("비", self.ask("눈 오는 날 매출 많은 동네")["tuple"].get("cond") or [])
+        self.assertTrue(self.conc("비가 올 때 노형동 매출").startswith("비에 따른 노형동"))
+        self.assertIn("하루 단위 매출", self.notes("비가 올 때 노형동 매출"))
+
+    def test_not_overblocked(self):
+        self.assertNotIn("제주 밖", self.conc("대구탕 집 많은 동네"))
+        self.assertNotIn("제주 밖", self.conc("광주광역시 말고 제주 노형동 매출"))
+        self.assertIn("노형동", self.conc("광주광역시 말고 제주 노형동 매출"))
+
+
 if __name__ == "__main__":
     unittest.main()
 

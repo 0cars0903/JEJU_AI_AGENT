@@ -379,7 +379,7 @@ def _plain_answer(question, t, concl, ev, limits, tag, src, as_of, t0, path, not
 
 
 # 비(雨)를 뜻하는 말만 잡는다. '비교'·'비중'·'눈에 띄게'를 비로 읽던 결함(최종 평가 2026-11-14) 수정
-RAIN_WORD = r"(비\s*(가|오|올|와|내리|온|많)|빗|우천|강수|강우|장마|폭우|눈\s*(이\s*)?(오|올|와|내리|온))"
+RAIN_WORD = r"(비\s*(가|오|올|와|내리|온|많)|빗|우천|강수|강우|장마|폭우)"  # 눈은 비가 아니다: 눈 온 날은 따로 안내한다(SNOW_Q, 2026-11-15)
 RAIN_RANK = re.compile(RAIN_WORD + r".*(가장|제일|어디|어느\s*동네|순위|많이\s*줄|덜\s*줄)")
 
 
@@ -470,7 +470,7 @@ def _extreme_month(question, t, t0):
                          notes=[REASON_NOTE] if REASON_Q.search(question or "") else [])
 
 
-OUTSIDE_Q = re.compile(r"서울|부산|대구|인천|광주광역|대전|울산|세종시|경기도|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|강남역|해운대|홍대|명동|여의도|판교")
+OUTSIDE_Q = re.compile(r"서울|부산|대구(?!탕|찜|뽈|국|요리|매운탕|전|살|회)|인천|광주광역|대전|울산|세종시|경기도|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|강남역|해운대|홍대|명동|여의도|판교")
 OUTSIDE_MSG = "제주 43개 읍면동 자료만 있어서 제주 밖 지역은 답할 수 없어요. 제주의 동네로 물어 주세요."
 MATJIP_Q = re.compile(r"맛집|맛있|맛\s*좋|후기|리뷰|평점|(가게|식당|카페|집)\S*\s*추천")
 MATJIP_MSG = "맛·후기·평점 자료가 없어 맛집을 고르거나 가게를 추천할 수 없어요. 대신 그 지역 음식점 수, 카드 매출, 생존율을 볼 수 있어요."
@@ -638,6 +638,28 @@ def _escalate(question, it, t0, why):
 RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌|(적|낮|작)은\s*(동네|곳|지역|데)|안\s*되는\s*(동네|곳|지역|데)")
 # 동네를 말하지 않고 '높은·낮은·많은 동네', '어디가 제일 잘 돼'처럼 물으면 순위 질문이다(2026-11-15 최종 평가 결함: 단일 조회 T1로 읽음)
 RANK_ADJ = re.compile(r"(높|낮|많|적|큰|작|잘\s*되|안\s*되)(은|는)\s*(동네|곳|지역|데)|어디(가|서|에서|가\s*더)?\s*(가장|제일|젤|더|잘)|(가장|제일)\s*잘\s*(돼|되)")
+DATA_Q = re.compile(r"(자료|데이터)\S{0,2}\s*(뭐|무엇|어떤|있)")  # '버스 자료 뭐 있어?'는 자료 찾기(T11)
+SNOW_Q = re.compile(r"눈\s*(이\s*)?(오|올|와|내리|온|많|쌓)|폭설|대설|적설")
+SNOW_NOTE = "눈 온 날을 따로 나눈 자료는 없어요(날씨 자료는 비 온 날만 나눠요). 위 답은 날씨 조건 없이 본 값이에요."
+PRICE_Q = re.compile(r"비싼|비싸|저렴|싼\s*(곳|식당|가게|집|데)|가격")
+PRICE_NOTE = "메뉴 가격 자료는 없어요. 카드 결제 1건당 금액으로 봤어요."
+POP_Q = re.compile(r"(?<!유동)(?<!방문)인구(?!\s*(구성|연령|나이))|주민\s*수|몇\s*명\s*(이\s*)?(살|사)")
+POP_NOTE = "동네 인구 수(주민등록 인구)는 자료에 없어요. 거주 인구의 연령 구성으로 답했어요."
+TOUR_MANY = re.compile(r"관광객\S{0,2}\s*(많|적|몰|붐|순위)")
+HOUR_Q = re.compile(r"(오전|오후|새벽|아침|저녁|밤|낮)\s*\d{1,2}\s*시|\d{1,2}\s*시\s*(쯤|경|에|부터|대|께)")
+HOUR_NOTE = "시간대별 사람 수는 센터 유동인구 자료를 넣어야 볼 수 있어요. 위 답은 카드 매출의 시간대 비중이에요."
+RAIN_SALES_NOTE = "하루 단위 매출 자료가 없어요. 비 온 날의 방문 변화로 봤어요."
+def _asked_period(q):
+    """질문의 해·달. '작년'·'올해'는 오늘 날짜 기준. '3개월'·'12월까지 다음 달' 같은 말은 달로 보지 않는다."""
+    import datetime
+    y = datetime.date.today().year
+    m = re.search(r"(20\d\d)\s*년", q)
+    ay = int(m.group(1)) if m else (y - 1 if re.search(r"작년|지난\s*해|전년", q) else y if re.search(r"올해|금년|올\s*해", q) else None)
+    mm = re.search(r"(?<!\d)(1[0-2]|[1-9])\s*월(?!\s*(까지|부터|이후))", q)
+    am = int(mm.group(1)) if mm and not re.search(r"\d\s*개월", q) else None
+    return ay, am
+
+
 SALES_WORD = re.compile(r"잘\s*(돼|되|나가|팔)|장사(가|는)?\s*(잘|안)")
 MULTI_NOTE = "질문에 묻는 것이 여럿일 수 있어요. 위 답은 그중 하나만 다뤘으니, 나머지는 따로 물어 주세요."
 
@@ -711,6 +733,37 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         if not t.get("metric") and SALES_WORD.search(q_):  # '잘 돼?'는 매출로 답한다(점포 수로 답하던 결함, 2026-11-15)
             t = dict(t, metric=["매출"])
             it = dict(it, tuple=t)
+        # 지표·조건을 못 찾았거나 다른 지표로 답하는 질문(2026-11-15 최종 평가 결함): 가까운 지표로 바꾸고 바꾼 사실을 알린다
+        if DATA_Q.search(q_) and not t.get("space") and t.get("type") != "T11":
+            t = dict(t, type="T11", metric=["자료목록"], expect="답함")
+        if PRICE_Q.search(q_) and "건당금액" not in (t.get("metric") or []) and set(t.get("metric") or []) <= {"점포수"}:
+            t = dict(t, metric=["건당금액"])
+            notes.append(PRICE_NOTE)
+        if POP_Q.search(q_) and set(t.get("metric") or []) <= {"점포수"}:
+            t = dict(t, metric=["거주연령구성"], expect="답함" if t.get("space") else t.get("expect"))
+            notes.append(POP_NOTE)
+        if TOUR_MANY.search(q_) and set(t.get("metric") or []) <= {"점포수"}:
+            t = dict(t, metric=["관광객비중"])
+            notes.append(TOUR_NOTE)
+        if HOUR_Q.search(q_) and set(t.get("metric") or []) <= {"점포수", "일평균방문"}:
+            t = dict(t, type="T13", metric=["시간대방문"], form=Q.DEFAULT_FORM["T13"])
+        hm = re.search(r"(오후|저녁|밤)?\s*(\d{1,2})\s*시", q_) if HOUR_Q.search(q_) else None
+        if hm:  # 물은 시각의 값도 답한다('오후 3시' → 15시)
+            h = int(hm.group(2)) % 24
+            t = dict(t, ask_hour=h + 12 if hm.group(1) and h < 12 else h)
+        ay, am = _asked_period(q_)
+        if ay or am:  # 질문에 적힌 기간(문서 계산은 layers._asked_ym)
+            t = dict(t, ask_year=ay, ask_month=am)
+            if am and t.get("type") == "T6" and not re.search(r"여름|겨울|봄|가을|계절|성수기|비수기|날씨|" + RAIN_WORD, q_):
+                t = dict(t, type="T1", cond=[], form=Q.DEFAULT_FORM["T1"])  # '7월 연동 방문객'은 계절 효과가 아니라 7월 값
+        if SNOW_Q.search(q_):
+            t = dict(t, cond=[c for c in (t.get("cond") or []) if c != "비"])
+            notes.append(SNOW_NOTE)
+        elif re.search(RAIN_WORD, q_) and t.get("type") == "T1" and t.get("space") and not t.get("cond"):
+            if "매출" in (t.get("metric") or []):
+                notes.append(RAIN_SALES_NOTE)
+            t = dict(t, type="T6", cond=["비"], metric=["일평균방문"], form=Q.DEFAULT_FORM["T6"])
+        it = dict(it, tuple=t)
         if len(t.get("metric") or []) > 1:  # 질문에 그대로 적힌 지표를 앞에(폐업률을 물었는데 폐업 수 순위로 답하던 결함)
             t = dict(t, metric=sorted(t["metric"], key=lambda m: m not in q_))
             it = dict(it, tuple=t)
@@ -839,6 +892,8 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import plan_agent
             if plan_agent.multi(question):  # 여러 단계 표지가 있는데 나누지 못하고 하나로 답한 경우 알린다(둘째 조각이 조용히 빠지던 문제, 페르소나 평가 2026-11-14)
                 notes = notes + [MULTI_NOTE]
+        if "시간대방문" in t.get("metric", []) and not any("이용자 불러옴" in str(v.get("dataset")) for v in rv["run"]["store"].values() if isinstance(v, dict)):
+            notes = notes + [HOUR_NOTE]
         if question and REASON_Q.search(question):  # '이유·왜'는 자료로 단정할 수 없음을 알린다(평가 2026-11-14 A2)
             notes = notes + [REASON_NOTE]
         if question and STOP_Q.search(question) and not (env or {}).get("center_bus"):  # 정류소를 물었는데 동네 값으로 답한 경우(A6)

@@ -90,7 +90,7 @@ def plan(t, env=None):
         out["status"] = t["expect"]  # 되묻기·범위밖은 실행하지 않는다
         return out
     if t["type"] == "T11":
-        out["steps"].append({"sub": "S0", "op": "자료 목록 검색", "dataset": "catalog"})
+        out["steps"].append({"sub": "S0", "op": "자료 목록 검색", "dataset": "catalog", "filter": {"target": t.get("target")}})
         return out
     if t["type"] == "T10":  # v3 F2 상권 묶음 진단: 판단 재료(수요·경쟁·생존) + 매출 흐름 + 손님 구성 + 가게 수
         flt = {"dong": t["space"] or "전체", "target": t.get("target"), "time": t.get("time"), "detail": t.get("detail"), "details": t.get("details")}

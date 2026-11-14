@@ -208,6 +208,30 @@ def _rank_head(o, t, word, label, top, n, unit):
     o.rank_head = f"{word}{label} 순위는 {parts}{_cop(parts)}(값이 있는 동네 {n}곳 가운데 {'작은' if asc else '큰'} 순서)."
 
 
+def _asked_ym(o, t, tab, label, src, metric, word):
+    """질문에 적힌 기간(2024년·작년·7월)에 맞는 달을 고른다. 없으면 있는 범위를 알리고 최근 달로 답한다(2026-11-15 최종 평가 결함: 기간을 무시하고 최근 달로 답함)."""
+    end = tab["ym"].max()
+    ay, am = t.get("ask_year"), t.get("ask_month")
+    if not (ay or am):
+        return end
+    yms = sorted(tab["ym"].unique())
+    pick = [m for m in yms if (not ay or m.startswith(f"{ay}-")) and (not am or m.endswith(f"-{am:02d}"))]
+    asked = f"{ay}년 " if ay else ""
+    asked += f"{am}월" if am else ""
+    if not pick:
+        o.numbers += [float(x) for x in (ay, am) if x]
+        o.line("L1", f"{asked.strip()} 자료는 없어요. 이 자료는 {_ym_ko(yms[0])}부터 {_ym_ko(yms[-1])}까지 있어요. 아래는 가장 최근 달 값이에요.", src)
+        return end
+    if ay and not am and metric in ("매출", "이용건수") and tab["dong"].nunique() <= 6:
+        yr = tab[tab["ym"].str.startswith(f"{ay}-")]
+        n = yr["ym"].nunique()
+        for d, g in yr.groupby("dong"):
+            v_ = o.num(float(g["value"].sum()), "원" if metric == "매출" else "건")
+            o.numbers.append(float(n))
+            o.line("L1", f"{ay}년 {d} {word}{_josa(label)} {v_}{_cop(v_)}({n}개월 합계{'' if n == 12 else ', 12개월이 다 차지 않음'}).", src, f"{ay}년")
+    return pick[-1]
+
+
 def _table_lines(o, t, metric, v, note):
     tab = v["table"]
     unit = v.get("unit")
@@ -223,6 +247,12 @@ def _table_lines(o, t, metric, v, note):
         for d, g in tab.groupby("dong"):
             top = g.sort_values("value", ascending=False).head(3)
             hs = ", ".join(f"{int(h)}시({o.num(x, '%')})" for h, x in zip(top["hour"], top["value"]))
+            ah = t.get("ask_hour")
+            if ah is not None and (g["hour"] == ah).any():  # 물은 시각의 값과 몇 위인지(2026-11-15)
+                x = float(g.loc[g["hour"] == ah, "value"].iloc[0])
+                rk = int((g["value"] > x).sum()) + 1
+                o.numbers += [float(ah), float(rk), float(len(g))]
+                hs += f". {ah}시는 {o.num(x, '%')}로 {len(g)}개 시간 중 {rk}위"
             o.line("L1", f"{d} {word}매출이 많은 시간은 {hs}{_cop(hs)}.", src, src.split("최근 12개월 ")[-1].rstrip(")") if "최근 12개월" in str(src) else None)
             o.view("hour", "시간대", "bar", [{"name": d, "points": [[int(h), float(x)] for h, x in zip(g["hour"], g["value"])]}],
                    f"{int(top['hour'].iloc[0])}시에 매출 비중이 가장 큽니다", x="hour", unit="%")
@@ -234,7 +264,7 @@ def _table_lines(o, t, metric, v, note):
         o.line("L1", f"{only}제주 전체 외국인 관광객 카드 매출이 많은 출신지역은 {og}{_cop(og)}.", src, tab["ym"].max())
         return
     if "ym" in tab:
-        end = tab["ym"].max()
+        end = _asked_ym(o, t, tab, label, src, metric, word)
         cur = tab[tab["ym"] == end]
         cur0 = cur
         dongs = cur["dong"].unique()
@@ -281,6 +311,13 @@ def _table_lines(o, t, metric, v, note):
         return
     if "year" in tab:
         last = tab["year"].max()
+        ay = t.get("ask_year")
+        if ay and ay != last:  # 물은 해(2024년·작년)의 값으로(2026-11-15)
+            if (tab["year"] == ay).any():
+                last = ay
+            else:
+                o.numbers += [float(ay), float(tab["year"].min()), float(last)]
+                o.line("L1", f"{ay}년 자료는 없어요. 이 자료는 {tab['year'].min()}년부터 {last}년까지 있어요. 아래는 {last}년 값이에요.", src)
         rl = v3.meta().get("rest_last", "") if metric in ("개업수", "폐업수") else ""
         part = rl.startswith(str(last)) and not rl.endswith("12-31")  # 아직 덜 찬 해: '곳/년'이 아니라 그날까지 센 수(이중 검토 035)
         when = f"{last}년({int(rl[5:7])}월 {int(rl[8:10])}일까지)" if part else f"{last}년"
@@ -1287,12 +1324,35 @@ def _summary_conclusion(o, sig, lvl, tgt=None):
     return f"{sig['dong']}: " + "이고, ".join(parts) + "이에요(제주 43개 동네 중)."
 
 
+def _catalog_lines(o, v):
+    """자료 찾기(T11): 찾은 자료를 번호·이름·출처·반출 여부로 적는다. 못 찾으면 그렇다고 말한다(2026-11-15: 전에는 '확인된 결과가 없어요')."""
+    tab, info = v["table"], v.get("catalog") or {}
+    ws = info.get("words") or []
+    words = ", ".join(f"'{w}'" for w in ws) or "질문"
+    wa = _josa(ws[-1], "과", "와") if ws else "과"
+    wa = wa[len(ws[-1]):] if ws else wa
+    if not len(tab):
+        o.line("L1", f"자료 목록에서 {words}{wa} 이어지는 자료를 찾지 못했어요.", "자료 목록", "센터 명세 기준")
+        return
+    center = tab[tab["source"] == "센터"]
+    head = f"업종 이름으로 된 자료는 없지만, 업종 칸이 있어 {_josa(info.get('target') or '업종', '을', '를')} 따로 볼 수 있는 자료가 {len(tab)}종 있어요" if info.get("how", "").startswith("업종") \
+        else f"{words}{wa} 이어지는 자료가 {len(tab)}종 있어요"
+    o.numbers.append(float(len(tab)))
+    o.line("L1", f"{head}(센터 자료 {len(center)}종).", "자료 목록", "센터 명세 기준")
+    for r in tab.head(8).itertuples():
+        ex = "" if r.source != "센터" else (" · 반출 가능" if str(r.export).startswith("가능") else " · 반출 불가(센터 안에서만)")
+        o.line("L1", f"{r.no or '공개'} {r.name}({r.source}, {r.space} · {r.time}{ex})", "자료 목록", "센터 명세 기준")
+
+
 def build(t, rv, ev, value_q=False):
     o = Out()
     store, order = rv["run"]["store"], rv["order"]
     tasks = {x["out"]: x for x in order["tasks"]}
     for key, v in store.items():
         task = tasks.get(key, {})
+        if isinstance(v, dict) and task.get("sub") == "S0" and "table" in v:
+            _catalog_lines(o, v)
+            continue
         if not isinstance(v, dict) or task.get("sub") != "S1" or "table" not in v:
             continue
         if v.get("extra"):
