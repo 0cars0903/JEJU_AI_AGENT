@@ -91,30 +91,3 @@ def note(chk, describe):
     return (f"(검사 메모: 비슷한 과거 질문은 다음처럼 분석했어요.\n{ex}\n"
             f"처음 판단({describe(chk['first'])})과 달라요. 질문의 뜻을 다시 보고 맞는 것을 고르세요. 과거 질문과 뜻이 다르면 처음 판단을 유지해도 돼요.)")
 
-
-TYPE_DESC = {"T1": "현황: 한 동네(또는 제주 전체)의 지금 값(가게 수·매출·방문 등)", "T2": "비교: 두 동네 이상을 견줌",
-             "T3": "순위: 여러 동네 가운데 가장 많은·적은 곳", "T4": "추이: 시간에 따라 늘었는지 줄었는지",
-             "T5": "구성: 비중·나눠 보기(연령·업종·관광객 비중)", "T6": "조건 효과: 비·주말·계절 같은 조건에 따라 달라지는지",
-             "T7": "관계: 두 지표가 같이 움직이는지", "T8": "예상: 다음 주·다음 달 값", "T9": "비슷한 동네 찾기",
-             "T10": "종합 진단: 동네 상권 전체를 진단하거나 창업 판단 재료", "T11": "자료 찾기: 어떤 자료가 있는지",
-             "T12": "범위 밖: 지금 자료로 답할 수 없는 질문", "T13": "시간대 패턴: 몇 시에 많은지",
-             "T14": "조건 탐색: 여러 조건을 함께 만족하는 동네 찾기", "T15": "이례 변화: 올해 평소와 다르게 크게 변한 것"}
-S_REJUDGE = ("너는 제주 동네 질문의 종류를 고르는 담당자다. 질문 하나와 후보 종류 두 개(A, B), 비슷한 과거 질문의 예시를 받는다. "
-             "질문이 실제로 묻는 것에 맞는 후보 하나를 고른다. 과거 질문은 참고일 뿐이고, 뜻이 다르면 따르지 않는다. 출력은 JSON 하나.")
-F_REJUDGE = {"type": "object", "properties": {"choice": {"type": "string", "enum": ["A", "B"]}, "reason": {"type": "string"}}, "required": ["choice"]}
-
-
-def rejudge_type(question, chk, chat=None):
-    """질문 종류가 어긋나면 모델에 두 후보 중 하나를 고르게 한다. 모델이 없거나 실패하면 None(처음 판단 유지)."""
-    import llm
-    import expert
-    a, b = chk["first"], chk["vote"]
-    ex = "\n".join(f"- '{e['q']}' → {e['label']}({TYPE_DESC.get(e['label'], '')})" for e in chk["examples"])
-    user = f"질문: {question}\nA: {a}({TYPE_DESC.get(a, '')})\nB: {b}({TYPE_DESC.get(b, '')})\n비슷한 과거 질문:\n{ex}"
-    msgs = [{"role": "system", "content": S_REJUDGE}, {"role": "user", "content": user}]
-    try:
-        m = (chat or (lambda ms: llm.chat(expert.AGENT_MODEL, ms, [], name="ollama", max_tokens=120, fmt=F_REJUDGE)))(msgs)["message"]
-        c = json.loads(m.get("content") or "{}").get("choice")
-    except Exception:
-        return None
-    return {"A": a, "B": b}.get(c)

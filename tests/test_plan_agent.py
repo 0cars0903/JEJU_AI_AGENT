@@ -81,12 +81,10 @@ class PlanAgentTest(unittest.TestCase):
         with mock.patch.dict("os.environ", {"JEJU_PLAN_AGENT": "0"}):
             self.assertIsNone(PA._backend())
 
-    def test_local_model_off_by_default(self):  # 로컬 계획 선택은 측정에서 해로워 기본으로 끈다(246→242)
+    def test_local_model_not_used(self):  # 로컬 계획 선택은 측정에서 해로워 쓰지 않는다(246→242)
         import expert
         with mock.patch.object(expert, "backend", return_value="ollama"), mock.patch.dict("os.environ", {"JEJU_PLAN_AGENT": "1", "LLM_BACKEND": ""}):
             self.assertIsNone(PA._backend())
-            with mock.patch.dict("os.environ", {"JEJU_PLAN_AGENT_LOCAL": "1"}):
-                self.assertEqual(PA._backend(), "ollama")
 
 
 def judge(route, calls=None):

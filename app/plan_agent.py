@@ -5,7 +5,7 @@
 2. 선택지: 정해진 질문 종류(enum)만 고를 수 있다. 종류가 같으면 계획(`planner.TYPE_PLAN`)과 숫자가 같다.
 3. 저장: 같은 질문·같은 후보면 저장해 둔 결정을 다시 쓴다(`plan_cache.json`).
 4. 검사: 고른 해석을 검수 규칙(`verify.check_tuple`)이 검사하고, 실패하거나 LLM이 없거나 오류면 분류기 결과를 그대로 쓴다.
-모델: Claude 키가 있으면 Claude. 로컬 Ollama는 기본으로 쓰지 않는다(측정에서 해로움, 켜기: JEJU_PLAN_AGENT_LOCAL=1). 끄기: JEJU_PLAN_AGENT=0.
+모델: Claude 키가 있으면 Claude. 로컬 Ollama는 쓰지 않는다(측정에서 해로움). 끄기: JEJU_PLAN_AGENT=0.
 """
 import json
 import os
@@ -52,8 +52,9 @@ def _backend():
         return None
     import expert
     b = expert.backend()
-    # 로컬 모델의 계획 선택은 세 번 측정 모두 해로웠다(평가용 300: 246→242, 고침 2·망침 6). 기본은 끄고, 시험할 때만 JEJU_PLAN_AGENT_LOCAL=1(2026-11-14 마스터 결정)
-    if b == "ollama" and os.environ.get("JEJU_PLAN_AGENT_LOCAL") != "1":
+    # 로컬 모델의 계획 선택은 세 번 측정 모두 해로웠다(평가용 300: 246→242, 고침 2·망침 6, 2026-11-14). 로컬은 쓰지 않는다.
+    # 일반 질문의 로컬 판단은 질문 담당 Agent(app/question_agent.py)가 맡는다(계산 결과를 본 뒤 고르므로 판정 83→97, 2026-11-15)
+    if b == "ollama":
         return None
     return b
 

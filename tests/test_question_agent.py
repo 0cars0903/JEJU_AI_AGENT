@@ -24,11 +24,15 @@ def pick(text_part, seen=None):
 
 class QuestionAgent(unittest.TestCase):
     def setUp(self):
-        self.env = mock.patch.dict(os.environ, {"JEJU_RULE_FIX": "0", "LLM_BACKEND": "rule"})
+        import result
+        self.env = mock.patch.dict(os.environ, {"LLM_BACKEND": "rule"})
         self.env.start()
+        self.fix = mock.patch.object(result, "RULE_FIX", False)  # 보정 규칙 없이 Agent가 고치는지 본다
+        self.fix.start()
 
     def tearDown(self):
         self.env.stop()
+        self.fix.stop()
 
     def test_period_gap_recomputes(self):  # 규칙 보정 없이도 Agent가 '질문 기간으로 다시 계산'을 고르면 그 해 값으로 답한다
         r = A.run("2024년 노형동 카드 매출", {}, llm_on=False, chat=pick("질문의 기간"))

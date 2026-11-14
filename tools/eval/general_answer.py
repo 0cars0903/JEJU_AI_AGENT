@@ -2,7 +2,7 @@
 
 사용: python tools/eval/general_answer.py [--split dev|judge] [--mode workflow|agent] [--out 결과.json]
 - workflow: 지금 일반 경로(result.respond). agent: 질문 담당 Agent(app/question_agent.py).
-- 정규식 보정 규칙(2026-11-15 P1)은 JEJU_RULE_FIX=0으로 끈다(Agent만으로 되는지 보려고).
+- --no-rule-fix: 정규식 보정 규칙(2026-11-15 P1)을 끈다(Agent만으로 되는지 비교할 때. 서비스는 늘 켬).
 채점(코드, 문항 하나 = 정답/오답):
 - 처리: 답함(답이 나옴) / 되묻기(조건을 고르게 함) / 범위밖이 정답 expect와 같다.
 - 답함이면 모두 맞아야 정답: 동네 집합, 지표(metric_ok 중 하나가 계산 지표에 있음), 업종(target_ok가 있으면), 조건(정답 cond가 계산 조건에 있음),
@@ -51,6 +51,9 @@ def score(r, g):
 
 def main():
     import os
+    import result
+    if "--no-rule-fix" in args:
+        result.RULE_FIX = False
     items = [json.loads(l) for l in FILE.read_text(encoding="utf-8").splitlines() if l.strip()]
     items = [g for g in items if g.get("split") == split]
     if mode == "agent":
@@ -79,7 +82,7 @@ def main():
             by[h][0] += r["ok"]
             by[h][1] += 1
     secs = [r["sec"] for r in rows]
-    summ = {"file": FILE.name, "split": split, "mode": mode, "rule_fix": os.environ.get("JEJU_RULE_FIX", "1"), "n": len(rows), "정답": sum(r["ok"] for r in rows),
+    summ = {"file": FILE.name, "split": split, "mode": mode, "rule_fix": result.RULE_FIX, "n": len(rows), "정답": sum(r["ok"] for r in rows),
             "유형별": {k: f"{a}/{b}" for k, (a, b) in sorted(by.items())}, "칸별 오답": {k: sum(1 for r in rows if r["cells"].get(k) is False) for k in ("처리", "동네", "지표", "업종", "조건", "기간", "순위")},
             "지연 중앙값": statistics.median(secs) if secs else None, "지연 90%": sorted(secs)[int(len(secs) * 0.9)] if secs else None,
             "모델 판단 평균 횟수": round(statistics.mean(r["calls"] for r in rows), 2) if rows else 0,

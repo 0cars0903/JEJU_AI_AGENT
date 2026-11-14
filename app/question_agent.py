@@ -7,7 +7,8 @@
   목록 안에서 바꿈) · 기법으로(분석 담당에게) · 되묻기 · 범위 밖.
 - 소형 모델(qwen2.5:7b)이 다단계 자율 계획에 약한 원인(열린 행동 공간, 결과를 안 보고 계획, 근거 없음)을 막으려고, 한 번에 닫힌 선택 하나만 하게 하고
   결과 요약과 어긋남 목록을 근거로 준다(분석 담당 Agent와 같은 방식, 요청 이해 111/120).
-켜기: JEJU_QUESTION_AGENT=1(api). 모든 질문에서 모델에 묻기: JEJU_QA_ALL=1(기본은 1, 측정 뒤 결정). 측정: tools/eval/general_answer.py
+기본으로 켠다(Ollama가 있을 때). 끄기: JEJU_QUESTION_AGENT=0. 모든 일반 질문에서 첫 판단을 한 번 하고(어긋남이 없으면 '지금 답'), 지표가 질문 뜻과 맞는지도 확인한다.
+측정: tools/eval/general_answer.py(판정 150: 계획 표 83 → Agent 97)
 """
 import json
 import os
@@ -22,7 +23,6 @@ import qparse  # noqa: E402
 import qtuple as Q  # noqa: E402
 
 BY = "로컬 모델(qwen2.5:7b)"
-ACTIONS = ["답하기", "안내 붙여 답하기", "다시 계산", "기법으로", "되묻기", "범위 밖"]
 TYPE_KO = {"T1": "현황", "T2": "동네 비교", "T3": "순위", "T4": "추이", "T5": "구성", "T6": "조건 효과", "T7": "관계", "T8": "예상", "T9": "비슷한 동네",
            "T10": "종합 진단", "T11": "자료 찾기", "T13": "시간대", "T14": "조건 탐색", "T15": "이례 변화"}
 # 자료에 그 말이 없을 때 가까운 지표 후보(코드가 후보만 낸다, 고르는 것은 모델)
@@ -86,7 +86,6 @@ def summary(r):
             f"기간 {per}{' · 작은 순서' if t.get('order') == 'asc' else ''}\n결론: {conc}")
 
 
-CHECK_METRIC = os.environ.get("JEJU_QA_METRIC_CHECK", "1") == "1"  # 첫 판단에서 지표가 질문 뜻과 맞는지 늘 확인(조정용 측정으로 결정)
 
 
 def gaps(q, it, r, done=()):
@@ -114,7 +113,7 @@ def gaps(q, it, r, done=()):
     hints = [(ms, why) for rx, ms, why in SUB_HINTS if rx.search(q)]
     cand = [m for ms, _ in hints for m in ms if m not in (t.get("metric") or [])]
     metric_done = any("지표를" in x for x in done)
-    if CHECK_METRIC and not done and (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T11", "T9", "T10"):
+    if not done and (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T11", "T9", "T10"):
         cur = ", ".join(Q.METRICS.get(m, m) for m in t["metric"])
         out.append({"kind": "지표 확인", "text": f"지금 지표는 '{cur}'예요. 질문의 뜻과 다르면 다른 지표로 바꿀 수 있어요.",
                     "change": {"metric": [m for m, _ in MAIN_METRICS if m not in t["metric"]]}, "note": ""})
@@ -252,13 +251,12 @@ def _apply(t, change):
     return t2, why
 
 
-def run(question, env=None, llm_on=True, chat=None, max_turns=3, ask_all=None):
+def run(question, env=None, llm_on=True, chat=None, max_turns=3):
     """질문 하나. 돌려주는 값: result.respond와 같은 형식 + question_agent(판단 기록)."""
     import m1
     import result
     t0 = time.perf_counter()
     env = dict(env or {})
-    ask_all = (os.environ.get("JEJU_QA_ALL", "1") == "1") if ask_all is None else ask_all
     M = m1.M1()
     it = M.interpret(question)
     r = result.respond(question, env, llm_on, interpret=lambda q: it)
@@ -268,7 +266,7 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3, ask_all=None):
     done, notes = [], []
     for turn in range(max_turns):
         gs = gaps(question, it, r, done)
-        if not gs and not (ask_all and turn == 0):
+        if not gs and turn > 0:  # 첫 차례는 어긋남이 없어도 모델이 한 번 확인한다
             break
         t1 = time.perf_counter()
         pick, reason = decide(question, r, it, gs, chat, done)

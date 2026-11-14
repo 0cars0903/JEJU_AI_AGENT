@@ -636,6 +636,7 @@ def _escalate(question, it, t0, why):
             "sec": round(time.perf_counter() - t0, 3)}
 
 
+RULE_FIX = True
 RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌|(적|낮|작)은\s*(동네|곳|지역|데)|안\s*되는\s*(동네|곳|지역|데)")
 # 동네를 말하지 않고 '높은·낮은·많은 동네', '어디가 제일 잘 돼'처럼 물으면 순위 질문이다(2026-11-15 최종 평가 결함: 단일 조회 T1로 읽음)
 RANK_ADJ = re.compile(r"(높|낮|많|적|큰|작|잘\s*되|안\s*되)(은|는)\s*(동네|곳|지역|데)|어디(가|서|에서|가\s*더)?\s*(가장|제일|젤|더|잘)|(가장|제일)\s*잘\s*(돼|되)")
@@ -730,9 +731,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import plan_agent
             it = plan_agent.adjust(question, it)
         t = it["tuple"]
-        # 질문 보정 규칙(2026-11-15 P1: 기간·대체 지표·눈·비·자료 찾기·순위). JEJU_RULE_FIX=0이면 끈다(질문 담당 Agent 비교 측정용).
-        # Agent가 고른 해석으로 다시 계산할 때(env _agent_tuple)는 규칙이 덮어쓰지 않는다.
-        if os.environ.get("JEJU_RULE_FIX", "1") != "0" and not (env or {}).get("_agent_tuple"):
+        # 질문 보정 규칙(2026-11-15 P1: 기간·대체 지표·눈·비·자료 찾기·순위). 질문 담당 Agent가 고른 해석으로 다시 계산할 때(env _agent_tuple)는
+        # 규칙이 덮어쓰지 않는다. RULE_FIX는 비교 측정(tools/eval/general_answer.py --no-rule-fix)에서만 끈다.
+        if RULE_FIX and not (env or {}).get("_agent_tuple"):
             q_ = question or ""
             if not t.get("metric") and SALES_WORD.search(q_):  # '잘 돼?'는 매출로 답한다(점포 수로 답하던 결함, 2026-11-15)
                 t = dict(t, metric=["매출"])

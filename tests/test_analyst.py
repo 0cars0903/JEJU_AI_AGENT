@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 import analyst  # noqa: E402
-analyst.RAG_MODE = "off"  # 가짜 모델 시험: 질문 기록 대조(기본 replace)는 해당 시험에서만 켠다(bge-m3가 있는 PC에서 호출 수가 달라지지 않게)
+analyst.RAG_ON = False  # 가짜 모델 시험: 질문 기록 대조는 해당 시험에서만 켠다(bge-m3가 있는 PC에서 호출 수가 달라지지 않게)
 
 
 def fake(answers, seen=None):
@@ -65,16 +65,6 @@ class AnalystTest(unittest.TestCase):
         u, log = analyst.understand("중문동 방문객이 몇 시에 많은지 시간대별 분포 알려줘", chat=fake([U("general")]))
         self.assertEqual(u["kind"], "general")
 
-    def test_classifier_second_opinion_reasks(self):  # 분류기가 일반 종류(비슷한 동네)로 확신하면 다시 묻는다(B2)
-        from unittest import mock
-        it = {"tuple": {"type": "T9", "expect": "답함"}, "needs_confirm": False}
-        seen = []
-        with mock.patch.object(analyst, "_classifier", return_value=it), mock.patch.object(analyst, "RAG_MODE", "add"), \
-                mock.patch.object(analyst, "_rag_check", side_effect=lambda q, k, c, l: k):
-            u, log = analyst.understand("연동이랑 비슷한 동네 3곳 찾아줘", chat=fake([U("cluster"), U("general")], seen))
-        self.assertEqual(len(seen), 2)
-        self.assertEqual(u["kind"], "general")
-
     def test_rag_replace_reasks_with_examples(self):  # 질문 기록(RAG, 기본 replace): 비슷한 과거 요청과 어긋나면 예시를 붙여 다시 묻고, 모델 판단을 따른다
         from unittest import mock
         import rag
@@ -85,7 +75,7 @@ class AnalystTest(unittest.TestCase):
         def chat(model, messages, tools):
             seen.append(messages[-1]["content"])
             return {"message": {"content": json.dumps(next(ans), ensure_ascii=False)}}
-        with mock.patch.object(analyst, "RAG_MODE", "replace"), mock.patch.object(analyst, "_classifier_embed", return_value=[0.0]), \
+        with mock.patch.object(analyst, "RAG_ON", True), mock.patch.object(analyst, "_classifier_embed", return_value=[0.0]), \
                 mock.patch.object(rag, "check", return_value=chk):
             u, log = analyst.understand("노형동 업종이 한쪽에 몰렸는지 골고루인지 봐줘", chat=chat)
         self.assertEqual(len(seen), 2)

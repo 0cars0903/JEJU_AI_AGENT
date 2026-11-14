@@ -87,7 +87,7 @@ def score(path, vec):
     """판정용 300문항 핵심 정답 수(질문 해석 전체 규칙 포함). vec: 질문 → 벡터(두 모델이 같은 벡터로 채점되게)."""
     import x1_eval as X1
     gold = [json.loads(l) for p in GOLD for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
-    M = m1.M1(path, rag_on=False)
+    M = m1.M1(path)
     M._embed = vec
     return sum(X1.score(M.interpret(g["q"])["tuple"], g)["core"] for g in gold), len(gold)
 

@@ -48,21 +48,7 @@ S_NEXT = ("너는 상권 분석 담당자다. 방금 한 분석에 이어 도민
 F_NEXT = {"type": "object", "required": ["next", "reason"], "properties": {"next": {"type": "array", "items": {"type": "string", "enum": TECHS}, "maxItems": 2},
                                                                           "reason": {"type": "string"}}}
 DIGIT = re.compile(r"\d")
-# 일반 경로가 정해진 계산으로 답하는 종류(관계 T7은 상관·회귀 기법과 같은 일이라 뺀다).
-# 조정용 측정(2026-11-14)에서 현황·순위·추세는 기법 질문을 망쳐(5건) 빼고, 고친 사례만 있는 종류만 둔다
-GENERAL_ONLY = {"T2": "동네 비교", "T9": "비슷한 동네", "T10": "종합 진단", "T13": "시간대", "T14": "조건 탐색", "T15": "이례 변화"}
 _M = {}
-
-
-def _classifier(question):
-    """질문 해석 분류기(M1)의 판단. 쓸 수 없으면 None."""
-    try:
-        if "m" not in _M:
-            import m1
-            _M["m"] = m1.M1(rag_on=False)  # 두 번째 의견은 분류기만(종류 기록 다시 판단은 일반 경로에서)
-        return _M["m"].interpret(question)
-    except Exception:
-        return None
 
 
 def _ask(chat, system, user, schema, max_tokens=300):
@@ -83,9 +69,9 @@ def _ask(chat, system, user, schema, max_tokens=300):
         return {}
 
 
-# 질문 기록 찾기(RAG): replace(기본, 분류기 의견 대신)·add(분류기 의견에 더함)·off. 055 판정 120: 분류기 의견 107 → replace 111·add 111
-# (기법 기록 786문장: 조정용 132 + Gemini 058 654, 기준값은 기록 안 leave-one-out). 기록이 132문장일 때는 107로 효과 없었음(2026-11-15)
-RAG_MODE = os.environ.get("JEJU_ANALYST_RAG", "replace")
+# 질문 기록 찾기(RAG): 기법 이름이 없는 요청은 비슷한 과거 요청과 대조한다. 055 판정 120: 분류기 두 번째 의견 107 → 질문 기록 111
+# (기법 기록 786문장: 조정용 132 + Gemini 058 654, 기준값은 기록 안 leave-one-out). 분류기 두 번째 의견과 둘 다 쓰는 방식은 111로 같아 지웠다(커밋 0d74e20)
+RAG_ON = True  # 시험(가짜 모델)에서만 끈다
 
 
 def _kind_ko(k):
@@ -114,7 +100,7 @@ def _rag_check(question, kind, chat, log):
 def _classifier_embed(question):
     if "m" not in _M:
         import m1
-        _M["m"] = m1.M1(rag_on=False)
+        _M["m"] = m1.M1()
     return _M["m"]._embed(question)
 
 
@@ -141,20 +127,7 @@ def understand(question, chat=None, checks=True):
                             "note": f"요청에 적힌 '{T.TECH[named][0]}'(으)로 바로잡음", "sec": 0.0})
                 k2 = named
             kind, a = k2, {**a, **{k: v for k, v in again.items() if k in ("dongs", "target", "keyword") and v}}
-        elif kind in TECHS and not named and RAG_MODE == "replace":
-            pass  # 질문 기록(RAG)으로 분류기 의견을 대신한다(아래)
-        elif kind in TECHS and not named:  # 분류기의 두 번째 의견(평가 2026-11-14 B2): 일반 질문을 기법으로 보내는 오류를 막는다
-            it = _classifier(question)
-            gt = (it or {}).get("tuple", {}).get("type")
-            if it and gt in GENERAL_ONLY and not it.get("needs_confirm") and it["tuple"].get("expect") == "답함":
-                t1 = time.perf_counter()
-                again = _ask(chat, S_UNDERSTAND, f"{question}\n(검사 메모: 질문 해석기는 이 요청을 '{GENERAL_ONLY[gt]}' 일반 질문으로 읽었어요. "
-                                                 "통계 기법이 꼭 필요한 요청이 아니면 general을 고르세요.)", F_UNDERSTAND)
-                k2 = again.get("kind") if again.get("kind") in KINDS else kind
-                log.append({"tool": "understand", "name": "요청 이해(다시 판단)", "by": BY, "ok": True, "args": json.dumps({"kind": k2}, ensure_ascii=False),
-                            "note": str(again.get("reason") or "")[:120], "sec": round(time.perf_counter() - t1, 2)})
-                kind = k2  # 최종 판단은 모델이 한다(강제로 일반 경로로 보내면 기법 질문 43→22/48로 무너짐, 조정용 측정 2026-11-14)
-    if checks and RAG_MODE in ("add", "replace") and not (T.detect(question) and kind == T.detect(question)):
+    if checks and RAG_ON and not (T.detect(question) and kind == T.detect(question)):
         kind = _rag_check(question, kind, chat, log)
     dongs = [d for d in (a.get("dongs") or []) if d in Q.DONGS]
     target = (a.get("target") or "").strip()
