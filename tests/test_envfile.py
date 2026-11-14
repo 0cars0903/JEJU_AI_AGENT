@@ -52,3 +52,13 @@ class ReportTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ModelVersion(unittest.TestCase):
+    """정확도를 잰 모델 판과 다르면 실행 창에 알린다(check_env.PINNED, 2026-11-15)."""
+    def test_mismatch_reported(self):
+        import check_env as C
+        self.assertEqual(C.version_lines(dict(C.PINNED)), [])
+        lines = C.version_lines({"qwen2.5:7b": "000000000000"})
+        self.assertEqual(len(lines), 1)
+        self.assertIn("qwen2.5:7b", lines[0])

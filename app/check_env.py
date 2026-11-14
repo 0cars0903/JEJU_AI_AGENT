@@ -16,6 +16,8 @@ import envfile  # noqa: E402
 EMBED = "bge-m3"
 AGENT = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")  # 전문가 모드 로컬 도구 루프(문서 26)
 CHAT = os.environ.get("JEJU_OLLAMA_MODEL", "qwen3:1.7b")
+# 정확도를 잰 모델 판(Ollama digest 앞 12자리, 2026-11-15 확인). 'ollama pull'은 같은 이름이라도 새 판을 받을 수 있어 실행 전에 대조한다.
+PINNED = {"bge-m3": "790764642607", "qwen3:1.7b": "8f68893c685c", "qwen2.5:7b": "845dbda0ea48"}
 
 
 def ollama_models(url=None):
@@ -32,6 +34,27 @@ def ollama_models(url=None):
         names.add(n)
         names.add(n.split(":")[0] if n.endswith(":latest") else n)
     return names
+
+
+def digests(url=None):
+    """Ollama에 받아 둔 모델의 digest(앞 12자리). Ollama가 꺼져 있으면 {}."""
+    url = url or os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat").replace("/api/chat", "/api/tags")
+    try:
+        with urllib.request.urlopen(url, timeout=2) as r:
+            tags = json.loads(r.read())
+    except (OSError, ValueError):
+        return {}
+    out = {}
+    for m in tags.get("models", []):
+        n = m.get("name", "")
+        out[n[:-len(":latest")] if n.endswith(":latest") else n] = (m.get("digest") or "")[:12]
+    return out
+
+
+def version_lines(have):
+    """측정한 판과 다른 모델이 있으면 알린다(고정한 판: PINNED)."""
+    return [f"[모델 판] {n}의 판({have[n]})이 정확도를 잰 판({d})과 다릅니다. 수치가 README와 다를 수 있습니다."
+            for n, d in PINNED.items() if n in have and have[n] and have[n] != d]
 
 
 def report(models, has_key, backend=None):
@@ -67,7 +90,7 @@ def main():
     loaded = envfile.load()
     if loaded:
         print(".env에서 환경 변수를 읽었습니다: " + ", ".join(loaded))
-    for line in report(ollama_models(), bool(os.environ.get("ANTHROPIC_API_KEY")), os.environ.get("LLM_BACKEND")):
+    for line in report(ollama_models(), bool(os.environ.get("ANTHROPIC_API_KEY")), os.environ.get("LLM_BACKEND")) + version_lines(digests()):
         print(line)
     return 0
 

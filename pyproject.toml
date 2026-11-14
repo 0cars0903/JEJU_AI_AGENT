@@ -1,5 +1,5 @@
 # Vercel 데모 배포용(2026-11-13). Vercel은 pyproject.toml이 있으면 여기서 의존성을 읽는다(requirements.txt와 같은 목록을 유지).
-# 로컬·센터 PC 설치는 requirements.txt(setup 스크립트)를 쓴다.
+# 로컬·센터 PC 설치는 requirements.txt(setup 스크립트, Python 3.9)를 쓴다. requires-python 3.12는 Vercel 실행 환경 기준이다.
 [project]
 name = "jeju-dong-agent"
 version = "0.1.0"

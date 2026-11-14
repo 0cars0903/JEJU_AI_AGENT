@@ -752,6 +752,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             h = int(hm.group(2)) % 24
             t = dict(t, ask_hour=h + 12 if hm.group(1) and h < 12 else h)
         ay, am = _asked_period(q_)
+        rm = re.search(r"(최근|지난)\s*(\d{1,2})\s*개월", q_)
+        if rm and 1 <= int(rm.group(2)) <= 24:  # '최근 3개월'은 그 기간 합계(평균)로(2026-11-15)
+            t = dict(t, ask_recent=int(rm.group(2)))
         if ay or am:  # 질문에 적힌 기간(문서 계산은 layers._asked_ym)
             t = dict(t, ask_year=ay, ask_month=am)
             if am and t.get("type") == "T6" and not re.search(r"여름|겨울|봄|가을|계절|성수기|비수기|날씨|" + RAIN_WORD, q_):

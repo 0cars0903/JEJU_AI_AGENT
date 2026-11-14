@@ -208,10 +208,20 @@ def _rank_head(o, t, word, label, top, n, unit):
     o.rank_head = f"{word}{label} 순위는 {parts}{_cop(parts)}(값이 있는 동네 {n}곳 가운데 {'작은' if asc else '큰'} 순서)."
 
 
-def _asked_ym(o, t, tab, label, src, metric, word):
+def _asked_ym(o, t, tab, label, src, metric, word, unit=None):
     """질문에 적힌 기간(2024년·작년·7월)에 맞는 달을 고른다. 없으면 있는 범위를 알리고 최근 달로 답한다(2026-11-15 최종 평가 결함: 기간을 무시하고 최근 달로 답함)."""
     end = tab["ym"].max()
     ay, am = t.get("ask_year"), t.get("ask_month")
+    rn = t.get("ask_recent")
+    if rn and not (ay or am) and tab["dong"].nunique() <= 6:  # '최근 N개월': 마지막 N개월의 합계(매출·건수) 또는 평균(그 밖)
+        yms = sorted(tab["ym"].unique())[-rn:]
+        part = tab[tab["ym"].isin(yms)]
+        add = metric in ("매출", "이용건수")
+        for d, g in part.groupby("dong"):
+            v_ = o.num(float(g["value"].sum() if add else g["value"].mean()), unit)
+            o.numbers.append(float(len(yms)))
+            o.line("L1", f"최근 {len(yms)}개월({_ym_ko(yms[0])}~{_ym_ko(yms[-1])}) {d} {word}{_josa(label)} {v_}{_cop(v_)}({'합계' if add else '달 평균'}).", src, end)
+        return end
     if not (ay or am):
         return end
     yms = sorted(tab["ym"].unique())
@@ -226,7 +236,7 @@ def _asked_ym(o, t, tab, label, src, metric, word):
         yr = tab[tab["ym"].str.startswith(f"{ay}-")]
         n = yr["ym"].nunique()
         for d, g in yr.groupby("dong"):
-            v_ = o.num(float(g["value"].sum()), "원" if metric == "매출" else "건")
+            v_ = o.num(float(g["value"].sum()), unit)
             o.numbers.append(float(n))
             o.line("L1", f"{ay}년 {d} {word}{_josa(label)} {v_}{_cop(v_)}({n}개월 합계{'' if n == 12 else ', 12개월이 다 차지 않음'}).", src, f"{ay}년")
     return pick[-1]
@@ -264,7 +274,7 @@ def _table_lines(o, t, metric, v, note):
         o.line("L1", f"{only}제주 전체 외국인 관광객 카드 매출이 많은 출신지역은 {og}{_cop(og)}.", src, tab["ym"].max())
         return
     if "ym" in tab:
-        end = _asked_ym(o, t, tab, label, src, metric, word)
+        end = _asked_ym(o, t, tab, label, src, metric, word, unit)
         cur = tab[tab["ym"] == end]
         cur0 = cur
         dongs = cur["dong"].unique()

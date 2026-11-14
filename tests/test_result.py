@@ -330,6 +330,11 @@ class Misfire20261115(unittest.TestCase):
         self.assertTrue(self.conc("비가 올 때 노형동 매출").startswith("비에 따른 노형동"))
         self.assertIn("하루 단위 매출", self.notes("비가 올 때 노형동 매출"))
 
+    def test_recent_months(self):  # '최근 3개월'은 마지막 3개월 합계(2026-11-15)
+        c = self.conc("노형동 최근 3개월 매출")
+        self.assertTrue(c.startswith("최근 3개월"))
+        self.assertIn("합계", c)
+
     def test_not_overblocked(self):
         self.assertNotIn("제주 밖", self.conc("대구탕 집 많은 동네"))
         self.assertNotIn("제주 밖", self.conc("광주광역시 말고 제주 노형동 매출"))
