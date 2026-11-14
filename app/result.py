@@ -430,6 +430,10 @@ def _escalate(question, it, t0, why):
             "sec": round(time.perf_counter() - t0, 3)}
 
 
+RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌")
+MULTI_NOTE = "질문에 묻는 것이 여럿일 수 있어요. 위 답은 그중 하나만 다뤘으니, 나머지는 따로 물어 주세요."
+
+
 def _split(question, it, interpret, env, t0):
     """질문 나누기(app/split.py). Claude 유무와 상관없이 먼저 돈다(2026-11-14 마스터 결정: 센터 PC·Vercel 같은 구조, Claude 한도 절약).
     나누지 않은 질문만 계획 선택·(다) 넘김 판정(Claude)이 맡는다. 나누지 않으면 None."""
@@ -495,6 +499,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import plan_agent
             it = plan_agent.adjust(question, it)
         t = it["tuple"]
+        if t.get("type") == "T3" and RANK_LOW.search(question or ""):  # 순위 방향(작은 순서)
+            t = dict(t, order="asc")
+            it = dict(it, tuple=t)
         meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}
 
         def stop(r):  # 일반 경로가 계산 전에 끝내는 출구(고르게 하기·범위 밖). (다) 넘김 판정도 여기서 한다
@@ -589,6 +596,10 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
     else:
         if any("이용자 불러옴" in str(v.get("dataset")) for v in rv["run"]["store"].values() if isinstance(v, dict)):
             notes = [x for x in notes if x != FOREIGN_NOTE]  # 넣은 센터 파일로 동네 값을 답했으면 '제주 전체로 답해요' 안내를 뺀다
+        if question and not slots and not (env or {}).get("_no_split"):
+            import plan_agent
+            if plan_agent.multi(question):  # 여러 단계 표지가 있는데 나누지 못하고 하나로 답한 경우 알린다(둘째 조각이 조용히 빠지던 문제, 페르소나 평가 2026-11-14)
+                notes = notes + [MULTI_NOTE]
         out["understood"] = {"text": (it.get("card") or {}).get("text"), "by": it.get("path"), "assumed": assumed or bool(it.get("needs_confirm")),
                              "slots": slots or ({"space": t["space"]} if "외국인매출" in t["metric"] else G.to_slots(t)),
                              "notes": list(dict.fromkeys(notes + (qparse.notes(typed, t) if typed else []))),

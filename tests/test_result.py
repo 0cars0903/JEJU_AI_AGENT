@@ -624,3 +624,10 @@ class Deep22(unittest.TestCase):  # 문서 22: 업종 탭, 단순 주제의 모�
         self.assertNotRegex(r["answer"]["conclusion"]["text"], r"유망|추천|유리")
         cw = self.slots({"topic": "diagnose", "space": ["노형동"], "target": "카페"})["answer"]["compare_with"]
         self.assertEqual([c["dong"] for c in cw["candidates"]], ["아라동", "연동", "외도동", "이도2동", "화북동"])
+
+
+class RankOrder(unittest.TestCase):
+    def test_lowest_rank_is_ascending(self):  # '가장 적은' 순위는 작은 순서(2026-11-14)
+        r = R.respond("카페가 가장 적은 동네는?", None, llm_on=False)
+        self.assertIn("작은 순서", r["card"]["conclusion"])
+        self.assertIn("1위 추자면", r["card"]["conclusion"])

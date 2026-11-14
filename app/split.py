@@ -21,7 +21,7 @@ REF = re.compile(r"(그|해당|이|저|그런)\s*(동네|곳|지역|읍|면|동�
 DONG_LISTS = ("T3", "T9", "T14", "T15")  # 결과가 동네 목록인 질문 종류(뒤 조각이 '그 동네'로 이어 받을 수 있음)
 MIN = 4
 # 자를 자리(개발용 047·048 a·b 90 + 일반 100으로 정함, 2026-11-14). 여러 단계 표지(plan_agent.MULTI)에 동사 + 쉼표 연결('확인한 후,', '살피고,')을 더한다.
-CUT = re.compile(PA.MULTI.pattern + r"|(?:[한은던]\s*(?:후|뒤|다음)(?:에)?\s*,)|(?:[가-힣]고\s*,)")
+CUT = re.compile(PA.MULTI.pattern + r"|(?:[한은던]\s*(?:후|뒤|다음)(?:에)?\s*,)|(?:[가-힣]고\s*,)|(?:(?:알려|보여|찾아|골라|뽑아)주고\s)")
 # 자르지 않는 경우: 시점의 '다음'(다음 달), 바람·진행의 '-고 싶다/있다', 명사를 잇는 '및', 범위의 '~부터 ~까지'
 TIME_AFTER = re.compile(r"^\s*(달|주말|주|분기|해|년|날|번|시즌|개월)(?![가-힣])|^\s*(달|주말|주|분기|해|년|날)(에|의|도|쯤|부터|까지)")
 WISH_AFTER = re.compile(r"^\s*(싶|있)")
@@ -66,8 +66,9 @@ def pieces(q):
             merged[-1] = f"{merged[-1]} {x}"
         else:
             merged.append(x)
-    if len(merged) >= 2 and len(merged[0].replace(" ", "")) < SHORT:
-        merged[1] = f"{merged.pop(0)} {merged[0]}"
+    if len(merged) >= 2 and len(merged[0].replace(" ", "")) < SHORT:  # 첫 조각이 짧으면 다음 조각에 붙인다(조각 2개일 때 IndexError 수정, 페르소나 평가 2026-11-14)
+        first = merged.pop(0)
+        merged[0] = f"{first} {merged[0]}"
     return merged if len(merged) >= 2 else [q]
 
 
@@ -95,18 +96,30 @@ def plan(q, interpret):
     return parts
 
 
-def top_dong(out, exclude=()):
-    """앞 조각 답의 결론에서 처음 나온 동네(1위 또는 찾은 동네). 같은 순위가 여럿이면 tie=True."""
-    text = ((out or {}).get("card") or {}).get("conclusion") or ""
+LOW = re.compile(r"적은|낮은|작은|덜|최하|꼴찌")
+
+
+def top_dong(out, exclude=(), text=""):
+    """앞 조각 답에서 뒤 조각이 쓸 동네와 동률 여부. 순위(T3)는 계산값(지도 값)에서 고른다(결론 문장 의존 제거, Gemini 054 지적).
+    다른 종류(조건 탐색·비슷한 동네 등)는 결론 문장에서 처음 나온 동네."""
+    t = ((out or {}).get("tuple") or {}).get("type")
+    vals = next((v.get("values") for v in ((out or {}).get("answer") or {}).get("views") or [] if v.get("kind") == "map" and v.get("values")), None)
+    if t == "T3" and vals:
+        vals = {k: v for k, v in vals.items() if k in Q.DONGS and k not in exclude and v is not None}
+        if vals:
+            best = (min if LOW.search(text or "") else max)(vals.values())
+            top = sorted(k for k, v in vals.items() if v == best)
+            return top[0], len(top) > 1
+    text_c = ((out or {}).get("card") or {}).get("conclusion") or ""
     found = []
     for k in sorted(Q.DONGS, key=len, reverse=True):
-        i = text.find(k)
+        i = text_c.find(k)
         if i >= 0 and k not in exclude:
             found.append((i, k))
     found.sort()
     if not found:
         return None, False
-    tie = bool(re.search(r"1위\s*" + re.escape(found[0][1]) + r"\s*[·,와과]\s*", text))
+    tie = bool(re.search(r"1위\s*" + re.escape(found[0][1]) + r"\s*[·,와과]\s*", text_c))
     return found[0][1], tie
 
 
@@ -142,7 +155,7 @@ def answer(question, interpret, env=None):
             if not src.get("ok"):
                 note = f"{part['ref'] + 1}번 질문의 답이 없어 이 질문은 계산하지 않았어요."
             else:
-                dong, tie = top_dong(src["out"])
+                dong, tie = top_dong(src["out"], text=parts[part["ref"]]["text"])
                 if not dong:
                     note = f"{part['ref'] + 1}번 답에서 동네를 찾지 못해 이 질문은 계산하지 않았어요."
                 elif tie:

@@ -201,9 +201,11 @@ def _rank_head(o, t, word, label, top, n, unit):
     """순위 질문의 결론: 1위 한 곳의 값만 쓰지 않고 몇 위인지 밝힌다(문서 20 A9)."""
     if t.get("type") != "T3" or getattr(o, "rank_head", None) or len(top) < 3:
         return
-    parts = ", ".join(f"{i}위 {d}({o.num(x, unit)})" for i, (d, x) in enumerate(zip(top["dong"].head(3), top["value"].head(3)), 1))
+    asc = t.get("order") == "asc"  # '가장 적은·낮은' 순위 질문(2026-11-14): 작은 순서로 쓴다
+    src = top.sort_values("value", ascending=True) if asc else top
+    parts = ", ".join(f"{i}위 {d}({o.num(x, unit)})" for i, (d, x) in enumerate(zip(src["dong"].head(3), src["value"].head(3)), 1))
     o.numbers += [1.0, 2.0, 3.0, float(n)]
-    o.rank_head = f"{word}{label} 순위는 {parts}{_cop(parts)}(값이 있는 동네 {n}곳 가운데 큰 순서)."
+    o.rank_head = f"{word}{label} 순위는 {parts}{_cop(parts)}(값이 있는 동네 {n}곳 가운데 {'작은' if asc else '큰'} 순서)."
 
 
 def _table_lines(o, t, metric, v, note):
@@ -237,7 +239,7 @@ def _table_lines(o, t, metric, v, note):
         cur0 = cur
         dongs = cur["dong"].unique()
         if len(dongs) > 6:
-            cur = cur.sort_values("value", ascending=False).head(6)
+            cur = cur.sort_values("value", ascending=t.get("order") == "asc").head(6)
             _rank_head(o, t, f"{_ym_ko(end)} {word}", label, cur, len(dongs), unit)
         for r in cur.itertuples():
             v_ = o.num(r.value, unit)

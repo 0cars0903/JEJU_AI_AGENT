@@ -47,6 +47,18 @@ class SplitTest(unittest.TestCase):
         self.assertEqual(ag["status"], "실패")
         self.assertIn("계산하지 않았어요", ag["lines"][1])
 
+    def test_short_first_of_two_does_not_crash(self):  # 페르소나 평가 2026-11-14: 조각 2개 중 첫 조각이 짧으면 IndexError
+        self.assertEqual(len(split.pieces("오후에 하고 거기 음식점 수도 알려줘")), 1)
+
+    def test_cut_after_jugo(self):  # '알려주고 거기 ~도'처럼 '-주고'로 이은 질문
+        self.assertEqual(len(split.pieces("방문이 가장 많은 동네 알려주고 거기 음식점 수도 알려줘")), 2)
+
+    def test_top_dong_from_values(self):  # 순위는 결론 문장이 아니라 계산값에서, '적은'이면 가장 작은 값
+        out = {"tuple": {"type": "T3"}, "card": {"conclusion": "1위 애월읍"},
+               "answer": {"views": [{"kind": "map", "values": {"애월읍": 9.0, "연동": 5.0, "노형동": 1.0}}]}}
+        self.assertEqual(split.top_dong(out, text="방문이 가장 많은 동네"), ("애월읍", False))
+        self.assertEqual(split.top_dong(out, text="방문이 가장 적은 동네"), ("노형동", False))
+
     def test_off_switch(self):
         with mock.patch.dict("os.environ", {"JEJU_SPLIT": "0"}):
             self.assertIsNone(split.answer("노형동 카페 추이 보고 연동이랑 비교해줘", fake_interpret))
