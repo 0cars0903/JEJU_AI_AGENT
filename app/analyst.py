@@ -39,24 +39,43 @@ F_UNDERSTAND = {"type": "object", "required": ["kind", "dongs", "target", "keywo
 S_ALT = ("너는 상권 분석 담당자다. 고른 기법이 자료 조건에 맞지 않아 계산하지 않았다. 이유를 읽고, 요청에 가장 가깝게 답할 수 있는 다른 기법을 하나 고른다. "
          "맞는 기법이 없으면 general을 고른다. 이유는 한 문장.\n" + TECH_GUIDE)
 F_ALT = {"type": "object", "required": ["kind", "reason"], "properties": {"kind": {"type": "string", "enum": TECHS + ["general"]}, "reason": {"type": "string"}}}
-S_EXPLAIN = ("너는 상권 분석 담당자다. 분석 결과를 IT 비전문가 도민이 이해할 말로 2~3문장 설명한다. 규칙: 숫자를 쓰지 않는다(숫자는 화면 표에 있다). "
-             "결과에 나온 동네 이름만 쓴다. 원인을 단정하지 않는다(~일 수 있어요). 해요체로 쓴다.")
+S_EXPLAIN = ("너는 제주의 상권 분석 담당자다. 분석 결과를 IT 비전문가 도민이 이해할 말로 2~3문장 설명한다. 반드시 한국어로만 쓴다(한자·영어 금지). "
+             "숫자는 결과 요약에 있는 값만 쓰고, 되도록 '많아요·적어요·비슷해요·강해요·약해요'처럼 말로 쓴다. "
+             "결과 요약에 나온 동네 이름만 쓴다. 원인을 단정하지 않는다(~일 수 있어요). 해요체로 쓴다.")
 F_EXPLAIN = {"type": "object", "required": ["lines"], "properties": {"lines": {"type": "array", "items": {"type": "string"}, "maxItems": 3}}}
 S_NEXT = ("너는 상권 분석 담당자다. 방금 한 분석에 이어 도민에게 도움이 될 다음 분석을 목록에서 1~2개 고르고 이유를 한 문장으로 쓴다. 방금 한 기법은 고르지 않는다.\n" + TECH_GUIDE)
 F_NEXT = {"type": "object", "required": ["next", "reason"], "properties": {"next": {"type": "array", "items": {"type": "string", "enum": TECHS}, "maxItems": 2},
                                                                           "reason": {"type": "string"}}}
 DIGIT = re.compile(r"\d")
+# 일반 경로가 정해진 계산으로 답하는 종류(관계 T7은 상관·회귀 기법과 같은 일이라 뺀다).
+# 조정용 측정(2026-11-14)에서 현황·순위·추세는 기법 질문을 망쳐(5건) 빼고, 고친 사례만 있는 종류만 둔다
+GENERAL_ONLY = {"T2": "동네 비교", "T9": "비슷한 동네", "T10": "종합 진단", "T13": "시간대", "T14": "조건 탐색", "T15": "이례 변화"}
+_M = {}
+
+
+def _classifier(question):
+    """질문 해석 분류기(M1)의 판단. 쓸 수 없으면 None."""
+    try:
+        if "m" not in _M:
+            import m1
+            _M["m"] = m1.M1()
+        return _M["m"].interpret(question)
+    except Exception:
+        return None
 
 
 def _ask(chat, system, user, schema, max_tokens=300):
     """모델 호출 1회(JSON 형식 고정). chat이 있으면(시험) chat(None, msgs, [])의 본문 JSON을 읽는다."""
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-    if chat:
-        m = chat(None, msgs, [])["message"]
-    else:
-        import expert
-        import llm
-        m = llm.chat(expert.AGENT_MODEL, msgs, [], name="ollama", max_tokens=max_tokens, fmt=schema)["message"]
+    try:
+        if chat:
+            m = chat(None, msgs, [])["message"]
+        else:
+            import expert
+            import llm
+            m = llm.chat(expert.AGENT_MODEL, msgs, [], name="ollama", max_tokens=max_tokens, fmt=schema)["message"]
+    except Exception:  # 모델 서버 오류(예: Ollama 500)면 판단 없음으로 처리한다. 요청 이해는 일반 경로로 넘어간다(2026-11-14 측정 중 발견)
+        return {}
     try:
         return json.loads(m.get("content") or "{}")
     except ValueError:
@@ -74,7 +93,7 @@ def understand(question, chat=None, checks=True):
                 "note": str(a.get("reason") or "")[:120], "sec": round(time.perf_counter() - t0, 2)})
     if checks:
         named = T.detect(question)
-        if named and kind != named:  # 요청에 적힌 기법 이름과 다르면 한 번 되묻는다
+        if named and kind != named and kind in TECHS:  # 요청에 적힌 기법 이름과 다른 '기법'을 고르면 한 번 되묻는다(일반으로 판단했으면 덮어쓰지 않음, 2026-11-14 B2)
             t1 = time.perf_counter()
             again = _ask(chat, S_UNDERSTAND, f"{question}\n(검사 메모: 요청에 '{T.TECH[named][0]}'이라는 말이 있어요. 요청의 뜻이 그 기법과 맞는지 다시 판단하세요.)", F_UNDERSTAND)
             k2 = again.get("kind") if again.get("kind") in KINDS else kind
@@ -86,6 +105,17 @@ def understand(question, chat=None, checks=True):
                             "note": f"요청에 적힌 '{T.TECH[named][0]}'(으)로 바로잡음", "sec": 0.0})
                 k2 = named
             kind, a = k2, {**a, **{k: v for k, v in again.items() if k in ("dongs", "target", "keyword") and v}}
+        elif kind in TECHS and not named:  # 분류기의 두 번째 의견(평가 2026-11-14 B2): 일반 질문을 기법으로 보내는 오류를 막는다
+            it = _classifier(question)
+            gt = (it or {}).get("tuple", {}).get("type")
+            if it and gt in GENERAL_ONLY and not it.get("needs_confirm") and it["tuple"].get("expect") == "답함":
+                t1 = time.perf_counter()
+                again = _ask(chat, S_UNDERSTAND, f"{question}\n(검사 메모: 질문 해석기는 이 요청을 '{GENERAL_ONLY[gt]}' 일반 질문으로 읽었어요. "
+                                                 "통계 기법이 꼭 필요한 요청이 아니면 general을 고르세요.)", F_UNDERSTAND)
+                k2 = again.get("kind") if again.get("kind") in KINDS else kind
+                log.append({"tool": "understand", "name": "요청 이해(다시 판단)", "by": BY, "ok": True, "args": json.dumps({"kind": k2}, ensure_ascii=False),
+                            "note": str(again.get("reason") or "")[:120], "sec": round(time.perf_counter() - t1, 2)})
+                kind = k2  # 최종 판단은 모델이 한다(강제로 일반 경로로 보내면 기법 질문 43→22/48로 무너짐, 조정용 측정 2026-11-14)
     dongs = [d for d in (a.get("dongs") or []) if d in Q.DONGS]
     target = (a.get("target") or "").strip()
     target = target if target in Q.TARGETS_BIZ else ""
@@ -99,11 +129,25 @@ def understand(question, chat=None, checks=True):
     return {"kind": kind, "dongs": dongs, "target": target, "keyword": a.get("keyword") or "", "reason": a.get("reason") or ""}, log
 
 
-def _explain_ok(lines, allowed_dongs):
-    if not lines or any(DIGIT.search(x) for x in lines):
+FOREIGN = re.compile(r"[\u4e00-\u9fff\u3040-\u30ff]|[A-Za-z]{3,}")  # 한자·가나·영문 단어(소형 모델이 중국어로 새는 경우, 2026-11-14 B1 측정 중 발견)
+
+
+def _sentence_ok(x, allowed_dongs, src=()):
+    """해석 한 문장 검사: 외국어 없음, 한국어 비율, 결과 밖 동네 없음, 숫자는 계산 결과에 있는 값만(textcheck 숫자 대조)."""
+    import textcheck
+    if FOREIGN.search(x):
         return False
-    used = {d for d in Q.DONGS for x in lines if d in x}
-    return used <= set(allowed_dongs)
+    hangul = sum("가" <= c <= "힣" for c in x)
+    if hangul < max(6, len(x.replace(" ", "")) * 0.6):
+        return False
+    if not {d for d in Q.DONGS if d in x} <= set(allowed_dongs):
+        return False
+    return not textcheck.check_numbers(x, list(src))
+
+
+def _explain_ok(lines, allowed_dongs, src=()):
+    """해석 문장 검사. 통과한 문장만 남긴다(전부 버리지 않음)."""
+    return [x for x in lines if _sentence_ok(x, allowed_dongs, src)]
 
 
 def run(question, chat=None, checks=True):
@@ -166,9 +210,11 @@ def run(question, chat=None, checks=True):
     ex = _ask(chat, S_EXPLAIN, f"요청: {question}\n기법: {T.TECH[kind][0]}\n결과 요약: {card.get('conclusion')}\n주의: {'; '.join(card.get('limits') or [])[:300]}", F_EXPLAIN)
     allowed = [d for d in Q.DONGS if d in (card.get("conclusion") or "") or d in u["dongs"]]
     ex_lines = [str(x).strip() for x in ex.get("lines") or [] if str(x).strip()]
-    good = _explain_ok(ex_lines, allowed)
-    add([{"tool": "explain", "name": "결과 해석(도민 말)", "by": BY, "ok": good, "args": "", "note": "" if good else "숫자나 결과에 없는 동네가 있어 기법 코드 문장으로 바꿈", "sec": round(time.perf_counter() - t1, 2)}])
-    lines = [card.get("conclusion") or ""] + (ex_lines if good else [e["text"] for e in card.get("evidence", [])][:3])
+    kept = _explain_ok(ex_lines, allowed, [card, numbers, {"q": question}])
+    good = bool(kept)
+    note = "" if len(kept) == len(ex_lines) else (f"검사에 걸린 {len(ex_lines) - len(kept)}문장(숫자·외국어·결과 밖 동네)을 뺐어요" if kept else "모든 문장이 검사에 걸려 기법 코드 문장으로 바꿈")
+    add([{"tool": "explain", "name": "결과 해석(도민 말)", "by": BY, "ok": good, "args": f"{len(kept)}/{len(ex_lines)}", "note": note, "sec": round(time.perf_counter() - t1, 2)}])
+    lines = [card.get("conclusion") or ""] + (kept if good else [e["text"] for e in card.get("evidence", [])][:3])
     # ⑤ 다음 분석 제안
     t1 = time.perf_counter()
     nx = _ask(chat, S_NEXT, f"요청: {question}\n방금 한 기법: {T.TECH[kind][0]}\n결과 요약: {card.get('conclusion')}", F_NEXT)

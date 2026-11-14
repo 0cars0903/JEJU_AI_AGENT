@@ -24,10 +24,12 @@ items = [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if
 rows = []
 for g in items:
     t0 = time.perf_counter()
-    u, _ = analyst.understand(g["q"], checks=checks)
+    u, log = analyst.understand(g["q"], checks=checks)
     want = g.get("technique")
-    ok = u["kind"] == want if want else u["kind"] in ("general", "catalog")
-    rows.append({"id": g.get("id"), "want": want, "got": u["kind"], "ok": ok, "named": g.get("named"), "sec": round(time.perf_counter() - t0, 2)})
+    good = lambda k: (k == want) if want else k in ("general", "catalog")  # noqa: E731
+    first = json.loads(log[0]["args"]).get("kind") if log else u["kind"]  # 모델이 처음 고른 것(코드 검사 전)
+    rows.append({"id": g.get("id"), "want": want, "got": u["kind"], "ok": good(u["kind"]), "model_first": first, "model_first_ok": good(first),
+                 "changed": first != u["kind"], "named": g.get("named"), "sec": round(time.perf_counter() - t0, 2)})
     print(json.dumps(rows[-1], ensure_ascii=False), flush=True)
 tech = [r for r in rows if r["want"]]
 non = [r for r in rows if not r["want"]]
@@ -35,7 +37,9 @@ summ = {"file": path.name, "checks": checks, "n": len(rows), "정답": sum(r["ok
         "기법 문항": f"{sum(r['ok'] for r in tech)}/{len(tech)}", "기법 아닌 요청": f"{sum(r['ok'] for r in non)}/{len(non)}",
         "이름 있음": f"{sum(r['ok'] for r in tech if r['named'])}/{sum(1 for r in tech if r['named'])}",
         "이름 없음": f"{sum(r['ok'] for r in tech if r['named'] is False)}/{sum(1 for r in tech if r['named'] is False)}",
-        "지연 중앙값": sorted(r["sec"] for r in rows)[len(rows) // 2] if rows else None}
+        "지연 중앙값": sorted(r["sec"] for r in rows)[len(rows) // 2] if rows else None,
+        "모델 첫 판단 정답": sum(r["model_first_ok"] for r in rows), "검사가 바꾼 건수": sum(r["changed"] for r in rows),
+        "바꿔서 맞음": sum(r["changed"] and r["ok"] and not r["model_first_ok"] for r in rows), "바꿔서 틀림": sum(r["changed"] and r["model_first_ok"] and not r["ok"] for r in rows)}
 print("SUMMARY", json.dumps(summ, ensure_ascii=False))
 if out:
     out.write_text(json.dumps({"summary": summ, "rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")

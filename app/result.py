@@ -440,6 +440,20 @@ STOP_Q = re.compile(r"정류소|정류장")
 STOP_NOTE = "정류소별 자료는 제출본에 없어 동네 전체 값으로 답했어요. 센터 PC에서 '버스 정류소별 이용 현황'(3-04)을 넣으면 정류소·시간대별로 볼 수 있어요."
 
 
+def _result_dongs(t, run):
+    """답에서 나온 동네 목록(구조값). 비슷한 동네(T9)는 이웃 목록, 이례 변화(T15)는 z가 큰 순서. 없으면 빈 목록."""
+    out = []
+    for v in (run.get("store") or {}).values():
+        if not isinstance(v, dict):
+            continue
+        if v.get("neighbors"):
+            src = (t.get("space") or [None])[0]
+            out = list(v["neighbors"].get(src) or next(iter(v["neighbors"].values()), []))
+        elif isinstance(v.get("anomaly"), list):
+            out = [a["dong"] for a in sorted(v["anomaly"], key=lambda a: -abs(a.get("z") or 0)) if a.get("dong")]
+    return [d for d in out if d in Q.DONGS]
+
+
 def _near_suggestions(question, t):
     """범위 밖 답의 추천 질문(평가 2026-11-14 A7): 질문에서 찾은 동네(또는 지역 이름의 후보 동네)로 만든다. 없으면 대표 질문."""
     dongs = list(t.get("space") or [])
@@ -791,6 +805,7 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             for c in ans["compare_with"]["candidates"]:
                 c["text"] = G.sentence(c["slots"])
         out["answer"] = ans
+        out["result_dongs"] = _result_dongs(t, rv["run"])  # 뒤 조각이 이어받을 동네 목록(질문 나누기, 평가 2026-11-14 B6)
         out["process"] = {
             "tuple": t, "type": TYPE_KO.get(t["type"]),
             "steps": [{"id": x["id"], "sub": x["sub"], "name": SUB_KO[x["sub"]], "op": x.get("op"), "metric": x.get("metric"), "recipe": x.get("recipe"),

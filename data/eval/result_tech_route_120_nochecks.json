@@ -8,7 +8,11 @@
   "기법 아닌 요청": "20/24",
   "이름 있음": "22/24",
   "이름 없음": "64/72",
-  "지연 중앙값": 1.65
+  "지연 중앙값": 1.64,
+  "모델 첫 판단 정답": 105,
+  "검사가 바꾼 건수": 1,
+  "바꿔서 맞음": 1,
+  "바꿔서 틀림": 0
  },
  "rows": [
   {
@@ -16,30 +20,42 @@
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.78
+   "sec": 1.79
   },
   {
    "id": "X1-R002",
    "want": "corr",
    "got": "test",
    "ok": false,
+   "model_first": "test",
+   "model_first_ok": false,
+   "changed": false,
    "named": true,
-   "sec": 1.96
+   "sec": 1.94
   },
   {
    "id": "X1-R003",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.82
+   "sec": 1.8
   },
   {
    "id": "X1-R004",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.6
   },
@@ -48,62 +64,86 @@
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.94
+   "sec": 1.95
   },
   {
    "id": "X1-R006",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.35
+   "sec": 1.33
   },
   {
    "id": "X1-R007",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 3.16
+   "sec": 3.15
   },
   {
    "id": "X1-R008",
    "want": "corr",
    "got": "corr",
    "ok": true,
+   "model_first": "corr",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.33
+   "sec": 1.31
   },
   {
    "id": "X1-R009",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.2
+   "sec": 2.19
   },
   {
    "id": "X1-R010",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.97
+   "sec": 1.94
   },
   {
    "id": "X1-R011",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.03
+   "sec": 2.02
   },
   {
    "id": "X1-R012",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.98
   },
@@ -112,30 +152,42 @@
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.41
+   "sec": 2.4
   },
   {
    "id": "X1-R014",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.67
+   "sec": 2.68
   },
   {
    "id": "X1-R015",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.55
+   "sec": 2.54
   },
   {
    "id": "X1-R016",
    "want": "cluster",
    "got": "cluster",
    "ok": true,
+   "model_first": "cluster",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.8
   },
@@ -144,6 +196,9 @@
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 2.42
   },
@@ -152,6 +207,9 @@
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 0.98
   },
@@ -160,22 +218,31 @@
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.88
+   "sec": 1.87
   },
   {
    "id": "X1-R020",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.38
+   "sec": 1.37
   },
   {
    "id": "X1-R021",
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.63
   },
@@ -184,6 +251,9 @@
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.6
   },
@@ -192,6 +262,9 @@
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.45
   },
@@ -200,22 +273,31 @@
    "want": "decomp",
    "got": "decomp",
    "ok": true,
+   "model_first": "decomp",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.79
+   "sec": 1.81
   },
   {
    "id": "X1-R025",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.4
+   "sec": 1.41
   },
   {
    "id": "X1-R026",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 1.71
   },
@@ -224,14 +306,20 @@
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.81
+   "sec": 1.79
   },
   {
    "id": "X1-R028",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.62
   },
@@ -240,6 +328,9 @@
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 2.31
   },
@@ -248,14 +339,20 @@
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.06
+   "sec": 2.03
   },
   {
    "id": "X1-R031",
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.8
   },
@@ -264,22 +361,31 @@
    "want": "regress",
    "got": "regress",
    "ok": true,
+   "model_first": "regress",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.75
+   "sec": 1.73
   },
   {
    "id": "X1-R033",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.57
+   "sec": 1.58
   },
   {
    "id": "X1-R034",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 1.8
   },
@@ -288,6 +394,9 @@
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.63
   },
@@ -296,22 +405,31 @@
    "want": "test",
    "got": "surv",
    "ok": false,
+   "model_first": "surv",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.13
+   "sec": 1.14
   },
   {
    "id": "X1-R037",
    "want": "test",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.1
+   "sec": 1.11
   },
   {
    "id": "X1-R038",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.64
   },
@@ -320,30 +438,42 @@
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.65
+   "sec": 1.66
   },
   {
    "id": "X1-R040",
    "want": "test",
    "got": "test",
    "ok": true,
+   "model_first": "test",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.66
+   "sec": 1.64
   },
   {
    "id": "X1-R041",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.34
+   "sec": 2.35
   },
   {
    "id": "X1-R042",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 1.32
   },
@@ -352,14 +482,20 @@
    "want": "dist",
    "got": "hhi",
    "ok": false,
+   "model_first": "hhi",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.27
+   "sec": 1.26
   },
   {
    "id": "X1-R044",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.79
   },
@@ -368,6 +504,9 @@
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.73
   },
@@ -376,6 +515,9 @@
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 2.67
   },
@@ -384,14 +526,20 @@
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.76
+   "sec": 1.74
   },
   {
    "id": "X1-R048",
    "want": "dist",
    "got": "dist",
    "ok": true,
+   "model_first": "dist",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 2.84
   },
@@ -400,14 +548,20 @@
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.23
+   "sec": 1.24
   },
   {
    "id": "X1-R050",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 1.52
   },
@@ -416,6 +570,9 @@
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.48
   },
@@ -424,14 +581,20 @@
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.14
+   "sec": 1.12
   },
   {
    "id": "X1-R053",
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.09
   },
@@ -440,6 +603,9 @@
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.78
   },
@@ -448,6 +614,9 @@
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.14
   },
@@ -456,30 +625,42 @@
    "want": "outlier",
    "got": "outlier",
    "ok": true,
+   "model_first": "outlier",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.05
+   "sec": 2.06
   },
   {
    "id": "X1-R057",
    "want": "change",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": true,
-   "sec": 1.3
+   "sec": 1.29
   },
   {
    "id": "X1-R058",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.08
+   "sec": 1.07
   },
   {
    "id": "X1-R059",
    "want": "change",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
    "sec": 2.1
   },
@@ -488,22 +669,31 @@
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.2
+   "sec": 1.21
   },
   {
    "id": "X1-R061",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.83
+   "sec": 1.82
   },
   {
    "id": "X1-R062",
    "want": "change",
    "got": "change",
    "ok": true,
+   "model_first": "change",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.65
   },
@@ -512,6 +702,9 @@
    "want": "change",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
    "sec": 1.65
   },
@@ -520,6 +713,9 @@
    "want": "change",
    "got": "shift",
    "ok": false,
+   "model_first": "shift",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
    "sec": 2.33
   },
@@ -528,30 +724,42 @@
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.45
+   "sec": 1.43
   },
   {
    "id": "X1-R066",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 2.58
+   "sec": 2.57
   },
   {
    "id": "X1-R067",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.16
+   "sec": 1.15
   },
   {
    "id": "X1-R068",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.23
   },
@@ -560,22 +768,31 @@
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.66
+   "sec": 1.65
   },
   {
    "id": "X1-R070",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.07
+   "sec": 2.11
   },
   {
    "id": "X1-R071",
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.56
   },
@@ -584,22 +801,31 @@
    "want": "lq",
    "got": "lq",
    "ok": true,
+   "model_first": "lq",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.69
+   "sec": 1.7
   },
   {
    "id": "X1-R073",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
-   "sec": 1.56
+   "sec": 1.57
   },
   {
    "id": "X1-R074",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 1.41
   },
@@ -608,22 +834,31 @@
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.88
+   "sec": 1.87
   },
   {
    "id": "X1-R076",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.32
+   "sec": 1.33
   },
   {
    "id": "X1-R077",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.42
   },
@@ -632,14 +867,20 @@
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.32
+   "sec": 1.33
   },
   {
    "id": "X1-R079",
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.57
   },
@@ -648,14 +889,20 @@
    "want": "surv",
    "got": "surv",
    "ok": true,
+   "model_first": "surv",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.5
+   "sec": 1.51
   },
   {
    "id": "X1-R081",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 2.84
   },
@@ -664,6 +911,9 @@
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 2.71
   },
@@ -672,14 +922,20 @@
    "want": "hhi",
    "got": "lq",
    "ok": false,
+   "model_first": "lq",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 2.14
+   "sec": 2.13
   },
   {
    "id": "X1-R084",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.87
   },
@@ -688,14 +944,20 @@
    "want": "hhi",
    "got": "lq",
    "ok": false,
+   "model_first": "lq",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 2.31
+   "sec": 2.3
   },
   {
    "id": "X1-R086",
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.75
   },
@@ -704,6 +966,9 @@
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.87
   },
@@ -712,14 +977,20 @@
    "want": "hhi",
    "got": "hhi",
    "ok": true,
+   "model_first": "hhi",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.65
+   "sec": 2.64
   },
   {
    "id": "X1-R089",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 1.61
   },
@@ -728,6 +999,9 @@
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": true,
    "sec": 2.18
   },
@@ -736,22 +1010,31 @@
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.08
+   "sec": 1.09
   },
   {
    "id": "X1-R092",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.18
+   "sec": 1.19
   },
   {
    "id": "X1-R093",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 2.04
   },
@@ -760,30 +1043,42 @@
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.78
+   "sec": 1.79
   },
   {
    "id": "X1-R095",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.56
+   "sec": 1.55
   },
   {
    "id": "X1-R096",
    "want": "shift",
    "got": "shift",
    "ok": true,
+   "model_first": "shift",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.36
+   "sec": 1.37
   },
   {
    "id": "X1-R097",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.76
   },
@@ -792,38 +1087,53 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.23
+   "sec": 2.25
   },
   {
    "id": "X1-R099",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.32
+   "sec": 1.33
   },
   {
    "id": "X1-R100",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.27
+   "sec": 1.28
   },
   {
    "id": "X1-R101",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.57
+   "sec": 1.58
   },
   {
    "id": "X1-R102",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 2.01
   },
@@ -832,22 +1142,31 @@
    "want": null,
    "got": "change",
    "ok": false,
+   "model_first": "change",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.43
+   "sec": 1.44
   },
   {
    "id": "X1-R104",
    "want": null,
    "got": "change",
    "ok": false,
+   "model_first": "change",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
-   "sec": 1.12
+   "sec": 1.13
   },
   {
    "id": "X1-R105",
    "want": null,
    "got": "lq",
    "ok": false,
+   "model_first": "lq",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
    "sec": 1.3
   },
@@ -856,6 +1175,9 @@
    "want": null,
    "got": "surv",
    "ok": false,
+   "model_first": "surv",
+   "model_first_ok": false,
+   "changed": false,
    "named": false,
    "sec": 1.4
   },
@@ -864,6 +1186,9 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.1
   },
@@ -872,30 +1197,42 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.05
+   "sec": 1.06
   },
   {
    "id": "X1-R109",
    "want": null,
    "got": "catalog",
    "ok": true,
+   "model_first": "catalog",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 0.98
+   "sec": 0.99
   },
   {
    "id": "X1-R110",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.12
+   "sec": 1.11
   },
   {
    "id": "X1-R111",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.29
   },
@@ -904,14 +1241,20 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.0
+   "sec": 1.97
   },
   {
    "id": "X1-R113",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.04
   },
@@ -920,14 +1263,20 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 1.35
+   "sec": 1.33
   },
   {
    "id": "X1-R115",
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.29
   },
@@ -936,6 +1285,9 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.12
   },
@@ -944,6 +1296,9 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 1.17
   },
@@ -952,6 +1307,9 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": "general",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
    "sec": 0.93
   },
@@ -960,16 +1318,22 @@
    "want": null,
    "got": "general",
    "ok": true,
+   "model_first": null,
+   "model_first_ok": false,
+   "changed": true,
    "named": false,
-   "sec": 6.3
+   "sec": 6.29
   },
   {
    "id": "X1-R120",
    "want": null,
    "got": "catalog",
    "ok": true,
+   "model_first": "catalog",
+   "model_first_ok": true,
+   "changed": false,
    "named": false,
-   "sec": 2.84
+   "sec": 2.85
   }
  ]
 }

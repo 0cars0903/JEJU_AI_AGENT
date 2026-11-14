@@ -59,6 +59,10 @@ class SplitTest(unittest.TestCase):
         self.assertEqual(split.top_dong(out, text="방문이 가장 많은 동네"), ("애월읍", False))
         self.assertEqual(split.top_dong(out, text="방문이 가장 적은 동네"), ("노형동", False))
 
+    def test_top_dong_from_result_dongs(self):  # 비슷한 동네·이례 변화는 계산 결과의 동네 목록에서(B6)
+        out = {"tuple": {"type": "T9"}, "result_dongs": ["아라동", "연동"], "card": {"conclusion": "노형동과 비슷한 동네는 아라동"}}
+        self.assertEqual(split.top_dong(out), ("아라동", False))
+
     def test_off_switch(self):
         with mock.patch.dict("os.environ", {"JEJU_SPLIT": "0"}):
             self.assertIsNone(split.answer("노형동 카페 추이 보고 연동이랑 비교해줘", fake_interpret))

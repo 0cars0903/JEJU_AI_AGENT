@@ -105,7 +105,8 @@ def plan(q, interpret):
         prev = parts[-1] if parts else None
         if prev and not dongs:
             own_rank = RANK_CUE.search(p) and not REF_POINT.search(p)  # 자기 순위 단서가 있는 조각(병렬 최상급의 둘째 등)은 앞 결과를 이어받지 않는다
-            if not own_rank and ((prev["type"] in DONG_LISTS and not prev["dongs"]) or (REF_POINT.search(p) and not prev["dongs"])):
+            if not own_rank and ((prev["type"] in DONG_LISTS and not prev["dongs"]) or (REF_POINT.search(p) and (not prev["dongs"] or prev["type"] in DONG_LISTS))):
+                # '노형동과 비슷한 동네 + 거기'처럼 동네 목록을 내는 종류는 '거기'가 결과 동네를 가리킨다
                 part["ref"] = i - 1  # 앞 조각이 낸 동네를 쓴다(값은 실행할 때 코드가 넣는다)
             elif prev["dongs"]:
                 part["dongs"], part["inherited"] = list(prev["dongs"]), part["inherited"] + ["동네"]
@@ -127,7 +128,7 @@ LOW = re.compile(r"적은|낮은|작은|덜|최하|꼴찌")
 
 def top_dong(out, exclude=(), text=""):
     """앞 조각 답에서 뒤 조각이 쓸 동네와 동률 여부. 순위(T3)는 계산값(지도 값)에서 고른다(결론 문장 의존 제거, Gemini 054 지적).
-    다른 종류(조건 탐색·비슷한 동네 등)는 결론 문장에서 처음 나온 동네."""
+    비슷한 동네(T9)·이례 변화(T15)는 답의 result_dongs(계산 결과). 그 밖(조건 탐색 등)만 결론 문장에서 처음 나온 동네."""
     t = ((out or {}).get("tuple") or {}).get("type")
     vals = next((v.get("values") for v in ((out or {}).get("answer") or {}).get("views") or [] if v.get("kind") == "map" and v.get("values")), None)
     if t == "T3" and vals:
@@ -136,6 +137,9 @@ def top_dong(out, exclude=(), text=""):
             best = (min if LOW.search(text or "") else max)(vals.values())
             top = sorted(k for k, v in vals.items() if v == best)
             return top[0], len(top) > 1
+    rd = [d for d in (out or {}).get("result_dongs") or [] if d not in exclude]
+    if rd:  # 비슷한 동네·이례 변화는 계산 결과의 동네 목록에서(결론 문장 의존 제거, 평가 2026-11-14 B6)
+        return rd[0], False
     text_c = ((out or {}).get("card") or {}).get("conclusion") or ""
     found = []
     for k in sorted(Q.DONGS, key=len, reverse=True):

@@ -38,11 +38,11 @@ class AnalystTest(unittest.TestCase):
         self.assertTrue(any(t["by"] == "코드" and "바로잡음" in t["note"] for t in r["trace"]))
 
     def test_explain_with_numbers_is_replaced(self):  # 해석 문장에 숫자가 있으면 버린다
-        bad = {"lines": ["상관계수는 0.9예요."]}
+        bad = {"lines": ["상관계수는 0.12345예요."]}  # 결과에 없는 숫자
         r = analyst.run("43개 동네 방문과 매출의 상관 분석해줘", chat=fake([U("corr"), bad, NX]))
         ex = next(t for t in r["trace"] if t["tool"] == "explain")
         self.assertFalse(ex["ok"])
-        self.assertNotIn("상관계수는 0.9예요.", r["lines"])
+        self.assertNotIn("상관계수는 0.12345예요.", r["lines"])
 
     def test_rejected_technique_gets_alternative(self):  # 조건이 안 맞으면 모델이 대안을 고른다(입지계수는 동네가 필요)
         r = analyst.run("업종이 어디에 몰려 있는지 알려줘", chat=fake([U("lq"), {"kind": "hhi", "reason": "동네 없이 볼 수 있어요"}, EX, NX]))
@@ -60,5 +60,25 @@ class AnalystTest(unittest.TestCase):
         self.assertTrue(any("채움" in x["note"] for x in log))
 
 
+    def test_general_kept_even_if_technique_word(self):  # 모델이 '일반'으로 판단하면 기법 이름 검사가 덮어쓰지 않는다(B2)
+        u, log = analyst.understand("중문동 방문객이 몇 시에 많은지 시간대별 분포 알려줘", chat=fake([U("general")]))
+        self.assertEqual(u["kind"], "general")
+
+    def test_classifier_second_opinion_reasks(self):  # 분류기가 일반 종류(비슷한 동네)로 확신하면 다시 묻는다(B2)
+        from unittest import mock
+        it = {"tuple": {"type": "T9", "expect": "답함"}, "needs_confirm": False}
+        seen = []
+        with mock.patch.object(analyst, "_classifier", return_value=it):
+            u, log = analyst.understand("연동이랑 비슷한 동네 3곳 찾아줘", chat=fake([U("cluster"), U("general")], seen))
+        self.assertEqual(len(seen), 2)
+        self.assertEqual(u["kind"], "general")
+
+
 if __name__ == "__main__":
     unittest.main()
+
+
+class ExplainCheck(unittest.TestCase):
+    def test_foreign_and_unknown_numbers_dropped(self):  # 한자가 섞이거나 결과에 없는 숫자가 있는 문장만 뺀다(B1)
+        kept = analyst._explain_ok(["노형동에서는 의원이特别注意", "방문이 많은 동네일수록 매출도 많은 편이에요.", "상관계수는 0.77이에요."], ["노형동"], [{"r": 0.5}])
+        self.assertEqual(kept, ["방문이 많은 동네일수록 매출도 많은 편이에요."])
