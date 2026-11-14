@@ -173,6 +173,9 @@ def ask(body: Ask, request: Request):
             raise HTTPException(422, str(e))
     if "m" not in _M1:
         _M1["m"] = m1.M1()
+    import question_agent
+    if question_agent.enabled():  # 질문 담당 Agent(2026-11-15): 계산 → 결과 확인 → 다음 행동을 로컬 모델이 고른다(Ollama가 있을 때)
+        return clean(question_agent.run(question, env, llm_on=on))
     return clean(result.respond(question, env, llm_on=on, interpret=_M1["m"].interpret))
 
 

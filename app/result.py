@@ -13,6 +13,7 @@ LLM은 M3-b(계획 해설 1~2문장) 한 곳만 쓴다. 숫자를 쓰면 버리�
 진입점: respond(question, env, llm_on=True, slots=None)
 """
 import json
+import os
 import re
 import sys
 import time
@@ -729,50 +730,53 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import plan_agent
             it = plan_agent.adjust(question, it)
         t = it["tuple"]
-        q_ = question or ""
-        if not t.get("metric") and SALES_WORD.search(q_):  # '잘 돼?'는 매출로 답한다(점포 수로 답하던 결함, 2026-11-15)
-            t = dict(t, metric=["매출"])
+        # 질문 보정 규칙(2026-11-15 P1: 기간·대체 지표·눈·비·자료 찾기·순위). JEJU_RULE_FIX=0이면 끈다(질문 담당 Agent 비교 측정용).
+        # Agent가 고른 해석으로 다시 계산할 때(env _agent_tuple)는 규칙이 덮어쓰지 않는다.
+        if os.environ.get("JEJU_RULE_FIX", "1") != "0" and not (env or {}).get("_agent_tuple"):
+            q_ = question or ""
+            if not t.get("metric") and SALES_WORD.search(q_):  # '잘 돼?'는 매출로 답한다(점포 수로 답하던 결함, 2026-11-15)
+                t = dict(t, metric=["매출"])
+                it = dict(it, tuple=t)
+            # 지표·조건을 못 찾았거나 다른 지표로 답하는 질문(2026-11-15 최종 평가 결함): 가까운 지표로 바꾸고 바꾼 사실을 알린다
+            if DATA_Q.search(q_) and not t.get("space") and t.get("type") != "T11":
+                t = dict(t, type="T11", metric=["자료목록"], expect="답함")
+            if PRICE_Q.search(q_) and "건당금액" not in (t.get("metric") or []) and set(t.get("metric") or []) <= {"점포수"}:
+                t = dict(t, metric=["건당금액"])
+                notes.append(PRICE_NOTE)
+            if POP_Q.search(q_) and set(t.get("metric") or []) <= {"점포수"}:
+                t = dict(t, metric=["거주연령구성"], expect="답함" if t.get("space") else t.get("expect"))
+                notes.append(POP_NOTE)
+            if TOUR_MANY.search(q_) and set(t.get("metric") or []) <= {"점포수"}:
+                t = dict(t, metric=["관광객비중"])
+                notes.append(TOUR_NOTE)
+            if HOUR_Q.search(q_) and set(t.get("metric") or []) <= {"점포수", "일평균방문"}:
+                t = dict(t, type="T13", metric=["시간대방문"], form=Q.DEFAULT_FORM["T13"])
+            hm = re.search(r"(오후|저녁|밤)?\s*(\d{1,2})\s*시", q_) if HOUR_Q.search(q_) else None
+            if hm:  # 물은 시각의 값도 답한다('오후 3시' → 15시)
+                h = int(hm.group(2)) % 24
+                t = dict(t, ask_hour=h + 12 if hm.group(1) and h < 12 else h)
+            ay, am = _asked_period(q_)
+            rm = re.search(r"(최근|지난)\s*(\d{1,2})\s*개월", q_)
+            if rm and 1 <= int(rm.group(2)) <= 24:  # '최근 3개월'은 그 기간 합계(평균)로(2026-11-15)
+                t = dict(t, ask_recent=int(rm.group(2)))
+            if ay or am:  # 질문에 적힌 기간(문서 계산은 layers._asked_ym)
+                t = dict(t, ask_year=ay, ask_month=am)
+                if am and t.get("type") == "T6" and not re.search(r"여름|겨울|봄|가을|계절|성수기|비수기|날씨|" + RAIN_WORD, q_):
+                    t = dict(t, type="T1", cond=[], form=Q.DEFAULT_FORM["T1"])  # '7월 연동 방문객'은 계절 효과가 아니라 7월 값
+            if SNOW_Q.search(q_):
+                t = dict(t, cond=[c for c in (t.get("cond") or []) if c != "비"])
+                notes.append(SNOW_NOTE)
+            elif re.search(RAIN_WORD, q_) and t.get("type") == "T1" and t.get("space") and not t.get("cond"):
+                if "매출" in (t.get("metric") or []):
+                    notes.append(RAIN_SALES_NOTE)
+                t = dict(t, type="T6", cond=["비"], metric=["일평균방문"], form=Q.DEFAULT_FORM["T6"])
             it = dict(it, tuple=t)
-        # 지표·조건을 못 찾았거나 다른 지표로 답하는 질문(2026-11-15 최종 평가 결함): 가까운 지표로 바꾸고 바꾼 사실을 알린다
-        if DATA_Q.search(q_) and not t.get("space") and t.get("type") != "T11":
-            t = dict(t, type="T11", metric=["자료목록"], expect="답함")
-        if PRICE_Q.search(q_) and "건당금액" not in (t.get("metric") or []) and set(t.get("metric") or []) <= {"점포수"}:
-            t = dict(t, metric=["건당금액"])
-            notes.append(PRICE_NOTE)
-        if POP_Q.search(q_) and set(t.get("metric") or []) <= {"점포수"}:
-            t = dict(t, metric=["거주연령구성"], expect="답함" if t.get("space") else t.get("expect"))
-            notes.append(POP_NOTE)
-        if TOUR_MANY.search(q_) and set(t.get("metric") or []) <= {"점포수"}:
-            t = dict(t, metric=["관광객비중"])
-            notes.append(TOUR_NOTE)
-        if HOUR_Q.search(q_) and set(t.get("metric") or []) <= {"점포수", "일평균방문"}:
-            t = dict(t, type="T13", metric=["시간대방문"], form=Q.DEFAULT_FORM["T13"])
-        hm = re.search(r"(오후|저녁|밤)?\s*(\d{1,2})\s*시", q_) if HOUR_Q.search(q_) else None
-        if hm:  # 물은 시각의 값도 답한다('오후 3시' → 15시)
-            h = int(hm.group(2)) % 24
-            t = dict(t, ask_hour=h + 12 if hm.group(1) and h < 12 else h)
-        ay, am = _asked_period(q_)
-        rm = re.search(r"(최근|지난)\s*(\d{1,2})\s*개월", q_)
-        if rm and 1 <= int(rm.group(2)) <= 24:  # '최근 3개월'은 그 기간 합계(평균)로(2026-11-15)
-            t = dict(t, ask_recent=int(rm.group(2)))
-        if ay or am:  # 질문에 적힌 기간(문서 계산은 layers._asked_ym)
-            t = dict(t, ask_year=ay, ask_month=am)
-            if am and t.get("type") == "T6" and not re.search(r"여름|겨울|봄|가을|계절|성수기|비수기|날씨|" + RAIN_WORD, q_):
-                t = dict(t, type="T1", cond=[], form=Q.DEFAULT_FORM["T1"])  # '7월 연동 방문객'은 계절 효과가 아니라 7월 값
-        if SNOW_Q.search(q_):
-            t = dict(t, cond=[c for c in (t.get("cond") or []) if c != "비"])
-            notes.append(SNOW_NOTE)
-        elif re.search(RAIN_WORD, q_) and t.get("type") == "T1" and t.get("space") and not t.get("cond"):
-            if "매출" in (t.get("metric") or []):
-                notes.append(RAIN_SALES_NOTE)
-            t = dict(t, type="T6", cond=["비"], metric=["일평균방문"], form=Q.DEFAULT_FORM["T6"])
-        it = dict(it, tuple=t)
-        if len(t.get("metric") or []) > 1:  # 질문에 그대로 적힌 지표를 앞에(폐업률을 물었는데 폐업 수 순위로 답하던 결함)
-            t = dict(t, metric=sorted(t["metric"], key=lambda m: m not in q_))
-            it = dict(it, tuple=t)
-        if t.get("type") == "T1" and not t.get("space") and RANK_ADJ.search(question or ""):
-            t = dict(t, type="T3", expect="답함")
-            it = dict(it, tuple=t)
+            if len(t.get("metric") or []) > 1:  # 질문에 그대로 적힌 지표를 앞에(폐업률을 물었는데 폐업 수 순위로 답하던 결함)
+                t = dict(t, metric=sorted(t["metric"], key=lambda m: m not in q_))
+                it = dict(it, tuple=t)
+            if t.get("type") == "T1" and not t.get("space") and RANK_ADJ.search(question or ""):
+                t = dict(t, type="T3", expect="답함")
+                it = dict(it, tuple=t)
         if t.get("type") == "T3" and RANK_LOW.search(question or ""):  # 순위 방향(작은 순서)
             t = dict(t, order="asc")
             it = dict(it, tuple=t)

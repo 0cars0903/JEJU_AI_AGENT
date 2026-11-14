@@ -76,15 +76,25 @@ class M1:
         i = int(p.argmax())
         return classes[i], float(p[i])
 
+    def _top(self, head, v, k=3):
+        try:  # 후보는 보조 정보다. 계산하지 못해도 해석은 그대로 진행한다
+            classes, W, b = self.heads[head]
+            with np.errstate(all="ignore"):
+                p = _softmax(W @ np.asarray(v, dtype=np.float64) + b)
+            return [(classes[i], round(float(p[i]), 3)) for i in np.argsort(-p)[:k]]
+        except Exception:
+            return []
+
     def interpret(self, q):
         t0 = time.perf_counter()
         base = qparse.parse(q)
         t = dict(base)
-        path, conf, rag_info = "A2′(사전 규칙)", None, None
+        path, conf, rag_info, top = "A2′(사전 규칙)", None, None, []
         if self.ok:
             try:
                 v = self._embed(q)
                 t["type"], conf = self._predict("type", v)
+                top = self._top("type", v)  # 질문 담당 Agent가 해석을 확인할 때 보여 줄 후보(2026-11-15)
                 t["expect"], _ = self._predict("expect", v)
                 path = "B3(임베딩 + 분류기)"
                 if getattr(self, "rag_on", False) and t["expect"] == "답함":  # 질문 기록 찾기(RAG): 비슷한 과거 질문의 종류와 크게 어긋나면 모델에 다시 판단을 요청한다(2026-11-15)
@@ -136,7 +146,7 @@ class M1:
         if low:
             card["text"] += " (확인이 필요해요)"
         return {"tuple": {k: v for k, v in t.items() if not k.startswith("_")}, "card": card, "confidence": conf, "needs_confirm": low or t["expect"] != "답함", "rule_type": base["type"], "rule_expect": base["expect"],
-                "path": path, "why": t.get("_why", []), "rag": rag_info, "sec": round(time.perf_counter() - t0, 4)}
+                "path": path, "why": t.get("_why", []), "rag": rag_info, "type_top": top, "sec": round(time.perf_counter() - t0, 4)}
 
 
 if __name__ == "__main__":

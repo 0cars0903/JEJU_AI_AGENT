@@ -491,6 +491,20 @@ export function Process({ r }: { r: AskResult }) {
             {p.explain.by === "LLM" && <span data-testid="ai-label" className="ml-1 text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">(AI가 쓴 설명 · 숫자는 프로그램이 계산)</span>}
           </p>
         )}
+        {(r.question_agent?.turns?.length ?? 0) > 0 && (
+          <div data-testid="question-agent">
+            <p className="font-semibold">질문 담당 Agent의 판단(로컬 모델이 고르고, 코드가 어긋남을 찾고 계산)</p>
+            <ol className="list-decimal pl-5">
+              {r.question_agent!.turns.map((x) => (
+                <li key={x.turn}>
+                  어긋남: {x.gaps.length ? x.gaps.join(", ") : "없음"} → 선택: {x.choice}
+                  {x.note ? ` (${x.note})` : ""}
+                  {x.reason && <span className="text-(--krds-text-subtle)"> · {x.reason}</span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
         <Trace r={r} />
         {Object.keys(p.data ?? {}).length > 0 && (
           <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">

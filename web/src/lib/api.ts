@@ -89,6 +89,8 @@ export type AskResult = {
   };
   downloads?: { kind: "csv" | "chart" | "bundle"; name: string; rows?: number; export?: string; csv?: string }[];
   sec?: number;
+  /** 질문 담당 Agent(app/question_agent.py, 2026-11-15): 차례마다 코드가 찾은 어긋남, 모델이 고른 선택지, 이유 */
+  question_agent?: { turns: { turn: number; gaps: string[]; choice: string; action: string; reason: string; by: string; sec: number; change?: string[]; note?: string }[]; sec?: number; skipped?: string };
 };
 
 export class ApiError extends Error {
