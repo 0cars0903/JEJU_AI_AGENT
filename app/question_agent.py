@@ -11,6 +11,7 @@
 측정: tools/eval/general_answer.py(정답 기준 data/eval/answer_rubric.md, 판정 277: 계획 표 155 → Agent 197, 2026-11-15)
 """
 import json
+import math
 import os
 import re
 import sys
@@ -226,7 +227,7 @@ def options(q, r, it, gs, tried=(), prev=None):
     def add(text, act, change=None):
         if text in tried:  # 이미 해 본 다시 계산은 다시 보이지 않는다
             return
-        out.append({"id": str(len(out) + 1), "text": text, "act": act, "change": change or {}})
+        out.append({"id": LETTERS[len(out)], "text": text, "act": act, "change": change or {}})
     for x in gs:
         c = x["change"]
         if x["kind"] == "기간":
@@ -271,18 +272,117 @@ def options(q, r, it, gs, tried=(), prev=None):
     return out
 
 
-def decide(q, r, it, gs, chat=None, done=(), prev=None):
+LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # 선택지 표시: 한 글자 = 한 토큰이라 고른 글자의 확률을 읽을 수 있다(두 자리 번호는 토큰이 나뉨)
+
+
+def choice_probs(lps, ids, key="choice"):
+    """Ollama logprobs에서 '"choice": "' 다음 토큰의 후보 확률을 선택지 글자끼리 정규화해 돌려준다(Jev의 Choice 출력과 같은 모양). 못 찾으면 None."""
+    acc = ""
+    for t in lps or []:
+        tok = t.get("token") or ""
+        if re.search(r'"' + key + r'"\s*:\s*"?\s*$', acc) and tok.strip(' "') in ids:
+            p = {}
+            for x in t.get("top_logprobs") or []:
+                k = (x.get("token") or "").strip(' "')
+                if k in ids:
+                    p[k] = p.get(k, 0.0) + math.exp(x["logprob"])
+            tot = sum(p.values())
+            return {k: round(v / tot, 4) for k, v in sorted(p.items(), key=lambda kv: -kv[1])} if tot else None
+        acc += tok
+    return None
+
+
+def _ask_choice(chat, system, user, schema, ids, key="choice", model=None):
+    """모델 호출 1회: (JSON 답, 선택지 확률). 시험용 가짜 모델(chat)이면 확률은 None."""
     import analyst
+    if chat:
+        return analyst._ask(chat, system, user, schema, max_tokens=150), None
+    import expert
+    import llm
+    model = model or expert.AGENT_MODEL
+    if model.startswith("claude-"):  # Claude 키 실험(2026-11-16): 같은 선택지를 Claude가 고름. 확률(logprobs)은 API가 주지 않아 None
+        try:
+            import llm_claude
+            resp = llm_claude.client().messages.create(model=model, max_tokens=300, system=system, messages=[{"role": "user", "content": user}],
+                                                        tools=[{"name": "answer", "description": "판단 결과", "input_schema": schema}],
+                                                        tool_choice={"type": "tool", "name": "answer"})
+            d = next((b.input for b in resp.content if b.type == "tool_use"), {})
+        except Exception:
+            return {}, None
+        return (d if isinstance(d, dict) else {}), None
+    try:
+        resp = llm.chat(model, [{"role": "system", "content": system}, {"role": "user", "content": user}], [], name="ollama",
+                        max_tokens=150, fmt=schema, logprobs=20)
+        d = json.loads((resp.get("message") or {}).get("content") or "{}")
+    except Exception:  # 모델 서버 오류·형식 오류면 판단 없음(지금 답 유지)
+        return {}, None
+    return d, choice_probs(resp.get("logprobs"), ids, key)
+
+
+# 실험 B(2026-11-15, 마스터 '실험 계속'): 자문 담당. 개입 시점은 ① 처리 방식을 바꾸기 전 ③ 답 내기 전(② 같은 오류 두 번은 결과 검증 신호로 대신).
+# 출력은 Jev의 Noul과 같은 모양(Y일 확률 하나). 모델은 JEJU_ADVISOR_MODEL(기본 질문 담당과 같은 qwen2.5:7b).
+# JEJU_ADVISOR: off(끔) · final(③만, 멈춤에만 씀) · veto(③ + ① 바꾸기 거부)
+ADVISOR = os.environ.get("JEJU_ADVISOR", "off")
+ADVISOR_MODEL = os.environ.get("JEJU_ADVISOR_MODEL", "")
+S_ADVISE = ("너는 제주빅데이터센터 상담 결과를 검토하는 자문 담당자다. 도민 질문과 시스템의 처리·결론을 보고, 이 처리가 질문이 물은 것"
+            "(동네·업종·지표·기간·조건, 또는 자료로 답할 수 없는 질문이면 범위 밖 안내)에 맞는지 판단한다. 맞으면 Y, 아니면 N. 이유는 한 문장.")
+# 관점 나누기 실험(2026-11-16, 마스터 '시도하지 않은 조합 진행'): 같은 모델에 한 요소만 보게 하는 지시문. JEJU_ADVISOR_FOCUS가 비어 있으면 위 기본 지시문.
+FOCUS = {"지표": "너는 지표 검토 담당자다. 질문이 물은 지표(매출·방문·점포 수·폐업·비중 등)와 시스템이 답한 지표가 같은지만 본다. 동네·기간은 보지 않는다. 같으면 Y, 다르면 N. 이유는 한 문장.",
+         "범위": "너는 범위 검토 담당자다. 질문이 물은 동네·업종·기간·조건을 시스템 결론이 그대로 지켰는지만 본다. 지표 종류는 보지 않는다. 지켰으면 Y, 하나라도 다르거나 빠졌으면 N. 이유는 한 문장."}
+if os.environ.get("JEJU_ADVISOR_FOCUS") in FOCUS:
+    S_ADVISE = FOCUS[os.environ["JEJU_ADVISOR_FOCUS"]]
+SCHEMA_OK = {"type": "object", "required": ["ok", "reason"], "properties": {"ok": {"type": "string", "enum": ["Y", "N"]}, "reason": {"type": "string"}}}
+
+
+def advise(q, r, plan=None, chat=None):
+    """자문 1회: (Y 확률 또는 None, 이유). plan이 있으면 '이 처리로 바꾸는 것이 맞는가'를 묻는다(①)."""
+    if plan:
+        user = f"질문: {q}\n{summary(r)}\n질문 담당이 고른 다음 처리: {plan}\n이 처리로 바꾸는 것이 질문에 더 맞는가?"
+    else:
+        user = f"질문: {q}\n{summary(r)}\n이 처리가 질문에 맞는가?"
+    d, p = _ask_choice(chat, S_ADVISE, user, SCHEMA_OK, ["Y", "N"], key="ok", model=ADVISOR_MODEL or None)
+    if p:
+        return round(p.get("Y", 0.0), 4), str(d.get("reason") or "")
+    if d.get("ok") in ("Y", "N"):
+        return (1.0 if d["ok"] == "Y" else 0.0), str(d.get("reason") or "")
+    return None, ""
+
+
+# 사유 검수 실험(2026-11-15, 마스터 '진행 요청'): 선택 글자 뒤에 '질문이 물은 지표·동네'를 칸으로 쓰게 하고(선택은 먼저 쓰므로 바뀌지 않음),
+# '지금 답 그대로'인데 적은 지표·동네가 답의 해석과 다르면 코드가 '사유 어긋남'으로 표시한다. JEJU_QA_REASON=1일 때만.
+REASON_ON = os.environ.get("JEJU_QA_REASON") == "1"
+
+
+def reason_mismatch(asked, t):
+    """구조화 사유와 답 해석의 어긋남: 어긋난 칸 이름 목록."""
+    out = []
+    m = (asked or {}).get("metric")
+    if m and m not in ("모름", "") and m not in (t.get("metric") or []):
+        out.append("지표")
+    d = ((asked or {}).get("dong") or "").strip()
+    if d and d not in ("모름", "없음", "제주 전체") and d in Q.DONGS and d not in (t.get("space") or []):
+        out.append("동네")
+    return out
+
+
+def decide(q, r, it, gs, chat=None, done=(), prev=None):
     ops = options(q, r, it, gs, done, prev)
     g = "\n".join(f"- [{x['kind']}] {x['text']}" for x in gs) or "- 없음"
     tried = ("\n이미 해 본 것: " + "; ".join(done)) if done else ""
     before = (f"\n다시 계산 전 답(앞 답):\n{summary(prev)}\n위 '지금 처리'는 다시 계산한 답이다. 두 답 중 질문에 더 맞는 쪽을 고른다.") if prev is not None else ""
     user = (f"질문: {q}\n{summary(r)}{before}\n코드가 찾은 어긋남:\n{g}{tried}\n선택지:\n" + "\n".join(f"{o['id']}. {o['text']}" for o in ops))
     schema = {"type": "object", "required": ["choice", "reason"], "properties": {"choice": {"type": "string", "enum": [o["id"] for o in ops]}, "reason": {"type": "string"}}}
-    d = analyst._ask(chat, S_DECIDE, user, schema, max_tokens=150)
+    if REASON_ON:
+        schema["required"] = ["choice", "asked_metric", "asked_dong", "reason"]
+        schema["properties"] = {"choice": schema["properties"]["choice"], "asked_metric": {"type": "string", "enum": list(Q.METRICS) + ["모름"]},
+                                "asked_dong": {"type": "string"}, "reason": {"type": "string"}}
+        user += "\n답 형식: choice(선택지 글자), asked_metric(질문이 물은 지표 이름, 없으면 모름), asked_dong(질문이 물은 동네 이름, 없으면 없음), reason(한 문장)."
+    d, probs = _ask_choice(chat, S_DECIDE, user, schema, [o["id"] for o in ops])
     keep = next(o for o in ops if o["act"] == "답하기")  # 모델이 없거나 실패하면 지금 답을 그대로 둔다
     pick = next((o for o in ops if o["id"] == str(d.get("choice"))), keep)
-    return pick, str(d.get("reason") or "")
+    if REASON_ON:
+        pick = dict(pick, asked={"metric": d.get("asked_metric"), "dong": d.get("asked_dong")})
+    return pick, str(d.get("reason") or ""), probs
 
 
 def _apply(t, change):
@@ -339,6 +439,9 @@ def code_pick(ops, gs):
 
 ALT_ORDER = {"다시 계산": 0, "답하기": 1, "범위 밖": 2, "되묻기": 3}
 PAUSE_ACTS = {"범위 밖", "되묻기", "되돌리기"}
+# 실험 A(2026-11-15, 조정용 282): 멈춤을 선택지 확신도로 정한다. 어느 차례든 1·2위 확률 차가 0.8 미만이면 멈춤.
+# 조정용에서 멈춤 75 → 49건, 멈춘 문항 오답 28% → 39%(나머지 17%). 처리 방식 변경 규칙을 더하면 26%로 떨어져 넣지 않았다
+MARGIN_PAUSE = 0.8
 
 
 def _kind(r):
@@ -365,7 +468,11 @@ def confirm_card(first, ops, gs, trace, r0=None, r=None):
     acts = {x.get("action") for x in trace}
     cp = code_pick(ops, gs)
     why = ""
-    if acts & PAUSE_ACTS or (r0 is not None and _kind(r0) != _kind(r)):
+    ms = [x["margin"] for x in trace if x.get("margin") is not None]
+    if ms:  # 확신도가 있으면 확신도로만 정한다
+        if min(ms) < MARGIN_PAUSE:
+            why = f"질문 담당 Agent의 판단이 갈렸어요(1·2위 선택지 확률 차 {min(ms):.2f})"
+    elif acts & PAUSE_ACTS or (r0 is not None and _kind(r0) != _kind(r)):
         why = "질문 담당 Agent가 답하는 방식을 바꿨어요"
     elif cp["text"] != first["text"]:
         why = "질문 담당 Agent와 코드 규칙의 판단이 달랐어요"
@@ -417,15 +524,29 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3, progress=None, 
             pick = next((o for o in ops0 if o["text"] == forced), None)
             if pick is None:
                 raise ValueError("고른 선택지가 지금 계산과 맞지 않아요. 질문을 다시 보내 주세요.")
-            reason, by = "사용자가 확인 카드에서 고름", "사용자"
+            reason, by, probs = "사용자가 확인 카드에서 고름", "사용자", None
         else:
             say(3, f"질문 담당 Agent가 결과가 질문에 맞는지 확인하고 있어요({turn + 1}/{max_turns}회째" + (", 다시 계산한 답을 앞 답과 견주는 중)" if prev else ")"))
-            pick, reason = decide(question, r, it, gs, chat, done, prev[0] if prev else None)
+            out = decide(question, r, it, gs, chat, done, prev[0] if prev else None)
+            pick, reason, probs = out[0], out[1], (out[2] if len(out) > 2 else None)  # 측정 기준선(코드·무작위)은 확률 없이 두 값
             by = BY
         if turn == 0:
             first = pick
         act = pick["act"]
+        if ADVISOR == "veto" and not forced and (act in ("범위 밖", "되묻기") or pick["change"].get("rule") or pick["change"].get("confirm")):
+            pv, why_v = advise(question, r, pick["text"], chat)  # ① 처리 방식을 바꾸기 전 자문
+            if pv is not None and pv < 0.5:
+                trace.append({"turn": turn + 1, "gaps": [x["kind"] for x in gs], "choice": pick["text"], "action": "자문 거부", "reason": why_v[:120],
+                              "by": f"자문({ADVISOR_MODEL or BY})", "p_ok": pv, "sec": round(time.perf_counter() - t1, 2)})
+                break
         rec = {"turn": turn + 1, "gaps": [x["kind"] for x in gs], "choice": pick["text"], "action": act, "reason": reason[:120], "by": by, "sec": round(time.perf_counter() - t1, 2)}
+        if pick.get("asked") is not None:  # 사유 검수 실험: 구조화 사유와 답 해석 대조(코드)
+            rec["asked"] = pick["asked"]
+            if act == "답하기":
+                rec["reason_mismatch"] = reason_mismatch(pick["asked"], r.get("tuple") or it["tuple"])
+        if probs:  # 선택지 확신도(Jev Choice와 같은 모양): 고른 선택지 확률, 1·2위 차, 분포
+            ps = sorted(probs.values(), reverse=True) + [0.0]
+            rec.update(probs=probs, conf=round(probs.get(pick["id"], 0.0), 4), margin=round(ps[0] - ps[1], 4))
         trace.append(rec)
         if act == "답하기":
             break
@@ -477,6 +598,13 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3, progress=None, 
             t = r.get("tuple") or it["tuple"]
             r = result._blocked(question, dict(t, type="T12", expect="범위밖"), "지금 자료로는 답할 수 없는 질문이에요.", [])
             break
+    if ADVISOR in ("final", "veto") and not forced and r.get("card"):
+        say(4, "자문 담당이 답이 질문에 맞는지 마지막으로 확인하고 있어요")
+        t1 = time.perf_counter()
+        pf, why_f = advise(question, r, None, chat)  # ③ 답 내기 전 자문
+        if pf is not None:
+            trace.append({"turn": len(trace) + 1, "gaps": [], "choice": "답 내기 전 확인", "action": "자문", "reason": why_f[:120],
+                          "by": f"자문({ADVISOR_MODEL or BY})", "p_ok": pf, "sec": round(time.perf_counter() - t1, 2)})
     say(4, "답과 안내 문장을 정리하고 있어요")
     changed = [", ".join(x.get("change") or []) for x in trace if x.get("action") == "다시 계산" and x.get("change") and not x.get("note")]
     if changed:

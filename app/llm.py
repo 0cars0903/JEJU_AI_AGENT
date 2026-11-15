@@ -25,9 +25,9 @@ def backend():
     return "ollama" if _ollama_alive() else "rule"
 
 
-def chat(model, messages, tools, name=None, max_tokens=700, fmt=None, effort=None):
-    """돌려주는 형식: {"message": {"role", "content", "tool_calls"?}}
-    fmt: Ollama 출력 JSON 스키마(format). effort: Claude 생각 깊이(low·medium·high)."""
+def chat(model, messages, tools, name=None, max_tokens=700, fmt=None, effort=None, logprobs=0):
+    """돌려주는 형식: {"message": {"role", "content", "tool_calls"?}}(Ollama는 logprobs도)
+    fmt: Ollama 출력 JSON 스키마(format). effort: Claude 생각 깊이(low·medium·high). logprobs: Ollama 토큰마다 상위 후보 수(0이면 받지 않음)."""
     name = name or backend()
     if name == "claude":
         import llm_claude
@@ -39,6 +39,8 @@ def chat(model, messages, tools, name=None, max_tokens=700, fmt=None, effort=Non
             payload["tools"] = tools
         if fmt:
             payload["format"] = fmt
+        if logprobs:  # 선택지 확신도(2026-11-15 실험 A): 고른 글자 토큰의 후보 확률
+            payload["logprobs"], payload["top_logprobs"] = True, int(logprobs)
         if model.startswith("qwen3"):
             payload["think"] = False
         req = urllib.request.Request(OLLAMA_URL, json.dumps(payload).encode(), {"Content-Type": "application/json"})

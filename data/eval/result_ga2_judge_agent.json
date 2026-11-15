@@ -6,54 +6,54 @@
   "policy": "model",
   "rule_fix": true,
   "행동 분포": {
-   "답하기": 272,
-   "다시 계산": 131,
-   "되돌리기": 4,
+   "답하기": 264,
+   "다시 계산": 141,
+   "되돌리기": 9,
    "범위 밖": 4,
-   "안내 붙여 답하기": 4
+   "안내 붙여 답하기": 3
   },
   "차례 수 분포": {
    "0": 1,
-   "1": 207,
+   "1": 204,
    "2": 95,
-   "3": 6
+   "3": 9
   },
-  "확인 카드 멈춤": 80,
+  "확인 카드 멈춤": 46,
   "n": 309,
   "애매 제외 n": 277,
-  "④ 완전 정답": 201,
-  "① 처리": 253,
-  "② 요소 비율 평균": 0.844,
-  "③ 안내 정직성": "48/58",
+  "④ 완전 정답": 200,
+  "① 처리": 252,
+  "② 요소 비율 평균": 0.839,
+  "③ 안내 정직성": "49/59",
   "애매 문항 정답": "23/32",
   "생성 모델별": {
-   "fable": "29/38",
-   "gemini": "88/130",
-   "haiku": "28/35",
+   "fable": "28/38",
+   "gemini": "90/130",
+   "haiku": "27/35",
    "opus": "26/38",
-   "sonnet": "30/36"
+   "sonnet": "29/36"
   },
   "유형별": {
-   "(일반)": "48/59",
-   "기간": "37/48",
-   "대체 지표": "16/32",
+   "(일반)": "47/59",
+   "기간": "38/48",
+   "대체 지표": "17/32",
    "두 요소": "9/12",
    "생활 지명": "22/41",
-   "순위": "41/49",
-   "조건": "29/39",
-   "지표 없음": "30/46"
+   "순위": "40/49",
+   "조건": "28/39",
+   "지표 없음": "31/46"
   },
   "요소별 오답": {
    "동네": 9,
-   "지표": 25,
-   "업종": 10,
+   "지표": 27,
+   "업종": 9,
    "조건": 1,
    "기간": 5,
    "순위": 7
   },
-  "지연 중앙값": 1.35,
-  "지연 90%": 4.13,
-  "모델 판단 평균 횟수": 1.34
+  "지연 중앙값": 1.41,
+  "지연 90%": 4.23,
+  "모델 판단 평균 횟수": 1.36
  },
  "rows": [
   {
@@ -85,7 +85,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -115,7 +117,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -140,7 +144,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.71,
+   "sec": 1.77,
    "status": "성공",
    "turns": [
     {
@@ -148,7 +152,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -170,7 +176,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 3.68,
+   "sec": 3.71,
    "status": "성공",
    "turns": [
     {
@@ -182,14 +188,18 @@
      "change": [
       "지표 방문 인구 연령 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.7428,
+     "margin": 0.4856
     }
    ],
    "calls": 2,
@@ -214,7 +224,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 1.78,
+   "sec": 1.85,
    "status": "Agent",
    "turns": [],
    "calls": 0,
@@ -232,7 +242,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.11,
+   "sec": 0.93,
    "status": "범위밖",
    "turns": [
     {
@@ -240,7 +250,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -267,7 +279,7 @@
     "기간",
     "순위"
    ],
-   "sec": 1.17,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
@@ -275,7 +287,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -308,7 +322,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -328,7 +344,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.95,
+   "sec": 0.93,
    "status": "선택필요",
    "turns": [
     {
@@ -336,7 +352,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -361,7 +379,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.67,
+   "sec": 1.43,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -369,7 +387,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -387,7 +407,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 5.96,
+   "sec": 5.83,
    "status": "성공",
    "turns": [
     {
@@ -401,7 +421,9 @@
       "종류 순위",
       "큰 순서"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9983,
+     "margin": 0.9966
     },
     {
      "gaps": [
@@ -412,14 +434,18 @@
      "change": [
       "지표 점포 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9876,
+     "margin": 0.9752
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.7669,
+     "margin": 0.5342
     }
    ],
    "calls": 3,
@@ -443,7 +469,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 2.2,
+   "sec": 2.55,
    "status": "성공",
    "turns": [
     {
@@ -453,7 +479,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8266,
+     "margin": 0.6532
     }
    ],
    "calls": 1,
@@ -478,7 +506,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.25,
+   "sec": 1.3,
    "status": "성공",
    "turns": [
     {
@@ -486,7 +514,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -511,7 +541,7 @@
     "조건",
     "지표 없음"
    ],
-   "sec": 1.15,
+   "sec": 1.2,
    "status": "성공",
    "turns": [
     {
@@ -519,7 +549,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -537,7 +569,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.14,
+   "sec": 1.16,
    "status": "범위밖",
    "turns": [
     {
@@ -545,7 +577,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -567,7 +601,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 5.58,
+   "sec": 5.45,
    "status": "성공",
    "turns": [
     {
@@ -579,7 +613,9 @@
      "change": [
       "종류 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9581,
+     "margin": 0.9162
     },
     {
      "gaps": [
@@ -590,18 +626,22 @@
      "change": [
       "지표 카드 매출"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9962,
+     "margin": 0.9953
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9635,
+     "margin": 0.927
     }
    ],
    "calls": 3,
-   "pause": true
+   "pause": false
   },
   {
    "id": "FB-057",
@@ -623,7 +663,7 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 3.91,
+   "sec": 4.83,
    "status": "성공",
    "turns": [
     {
@@ -635,14 +675,18 @@
      "change": [
       "지표 관광객 매출 비중"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9714,
+     "margin": 0.9566
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9915,
+     "margin": 0.983
     }
    ],
    "calls": 2,
@@ -660,7 +704,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 3.08,
+   "sec": 3.23,
    "status": "성공",
    "turns": [
     {
@@ -672,18 +716,22 @@
      "change": [
       "종류 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.982,
+     "margin": 0.9659
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9982,
+     "margin": 0.9964
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "FB-059",
@@ -704,7 +752,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.23,
+   "sec": 1.36,
    "status": "성공",
    "turns": [
     {
@@ -712,7 +760,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -751,18 +801,22 @@
      "change": [
       "종류 순위"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9842,
+     "margin": 0.9685
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "FB-061",
@@ -785,7 +839,7 @@
     "기간",
     "지표 없음"
    ],
-   "sec": 3.62,
+   "sec": 4.07,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -797,14 +851,18 @@
      "change": [
       "지표 개업 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9997
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9911,
+     "margin": 0.9822
     }
    ],
    "calls": 2,
@@ -829,7 +887,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.13,
+   "sec": 1.17,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -837,7 +895,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -847,42 +907,35 @@
    "id": "FB-063",
    "gen": "fable",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true
+     "지표": false
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.5,
+    "정답": false
    },
    "hard": [],
-   "sec": 4.36,
-   "status": "성공",
+   "sec": 3.01,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.5202,
+     "margin": 0.2254
     }
    ],
-   "calls": 2,
-   "pause": false
+   "calls": 1,
+   "pause": true
   },
   {
    "id": "FB-064",
@@ -896,7 +949,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.86,
+   "sec": 0.88,
    "status": "범위밖",
    "turns": [
     {
@@ -904,7 +957,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -922,7 +977,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.24,
+   "sec": 1.45,
    "status": "범위밖",
    "turns": [
     {
@@ -934,7 +989,9 @@
      "change": [
       "사전 규칙 해석(조건 탐색)"
      ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -959,7 +1016,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.07,
+   "sec": 1.16,
    "status": "성공",
    "turns": [
     {
@@ -967,7 +1024,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -993,7 +1052,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.65,
+   "sec": 1.9,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -1005,7 +1064,9 @@
      "change": [
       "종류 예상"
      ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 1,
@@ -1031,7 +1092,7 @@
     "순위",
     "지표 없음"
    ],
-   "sec": 4.21,
+   "sec": 3.24,
    "status": "성공",
    "turns": [
     {
@@ -1044,14 +1105,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.999,
+     "margin": 0.9983
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8736,
+     "margin": 0.7473
     }
    ],
    "calls": 2,
@@ -1071,7 +1136,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.94,
+   "sec": 1.15,
    "status": "선택필요",
    "turns": [
     {
@@ -1079,7 +1144,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1105,7 +1172,7 @@
     "기간",
     "두 요소"
    ],
-   "sec": 3.29,
+   "sec": 3.01,
    "status": "성공",
    "turns": [
     {
@@ -1117,14 +1184,18 @@
      "change": [
       "종류 동네 비교"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9365,
+     "margin": 0.873
     }
    ],
    "calls": 2,
@@ -1144,7 +1215,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 1.58,
+   "sec": 1.66,
    "status": "선택필요",
    "turns": [
     {
@@ -1159,7 +1230,9 @@
       "지표 일평균 방문",
       "조건 비"
      ],
-     "note": "다시 계산한 답이 질문의 지표을 잃어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답이 질문의 지표을 잃어 앞 답을 유지(결과 검증)",
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 1,
@@ -1185,7 +1258,7 @@
     "조건",
     "생활 지명"
    ],
-   "sec": 3.3,
+   "sec": 3.42,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -1199,14 +1272,18 @@
       "지표 일평균 방문",
       "조건 비"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 2,
@@ -1231,7 +1308,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 1.1,
+   "sec": 1.8,
    "status": "성공",
    "turns": [
     {
@@ -1239,7 +1316,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1259,7 +1338,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.61,
+   "sec": 1.57,
    "status": "선택필요",
    "turns": [
     {
@@ -1271,7 +1350,9 @@
      "change": [
       "지표 카드 매출"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -1292,7 +1373,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 1.36,
+   "sec": 1.65,
    "status": "선택필요",
    "turns": [
     {
@@ -1304,7 +1385,9 @@
      "change": [
       "종류 현황"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9921,
+     "margin": 0.9843
     }
    ],
    "calls": 1,
@@ -1327,7 +1410,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.1,
+   "sec": 1.12,
    "status": "성공",
    "turns": [
     {
@@ -1335,7 +1418,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1361,7 +1446,7 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 3.74,
+   "sec": 4.23,
    "status": "성공",
    "turns": [
     {
@@ -1373,14 +1458,18 @@
      "change": [
       "지표 5년 생존율"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9846,
+     "margin": 0.9692
     }
    ],
    "calls": 2,
@@ -1405,7 +1494,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.97,
+   "sec": 1.01,
    "status": "성공",
    "turns": [
     {
@@ -1413,7 +1502,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1439,7 +1530,7 @@
     "기간",
     "생활 지명"
    ],
-   "sec": 1.07,
+   "sec": 1.09,
    "status": "성공",
    "turns": [
     {
@@ -1447,7 +1538,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1472,7 +1565,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.82,
+   "sec": 4.49,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -1484,14 +1577,18 @@
      "change": [
       "지표 카드 매출"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9708,
+     "margin": 0.9424
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.996,
+     "margin": 0.992
     }
    ],
    "calls": 2,
@@ -1509,7 +1606,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.98,
+   "sec": 1.07,
    "status": "선택필요",
    "turns": [
     {
@@ -1517,7 +1614,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1537,7 +1636,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.86,
+   "sec": 0.87,
    "status": "선택필요",
    "turns": [
     {
@@ -1545,7 +1644,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9895,
+     "margin": 0.979
     }
    ],
    "calls": 1,
@@ -1566,7 +1667,7 @@
     "조건",
     "지표 없음"
    ],
-   "sec": 2.02,
+   "sec": 1.44,
    "status": "선택필요",
    "turns": [
     {
@@ -1578,7 +1679,9 @@
      "change": [
       "종류 현황"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -1604,7 +1707,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -1624,7 +1729,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.88,
+   "sec": 0.98,
    "status": "선택필요",
    "turns": [
     {
@@ -1632,7 +1737,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1652,21 +1759,25 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.23,
+   "sec": 1.73,
    "status": "선택필요",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
-     "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
-     "action": "답하기",
-     "change": null,
-     "note": null
+     "choice": "질문 종류를 '관계'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 관계"
+     ],
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9175,
+     "margin": 0.8538
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-157",
@@ -1680,7 +1791,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.01,
+   "sec": 1.16,
    "status": "선택필요",
    "turns": [
     {
@@ -1692,7 +1803,9 @@
      "change": [
       "지표 개업 수"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1712,7 +1825,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.17,
+   "sec": 0.9,
    "status": "선택필요",
    "turns": [
     {
@@ -1720,7 +1833,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9993,
+     "margin": 0.9986
     }
    ],
    "calls": 1,
@@ -1742,7 +1857,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 3.02,
+   "sec": 2.97,
    "status": "성공",
    "turns": [
     {
@@ -1754,14 +1869,18 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9984,
+     "margin": 0.9968
     }
    ],
    "calls": 2,
@@ -1779,7 +1898,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.92,
+   "sec": 0.94,
    "status": "선택필요",
    "turns": [
     {
@@ -1787,7 +1906,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1805,7 +1926,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.57,
+   "sec": 1.58,
    "status": "선택필요",
    "turns": [
     {
@@ -1817,7 +1938,9 @@
      "change": [
       "종류 종합 진단"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9974,
+     "margin": 0.9948
     }
    ],
    "calls": 1,
@@ -1838,7 +1961,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 1.84,
+   "sec": 1.55,
    "status": "선택필요",
    "turns": [
     {
@@ -1850,7 +1973,9 @@
      "change": [
       "종류 조건 효과"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1870,7 +1995,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.58,
+   "sec": 1.74,
    "status": "선택필요",
    "turns": [
     {
@@ -1882,11 +2007,13 @@
      "change": [
       "종류 현황"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-164",
@@ -1902,7 +2029,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.21,
+   "sec": 1.23,
    "status": "선택필요",
    "turns": [
     {
@@ -1912,11 +2039,13 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9714,
+     "margin": 0.9429
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-165",
@@ -1935,7 +2064,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 2.04,
+   "sec": 2.01,
    "status": "성공",
    "turns": [
     {
@@ -1945,11 +2074,13 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9264,
+     "margin": 0.8528
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-166",
@@ -1970,7 +2101,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.05,
+   "sec": 0.97,
    "status": "성공",
    "turns": [
     {
@@ -1978,7 +2109,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -1998,7 +2131,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.63,
+   "sec": 1.76,
    "status": "선택필요",
    "turns": [
     {
@@ -2010,7 +2143,9 @@
      "change": [
       "종류 관계"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2035,7 +2170,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.04,
+   "sec": 1.03,
    "status": "성공",
    "turns": [
     {
@@ -2043,7 +2178,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2063,7 +2200,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.92,
+   "sec": 1.46,
    "status": "선택필요",
    "turns": [
     {
@@ -2071,7 +2208,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2089,7 +2228,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.59,
+   "sec": 1.56,
    "status": "선택필요",
    "turns": [
     {
@@ -2101,7 +2240,9 @@
      "change": [
       "종류 관계"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9992,
+     "margin": 0.9985
     }
    ],
    "calls": 1,
@@ -2119,7 +2260,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.9,
+   "sec": 1.39,
    "status": "범위밖",
    "turns": [
     {
@@ -2127,7 +2268,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2145,7 +2288,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 6.6,
+   "sec": 5.8,
    "status": "성공",
    "turns": [
     {
@@ -2157,7 +2300,9 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9993,
+     "margin": 0.9987
     },
     {
      "gaps": [
@@ -2168,14 +2313,18 @@
      "change": [
       "지표 점포 수"
      ],
-     "note": "다음 차례에 앞 답으로 되돌림"
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 0.5266,
+     "margin": 0.1114
     },
     {
      "gaps": [],
      "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
      "action": "되돌리기",
      "change": null,
-     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림"
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.9803,
+     "margin": 0.9607
     }
    ],
    "calls": 3,
@@ -2193,7 +2342,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.88,
+   "sec": 0.87,
    "status": "범위밖",
    "turns": [
     {
@@ -2201,7 +2350,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2221,7 +2372,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.88,
+   "sec": 0.91,
    "status": "범위밖",
    "turns": [
     {
@@ -2229,7 +2380,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -2247,7 +2400,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.88,
+   "sec": 0.86,
    "status": "범위밖",
    "turns": [
     {
@@ -2255,7 +2408,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2273,7 +2428,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.15,
+   "sec": 1.03,
    "status": "범위밖",
    "turns": [
     {
@@ -2281,7 +2436,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -2301,7 +2458,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.29,
+   "sec": 1.54,
    "status": "범위밖",
    "turns": [
     {
@@ -2313,7 +2470,9 @@
      "change": [
       "사전 규칙 해석(조건 탐색)"
      ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2331,7 +2490,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 5.64,
+   "sec": 2.71,
    "status": "성공",
    "turns": [
     {
@@ -2339,23 +2498,16 @@
       "지표 없음",
       "확신 낮음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8706,
+     "margin": 0.7414
     }
    ],
-   "calls": 2,
-   "pause": false
+   "calls": 1,
+   "pause": true
   },
   {
    "id": "GA-179",
@@ -2371,7 +2523,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.3,
+   "sec": 1.42,
    "status": "범위밖",
    "turns": [
     {
@@ -2383,7 +2535,9 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 0.954,
+     "margin": 0.9083
     }
    ],
    "calls": 1,
@@ -2403,7 +2557,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 5.82,
+   "sec": 7.38,
    "status": "성공",
    "turns": [
     {
@@ -2415,7 +2569,9 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9978,
+     "margin": 0.9957
     },
     {
      "gaps": [
@@ -2426,14 +2582,18 @@
      "change": [
       "지표 점포 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.6679,
+     "margin": 0.3396
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8941,
+     "margin": 0.7883
     }
    ],
    "calls": 3,
@@ -2453,7 +2613,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.93,
+   "sec": 1.24,
    "status": "범위밖",
    "turns": [
     {
@@ -2461,7 +2621,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2481,7 +2643,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.73,
+   "sec": 1.44,
    "status": "범위밖",
    "turns": [
     {
@@ -2493,7 +2655,9 @@
      "change": [
       "사전 규칙 해석(조건 탐색)"
      ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2511,7 +2675,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.22,
+   "sec": 1.03,
    "status": "범위밖",
    "turns": [
     {
@@ -2519,7 +2683,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2537,7 +2703,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.85,
+   "sec": 0.86,
    "status": "범위밖",
    "turns": [
     {
@@ -2545,7 +2711,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2563,7 +2731,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.84,
+   "sec": 3.25,
    "status": "범위밖",
    "turns": [
     {
@@ -2576,11 +2744,13 @@
      "choice": "질문의 '투숙객'은 지금 자료로 답할 수 없어 범위 밖 안내",
      "action": "범위 밖",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9956,
+     "margin": 0.9915
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-186",
@@ -2596,7 +2766,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.22,
+   "sec": 1.21,
    "status": "성공",
    "turns": [
     {
@@ -2604,7 +2774,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9983,
+     "margin": 0.9966
     }
    ],
    "calls": 1,
@@ -2622,7 +2794,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.57,
+   "sec": 2.03,
    "status": "범위밖",
    "turns": [
     {
@@ -2633,11 +2805,13 @@
      "choice": "질문의 '인천'은 지금 자료로 답할 수 없어 범위 밖 안내",
      "action": "범위 밖",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-188",
@@ -2659,7 +2833,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2687,7 +2863,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2707,7 +2885,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.09,
+   "sec": 5.96,
    "status": "범위밖",
    "turns": [
     {
@@ -2715,13 +2893,40 @@
       "범위 밖 낱말",
       "확신 낮음"
      ],
+     "choice": "질문 종류를 '관계'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 관계"
+     ],
+     "note": null,
+     "conf": 0.5074,
+     "margin": 0.071
+    },
+    {
+     "gaps": [
+      "순위"
+     ],
+     "choice": "동네 순위(큰 순서)로 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 순위",
+      "큰 순서"
+     ],
+     "note": null,
+     "conf": 0.9995,
+     "margin": 0.9991
+    },
+    {
+     "gaps": [],
      "choice": "질문의 '전국'은 지금 자료로 답할 수 없어 범위 밖 안내",
      "action": "범위 밖",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8711,
+     "margin": 0.7431
     }
    ],
-   "calls": 1,
+   "calls": 3,
    "pause": true
   },
   {
@@ -2744,7 +2949,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 4.22,
+   "sec": 4.2,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -2756,14 +2961,18 @@
      "change": [
       "종류 추이"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9688,
+     "margin": 0.9376
     }
    ],
    "calls": 2,
@@ -2789,7 +2998,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.94,
+   "sec": 2.97,
    "status": "성공",
    "turns": [
     {
@@ -2801,18 +3010,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-193",
@@ -2834,7 +3047,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.2,
+   "sec": 1.25,
    "status": "성공",
    "turns": [
     {
@@ -2842,7 +3055,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2867,7 +3082,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.16,
+   "sec": 1.15,
    "status": "성공",
    "turns": [
     {
@@ -2875,7 +3090,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2901,7 +3118,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.55,
+   "sec": 3.87,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -2913,18 +3130,22 @@
      "change": [
       "지표 카드 매출 증가율"
      ],
-     "note": "다음 차례에 앞 답으로 되돌림"
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 0.9979,
+     "margin": 0.9958
     },
     {
      "gaps": [],
      "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
      "action": "되돌리기",
      "change": null,
-     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림"
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.9588,
+     "margin": 0.9176
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-196",
@@ -2945,7 +3166,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.11,
+   "sec": 1.12,
    "status": "성공",
    "turns": [
     {
@@ -2953,7 +3174,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -2979,7 +3202,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.14,
+   "sec": 1.12,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -2987,7 +3210,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3013,7 +3238,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.19,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
@@ -3021,7 +3246,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3055,7 +3282,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3080,7 +3309,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.98,
+   "sec": 3.1,
    "status": "성공",
    "turns": [
     {
@@ -3092,18 +3321,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9995
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9996,
+     "margin": 0.9992
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-201",
@@ -3125,7 +3358,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.12,
+   "sec": 3.7,
    "status": "성공",
    "turns": [
     {
@@ -3137,7 +3370,9 @@
      "change": [
       "질문 기간"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [
@@ -3146,7 +3381,9 @@
      "choice": "다시 계산하지 않고, 어긋남을 안내해 지금 답",
      "action": "안내 붙여 답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9991,
+     "margin": 0.9985
     }
    ],
    "calls": 2,
@@ -3172,7 +3409,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.62,
+   "sec": 2.71,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3184,18 +3421,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9992,
+     "margin": 0.9984
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-203",
@@ -3217,7 +3458,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.55,
+   "sec": 1.84,
    "status": "성공",
    "turns": [
     {
@@ -3225,7 +3466,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3251,50 +3494,82 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.37,
+   "sec": 4.55,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
+     "choice": "질문 종류를 '예상'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 예상"
+     ],
+     "note": null,
+     "conf": 0.7659,
+     "margin": 0.5348
+    },
+    {
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8339,
+     "margin": 0.6678
     }
    ],
-   "calls": 1,
+   "calls": 2,
    "pause": true
   },
   {
    "id": "GA-205",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.08,
-   "status": "범위밖",
+   "sec": 3.68,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
-     "choice": "지금 자료로 답할 수 없는 질문이라 범위 밖 안내",
-     "action": "범위 밖",
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 현황"
+     ],
+     "note": null,
+     "conf": 0.9204,
+     "margin": 0.8623
+    },
+    {
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.7854,
+     "margin": 0.5708
     }
    ],
-   "calls": 1,
+   "calls": 2,
    "pause": true
   },
   {
@@ -3317,7 +3592,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.15,
+   "sec": 3.17,
    "status": "성공",
    "turns": [
     {
@@ -3329,14 +3604,18 @@
      "change": [
       "종류 추이"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9994,
+     "margin": 0.9988
     }
    ],
    "calls": 2,
@@ -3361,7 +3640,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.94,
+   "sec": 2.85,
    "status": "성공",
    "turns": [
     {
@@ -3373,18 +3652,22 @@
      "change": [
       "사전 규칙 해석(조건 효과)"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.999,
+     "margin": 0.998
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-208",
@@ -3406,7 +3689,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.08,
+   "sec": 1.11,
    "status": "성공",
    "turns": [
     {
@@ -3414,7 +3697,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3439,8 +3724,8 @@
    "hard": [
     "기간"
    ],
-   "sec": 4.03,
-   "status": "성공",
+   "sec": 4.74,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
@@ -3451,14 +3736,18 @@
      "change": [
       "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
+     "action": "되돌리기",
      "change": null,
-     "note": null
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.9762,
+     "margin": 0.9524
     }
    ],
    "calls": 2,
@@ -3484,7 +3773,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.56,
+   "sec": 2.67,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3496,18 +3785,22 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9992,
+     "margin": 0.9985
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9999
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-211",
@@ -3529,7 +3822,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.05,
+   "sec": 1.11,
    "status": "성공",
    "turns": [
     {
@@ -3537,7 +3830,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3562,7 +3857,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.2,
+   "sec": 4.35,
    "status": "성공",
    "turns": [
     {
@@ -3574,14 +3869,18 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9559,
+     "margin": 0.9118
     }
    ],
    "calls": 2,
@@ -3615,7 +3914,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3640,7 +3941,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.97,
+   "sec": 1.05,
    "status": "성공",
    "turns": [
     {
@@ -3648,7 +3949,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3674,7 +3977,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.98,
+   "sec": 3.14,
    "status": "성공",
    "turns": [
     {
@@ -3686,18 +3989,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9972,
+     "margin": 0.9945
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-216",
@@ -3718,7 +4025,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.13,
+   "sec": 1.06,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3726,7 +4033,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3751,7 +4060,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.1,
+   "sec": 1.27,
    "status": "성공",
    "turns": [
     {
@@ -3759,7 +4068,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3784,7 +4095,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.19,
+   "sec": 3.5,
    "status": "성공",
    "turns": [
     {
@@ -3796,18 +4107,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.8112,
+     "margin": 0.6226
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 2,
-   "pause": false
+   "pause": true
   },
   {
    "id": "GA-219",
@@ -3829,7 +4144,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.2,
+   "sec": 1.21,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3837,7 +4152,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3847,31 +4164,50 @@
    "id": "GA-220",
    "gen": "gemini",
    "ambiguous": true,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 3.57,
-   "status": "선택필요",
+   "sec": 4.32,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
-     "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
+     "choice": "질문 종류를 '조건 효과'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 조건 효과"
+     ],
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
+    },
+    {
+     "gaps": [],
+     "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9991,
+     "margin": 0.9982
     }
    ],
-   "calls": 1,
-   "pause": true
+   "calls": 2,
+   "pause": false
   },
   {
    "id": "GA-221",
@@ -3901,7 +4237,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3927,7 +4265,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.14,
+   "sec": 1.12,
    "status": "성공",
    "turns": [
     {
@@ -3935,7 +4273,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -3960,7 +4300,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.62,
+   "sec": 2.83,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3972,18 +4312,22 @@
      "change": [
       "종류 조건 효과"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9992,
+     "margin": 0.9984
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-224",
@@ -4004,7 +4348,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.17,
+   "sec": 1.07,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -4012,7 +4356,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4037,7 +4383,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.85,
+   "sec": 3.89,
    "status": "성공",
    "turns": [
     {
@@ -4049,18 +4395,22 @@
      "change": [
       "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.532,
+     "margin": 0.064
     }
    ],
    "calls": 2,
-   "pause": false
+   "pause": true
   },
   {
    "id": "GA-226",
@@ -4081,7 +4431,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.98,
+   "sec": 2.81,
    "status": "성공",
    "turns": [
     {
@@ -4089,7 +4439,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4114,7 +4466,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.31,
+   "sec": 1.35,
    "status": "성공",
    "turns": [
     {
@@ -4128,7 +4480,9 @@
       "지표 일평균 방문",
       "조건 성수기"
      ],
-     "note": "다시 계산한 답이 질문의 지표을 잃어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답이 질문의 지표을 잃어 앞 답을 유지(결과 검증)",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4153,7 +4507,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.13,
+   "sec": 1.52,
    "status": "성공",
    "turns": [
     {
@@ -4161,7 +4515,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4187,7 +4543,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.13,
+   "sec": 1.79,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -4195,7 +4551,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4220,7 +4578,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.14,
+   "sec": 1.12,
    "status": "성공",
    "turns": [
     {
@@ -4228,7 +4586,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4252,7 +4612,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.9,
+   "sec": 2.72,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -4264,18 +4624,22 @@
      "change": [
       "종류 조건 효과"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9995,
+     "margin": 0.999
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-232",
@@ -4297,7 +4661,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.53,
+   "sec": 2.48,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -4309,14 +4673,18 @@
      "change": [
       "종류 추이"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9987,
+     "margin": 0.9975
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8166,
+     "margin": 0.6332
     }
    ],
    "calls": 2,
@@ -4326,10 +4694,10 @@
    "id": "GA-233",
    "gen": "gemini",
    "ambiguous": true,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
-    "안내": true,
+    "안내": false,
     "요소": {
      "동네": true,
      "지표": true,
@@ -4337,26 +4705,39 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 1.37,
+   "sec": 3.64,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 현황"
+     ],
+     "note": null,
+     "conf": 0.9701,
+     "margin": 0.9405
+    },
+    {
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9696,
+     "margin": 0.9392
     }
    ],
-   "calls": 1,
-   "pause": true
+   "calls": 2,
+   "pause": false
   },
   {
    "id": "GA-234",
@@ -4377,7 +4758,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.04,
+   "sec": 1.32,
    "status": "성공",
    "turns": [
     {
@@ -4385,7 +4766,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4411,7 +4794,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.14,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
@@ -4419,7 +4802,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4445,7 +4830,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.99,
+   "sec": 4.21,
    "status": "성공",
    "turns": [
     {
@@ -4457,18 +4842,22 @@
      "change": [
       "종류 조건 탐색"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.6702,
+     "margin": 0.3487
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9497,
+     "margin": 0.8996
     }
    ],
    "calls": 2,
-   "pause": false
+   "pause": true
   },
   {
    "id": "GA-237",
@@ -4498,7 +4887,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4523,7 +4914,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.63,
+   "sec": 1.04,
    "status": "성공",
    "turns": [
     {
@@ -4531,7 +4922,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4557,7 +4950,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.98,
+   "sec": 0.92,
    "status": "성공",
    "turns": [
     {
@@ -4565,7 +4958,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4591,7 +4986,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 5.22,
+   "sec": 3.28,
    "status": "성공",
    "turns": [
     {
@@ -4604,18 +4999,22 @@
      "change": [
       "종류 순위"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.999,
+     "margin": 0.9983
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.992,
+     "margin": 0.9845
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-241",
@@ -4637,7 +5036,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.18,
+   "sec": 1.24,
    "status": "성공",
    "turns": [
     {
@@ -4645,7 +5044,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4670,7 +5071,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.12,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
@@ -4678,7 +5079,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4705,7 +5108,7 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 1.26,
+   "sec": 1.28,
    "status": "성공",
    "turns": [
     {
@@ -4713,7 +5116,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4729,17 +5134,17 @@
     "안내": false,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": false,
      "순위": false
     },
-    "요소 비율": 0.5,
+    "요소 비율": 0.25,
     "정답": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 4.0,
+   "sec": 3.98,
    "status": "성공",
    "turns": [
     {
@@ -4751,14 +5156,18 @@
      "change": [
       "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 0.9998,
+     "margin": 0.9996
     },
     {
      "gaps": [],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
+     "action": "되돌리기",
      "change": null,
-     "note": null
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.931,
+     "margin": 0.862
     }
    ],
    "calls": 2,
@@ -4783,7 +5192,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.54,
+   "sec": 3.15,
    "status": "성공",
    "turns": [
     {
@@ -4796,7 +5205,9 @@
       "종류 순위",
       "작은 순서"
      ],
-     "note": "다음 차례에 앞 답으로 되돌림"
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [
@@ -4805,11 +5216,13 @@
      "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
      "action": "되돌리기",
      "change": null,
-     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림"
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-247",
@@ -4831,7 +5244,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.11,
+   "sec": 1.24,
    "status": "성공",
    "turns": [
     {
@@ -4839,7 +5252,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4864,7 +5279,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.18,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
@@ -4872,7 +5287,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4897,7 +5314,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.24,
+   "sec": 1.15,
    "status": "성공",
    "turns": [
     {
@@ -4905,7 +5322,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -4931,7 +5350,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.79,
+   "sec": 1.99,
    "status": "성공",
    "turns": [
     {
@@ -4939,7 +5358,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 1,
@@ -4964,7 +5385,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 4.41,
+   "sec": 4.08,
    "status": "성공",
    "turns": [
     {
@@ -4976,14 +5397,18 @@
      "change": [
       "지표 20~30대 비중"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.8456,
+     "margin": 0.7018
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 2,
@@ -5009,7 +5434,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.02,
+   "sec": 1.59,
    "status": "성공",
    "turns": [
     {
@@ -5017,7 +5442,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5043,7 +5470,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.11,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
@@ -5051,7 +5478,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5078,7 +5507,7 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 1.19,
+   "sec": 1.4,
    "status": "성공",
    "turns": [
     {
@@ -5086,7 +5515,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -5112,7 +5543,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.09,
+   "sec": 1.2,
    "status": "성공",
    "turns": [
     {
@@ -5120,7 +5551,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5145,7 +5578,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.09,
+   "sec": 0.96,
    "status": "성공",
    "turns": [
     {
@@ -5153,7 +5586,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5179,7 +5614,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.99,
+   "sec": 0.98,
    "status": "성공",
    "turns": [
     {
@@ -5187,7 +5622,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5212,7 +5649,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.52,
+   "sec": 1.56,
    "status": "성공",
    "turns": [
     {
@@ -5222,11 +5659,13 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9527,
+     "margin": 0.9056
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-259",
@@ -5248,7 +5687,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.13,
+   "sec": 3.47,
    "status": "성공",
    "turns": [
     {
@@ -5260,14 +5699,18 @@
      "change": [
       "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9866,
+     "margin": 0.9732
     }
    ],
    "calls": 2,
@@ -5293,7 +5736,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.23,
+   "sec": 1.07,
    "status": "성공",
    "turns": [
     {
@@ -5301,7 +5744,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5326,7 +5771,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.92,
+   "sec": 4.03,
    "status": "성공",
    "turns": [
     {
@@ -5338,18 +5783,22 @@
      "change": [
       "지표 점포 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.7925,
+     "margin": 0.585
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9971,
+     "margin": 0.9942
     }
    ],
    "calls": 2,
-   "pause": false
+   "pause": true
   },
   {
    "id": "GA-262",
@@ -5371,7 +5820,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.49,
+   "sec": 4.08,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5384,18 +5833,22 @@
      "change": [
       "지표 카드 매출"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9988,
+     "margin": 0.9981
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-263",
@@ -5416,7 +5869,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.74,
+   "sec": 3.22,
    "status": "성공",
    "turns": [
     {
@@ -5428,18 +5881,22 @@
      "change": [
       "종류 조건 효과"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9987,
+     "margin": 0.9974
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-264",
@@ -5460,7 +5917,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.92,
+   "sec": 3.03,
    "status": "성공",
    "turns": [
     {
@@ -5472,14 +5929,18 @@
      "change": [
       "지표 거주 인구 연령 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9888,
+     "margin": 0.9777
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9913,
+     "margin": 0.9826
     }
    ],
    "calls": 2,
@@ -5504,7 +5965,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.92,
+   "sec": 0.9,
    "status": "성공",
    "turns": [
     {
@@ -5512,7 +5973,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5538,7 +6001,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.69,
+   "sec": 3.6,
    "status": "성공",
    "turns": [
     {
@@ -5550,14 +6013,18 @@
      "change": [
       "지표 개업 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9639,
+     "margin": 0.9278
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9979,
+     "margin": 0.9958
     }
    ],
    "calls": 2,
@@ -5581,7 +6048,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.23,
+   "sec": 3.39,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5593,18 +6060,22 @@
      "change": [
       "종류 종합 진단"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9918,
+     "margin": 0.9847
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9983,
+     "margin": 0.9966
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-268",
@@ -5625,7 +6096,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.01,
+   "sec": 4.12,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5637,14 +6108,18 @@
      "change": [
       "지표 개업 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9983,
+     "margin": 0.9966
     }
    ],
    "calls": 2,
@@ -5670,7 +6145,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 1.78,
+   "sec": 1.64,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5678,7 +6153,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5704,7 +6181,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 1.12,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
@@ -5712,7 +6189,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -5736,7 +6215,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.41,
+   "sec": 2.93,
    "status": "성공",
    "turns": [
     {
@@ -5748,14 +6227,18 @@
      "change": [
       "종류 조건 효과"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9484,
+     "margin": 0.8968
     }
    ],
    "calls": 2,
@@ -5781,7 +6264,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.37,
+   "sec": 3.1,
    "status": "성공",
    "turns": [
     {
@@ -5793,14 +6276,18 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9981,
+     "margin": 0.9965
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.991,
+     "margin": 0.9825
     }
    ],
    "calls": 2,
@@ -5826,7 +6313,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 4.49,
+   "sec": 4.58,
    "status": "성공",
    "turns": [
     {
@@ -5838,14 +6325,18 @@
      "change": [
       "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 2,
@@ -5871,7 +6362,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 1.1,
+   "sec": 2.67,
    "status": "성공",
    "turns": [
     {
@@ -5879,7 +6370,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -5905,7 +6398,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.82,
+   "sec": 2.78,
    "status": "성공",
    "turns": [
     {
@@ -5917,18 +6410,22 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9992,
+     "margin": 0.9984
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9992,
+     "margin": 0.9984
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "GA-276",
@@ -5959,7 +6456,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.5623,
+     "margin": 0.1246
     }
    ],
    "calls": 1,
@@ -5984,7 +6483,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.81,
+   "sec": 3.54,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5996,18 +6495,22 @@
      "change": [
       "종류 추이"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.5736,
+     "margin": 0.1472
     }
    ],
    "calls": 2,
-   "pause": false
+   "pause": true
   },
   {
    "id": "GA-278",
@@ -6028,7 +6531,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 6.04,
+   "sec": 4.42,
    "status": "성공",
    "turns": [
     {
@@ -6036,33 +6539,26 @@
       "지표 없음",
       "확신 낮음"
      ],
-     "choice": "질문 종류를 '추이'(으)로 보고 다시 계산",
-     "action": "다시 계산",
-     "change": [
-      "종류 추이"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [
-      "지표 없음"
-     ],
      "choice": "지표를 '개업 수'(으)로 바꿔 다시 계산 — 새로 문을 여는 가게 수",
      "action": "다시 계산",
      "change": [
       "지표 개업 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.6231,
+     "margin": 0.2483
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9968,
+     "margin": 0.9936
     }
    ],
-   "calls": 3,
+   "calls": 2,
    "pause": true
   },
   {
@@ -6071,22 +6567,17 @@
    "ambiguous": true,
    "ok": false,
    "cells": {
-    "처리": true,
-    "안내": null,
-    "요소": {
-     "동네": true,
-     "지표": true,
-     "업종": false
-    },
-    "요소 비율": 0.667,
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
     "정답": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.01,
-   "status": "no_significant_effect",
+   "sec": 3.04,
+   "status": "선택필요",
    "turns": [
     {
      "gaps": [
@@ -6097,14 +6588,18 @@
      "change": [
       "종류 관계"
      ],
-     "note": null
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 0.9996,
+     "margin": 0.9992
     },
     {
      "gaps": [],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
+     "action": "되돌리기",
      "change": null,
-     "note": null
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.717,
+     "margin": 0.434
     }
    ],
    "calls": 2,
@@ -6114,42 +6609,46 @@
    "id": "GA-280",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.73,
+   "sec": 3.67,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '카드 이용 건수'(으)로 바꿔 다시 계산",
+     "choice": "지표를 '카드 매출'(으)로 바꿔 다시 계산 — 카드 매출 규모, 장사가 잘되는지",
      "action": "다시 계산",
      "change": [
-      "지표 카드 이용 건수"
+      "지표 카드 매출"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.6109,
+     "margin": 0.2614
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9975,
+     "margin": 0.995
     }
    ],
    "calls": 2,
@@ -6174,7 +6673,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.14,
+   "sec": 1.12,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -6182,7 +6681,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6206,7 +6707,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.96,
+   "sec": 1.01,
    "status": "성공",
    "turns": [
     {
@@ -6214,7 +6715,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6234,7 +6737,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.89,
+   "sec": 0.87,
    "status": "선택필요",
    "turns": [
     {
@@ -6242,7 +6745,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -6262,7 +6767,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.93,
+   "sec": 0.94,
    "status": "선택필요",
    "turns": [
     {
@@ -6270,7 +6775,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9967,
+     "margin": 0.9934
     }
    ],
    "calls": 1,
@@ -6298,7 +6805,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -6323,7 +6832,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.16,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
@@ -6331,7 +6840,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6356,7 +6867,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.19,
+   "sec": 1.2,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -6364,7 +6875,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6384,7 +6897,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.68,
+   "sec": 1.75,
    "status": "선택필요",
    "turns": [
     {
@@ -6396,7 +6909,9 @@
      "change": [
       "종류 현황"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.998,
+     "margin": 0.996
     }
    ],
    "calls": 1,
@@ -6420,21 +6935,34 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.75,
+   "sec": 3.23,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
+     "choice": "질문 종류를 '구성'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 구성"
+     ],
+     "note": null,
+     "conf": 0.9703,
+     "margin": 0.9521
+    },
+    {
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9982,
+     "margin": 0.9964
     }
    ],
-   "calls": 1,
-   "pause": true
+   "calls": 2,
+   "pause": false
   },
   {
    "id": "GA-290",
@@ -6450,7 +6978,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.8,
+   "sec": 0.83,
    "status": "선택필요",
    "turns": [
     {
@@ -6458,7 +6986,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6483,7 +7013,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.17,
+   "sec": 1.23,
    "status": "성공",
    "turns": [
     {
@@ -6491,7 +7021,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6516,7 +7048,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 3.92,
+   "sec": 3.73,
    "status": "성공",
    "turns": [
     {
@@ -6528,14 +7060,18 @@
      "change": [
       "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 2,
@@ -6556,7 +7092,7 @@
     "생활 지명",
     "대체 지표"
    ],
-   "sec": 1.15,
+   "sec": 1.14,
    "status": "범위밖",
    "turns": [
     {
@@ -6564,7 +7100,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6584,7 +7122,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.02,
+   "sec": 1.01,
    "status": "선택필요",
    "turns": [
     {
@@ -6592,7 +7130,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -6617,7 +7157,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 3.63,
+   "sec": 4.07,
    "status": "성공",
    "turns": [
     {
@@ -6629,14 +7169,18 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9919,
+     "margin": 0.9838
     }
    ],
    "calls": 2,
@@ -6661,7 +7205,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 4.13,
+   "sec": 2.81,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -6673,14 +7217,18 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.7084,
+     "margin": 0.4168
     }
    ],
    "calls": 2,
@@ -6705,7 +7253,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 1.46,
+   "sec": 1.05,
    "status": "성공",
    "turns": [
     {
@@ -6713,7 +7261,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6737,7 +7287,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 4.13,
+   "sec": 4.07,
    "status": "성공",
    "turns": [
     {
@@ -6749,14 +7299,18 @@
      "change": [
       "지표 개업 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9991,
+     "margin": 0.9982
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9661,
+     "margin": 0.9322
     }
    ],
    "calls": 2,
@@ -6781,7 +7335,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 1.03,
+   "sec": 1.09,
    "status": "성공",
    "turns": [
     {
@@ -6789,7 +7343,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9992,
+     "margin": 0.9984
     }
    ],
    "calls": 1,
@@ -6809,7 +7365,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 2.85,
+   "sec": 2.76,
    "status": "선택필요",
    "turns": [
     {
@@ -6821,18 +7377,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": "다음 차례에 앞 답으로 되돌림"
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 0.9998,
+     "margin": 0.9996
     },
     {
      "gaps": [],
      "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
      "action": "되돌리기",
      "change": null,
-     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림"
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.9976,
+     "margin": 0.9952
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "HK-041",
@@ -6854,7 +7414,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.16,
+   "sec": 1.13,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -6862,7 +7422,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.993,
+     "margin": 0.986
     }
    ],
    "calls": 1,
@@ -6888,7 +7450,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.14,
+   "sec": 1.26,
    "status": "성공",
    "turns": [
     {
@@ -6896,7 +7458,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -6922,7 +7486,7 @@
     "기간",
     "지표 없음"
    ],
-   "sec": 4.64,
+   "sec": 4.97,
    "status": "성공",
    "turns": [
     {
@@ -6934,18 +7498,22 @@
      "change": [
       "지표 점포 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.6977,
+     "margin": 0.4349
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9994,
+     "margin": 0.9988
     }
    ],
    "calls": 2,
-   "pause": false
+   "pause": true
   },
   {
    "id": "HK-044",
@@ -6966,7 +7534,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 3.98,
+   "sec": 3.72,
    "status": "성공",
    "turns": [
     {
@@ -6979,7 +7547,9 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.8821,
+     "margin": 0.7648
     },
     {
      "gaps": [
@@ -6988,11 +7558,13 @@
      "choice": "다시 계산하지 않고, 어긋남을 안내해 지금 답",
      "action": "안내 붙여 답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9987,
+     "margin": 0.9977
     }
    ],
    "calls": 2,
-   "pause": false
+   "pause": true
   },
   {
    "id": "HK-045",
@@ -7013,7 +7585,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.28,
+   "sec": 1.26,
    "status": "성공",
    "turns": [
     {
@@ -7021,7 +7593,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7046,7 +7620,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.81,
+   "sec": 2.79,
    "status": "성공",
    "turns": [
     {
@@ -7058,18 +7632,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9942,
+     "margin": 0.9885
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "HK-047",
@@ -7091,7 +7669,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.91,
+   "sec": 2.79,
    "status": "성공",
    "turns": [
     {
@@ -7103,18 +7681,22 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9994,
+     "margin": 0.9988
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9775,
+     "margin": 0.9551
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "HK-048",
@@ -7136,7 +7718,7 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 1.16,
+   "sec": 1.21,
    "status": "성공",
    "turns": [
     {
@@ -7144,7 +7726,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7169,7 +7753,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.04,
+   "sec": 1.07,
    "status": "성공",
    "turns": [
     {
@@ -7177,7 +7761,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7198,7 +7784,7 @@
     "생활 지명",
     "지표 없음"
    ],
-   "sec": 0.89,
+   "sec": 1.01,
    "status": "선택필요",
    "turns": [
     {
@@ -7206,7 +7792,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7232,7 +7820,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.16,
+   "sec": 1.15,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -7240,7 +7828,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9995,
+     "margin": 0.999
     }
    ],
    "calls": 1,
@@ -7264,7 +7854,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.35,
+   "sec": 1.18,
    "status": "성공",
    "turns": [
     {
@@ -7272,7 +7862,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7295,7 +7887,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.17,
+   "sec": 1.16,
    "status": "성공",
    "turns": [
     {
@@ -7303,7 +7895,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7329,7 +7923,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.12,
+   "sec": 1.15,
    "status": "성공",
    "turns": [
     {
@@ -7337,7 +7931,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7362,7 +7958,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 1.16,
+   "sec": 1.2,
    "status": "성공",
    "turns": [
     {
@@ -7370,7 +7966,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7395,7 +7993,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.97,
+   "sec": 0.99,
    "status": "성공",
    "turns": [
     {
@@ -7403,7 +8001,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7428,7 +8028,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.03,
+   "sec": 1.02,
    "status": "성공",
    "turns": [
     {
@@ -7436,7 +8036,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7459,7 +8061,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.09,
+   "sec": 1.07,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -7467,7 +8069,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7495,7 +8099,7 @@
     "기간",
     "순위"
    ],
-   "sec": 2.72,
+   "sec": 2.68,
    "status": "성공",
    "turns": [
     {
@@ -7509,18 +8113,22 @@
       "큰 순서",
       "지금 해석대로"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9916,
+     "margin": 0.9854
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "HK-060",
@@ -7537,7 +8145,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 1.47,
+   "sec": 1.48,
    "status": "선택필요",
    "turns": [
     {
@@ -7549,7 +8157,9 @@
      "change": [
       "지표 카드 매출"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9984,
+     "margin": 0.9968
     }
    ],
    "calls": 1,
@@ -7575,7 +8185,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 4.45,
+   "sec": 5.26,
    "status": "성공",
    "turns": [
     {
@@ -7587,14 +8197,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.7328,
+     "margin": 0.4709
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 2,
@@ -7618,7 +8232,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 3.64,
+   "sec": 3.16,
    "status": "성공",
    "turns": [
     {
@@ -7630,14 +8244,18 @@
      "change": [
       "종류 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9981,
+     "margin": 0.9963
     }
    ],
    "calls": 2,
@@ -7664,7 +8282,7 @@
     "두 요소",
     "기간"
    ],
-   "sec": 3.42,
+   "sec": 4.41,
    "status": "성공",
    "turns": [
     {
@@ -7676,18 +8294,22 @@
      "change": [
       "종류 현황"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9927,
+     "margin": 0.9854
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "HK-064",
@@ -7709,7 +8331,7 @@
     "조건",
     "지표 없음"
    ],
-   "sec": 2.2,
+   "sec": 2.1,
    "status": "성공",
    "turns": [
     {
@@ -7719,7 +8341,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8432,
+     "margin": 0.6891
     }
    ],
    "calls": 1,
@@ -7745,7 +8369,7 @@
     "순위",
     "지표 없음"
    ],
-   "sec": 0.96,
+   "sec": 0.94,
    "status": "성공",
    "turns": [
     {
@@ -7753,7 +8377,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7778,7 +8404,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.76,
+   "sec": 4.44,
    "status": "성공",
    "turns": [
     {
@@ -7790,18 +8416,22 @@
      "change": [
       "지표 60대 이상 비중"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.99,
+     "margin": 0.9804
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9979,
+     "margin": 0.9958
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "HK-067",
@@ -7822,7 +8452,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.13,
+   "sec": 1.12,
    "status": "성공",
    "turns": [
     {
@@ -7830,7 +8460,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7855,7 +8487,7 @@
     "두 요소",
     "생활 지명"
    ],
-   "sec": 1.03,
+   "sec": 1.13,
    "status": "성공",
    "turns": [
     {
@@ -7863,7 +8495,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7894,7 +8528,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7904,22 +8540,22 @@
    "id": "HK-070",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.667,
+    "정답": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.6,
+   "sec": 2.45,
    "status": "성공",
    "turns": [
     {
@@ -7927,23 +8563,16 @@
       "지표 없음",
       "확신 낮음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.8866,
+     "margin": 0.7735
     }
    ],
-   "calls": 2,
-   "pause": false
+   "calls": 1,
+   "pause": true
   },
   {
    "id": "HK-071",
@@ -7957,7 +8586,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.48,
+   "sec": 1.11,
    "status": "선택필요",
    "turns": [
     {
@@ -7969,7 +8598,9 @@
      "change": [
       "종류 현황"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -7995,7 +8626,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8013,7 +8646,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 1.38,
+   "sec": 1.29,
    "status": "범위밖",
    "turns": [
     {
@@ -8025,7 +8658,9 @@
      "change": [
       "지표 카드 매출"
      ],
-     "note": "다시 계산이 '범위밖'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '범위밖'로 끝나 앞 답을 유지",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8043,7 +8678,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 1.11,
+   "sec": 1.09,
    "status": "성공",
    "turns": [
     {
@@ -8051,7 +8686,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8069,7 +8706,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.89,
+   "sec": 0.86,
    "status": "선택필요",
    "turns": [
     {
@@ -8077,7 +8714,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8095,7 +8734,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.85,
+   "sec": 0.84,
    "status": "범위밖",
    "turns": [
     {
@@ -8103,7 +8742,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -8121,7 +8762,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.21,
+   "sec": 1.2,
    "status": "범위밖",
    "turns": [
     {
@@ -8129,7 +8770,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8147,7 +8790,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.94,
+   "sec": 0.92,
    "status": "범위밖",
    "turns": [
     {
@@ -8155,7 +8798,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8177,7 +8822,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 3.42,
+   "sec": 3.2,
    "status": "성공",
    "turns": [
     {
@@ -8189,14 +8834,18 @@
      "change": [
       "종류 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9975,
+     "margin": 0.995
     }
    ],
    "calls": 2,
@@ -8214,7 +8863,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 1.23,
+   "sec": 1.44,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -8222,7 +8871,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9984,
+     "margin": 0.9968
     }
    ],
    "calls": 1,
@@ -8234,22 +8885,16 @@
    "ambiguous": false,
    "ok": false,
    "cells": {
-    "처리": true,
-    "안내": null,
-    "요소": {
-     "동네": true,
-     "지표": true,
-     "업종": false,
-     "기간": true
-    },
-    "요소 비율": 0.75,
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
     "정답": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.71,
-   "status": "성공",
+   "sec": 2.93,
+   "status": "범위밖",
    "turns": [
     {
      "gaps": [
@@ -8260,18 +8905,22 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 0.9986,
+     "margin": 0.9973
     },
     {
      "gaps": [],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
+     "action": "되돌리기",
      "change": null,
-     "note": null
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.9786,
+     "margin": 0.9573
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "OP-042",
@@ -8292,7 +8941,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.05,
+   "sec": 1.02,
    "status": "성공",
    "turns": [
     {
@@ -8300,7 +8949,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8325,7 +8976,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.18,
+   "sec": 1.66,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -8333,7 +8984,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9991,
+     "margin": 0.9982
     }
    ],
    "calls": 1,
@@ -8359,7 +9012,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.78,
+   "sec": 1.9,
    "status": "성공",
    "turns": [
     {
@@ -8369,7 +9022,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.7926,
+     "margin": 0.5867
     }
    ],
    "calls": 1,
@@ -8395,7 +9050,7 @@
     "기간",
     "생활 지명"
    ],
-   "sec": 1.79,
+   "sec": 1.72,
    "status": "성공",
    "turns": [
     {
@@ -8407,7 +9062,9 @@
      "change": [
       "종류 예상"
      ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 0.999,
+     "margin": 0.9981
     }
    ],
    "calls": 1,
@@ -8434,7 +9091,7 @@
     "기간",
     "두 요소"
    ],
-   "sec": 1.1,
+   "sec": 1.13,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -8442,7 +9099,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8468,7 +9127,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.96,
+   "sec": 3.91,
    "status": "성공",
    "turns": [
     {
@@ -8480,14 +9139,18 @@
      "change": [
       "종류 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9994,
+     "margin": 0.9988
     }
    ],
    "calls": 2,
@@ -8497,41 +9160,45 @@
    "id": "OP-048",
    "gen": "opus",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "조건": true
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.667,
+    "정답": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 4.74,
+   "sec": 4.29,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
+     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
      "action": "다시 계산",
      "change": [
-      "지표 일평균 방문"
+      "지표 점포 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.5558,
+     "margin": 0.2819
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9995,
+     "margin": 0.999
     }
    ],
    "calls": 2,
@@ -8556,7 +9223,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.07,
+   "sec": 1.04,
    "status": "성공",
    "turns": [
     {
@@ -8564,7 +9231,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8590,7 +9259,7 @@
     "조건",
     "생활 지명"
    ],
-   "sec": 1.03,
+   "sec": 1.3,
    "status": "성공",
    "turns": [
     {
@@ -8598,7 +9267,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8625,7 +9296,7 @@
     "조건",
     "생활 지명"
    ],
-   "sec": 1.16,
+   "sec": 1.11,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -8633,7 +9304,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8654,7 +9327,7 @@
     "조건",
     "생활 지명"
    ],
-   "sec": 1.19,
+   "sec": 1.0,
    "status": "선택필요",
    "turns": [
     {
@@ -8662,7 +9335,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -8688,7 +9363,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 3.34,
+   "sec": 3.03,
    "status": "성공",
    "turns": [
     {
@@ -8700,14 +9375,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.998,
+     "margin": 0.996
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 2,
@@ -8733,7 +9412,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.1,
+   "sec": 1.07,
    "status": "성공",
    "turns": [
     {
@@ -8741,7 +9420,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8766,7 +9447,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.02,
+   "sec": 0.94,
    "status": "성공",
    "turns": [
     {
@@ -8774,7 +9455,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8799,7 +9482,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.16,
+   "sec": 1.14,
    "status": "성공",
    "turns": [
     {
@@ -8807,7 +9490,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8832,7 +9517,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.51,
+   "sec": 1.08,
    "status": "성공",
    "turns": [
     {
@@ -8840,7 +9525,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -8867,7 +9554,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.32,
+   "sec": 3.44,
    "status": "성공",
    "turns": [
     {
@@ -8880,14 +9567,18 @@
       "종류 순위",
       "작은 순서"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9978,
+     "margin": 0.9957
     }
    ],
    "calls": 2,
@@ -8912,7 +9603,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.08,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
@@ -8920,7 +9611,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8947,7 +9640,7 @@
     "순위",
     "두 요소"
    ],
-   "sec": 1.52,
+   "sec": 1.2,
    "status": "성공",
    "turns": [
     {
@@ -8955,7 +9648,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -8979,7 +9674,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.46,
+   "sec": 3.77,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -8991,14 +9686,18 @@
      "change": [
       "종류 추이"
      ],
-     "note": null
+     "note": "다음 차례에 앞 답으로 되돌림",
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "choice": "앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때",
+     "action": "되돌리기",
      "change": null,
-     "note": null
+     "note": "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림",
+     "conf": 0.9751,
+     "margin": 0.9502
     }
    ],
    "calls": 2,
@@ -9022,7 +9721,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.74,
+   "sec": 4.77,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -9034,38 +9733,42 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9437,
+     "margin": 0.9076
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9991,
+     "margin": 0.9982
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "OP-063",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.93,
+   "sec": 6.6,
    "status": "성공",
    "turns": [
     {
@@ -9077,19 +9780,34 @@
      "change": [
       "종류 비슷한 동네"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9848,
+     "margin": 0.9711
     },
     {
      "gaps": [
       "지표 없음"
      ],
+     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
+     "action": "다시 계산",
+     "change": [
+      "지표 점포 수"
+     ],
+     "note": null,
+     "conf": 0.9845,
+     "margin": 0.975
+    },
+    {
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.6536,
+     "margin": 0.3073
     }
    ],
-   "calls": 2,
+   "calls": 3,
    "pause": true
   },
   {
@@ -9110,7 +9828,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 6.52,
+   "sec": 8.12,
    "status": "성공",
    "turns": [
     {
@@ -9122,7 +9840,9 @@
      "change": [
       "종류 추이"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9639,
+     "margin": 0.9278
     },
     {
      "gaps": [
@@ -9133,14 +9853,18 @@
      "change": [
       "지표 점포 수"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.93,
+     "margin": 0.8963
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.7653,
+     "margin": 0.5306
     }
    ],
    "calls": 3,
@@ -9161,7 +9885,7 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 0.96,
+   "sec": 0.94,
    "status": "범위밖",
    "turns": [
     {
@@ -9169,7 +9893,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -9193,7 +9919,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.69,
+   "sec": 5.11,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -9205,14 +9931,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.4442,
+     "margin": 0.1387
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.998,
+     "margin": 0.996
     }
    ],
    "calls": 2,
@@ -9236,7 +9966,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 3.19,
+   "sec": 4.07,
    "status": "성공",
    "turns": [
     {
@@ -9249,14 +9979,18 @@
      "change": [
       "지표 결제 1건당 금액"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.5753,
+     "margin": 0.1506
     }
    ],
    "calls": 2,
@@ -9280,7 +10014,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 4.11,
+   "sec": 2.72,
    "status": "성공",
    "turns": [
     {
@@ -9288,22 +10022,15 @@
       "지표 없음",
       "확신 낮음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9538,
+     "margin": 0.908
     }
    ],
-   "calls": 2,
+   "calls": 1,
    "pause": false
   },
   {
@@ -9324,7 +10051,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 4.0,
+   "sec": 4.12,
    "status": "성공",
    "turns": [
     {
@@ -9336,14 +10063,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.8576,
+     "margin": 0.7728
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
     }
    ],
    "calls": 2,
@@ -9368,7 +10099,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 3.2,
+   "sec": 3.35,
    "status": "성공",
    "turns": [
     {
@@ -9380,14 +10111,18 @@
      "change": [
       "종류 관계"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9929,
+     "margin": 0.9858
     }
    ],
    "calls": 2,
@@ -9405,7 +10140,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.92,
+   "sec": 0.86,
    "status": "선택필요",
    "turns": [
     {
@@ -9413,7 +10148,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -9431,7 +10168,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.34,
+   "sec": 1.33,
    "status": "선택필요",
    "turns": [
     {
@@ -9443,7 +10180,9 @@
      "change": [
       "종류 현황"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -9461,7 +10200,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.17,
+   "sec": 1.15,
    "status": "선택필요",
    "turns": [
     {
@@ -9471,7 +10210,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.6211,
+     "margin": 0.2422
     }
    ],
    "calls": 1,
@@ -9489,7 +10230,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 4.13,
+   "sec": 4.57,
    "status": "성공",
    "turns": [
     {
@@ -9502,14 +10243,18 @@
      "change": [
       "종류 순위"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.999,
+     "margin": 0.9982
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9234,
+     "margin": 0.8469
     }
    ],
    "calls": 2,
@@ -9531,7 +10276,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.51,
+   "sec": 3.15,
    "status": "성공",
    "turns": [
     {
@@ -9543,18 +10288,22 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9995
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "OP-076",
@@ -9568,7 +10317,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.87,
+   "sec": 0.84,
    "status": "범위밖",
    "turns": [
     {
@@ -9576,7 +10325,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
     }
    ],
    "calls": 1,
@@ -9594,17 +10345,21 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.51,
+   "sec": 1.52,
    "status": "범위밖",
    "turns": [
     {
      "gaps": [
       "범위 밖 판단"
      ],
-     "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
-     "action": "답하기",
-     "change": null,
-     "note": null
+     "choice": "사전 규칙 해석('현황')대로 답해 보기",
+     "action": "다시 계산",
+     "change": [
+      "사전 규칙 해석(현황)"
+     ],
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 0.7134,
+     "margin": 0.4274
     }
    ],
    "calls": 1,
@@ -9622,7 +10377,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.94,
+   "sec": 0.92,
    "status": "범위밖",
    "turns": [
     {
@@ -9630,7 +10385,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -9648,7 +10405,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.96,
+   "sec": 0.84,
    "status": "범위밖",
    "turns": [
     {
@@ -9656,7 +10413,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -9678,26 +10437,30 @@
     "정답": true
    },
    "hard": [],
-   "sec": 4.83,
-   "status": "no_significant_effect",
+   "sec": 5.55,
+   "status": "성공",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
+     "choice": "지표를 '카드 매출'(으)로 바꿔 다시 계산 — 카드 매출 규모, 장사가 잘되는지",
      "action": "다시 계산",
      "change": [
-      "지표 일평균 방문"
+      "지표 카드 매출"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.4055,
+     "margin": 0.089
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9872,
+     "margin": 0.9745
     }
    ],
    "calls": 2,
@@ -9722,7 +10485,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.46,
+   "sec": 2.63,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -9734,18 +10497,22 @@
      "change": [
       "종류 추이"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9797,
+     "margin": 0.9597
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "SN-042",
@@ -9767,7 +10534,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.36,
+   "sec": 1.37,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -9775,7 +10542,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -9800,7 +10569,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.1,
+   "sec": 1.09,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -9808,7 +10577,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9994,
+     "margin": 0.9988
     }
    ],
    "calls": 1,
@@ -9834,7 +10605,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.6,
+   "sec": 1.22,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -9842,7 +10613,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9891,
+     "margin": 0.9782
     }
    ],
    "calls": 1,
@@ -9867,7 +10640,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.35,
+   "sec": 2.7,
    "status": "성공",
    "turns": [
     {
@@ -9879,18 +10652,22 @@
      "change": [
       "사전 규칙 해석(현황)"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.999,
+     "margin": 0.9981
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9995
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "SN-046",
@@ -9914,20 +10691,56 @@
     "조건",
     "두 요소"
    ],
-   "sec": 1.24,
+   "sec": 6.45,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "조건"
      ],
-     "choice": "다시 계산하지 않고, 어긋남을 안내해 지금 답",
-     "action": "안내 붙여 답하기",
-     "change": null,
-     "note": null
+     "choice": "'겨울' 조건 효과로 다시 계산(하루 방문 기준)",
+     "action": "다시 계산",
+     "change": [
+      "종류 조건 효과",
+      "지표 일평균 방문",
+      "조건 겨울"
+     ],
+     "note": null,
+     "conf": 0.8684,
+     "margin": 0.7368
+    },
+    {
+     "gaps": [
+      "조건"
+     ],
+     "choice": "'주말' 조건 효과로 다시 계산(하루 방문 기준)",
+     "action": "다시 계산",
+     "change": [
+      "종류 조건 효과",
+      "지표 일평균 방문",
+      "조건 주말"
+     ],
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
+    },
+    {
+     "gaps": [
+      "조건"
+     ],
+     "choice": "'평일' 조건 효과로 다시 계산(하루 방문 기준)",
+     "action": "다시 계산",
+     "change": [
+      "종류 조건 효과",
+      "지표 일평균 방문",
+      "조건 평일"
+     ],
+     "note": null,
+     "conf": 0.9906,
+     "margin": 0.9829
     }
    ],
-   "calls": 1,
+   "calls": 3,
    "pause": true
   },
   {
@@ -9953,7 +10766,7 @@
     "순위",
     "두 요소"
    ],
-   "sec": 2.93,
+   "sec": 3.19,
    "status": "성공",
    "turns": [
     {
@@ -9967,14 +10780,18 @@
       "종류 순위",
       "큰 순서"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9924,
+     "margin": 0.9848
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.6856,
+     "margin": 0.3714
     }
    ],
    "calls": 2,
@@ -9999,7 +10816,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.06,
+   "sec": 1.05,
    "status": "성공",
    "turns": [
     {
@@ -10007,7 +10824,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -10032,7 +10851,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.12,
+   "sec": 1.13,
    "status": "성공",
    "turns": [
     {
@@ -10040,7 +10859,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -10064,7 +10885,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.61,
+   "sec": 1.75,
    "status": "성공",
    "turns": [
     {
@@ -10074,11 +10895,13 @@
      "choice": "다시 계산하지 않고, 어긋남을 안내해 지금 답",
      "action": "안내 붙여 답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9945,
+     "margin": 0.989
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "SN-051",
@@ -10098,7 +10921,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.14,
+   "sec": 1.05,
    "status": "성공",
    "turns": [
     {
@@ -10106,7 +10929,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -10131,7 +10956,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.05,
+   "sec": 1.09,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -10139,7 +10964,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -10164,7 +10991,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.45,
+   "sec": 1.04,
    "status": "성공",
    "turns": [
     {
@@ -10172,7 +10999,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -10198,7 +11027,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.1,
+   "sec": 3.14,
    "status": "성공",
    "turns": [
     {
@@ -10213,18 +11042,22 @@
       "작은 순서",
       "지금 해석대로"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9573,
+     "margin": 0.9291
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9973,
+     "margin": 0.9954
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "SN-055",
@@ -10245,7 +11078,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.33,
+   "sec": 1.18,
    "status": "성공",
    "turns": [
     {
@@ -10253,7 +11086,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -10263,45 +11098,33 @@
    "id": "SN-056",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
-    "처리": true,
-    "안내": null,
-    "요소": {
-     "동네": true,
-     "지표": true,
-     "순위": true
-    },
-    "요소 비율": 1.0,
-    "정답": true
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 4.24,
-   "status": "성공",
+   "sec": 2.32,
+   "status": "범위밖",
    "turns": [
     {
      "gaps": [
       "지표 없음",
       "확신 낮음"
      ],
-     "choice": "지표를 '20~30대 비중'(으)로 바꿔 다시 계산 — 20~30대 젊은 사람 비중",
-     "action": "다시 계산",
-     "change": [
-      "지표 20~30대 비중"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "choice": "지금 자료로 답할 수 없는 질문이라 범위 밖 안내",
+     "action": "범위 밖",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.5182,
+     "margin": 0.2224
     }
    ],
-   "calls": 2,
+   "calls": 1,
    "pause": true
   },
   {
@@ -10323,7 +11146,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.25,
+   "sec": 1.18,
    "status": "성공",
    "turns": [
     {
@@ -10331,7 +11154,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -10357,7 +11182,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.47,
+   "sec": 1.34,
    "status": "성공",
    "turns": [
     {
@@ -10365,7 +11190,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9994,
+     "margin": 0.9988
     }
    ],
    "calls": 1,
@@ -10389,7 +11216,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.46,
+   "sec": 4.93,
    "status": "성공",
    "turns": [
     {
@@ -10401,14 +11228,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.589,
+     "margin": 0.3133
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9932,
+     "margin": 0.9864
     }
    ],
    "calls": 2,
@@ -10432,7 +11263,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.5,
+   "sec": 4.94,
    "status": "성공",
    "turns": [
     {
@@ -10445,18 +11276,22 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "SN-061",
@@ -10476,7 +11311,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.78,
+   "sec": 4.77,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -10488,14 +11323,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.713,
+     "margin": 0.5327
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9971,
+     "margin": 0.9942
     }
    ],
    "calls": 2,
@@ -10519,26 +11358,30 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.7,
+   "sec": 4.22,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
+     "choice": "지표를 '카드 매출'(으)로 바꿔 다시 계산 — 카드 매출 규모, 장사가 잘되는지",
      "action": "다시 계산",
      "change": [
-      "지표 일평균 방문"
+      "지표 카드 매출"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.7748,
+     "margin": 0.6439
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9982,
+     "margin": 0.9964
     }
    ],
    "calls": 2,
@@ -10562,7 +11405,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 4.89,
+   "sec": 4.91,
    "status": "성공",
    "turns": [
     {
@@ -10574,14 +11417,18 @@
      "change": [
       "지표 일평균 방문"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.7224,
+     "margin": 0.5266
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9922,
+     "margin": 0.9844
     }
    ],
    "calls": 2,
@@ -10594,7 +11441,11 @@
    "ok": true,
    "cells": {
     "처리": true,
-    "요소": {},
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
     "요소 비율": 1.0,
     "정답": true
    },
@@ -10602,20 +11453,46 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 1.54,
-   "status": "선택필요",
+   "sec": 6.67,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
-     "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
+     "choice": "질문 종류를 '조건 효과'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 조건 효과"
+     ],
+     "note": null,
+     "conf": 0.9894,
+     "margin": 0.9789
+    },
+    {
+     "gaps": [
+      "지표 없음"
+     ],
+     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
+     "action": "다시 계산",
+     "change": [
+      "지표 일평균 방문"
+     ],
+     "note": null,
+     "conf": 0.8607,
+     "margin": 0.7713
+    },
+    {
+     "gaps": [],
+     "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9993,
+     "margin": 0.9986
     }
    ],
-   "calls": 1,
+   "calls": 3,
    "pause": true
   },
   {
@@ -10637,7 +11514,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 3.02,
+   "sec": 2.72,
    "status": "성공",
    "turns": [
     {
@@ -10649,14 +11526,18 @@
      "change": [
       "종류 구성"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9974,
+     "margin": 0.9948
     }
    ],
    "calls": 2,
@@ -10681,7 +11562,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 3.64,
+   "sec": 3.43,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -10693,14 +11574,18 @@
      "change": [
       "종류 종합 진단"
      ],
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9907,
+     "margin": 0.9815
     }
    ],
    "calls": 2,
@@ -10725,7 +11610,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 1.14,
+   "sec": 1.08,
    "status": "성공",
    "turns": [
     {
@@ -10733,7 +11618,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -10758,7 +11645,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 1.11,
+   "sec": 1.22,
    "status": "성공",
    "turns": [
     {
@@ -10766,7 +11653,9 @@
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9986,
+     "margin": 0.9972
     }
    ],
    "calls": 1,
@@ -10791,7 +11680,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 3.68,
+   "sec": 2.8,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -10803,18 +11692,22 @@
      "change": [
       "종류 조건 효과"
      ],
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     },
     {
      "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9997,
+     "margin": 0.9994
     }
    ],
    "calls": 2,
-   "pause": true
+   "pause": false
   },
   {
    "id": "SN-070",
@@ -10830,7 +11723,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.9,
+   "sec": 0.86,
    "status": "선택필요",
    "turns": [
     {
@@ -10838,7 +11731,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -10856,21 +11751,25 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.05,
+   "sec": 1.32,
    "status": "선택필요",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
-     "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
-     "action": "답하기",
-     "change": null,
-     "note": null
+     "choice": "질문 종류를 '예상'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 예상"
+     ],
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 0.9932,
+     "margin": 0.9864
     }
    ],
    "calls": 1,
-   "pause": true
+   "pause": false
   },
   {
    "id": "SN-072",
@@ -10884,7 +11783,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.88,
+   "sec": 1.13,
    "status": "선택필요",
    "turns": [
     {
@@ -10892,7 +11791,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -10910,7 +11811,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.9,
+   "sec": 1.28,
    "status": "선택필요",
    "turns": [
     {
@@ -10918,7 +11819,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -10936,7 +11839,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.25,
+   "sec": 1.41,
    "status": "선택필요",
    "turns": [
     {
@@ -10948,7 +11851,9 @@
      "change": [
       "종류 이례 변화"
      ],
-     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지"
+     "note": "다시 계산이 '선택필요'로 끝나 앞 답을 유지",
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -10966,7 +11871,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.23,
+   "sec": 1.4,
    "status": "선택필요",
    "turns": [
     {
@@ -10974,7 +11879,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9999,
+     "margin": 0.9998
     }
    ],
    "calls": 1,
@@ -10992,7 +11899,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.85,
+   "sec": 0.84,
    "status": "범위밖",
    "turns": [
     {
@@ -11000,7 +11907,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 0.9998,
+     "margin": 0.9996
     }
    ],
    "calls": 1,
@@ -11018,7 +11927,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 2.52,
+   "sec": 1.98,
    "status": "선택필요",
    "turns": [
     {
@@ -11032,7 +11941,9 @@
      "change": [
       "종류 자료 찾기"
      ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)",
+     "conf": 0.9999,
+     "margin": 0.9999
     }
    ],
    "calls": 1,
@@ -11050,7 +11961,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.94,
+   "sec": 0.92,
    "status": "범위밖",
    "turns": [
     {
@@ -11058,7 +11969,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -11076,7 +11989,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.21,
+   "sec": 1.2,
    "status": "범위밖",
    "turns": [
     {
@@ -11084,7 +11997,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,
@@ -11102,7 +12017,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.09,
+   "sec": 1.06,
    "status": "범위밖",
    "turns": [
     {
@@ -11110,7 +12025,9 @@
      "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
      "action": "답하기",
      "change": null,
-     "note": null
+     "note": null,
+     "conf": 1.0,
+     "margin": 1.0
     }
    ],
    "calls": 1,

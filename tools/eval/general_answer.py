@@ -119,7 +119,7 @@ def main():
         qa = r.get("question_agent") or {}
         rows.append({"id": g["id"], "gen": g.get("gen"), "ambiguous": bool(g.get("ambiguous")), "ok": s["정답"], "cells": s, "hard": g.get("hard") or [],
                      "sec": round(time.perf_counter() - t0, 2), "status": r.get("status"),
-                     "turns": [{k: x.get(k) for k in ("gaps", "choice", "action", "change", "note")} for x in qa.get("turns", [])], "calls": sum(x.get("action") != "시간 초과" for x in qa.get("turns", [])),
+                     "turns": [{k: x.get(k) for k in ("gaps", "choice", "action", "change", "note", "conf", "margin", "p_ok", "asked", "reason_mismatch")} for x in qa.get("turns", [])], "calls": sum(x.get("action") != "시간 초과" for x in qa.get("turns", [])),
                      "pause": bool((r.get("confirm") or {}).get("pause"))})
         print(json.dumps({k: rows[-1][k] for k in ("id", "ok", "status", "sec", "calls")}, ensure_ascii=False), flush=True)
     main_rows = [r for r in rows if not r["ambiguous"]]

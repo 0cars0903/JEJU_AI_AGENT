@@ -113,12 +113,16 @@ def needed(it, question=None):
             (bool(it.get("needs_confirm")) or (it.get("rule_type") not in (None, t.get("type")) and it.get("rule_type") in CHOICES)))
 
 
-def _ask(name, question, it, chat=None):
+def _user(question, it):
     t = it["tuple"]
-    user = (f"질문: {question}\n분류기 판단: {t['type']}({CHOICES.get(t['type'], '-')}), 확신도 {it.get('confidence')}\n"
+    return (f"질문: {question}\n분류기 판단: {t['type']}({CHOICES.get(t['type'], '-')}), 확신도 {it.get('confidence')}\n"
             f"사전 규칙 판단: {it.get('rule_type')}({CHOICES.get(it.get('rule_type'), '-')})"
             + ("\n오류 노트:\n" + "\n".join(f"- {n['field']}: {n['why']}" for n in notes(it, question)) if notes(it, question) else "")
             + ("\n참고: 질문에 여러 단계를 잇는 표현이 있다. 하위 질문이 둘 이상이면 AGENT를 고른다." if multi(question) else ""))
+
+
+def _ask(name, question, it, chat=None):
+    user = _user(question, it)
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
     if chat:
         m = chat(None, msgs, [TOOL])["message"]
@@ -229,3 +233,37 @@ def route_check(question, it, status, chat=None, said=None):
             _save()
     esc = got.get("route") == "Agent"
     return esc, {"by": "AI(Claude)", "route": got.get("route"), "reason": str(got.get("reason") or "")[:200], "cached": cached}
+
+
+# 실험 X1·X2(2026-11-15, 마스터 '진행 요청'): Claude 전용 판단(계획 선택·넘김 판정)을 로컬 소형 모델로 바꿀 수 있는지.
+# 선택지를 글자(A~)로 보여 고르게 하고, 고른 글자 토큰의 확률로 선택지별 확률을 만든다(질문 담당 Agent와 같은 방식).
+# 측정 tools/eval/local_judge_eval.py. 기준: 분류기 결과 대비 망친 문항이 늘지 않을 것.
+PLAN_KEYS = list(CHOICES) + ["AGENT"]
+
+
+def local_plan(question, it, model):
+    """로컬 모델의 계획 선택: (고른 질문 종류 또는 'AGENT' 또는 None, {종류: 확률})."""
+    import question_agent as QA
+    L = {QA.LETTERS[i]: k for i, k in enumerate(PLAN_KEYS)}
+    inv = {k: l for l, k in L.items()}
+    t = it["tuple"]
+    opts = "\n".join(f"{l}. {k} {CHOICES.get(k, '정해진 종류 하나로 답할 수 없음 → Agent에게 넘김')}" for l, k in L.items())
+    user = (_user(question, it) + f"\n선택지:\n{opts}\n분류기 판단은 {inv.get(t.get('type'), '-')}, 사전 규칙 판단은 {inv.get(it.get('rule_type'), '-')}다.")
+    schema = {"type": "object", "required": ["choice", "reason"], "properties": {"choice": {"type": "string", "enum": list(L)}, "reason": {"type": "string"}}}
+    d, p = QA._ask_choice(None, SYSTEM + "\n답은 선택지 글자 하나로 고른다.", user, schema, list(L), model=model)
+    return L.get(str(d.get("choice"))), {L[k]: v for k, v in (p or {}).items()}
+
+
+def local_route(question, it, status, model, said=None):
+    """로컬 모델의 넘김 판정: (넘길지 True/False/None, {'충분': p, 'Agent': p})."""
+    import question_agent as QA
+    t = it["tuple"]
+    seen = (it.get("card") or {}).get("text") or f"{ko(t.get('type'))} · {', '.join(t.get('space') or []) or '동네 없음'}"
+    what = {"범위밖": "범위 밖이라 답하지 않음", "되묻기": "빠진 조건을 되물음", "선택필요": "답하지 않고 도민에게 고르게 함"}.get(status, "이 이해대로 계산해 답함")
+    if said:
+        what += f"(안내: {said[:80]})"
+    user = f"질문: {question}\n일반 경로의 이해: {seen}\n질문 종류: {ko(t.get('type'))}\n일반 경로의 처리: {what}\n선택지:\nA. 충분\nB. Agent"
+    schema = {"type": "object", "required": ["choice", "reason"], "properties": {"choice": {"type": "string", "enum": ["A", "B"]}, "reason": {"type": "string"}}}
+    d, p = QA._ask_choice(None, ROUTE_SYSTEM + "\n답은 선택지 글자 하나(A 충분, B Agent)로 고른다.", user, schema, ["A", "B"], model=model)
+    c = str(d.get("choice"))
+    return ({"A": False, "B": True}.get(c), {"충분": (p or {}).get("A"), "Agent": (p or {}).get("B")})

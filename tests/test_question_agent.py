@@ -17,7 +17,7 @@ def pick(text_part, seen=None):
         user = messages[-1]["content"]
         if seen is not None:
             seen.append(user)
-        line = next((l for l in user.splitlines() if text_part in l and l[:1].isdigit()), "")
+        line = next((l for l in user.splitlines() if text_part in l and l[:1].isascii() and l[:1].isalpha() and l[1:3] == ". "), "")
         return {"message": {"content": json.dumps({"choice": line.split(".")[0] if line else "0", "reason": "시험"}, ensure_ascii=False)}}
     return chat
 
@@ -100,7 +100,7 @@ class Stage20261115(unittest.TestCase):
 
     def test_progress_order(self):
         seen = []
-        with mock.patch("analyst._ask", return_value={}):
+        with mock.patch.object(A, "_ask_choice", return_value=({}, None)):
             A.run("노형동 카페 몇 곳이야?", {}, llm_on=False, progress=lambda i, d: seen.append(i))
         self.assertEqual(seen[0], 1)
         self.assertEqual(seen[-1], 4)
@@ -149,6 +149,52 @@ class Confirm20261115(unittest.TestCase):
             A.run(q, {}, llm_on=False, forced="없는 선택지")
 
     def test_no_pause_when_agree(self):
-        with mock.patch("analyst._ask", return_value={}):
+        with mock.patch.object(A, "_ask_choice", return_value=({}, None)):
             c = A.run("노형동 카페 몇 곳이야?", {}, llm_on=False)["confirm"]
         self.assertFalse(c["pause"])
+
+
+class ChoiceProbs20261115(unittest.TestCase):
+    """실험 A: Ollama logprobs에서 선택지 글자 확률을 읽는다(Jev Choice와 같은 모양)."""
+
+    def test_parse(self):
+        import math
+        lp = lambda tok, alts: {"token": tok, "logprob": math.log(alts[0][1]), "top_logprobs": [{"token": t, "logprob": math.log(p)} for t, p in alts]}  # noqa: E731
+        lps = [lp("{\n", [("{\n", 1.0)]), lp(' "', [(' "', 1.0)]), lp("choice", [("choice", 1.0)]), lp('":', [('":', 1.0)]), lp(' "', [(' "', 0.97), (" A", 0.03)]),
+               lp("A", [("A", 0.8), ("C", 0.15), ("D", 0.05)]), lp('",\n', [('",\n', 1.0)])]
+        p = A.choice_probs(lps, ["A", "B", "C"])
+        self.assertAlmostEqual(p["A"], 0.8 / 0.95, places=3)  # 선택지에 없는 D는 빼고 정규화
+        self.assertEqual(list(p)[0], "A")
+        self.assertIsNone(A.choice_probs([], ["A"]))
+
+    def test_letter_ids(self):
+        ops = A.options("노형동 카페 몇 곳?", {"status": "성공", "tuple": {"space": ["노형동"], "metric": ["점포수"], "type": "T1"}}, {"tuple": {}}, [])
+        self.assertEqual(ops[0]["id"], "A")
+
+    def test_margin_pause(self):
+        keep = {"id": "A", "text": "지금 답 그대로", "act": "답하기", "change": {}}
+        other = {"id": "B", "text": "지표를 '카드 매출'(으)로 바꿔 다시 계산", "act": "다시 계산", "change": {}}
+        c = A.confirm_card(keep, [keep, other], [{"kind": "지표 없음"}], [{"action": "답하기", "margin": 0.3}], {"status": "성공"}, {"status": "성공"})
+        self.assertTrue(c["pause"])
+        self.assertIn("갈렸어요", c["why"])
+        c = A.confirm_card(other, [keep, other], [{"kind": "지표 없음"}], [{"action": "범위 밖", "margin": 0.95}], {"status": "성공"}, {"status": "범위밖"})
+        self.assertFalse(c["pause"])  # 확신도가 있으면 확신도로만 정한다
+
+
+class ClaudeChoice20261116(unittest.TestCase):
+    """Claude 키 실험: 모델 이름이 claude-로 시작하면 강제 도구 호출로 선택지를 받고 확률은 None."""
+
+    def test_claude_branch(self):
+        import llm_claude
+        blk = mock.Mock(type="tool_use", input={"choice": "B"})
+        cl = mock.Mock()
+        cl.messages.create.return_value = mock.Mock(content=[blk])
+        with mock.patch.object(llm_claude, "client", return_value=cl):
+            d, p = A._ask_choice(None, "s", "u", {"type": "object"}, ["A", "B"], model="claude-haiku-5-5")
+        self.assertEqual((d, p), ({"choice": "B"}, None))
+        self.assertEqual(cl.messages.create.call_args.kwargs["tool_choice"], {"type": "tool", "name": "answer"})
+
+    def test_claude_error(self):
+        import llm_claude
+        with mock.patch.object(llm_claude, "client", side_effect=RuntimeError("no key")):
+            self.assertEqual(A._ask_choice(None, "s", "u", {}, ["A"], model="claude-sonnet-5-5"), ({}, None))
