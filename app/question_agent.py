@@ -31,16 +31,35 @@ SUB_HINTS = [(re.compile(r"비싼|비싸|저렴|싼\s*(곳|식당|가게|집|데
              (re.compile(r"관광객"), ["관광객비중", "외국인매출"], "관광객 수 자료는 없고 카드 매출의 관광객 비중이 있어요."),
              (re.compile(r"\d{1,2}\s*시|몇\s*시|시간대"), ["시간대매출", "시간대방문"], "시간대별 사람 수는 센터 자료가 필요하고, 공개 자료는 카드 매출 시간대 비중이에요."),
              (re.compile(r"잘\s*(돼|되|나가|팔)|장사|벌이|수입"), ["매출", "이용건수"], "장사가 잘되는지는 카드 매출로 봐요."),
-             (re.compile(r"사람\s*(많|적)|붐비|북적|유동"), ["일평균방문"], "사람이 많은지는 하루 방문 지수로 봐요."),
+             (re.compile(r"사람\s*(많|적)|붐비|붐벼|북적|유동|발길|한산|썰렁"), ["일평균방문"], "사람이 많은지는 하루 방문 지수로 봐요."),
+             # 자료 능력 명세 7절 대체 지표 목록에 맞춤(2026-11-15 새 기준 조정용: 생활 말투 지표 낱말을 못 읽던 Fable·Haiku 문항)
+             (re.compile(r"커지|커져|성장|확장|키워"), ["매출성장"], "상권이 커지는지는 최근 12개월 카드 매출이 그 전보다 늘었는지로 봐요."),
+             (re.compile(r"오래\s*(버티|버텨|가|못)|살아남"), ["5년생존율"], "가게가 오래 버티는지는 5년 생존율로 봐요."),
+             (re.compile(r"나이대|연령대|몇\s*살|나이"), ["거주연령구성", "방문연령구성"], ""),
              (re.compile(r"버스|정류"), ["버스일평균"], ""), (re.compile(r"문\s*(닫|연)|폐업|개업|새로\s*생"), ["폐업수", "개업수", "폐업률"], "")]
 # 지표 낱말이 없을 때 모델이 뜻으로 고르는 주요 지표(설명은 화면 용어와 같음)
 MAIN_METRICS = [("점포수", "가게가 몇 곳 있는지·몰려 있는지"), ("매출", "카드 매출 규모, 장사가 잘되는지"), ("매출성장", "매출이 늘고 있는지(성장)"),
                 ("일평균방문", "사람이 얼마나 오가는지(유동인구)"), ("개업수", "새로 문을 여는 가게 수"), ("폐업수", "문을 닫는 가게 수"),
                 ("5년생존율", "가게가 오래 버티는지"), ("건당금액", "손님이 한 번에 쓰는 돈"), ("관광객비중", "관광객·외지인 손님 비중"),
                 ("외국인매출", "외국인 손님 결제"), ("시간대매출", "몇 시·어느 때 매출이 많은지"), ("청년비중", "20~30대 젊은 사람 비중"), ("고령비중", "어르신 비중")]
+METRIC_WORDS = json.loads((Q.ROOT / "data" / "lexicon" / "metrics.json").read_text(encoding="utf-8"))
+
+
+def evidenced(q, m):
+    """질문 낱말이 지표 m을 뒷받침하는지: 지표 이름·사전 낱말·대체 지표 힌트(SUB_HINTS)."""
+    qs = re.sub(r"\s+", "", q or "")
+    if m in qs or Q.METRICS.get(m, "#").replace(" ", "") in qs:
+        return True
+    if any(w.replace(" ", "") in qs for w in METRIC_WORDS.get(m) or []):
+        return True
+    return any(m in ms and rx.search(q or "") for rx, ms, _ in SUB_HINTS)
+
+
 RANK_Q = re.compile(r"(가장|제일|젤|최고|최대|최소|꼴찌|1위|순위|어디가|어느\s*동네)")
 LOW_Q = re.compile(r"(가장|제일|젤|덜)\s*(적|낮|작|안)|최하위|꼴찌|(적|낮|작)은\s*(동네|곳|지역|데)")
 DATA_Q = re.compile(r"(자료|데이터)\S{0,2}\s*(뭐|무엇|어떤|있)")
+OUT_HINT = re.compile(r"인허가|허가|신고|서류|절차|법률|법적|세금|맛집|맛있|맛은|후기|평점|리뷰|추천해|매매가|시세|임대|권리금|예약자|투숙객")  # 명세 6절 범위 밖 낱말
+FUTURE_MONEY_Q = re.compile(r"(내년|다음\s*해|앞으로|미래|\d+\s*년\s*뒤|하면).{0,25}(매출|수익|벌|수입).{0,15}(얼마|예측|나올|될지|될까)")
 PRIVATE_Q = re.compile(r"명단|연락처|전화\s*번호|인적\s*사항|개인\s*정보|주민\s*번호|예약자|투숙객\s*정보|누가\s*(사|운영)")
 SNOW_Q = re.compile(r"눈\s*(이\s*)?(오|올|와|내리|온|많|쌓)|폭설|대설")
 
@@ -113,10 +132,15 @@ def gaps(q, it, r, done=()):
     hints = [(ms, why) for rx, ms, why in SUB_HINTS if rx.search(q)]
     cand = [m for ms, _ in hints for m in ms if m not in (t.get("metric") or [])]
     metric_done = any("지표를" in x for x in done)
-    if not done and (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T11", "T9", "T10"):
+    # 지표 확인: 지금 지표가 질문 낱말로 뒷받침되면(예: '매출'·'고령비중'을 그대로 물음) 바꾸는 선택지를 내지 않는다.
+    # 2026-11-15 새 기준 조정용 304: 질문에 적힌 지표를 모델이 다른 지표로 바꿔 틀린 문항 12건(도운 문항 23건)
+    if not done and (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T11", "T9", "T10") \
+            and not any(evidenced(q, m) for m in t["metric"]):
         cur = ", ".join(Q.METRICS.get(m, m) for m in t["metric"])
+        alt = [m for m, _ in MAIN_METRICS if m not in t["metric"]]
+        ev = [m for m in alt if evidenced(q, m)]
         out.append({"kind": "지표 확인", "text": f"지금 지표는 '{cur}'예요. 질문의 뜻과 다르면 다른 지표로 바꿀 수 있어요.",
-                    "change": {"metric": [m for m, _ in MAIN_METRICS if m not in t["metric"]]}, "note": ""})
+                    "change": {"metric": ev or alt}, "note": "", "only": bool(ev)})
     if metric_done:
         pass
     elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요"):
@@ -125,6 +149,9 @@ def gaps(q, it, r, done=()):
     elif cand and not set(t.get("metric") or []) & {m for ms, _ in hints for m in ms}:
         out.append({"kind": "대체 지표", "text": f"질문의 말에 더 가까운 지표 후보가 있어요: {', '.join(dict.fromkeys(cand))}.", "change": {"metric": list(dict.fromkeys(cand))},
                     "note": next((why for _, why in hints if why), "")})
+    if FUTURE_MONEY_Q.search(q) and r.get("status") != "범위밖":  # 명세 6절: 미래 매출 금액 예측은 범위 밖(다음 7일 방문 예상은 범위 안)
+        out.append({"kind": "미래 금액", "text": "앞으로의 매출 금액을 맞히는 질문 같아요. 자료로는 미래 매출 금액을 예측하지 않아요(다음 7일 방문 예상만 있어요).",
+                    "change": {}, "note": ""})
     if DATA_Q.search(q) and t.get("type") != "T11" and not t.get("space"):
         out.append({"kind": "자료 찾기", "text": "자료가 있는지를 묻는 질문 같아요.", "change": {"type": "T11", "metric": ["자료목록"]}, "note": ""})
     import result
@@ -173,7 +200,7 @@ def options(q, r, it, gs, tried=()):
             add(f"동네 순위({'작은' if c.get('order') == 'asc' else '큰'} 순서)로 다시 계산", "다시 계산", {"type": "T3", "order": c.get("order")})
         elif x["kind"] in ("지표 없음", "대체 지표", "지표 확인"):
             ms = list(c.get("metric") or [])
-            if x["kind"] in ("지표 없음", "지표 확인"):  # 사전에 없는 말이면 주요 지표 중에서 뜻으로 고르게 한다
+            if (x["kind"] == "지표 없음" and not ms) or (x["kind"] == "지표 확인" and not x.get("only")):  # 낱말 근거가 없으면 주요 지표 중에서 뜻으로 고르게 한다
                 ms += [m for m, _ in MAIN_METRICS if m not in ms and m not in (t.get("metric") or [])]
             desc = dict(MAIN_METRICS)
             for m in ms:
@@ -193,9 +220,10 @@ def options(q, r, it, gs, tried=()):
     if any(x.get("note") for x in gs):
         add("다시 계산하지 않고, 어긋남을 안내해 지금 답", "안내 붙여 답하기")
     add("지금 답 그대로" if r.get("status") not in ("선택필요", "범위밖") else "지금 처리 그대로(되묻기·범위 밖 안내)", "답하기")
-    if r.get("status") != "선택필요" and not t.get("space"):  # 동네가 질문에 있으면 되묻기 선택지를 주지 않는다(코드 검사)
+    # 근거 없는 처리 바꾸기를 막는다(2026-11-15 새 기준 조정용: 어긋남이 없는데 모델이 되묻기·범위 밖으로 바꾼 13건 중 10건이 오답)
+    if r.get("status") != "선택필요" and not t.get("space") and not RANK_Q.search(q):  # 동네가 있거나 순위 질문이면 되묻기 선택지를 주지 않는다
         add("꼭 필요한 동네가 질문에 없어 되묻기", "되묻기")
-    if r.get("status") != "범위밖":
+    if r.get("status") != "범위밖" and (gs or OUT_HINT.search(q) or qparse.hits(q, qparse.OUT_W)):
         add("지금 자료로 답할 수 없는 질문이라 범위 밖 안내", "범위 밖")
     add("통계 분석(기법)이 필요해 분석 담당에게 넘기기", "기법으로")
     return out
@@ -221,6 +249,8 @@ def _apply(t, change):
         base = {k: v for k, v in qparse.parse(t.get("_q") or "").items() if not k.startswith("_")} if t.get("_q") else None
         if base:
             t2 = dict(base, expect="답함")
+            if not t2.get("metric") and t.get("metric"):  # 사전 규칙이 지표를 못 읽으면 지금 지표(보정 규칙의 대체 지표 포함)를 둔다
+                t2["metric"] = list(t["metric"])
             why.append(f"사전 규칙 해석({TYPE_KO.get(base.get('type'), base.get('type'))})")
             return t2, why
     if change.get("type"):

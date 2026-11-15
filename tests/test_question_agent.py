@@ -64,3 +64,22 @@ class QuestionAgent(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Honesty20261115(unittest.TestCase):
+    """새 정답 기준 ③ 안내 정직성: 대신 쓴 지표·업종 구분 없음·없는 시점을 코드가 밝히고, 질문에 적힌 지표는 바꾸는 선택지를 내지 않는다."""
+    def test_honest_notes(self):
+        import result as R
+        n = R.honest_notes("삼양동 분식집 폐업률", {"metric": ["폐업률"], "target": "분식", "space": ["삼양동"]})
+        self.assertTrue(any("음식점 전체" in x and "대신" in x for x in n))
+        n = R.honest_notes("노형동 카페 매출", {"metric": ["매출"], "target": "카페", "space": ["노형동"]})
+        self.assertTrue(any("세부 업종" in x and "센터" in x for x in n))
+        self.assertEqual(R.honest_notes("노형동 카페 매출", {"metric": ["매출"], "target": "카페", "space": ["노형동"]}, center_used=True), [])
+        n = R.honest_notes("아라동 편의점 2024년 몇 곳", {"metric": ["점포수"], "target": "편의점", "space": ["아라동"], "ask_year": 2024})
+        self.assertTrue(any("2024년 값은 없어요" in x for x in n))
+        self.assertEqual(R.honest_notes("노형동 음식점 매출", {"metric": ["매출"], "target": "음식점", "space": ["노형동"]}), [])
+
+    def test_evidenced(self):
+        self.assertTrue(A.evidenced("공항 근처 숙박업소 매출 궁금해요", "매출"))
+        self.assertTrue(A.evidenced("고령비중 제일 높은 동네", "고령비중"))
+        self.assertFalse(A.evidenced("연동은 요즘 발길 많수과?", "점포수"))

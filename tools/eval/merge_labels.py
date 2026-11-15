@@ -36,6 +36,9 @@ COND_GROUP = {"비": "비", "주말": "주말", "평일": "주말", "봄": "계�
               "성수기": "성수기", "비수기": "성수기"}
 
 
+PLACE_ALSO = {"중문관광단지": ["중문동", "예래동"], "탑동": ["건입동", "삼도2동", "일도1동"]}
+
+
 def norm_label(x):
     acc = sorted(set(x.get("accept") or []))
     bad = [d for d in (x.get("space") or []) if d not in Q.DONGS]
@@ -105,6 +108,12 @@ def main():
     for m in LABELERS:
         for x in jl(L / f"judge_{m}.jsonl"):
             final[x["id"]] = norm_label(x)
+    # 자료 능력 명세 1절 생활 지명 대응(2026-11-15): 경계에 걸친 지명은 대응표의 행정동을 모두 정답으로 둔다(라벨러 판단 + 자료 주소)
+    for qid, x in final.items():
+        q = Q[qid]["q"] if qid in Q else ""
+        for name, dongs in PLACE_ALSO.items():
+            if name in q and x.get("space") and set(x["space"]) & set(dongs):
+                x["space"] = sorted(set(x["space"]) | set(dongs))
     rows = []
     for qid, g in Q.items():
         if qid in final:

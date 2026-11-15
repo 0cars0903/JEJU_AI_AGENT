@@ -644,13 +644,47 @@ DATA_Q = re.compile(r"(자료|데이터)\S{0,2}\s*(뭐|무엇|어떤|있)")  # '
 SNOW_Q = re.compile(r"눈\s*(이\s*)?(오|올|와|내리|온|많|쌓)|폭설|대설|적설")
 SNOW_NOTE = "눈 온 날을 따로 나눈 자료는 없어요(날씨 자료는 비 온 날만 나눠요). 위 답은 날씨 조건 없이 본 값이에요."
 PRICE_Q = re.compile(r"비싼|비싸|저렴|싼\s*(곳|식당|가게|집|데)|가격")
-PRICE_NOTE = "메뉴 가격 자료는 없어요. 카드 결제 1건당 금액으로 봤어요."
+PRICE_NOTE = "메뉴 가격 자료는 없어요. 카드 결제 1건당 금액으로 대신 봤어요."
 POP_Q = re.compile(r"(?<!유동)(?<!방문)인구(?!\s*(구성|연령|나이))|주민\s*수|몇\s*명\s*(이\s*)?(살|사)")
-POP_NOTE = "동네 인구 수(주민등록 인구)는 자료에 없어요. 거주 인구의 연령 구성으로 답했어요."
+POP_NOTE = "동네 인구 수(주민등록 인구)는 자료에 없어요. 거주 인구의 연령 구성으로 대신 답했어요."
 TOUR_MANY = re.compile(r"관광객\S{0,2}\s*(많|적|몰|붐|순위)")
 HOUR_Q = re.compile(r"(오전|오후|새벽|아침|저녁|밤|낮)\s*\d{1,2}\s*시|\d{1,2}\s*시\s*(쯤|경|에|부터|대|께)")
-HOUR_NOTE = "시간대별 사람 수는 센터 유동인구 자료를 넣어야 볼 수 있어요. 위 답은 카드 매출의 시간대 비중이에요."
-RAIN_SALES_NOTE = "하루 단위 매출 자료가 없어요. 비 온 날의 방문 변화로 봤어요."
+HOUR_NOTE = "시간대별 사람 수는 센터 유동인구 자료를 넣어야 볼 수 있어요. 위 답은 카드 매출의 시간대 비중으로 대신 본 값이에요."
+RAIN_SALES_NOTE = "하루 단위 매출 자료가 없어요. 비 온 날의 방문 변화로 대신 봤어요."
+# 안내 정직성(2026-11-15 새 정답 기준 ③): 최종 해석으로 답한 지표가 질문과 다르면 무엇으로 대신했는지 코드가 밝힌다.
+# 질문 담당 Agent가 다시 계산한 해석에도 같이 적용한다(보정 규칙 안내는 첫 해석에만 붙던 문제).
+NO_BIZ_METRIC = {"일평균방문": "하루 방문", "거주연령구성": "거주 연령 구성", "방문연령구성": "방문 연령 구성", "고령비중": "고령 비중",
+                 "청년비중": "청년 비중", "버스일평균": "버스 이용", "폐업률": "3년 폐업률"}
+CARD_METRIC = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "매출성장"}
+CROWD_Q = re.compile(r"사람|붐비|붐벼|북적|유동|몰려|몰리|하영")
+COND_SALES_Q = re.compile(r"매출|장사|팔|벌")
+
+
+def honest_notes(q, t, center_used=False):
+    """최종 해석 t로 답할 때 질문과 달라진 점(대체 지표·업종 구분 없음·시점 없음)을 알리는 문장."""
+    q, m, tgt = q or "", t.get("metric") or [], t.get("target")
+    where = ", ".join(t.get("space") or []) or "제주"
+    out = []
+    if tgt and tgt not in Q.TARGETS_POP:
+        nb = [x for x in m if x in NO_BIZ_METRIC]
+        if nb:
+            whole = "음식점 전체" if nb[0] == "폐업률" else "전체"
+            out.append(f"{NO_BIZ_METRIC[nb[0]]} 자료는 업종 구분이 없어 {tgt}만의 값은 없어요. {where} {whole} 값으로 대신 봤어요.")
+        if "5년생존율" in m and t.get("space"):
+            out.append(f"동네별 5년 생존율은 업종 구분이 없어요. 동네 값은 음식점 전체로, {tgt} 값은 제주 전체로 대신 봤어요.")
+        if tgt not in ("음식점", "숙박", "소매") and any(x in CARD_METRIC for x in m) and not center_used:
+            out.append(f"공개 카드 매출 자료에는 {tgt} 같은 세부 업종 값이 없어요. 업종 대분류 값으로 대신 봤어요. 센터 자료를 넣으면 세부 업종으로 볼 수 있어요.")
+    if "점포수" in m and t.get("ask_year") and t.get("ask_year") < time.localtime().tm_year:
+        out.append(f"가게 수는 최신 한 시점 값만 있어 {t['ask_year']}년 값은 없어요. 최신 값으로 대신 봤어요.")
+    if PRICE_Q.search(q) and "건당금액" in m:
+        out.append(PRICE_NOTE)
+    if POP_Q.search(q) and "거주연령구성" in m:
+        out.append(POP_NOTE)
+    if (HOUR_Q.search(q) or re.search(r"시간대|몇\s*시", q)) and CROWD_Q.search(q) and not center_used:
+        out.append(HOUR_NOTE)
+    if t.get("type") == "T6" and COND_SALES_Q.search(q) and "일평균방문" in m:
+        out.append("하루 단위 매출 자료가 없어요. 조건에 따른 방문 변화로 대신 봤어요.")
+    return out
 def _asked_period(q):
     """질문의 해·달. '작년'·'올해'는 오늘 날짜 기준. '3개월'·'12월까지 다음 달' 같은 말은 달로 보지 않는다."""
     import datetime
@@ -771,6 +805,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                 if "매출" in (t.get("metric") or []):
                     notes.append(RAIN_SALES_NOTE)
                 t = dict(t, type="T6", cond=["비"], metric=["일평균방문"], form=Q.DEFAULT_FORM["T6"])
+            elif t.get("type") == "T1" and t.get("space") and t.get("cond") and set(t.get("metric") or []) <= {"일평균방문", "매출", "점포수"}:
+                # '연동 주말 방문객'처럼 조건을 읽고도 단일 조회로 답하면 조건이 빠진다('이 질문 유형에서 쓰지 않음', 2026-11-15 새 기준 조정용)
+                t = dict(t, type="T6", metric=["일평균방문"], form=Q.DEFAULT_FORM["T6"])
             it = dict(it, tuple=t)
             if len(t.get("metric") or []) > 1:  # 질문에 그대로 적힌 지표를 앞에(폐업률을 물었는데 폐업 수 순위로 답하던 결함)
                 t = dict(t, metric=sorted(t["metric"], key=lambda m: m not in q_))
@@ -900,8 +937,10 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             import plan_agent
             if plan_agent.multi(question):  # 여러 단계 표지가 있는데 나누지 못하고 하나로 답한 경우 알린다(둘째 조각이 조용히 빠지던 문제, 페르소나 평가 2026-11-14)
                 notes = notes + [MULTI_NOTE]
-        if "시간대방문" in t.get("metric", []) and not any("이용자 불러옴" in str(v.get("dataset")) for v in rv["run"]["store"].values() if isinstance(v, dict)):
+        center_used = any("이용자 불러옴" in str(v.get("dataset")) for v in rv["run"]["store"].values() if isinstance(v, dict))
+        if "시간대방문" in t.get("metric", []) and not center_used:
             notes = notes + [HOUR_NOTE]
+        notes = notes + honest_notes(question, t, center_used)
         if question and REASON_Q.search(question):  # '이유·왜'는 자료로 단정할 수 없음을 알린다(평가 2026-11-14 A2)
             notes = notes + [REASON_NOTE]
         if question and STOP_Q.search(question) and not (env or {}).get("center_bus"):  # 정류소를 물었는데 동네 값으로 답한 경우(A6)

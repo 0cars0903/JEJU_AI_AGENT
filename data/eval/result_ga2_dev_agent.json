@@ -6,39 +6,39 @@
   "rule_fix": true,
   "n": 304,
   "애매 제외 n": 282,
-  "④ 완전 정답": 180,
-  "① 처리": 259,
-  "② 요소 비율 평균": 0.832,
-  "③ 안내 정직성": "40/65",
-  "애매 문항 정답": "10/22",
+  "④ 완전 정답": 205,
+  "① 처리": 262,
+  "② 요소 비율 평균": 0.856,
+  "③ 안내 정직성": "58/65",
+  "애매 문항 정답": "13/22",
   "생성 모델별": {
-   "fable": "25/38",
-   "gemini": "77/134",
-   "haiku": "26/34",
-   "opus": "29/39",
-   "sonnet": "23/37"
+   "fable": "26/38",
+   "gemini": "92/134",
+   "haiku": "28/34",
+   "opus": "34/39",
+   "sonnet": "25/37"
   },
   "유형별": {
-   "(일반)": "53/62",
-   "기간": "33/52",
-   "대체 지표": "14/32",
+   "(일반)": "55/62",
+   "기간": "42/52",
+   "대체 지표": "17/32",
    "두 요소": "9/11",
-   "생활 지명": "16/40",
-   "순위": "35/49",
-   "조건": "21/39",
+   "생활 지명": "23/40",
+   "순위": "37/49",
+   "조건": "27/39",
    "지표 없음": "24/46"
   },
   "요소별 오답": {
-   "동네": 8,
-   "지표": 39,
+   "동네": 7,
+   "지표": 29,
    "업종": 8,
    "조건": 3,
    "기간": 9,
    "순위": 7
   },
-  "지연 중앙값": 2.425,
-  "지연 90%": 3.25,
-  "모델 판단 평균 횟수": 1.07
+  "지연 중앙값": 1.14,
+  "지연 90%": 1.79,
+  "모델 판단 평균 횟수": 1.05
  },
  "rows": [
   {
@@ -51,42 +51,32 @@
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "기간": false
     },
-    "요소 비율": 0.333,
+    "요소 비율": 0.667,
     "정답": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 5.98,
-   "status": "성공",
+   "sec": 1.64,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
+      "대체 지표",
       "확신 낮음"
      ],
-     "choice": "지금 해석대로 답 보기(되묻지 않음)",
+     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
      "action": "다시 계산",
      "change": [
-      "지금 해석대로"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [
-      "지표 없음"
-     ],
-     "choice": "지표를 '개업 수'(으)로 바꿔 다시 계산 — 새로 문을 여는 가게 수",
-     "action": "다시 계산",
-     "change": [
-      "지표 개업 수"
+      "지표 일평균 방문"
      ],
      "note": null
     }
    ],
-   "calls": 2
+   "calls": 1
   },
   {
    "id": "FB-002",
@@ -107,13 +97,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.48,
+   "sec": 0.99,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -140,18 +128,17 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 3.21,
+   "sec": 1.74,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
+     "choice": "질문 종류를 '종합 진단'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 일평균 방문"
+      "종류 종합 진단"
      ],
      "note": null
     }
@@ -173,13 +160,13 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 1.1,
-   "status": "선택필요",
+   "sec": 0.91,
+   "status": "범위밖",
    "turns": [
     {
      "gaps": [],
-     "choice": "꼭 필요한 동네가 질문에 없어 되묻기",
-     "action": "되묻기",
+     "choice": "지금 처리 그대로(되묻기·범위 밖 안내)",
+     "action": "답하기",
      "change": null,
      "note": null
     }
@@ -201,7 +188,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 1.15,
+   "sec": 1.1,
    "status": "범위밖",
    "turns": [
     {
@@ -218,26 +205,25 @@
    "id": "FB-006",
    "gen": "fable",
    "ambiguous": true,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 2.79,
+   "sec": 1.48,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "질문 종류를 '구성'(으)로 보고 다시 계산",
@@ -271,7 +257,7 @@
     "기간",
     "두 요소"
    ],
-   "sec": 4.43,
+   "sec": 4.19,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -320,13 +306,11 @@
     "조건",
     "순위"
    ],
-   "sec": 3.06,
+   "sec": 0.82,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -339,23 +323,23 @@
    "id": "FB-009",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 3.95,
+   "sec": 1.23,
    "status": "성공",
    "turns": [
     {
@@ -368,18 +352,9 @@
       "사전 규칙 해석(현황)"
      ],
      "note": null
-    },
-    {
-     "gaps": [
-      "지표 없음"
-     ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
-     "note": null
     }
    ],
-   "calls": 2
+   "calls": 1
   },
   {
    "id": "FB-010",
@@ -397,13 +372,11 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.59,
+   "sec": 1.25,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -424,7 +397,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.39,
+   "sec": 0.86,
    "status": "선택필요",
    "turns": [
     {
@@ -460,7 +433,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.46,
+   "sec": 1.47,
    "status": "실패",
    "turns": [
     {
@@ -489,7 +462,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.26,
+   "sec": 1.22,
    "status": "범위밖",
    "turns": [
     {
@@ -522,13 +495,11 @@
     "조건",
     "생활 지명"
    ],
-   "sec": 3.16,
+   "sec": 1.48,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -556,13 +527,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.56,
+   "sec": 1.03,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -586,7 +555,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 3.28,
+   "sec": 1.63,
    "status": "성공",
    "turns": [
     {
@@ -615,7 +584,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.43,
+   "sec": 1.41,
    "status": "범위밖",
    "turns": [
     {
@@ -646,7 +615,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.89,
+   "sec": 1.12,
    "status": "선택필요",
    "turns": [
     {
@@ -668,33 +637,34 @@
    "id": "FB-020",
    "gen": "fable",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true,
      "기간": true
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.75,
+    "정답": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 1.6,
-   "status": "no_significant_effect",
+   "sec": 1.18,
+   "status": "성공",
    "turns": [
     {
      "gaps": [
+      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지금 해석대로 답 보기(되묻지 않음)",
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지금 해석대로"
+      "종류 현황"
      ],
      "note": null
     }
@@ -717,7 +687,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.96,
+   "sec": 1.8,
    "status": "성공",
    "turns": [
     {
@@ -753,13 +723,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.61,
+   "sec": 1.33,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -789,7 +757,7 @@
     "기간",
     "지표 없음"
    ],
-   "sec": 7.98,
+   "sec": 4.79,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -851,13 +819,11 @@
     "기간",
     "순위"
    ],
-   "sec": 2.64,
+   "sec": 1.23,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -886,13 +852,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.43,
+   "sec": 1.14,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -911,22 +875,23 @@
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "순위": false
     },
-    "요소 비율": 0.5,
+    "요소 비율": 0.75,
     "정답": false
    },
    "hard": [
     "순위",
     "지표 없음"
    ],
-   "sec": 3.97,
+   "sec": 2.9,
    "status": "성공",
    "turns": [
     {
      "gaps": [
+      "대체 지표",
       "순위 되묻기"
      ],
      "choice": "제주 전체 동네 순위(큰 순서)로 답하기",
@@ -942,10 +907,10 @@
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '폐업 수'(으)로 바꿔 다시 계산 — 문을 닫는 가게 수",
+     "choice": "지표를 '5년 생존율'(으)로 바꿔 다시 계산 — 가게가 오래 버티는지",
      "action": "다시 계산",
      "change": [
-      "지표 폐업 수"
+      "지표 5년 생존율"
      ],
      "note": null
     }
@@ -972,7 +937,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.71,
+   "sec": 1.08,
    "status": "성공",
    "turns": [
     {
@@ -1009,7 +974,7 @@
     "기간",
     "생활 지명"
    ],
-   "sec": 3.76,
+   "sec": 2.73,
    "status": "성공",
    "turns": [
     {
@@ -1055,7 +1020,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 0.51,
+   "sec": 0.47,
    "status": "Agent",
    "turns": [],
    "calls": 0
@@ -1081,7 +1046,7 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 4.51,
+   "sec": 2.53,
    "status": "성공",
    "turns": [
     {
@@ -1127,19 +1092,19 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.69,
+   "sec": 1.29,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '개업 수'(으)로 바꿔 다시 계산 — 새로 문을 여는 가게 수",
+     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
      "action": "다시 계산",
      "change": [
-      "지표 개업 수"
+      "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
     }
    ],
    "calls": 1
@@ -1158,7 +1123,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.23,
+   "sec": 0.96,
    "status": "선택필요",
    "turns": [
     {
@@ -1183,7 +1148,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.0,
+   "sec": 0.91,
    "status": "범위밖",
    "turns": [
     {
@@ -1214,13 +1179,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.52,
+   "sec": 1.07,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -1233,32 +1196,34 @@
    "id": "FB-035",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "조건",
     "지표 없음"
    ],
-   "sec": 2.64,
+   "sec": 1.62,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
+     "action": "다시 계산",
+     "change": [
+      "지표 일평균 방문"
+     ],
      "note": null
     }
    ],
@@ -1276,7 +1241,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.93,
+   "sec": 0.92,
    "status": "선택필요",
    "turns": [
     {
@@ -1303,11 +1268,12 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.5,
+   "sec": 1.74,
    "status": "선택필요",
    "turns": [
     {
      "gaps": [
+      "미래 금액",
       "확신 낮음"
      ],
      "choice": "지금 해석대로 답 보기(되묻지 않음)",
@@ -1337,13 +1303,11 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.34,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -1364,7 +1328,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.19,
+   "sec": 1.16,
    "status": "범위밖",
    "turns": [
     {
@@ -1393,13 +1357,11 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.35,
+   "sec": 0.79,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -1422,7 +1384,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.92,
+   "sec": 0.96,
    "status": "선택필요",
    "turns": [
     {
@@ -1447,7 +1409,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.22,
+   "sec": 0.96,
    "status": "선택필요",
    "turns": [
     {
@@ -1475,7 +1437,7 @@
     "조건",
     "지표 없음"
    ],
-   "sec": 1.22,
+   "sec": 0.9,
    "status": "선택필요",
    "turns": [
     {
@@ -1503,7 +1465,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 1.0,
+   "sec": 0.9,
    "status": "선택필요",
    "turns": [
     {
@@ -1528,7 +1490,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.25,
+   "sec": 0.97,
    "status": "선택필요",
    "turns": [
     {
@@ -1545,23 +1507,21 @@
    "id": "GA-006",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
+    "처리": true,
     "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [],
-   "sec": 3.42,
-   "status": "성공",
+   "sec": 1.58,
+   "status": "선택필요",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "gaps": [],
+     "choice": "꼭 필요한 동네가 질문에 없어 되묻기",
+     "action": "되묻기",
      "change": null,
      "note": null
     }
@@ -1582,7 +1542,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.92,
+   "sec": 0.9,
    "status": "선택필요",
    "turns": [
     {
@@ -1609,7 +1569,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.14,
+   "sec": 1.0,
    "status": "선택필요",
    "turns": [
     {
@@ -1639,13 +1599,11 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.55,
+   "sec": 1.11,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -1670,7 +1628,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.76,
+   "sec": 0.64,
    "status": "성공",
    "turns": [
     {
@@ -1701,7 +1659,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.08,
+   "sec": 1.49,
    "status": "선택필요",
    "turns": [
     {
@@ -1732,7 +1690,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 1.09,
+   "sec": 0.75,
    "status": "선택필요",
    "turns": [
     {
@@ -1759,7 +1717,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.33,
+   "sec": 1.28,
    "status": "선택필요",
    "turns": [
     {
@@ -1790,7 +1748,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.94,
+   "sec": 0.71,
    "status": "선택필요",
    "turns": [
     {
@@ -1815,7 +1773,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.14,
+   "sec": 0.9,
    "status": "선택필요",
    "turns": [
     {
@@ -1867,7 +1825,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.35,
+   "sec": 0.9,
    "status": "선택필요",
    "turns": [
     {
@@ -1897,12 +1855,11 @@
     "정답": false
    },
    "hard": [],
-   "sec": 2.86,
+   "sec": 1.43,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "지금 답 그대로",
@@ -1917,33 +1874,32 @@
    "id": "GA-019",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 3.35,
-   "status": "성공",
+   "sec": 1.18,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
+     "choice": "질문 종류를 '관계'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 점포 수"
+      "종류 관계"
      ],
      "note": null
     }
@@ -1964,7 +1920,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.97,
+   "sec": 0.86,
    "status": "선택필요",
    "turns": [
     {
@@ -1989,7 +1945,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.89,
+   "sec": 0.86,
    "status": "범위밖",
    "turns": [
     {
@@ -2014,7 +1970,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.9,
+   "sec": 0.87,
    "status": "범위밖",
    "turns": [
     {
@@ -2039,7 +1995,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.19,
+   "sec": 1.16,
    "status": "범위밖",
    "turns": [
     {
@@ -2064,7 +2020,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 3.74,
+   "sec": 2.29,
    "status": "성공",
    "turns": [
     {
@@ -2104,7 +2060,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.23,
+   "sec": 1.21,
    "status": "범위밖",
    "turns": [
     {
@@ -2129,7 +2085,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.88,
+   "sec": 0.87,
    "status": "범위밖",
    "turns": [
     {
@@ -2154,7 +2110,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.28,
+   "sec": 1.26,
    "status": "범위밖",
    "turns": [
     {
@@ -2185,7 +2141,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.41,
+   "sec": 1.37,
    "status": "범위밖",
    "turns": [
     {
@@ -2212,7 +2168,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.46,
+   "sec": 1.43,
    "status": "범위밖",
    "turns": [
     {
@@ -2241,7 +2197,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 3.59,
+   "sec": 1.92,
    "status": "성공",
    "turns": [
     {
@@ -2273,7 +2229,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.25,
+   "sec": 1.24,
    "status": "범위밖",
    "turns": [
     {
@@ -2298,7 +2254,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.25,
+   "sec": 1.23,
    "status": "범위밖",
    "turns": [
     {
@@ -2323,7 +2279,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.9,
+   "sec": 0.86,
    "status": "범위밖",
    "turns": [
     {
@@ -2348,7 +2304,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 1.42,
+   "sec": 1.36,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -2379,7 +2335,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.16,
+   "sec": 1.15,
    "status": "범위밖",
    "turns": [
     {
@@ -2404,7 +2360,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 2.7,
+   "sec": 2.64,
    "status": "성공",
    "turns": [
     {
@@ -2435,21 +2391,9 @@
     "정답": true
    },
    "hard": [],
-   "sec": 4.31,
+   "sec": 0.97,
    "status": "범위밖",
    "turns": [
-    {
-     "gaps": [
-      "지표 확인",
-      "제주 밖"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
-     "note": null
-    },
     {
      "gaps": [
       "제주 밖"
@@ -2460,7 +2404,7 @@
      "note": null
     }
    ],
-   "calls": 2
+   "calls": 1
   },
   {
    "id": "GA-038",
@@ -2474,7 +2418,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.24,
+   "sec": 1.22,
    "status": "범위밖",
    "turns": [
     {
@@ -2499,7 +2443,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.26,
+   "sec": 1.22,
    "status": "범위밖",
    "turns": [
     {
@@ -2526,7 +2470,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.54,
+   "sec": 0.99,
    "status": "성공",
    "turns": [
     {
@@ -2563,7 +2507,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.64,
+   "sec": 3.06,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -2611,13 +2555,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.37,
+   "sec": 1.11,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -2646,7 +2588,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.64,
+   "sec": 3.06,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -2693,13 +2635,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.72,
+   "sec": 1.13,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -2728,12 +2668,12 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.98,
+   "sec": 1.76,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인"
+      "대체 지표"
      ],
      "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
      "action": "다시 계산",
@@ -2749,28 +2689,26 @@
    "id": "GA-046",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.5,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -2799,13 +2737,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.56,
+   "sec": 1.09,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -2818,28 +2754,26 @@
    "id": "GA-048",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.26,
+   "sec": 1.19,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -2868,13 +2802,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.23,
+   "sec": 0.97,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -2897,7 +2829,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.57,
+   "sec": 1.54,
    "status": "선택필요",
    "turns": [
     {
@@ -2934,13 +2866,12 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.46,
+   "sec": 2.68,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "기간",
-      "지표 확인"
+      "기간"
      ],
      "choice": "질문의 기간(최근 3개월)으로 다시 계산",
      "action": "다시 계산",
@@ -2981,7 +2912,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.61,
+   "sec": 3.56,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3029,13 +2960,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.92,
+   "sec": 1.03,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3064,17 +2993,18 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.42,
+   "sec": 1.76,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 현황"
+     ],
      "note": null
     }
    ],
@@ -3100,13 +3030,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.53,
+   "sec": 1.3,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3135,13 +3063,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.52,
+   "sec": 1.48,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3169,7 +3095,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 4.41,
+   "sec": 2.87,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3230,17 +3156,18 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.67,
-   "status": "성공",
+   "sec": 1.14,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "질문 종류를 '추이'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 추이"
+     ],
      "note": null
     }
    ],
@@ -3252,25 +3179,32 @@
    "ambiguous": false,
    "ok": false,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
     "정답": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 3.0,
-   "status": "범위밖",
+   "sec": 0.99,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인"
+      "대체 지표"
      ],
-     "choice": "지금 자료로 답할 수 없는 질문이라 범위 밖 안내",
-     "action": "범위 밖",
-     "change": null,
-     "note": null
+     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
+     "action": "다시 계산",
+     "change": [
+      "지표 카드 매출 증가율"
+     ],
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
     }
    ],
    "calls": 1
@@ -3295,7 +3229,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.44,
+   "sec": 0.91,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3316,34 +3250,30 @@
    "id": "GA-061",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "기간": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.6,
-   "status": "no_significant_effect",
+   "sec": 1.08,
+   "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
-     "action": "다시 계산",
-     "change": [
-      "지표 일평균 방문"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -3353,32 +3283,32 @@
    "id": "GA-062",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 1.54,
+   "sec": 1.76,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "확신 낮음"
      ],
-     "choice": "질문 종류를 '추이'(으)로 보고 다시 계산",
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "종류 추이"
+      "종류 현황"
      ],
      "note": null
     }
@@ -3404,12 +3334,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.25,
+   "sec": 1.64,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "질문 종류를 '추이'(으)로 보고 다시 계산",
@@ -3426,28 +3355,26 @@
    "id": "GA-064",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.26,
+   "sec": 1.09,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3476,13 +3403,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.6,
+   "sec": 1.31,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3511,13 +3436,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.08,
+   "sec": 1.1,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3530,28 +3453,26 @@
    "id": "GA-067",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 2.2,
+   "sec": 0.99,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3570,27 +3491,26 @@
     "안내": false,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true
     },
-    "요소 비율": 1.0,
+    "요소 비율": 0.667,
     "정답": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 3.37,
+   "sec": 1.32,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '시간대별 카드 매출'(으)로 바꿔 다시 계산 — 몇 시·어느 때 매출이 많은지",
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 시간대별 카드 매출"
+      "종류 현황"
      ],
      "note": null
     }
@@ -3604,7 +3524,7 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": true,
+    "안내": false,
     "요소": {
      "동네": true,
      "지표": true,
@@ -3617,17 +3537,18 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.95,
-   "status": "no_significant_effect",
+   "sec": 2.15,
+   "status": "성공",
    "turns": [
     {
      "gaps": [
+      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "질문 종류를 '조건 효과'(으)로 보고 다시 계산",
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "종류 조건 효과"
+      "종류 현황"
      ],
      "note": null
     }
@@ -3654,7 +3575,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.89,
+   "sec": 2.82,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -3690,13 +3611,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.33,
+   "sec": 0.98,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3725,12 +3644,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.77,
+   "sec": 0.92,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "지금 답 그대로",
@@ -3760,13 +3678,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.68,
+   "sec": 2.99,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3795,13 +3711,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.38,
+   "sec": 1.2,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -3814,34 +3728,30 @@
    "id": "GA-075",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
-    "처리": true,
-    "안내": true,
-    "요소": {
-     "동네": true,
-     "지표": true,
-     "업종": true
-    },
-    "요소 비율": 1.0,
-    "정답": true
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 2.37,
-   "status": "no_significant_effect",
+   "sec": 0.89,
+   "status": "선택필요",
    "turns": [
     {
      "gaps": [
+      "대체 지표",
       "확신 낮음"
      ],
-     "choice": "질문 종류를 '조건 효과'(으)로 보고 다시 계산",
+     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
      "action": "다시 계산",
      "change": [
-      "종류 조건 효과"
+      "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
     }
    ],
    "calls": 1
@@ -3853,30 +3763,26 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true
     },
-    "요소 비율": 1.0,
+    "요소 비율": 0.667,
     "정답": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 3.27,
+   "sec": 0.82,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '시간대별 카드 매출'(으)로 바꿔 다시 계산 — 몇 시·어느 때 매출이 많은지",
-     "action": "다시 계산",
-     "change": [
-      "지표 시간대별 카드 매출"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -3901,13 +3807,12 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.24,
+   "sec": 2.04,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "조건",
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "'성수기' 조건 효과로 다시 계산(하루 방문 기준)",
@@ -3938,29 +3843,29 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true
     },
-    "요소 비율": 1.0,
+    "요소 비율": 0.667,
     "정답": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 2.7,
-   "status": "성공",
+   "sec": 1.54,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "지표 확인"
      ],
-     "choice": "지표를 '시간대별 카드 매출'(으)로 바꿔 다시 계산 — 몇 시·어느 때 매출이 많은지",
+     "choice": "지표를 '카드 매출'(으)로 바꿔 다시 계산 — 카드 매출 규모, 장사가 잘되는지",
      "action": "다시 계산",
      "change": [
-      "지표 시간대별 카드 매출"
+      "지표 카드 매출"
      ],
      "note": null
     }
@@ -3987,13 +3892,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.01,
+   "sec": 1.17,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4021,13 +3924,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.21,
+   "sec": 0.78,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4040,32 +3941,31 @@
    "id": "GA-081",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 3.17,
-   "status": "no_significant_effect",
+   "sec": 1.36,
+   "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
+     "choice": "질문 종류를 '현황'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 일평균 방문"
+      "종류 현황"
      ],
      "note": null
     }
@@ -4091,13 +3991,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.11,
+   "sec": 0.76,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4113,7 +4011,7 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": true,
+    "안내": false,
     "요소": {
      "동네": true,
      "지표": true,
@@ -4125,17 +4023,18 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.19,
+   "sec": 1.12,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "질문 종류를 '추이'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 추이"
+     ],
      "note": null
     }
    ],
@@ -4145,27 +4044,25 @@
    "id": "GA-084",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 2.14,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4194,13 +4091,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.36,
+   "sec": 0.77,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4213,10 +4108,10 @@
    "id": "GA-086",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
@@ -4224,22 +4119,23 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 2.7,
+   "sec": 1.41,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "질문 종류를 '조건 탐색'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 조건 탐색"
+     ],
      "note": null
     }
    ],
@@ -4303,7 +4199,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.82,
+   "sec": 0.99,
    "status": "실패",
    "turns": [
     {
@@ -4340,13 +4236,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.19,
+   "sec": 0.7,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4375,13 +4269,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.29,
+   "sec": 0.96,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4410,13 +4302,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.89,
+   "sec": 2.09,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4444,7 +4334,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.76,
+   "sec": 1.12,
    "status": "성공",
    "turns": [
     {
@@ -4520,15 +4410,15 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.1,
+   "sec": 1.2,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인"
+      "대체 지표"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
+     "choice": "다시 계산하지 않고, 어긋남을 안내해 지금 답",
+     "action": "안내 붙여 답하기",
      "change": null,
      "note": null
     }
@@ -4554,13 +4444,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 3.24,
+   "sec": 0.94,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4589,13 +4477,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.48,
+   "sec": 1.13,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4623,13 +4509,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.31,
+   "sec": 0.84,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4657,13 +4541,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.67,
+   "sec": 1.49,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4682,31 +4564,19 @@
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "순위": false
     },
-    "요소 비율": 0.5,
+    "요소 비율": 0.75,
     "정답": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 4.55,
+   "sec": 1.9,
    "status": "성공",
    "turns": [
-    {
-     "gaps": [
-      "순위",
-      "지표 확인"
-     ],
-     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
-     "action": "다시 계산",
-     "change": [
-      "지표 카드 매출 증가율"
-     ],
-     "note": null
-    },
     {
      "gaps": [
       "순위"
@@ -4717,39 +4587,35 @@
      "note": null
     }
    ],
-   "calls": 2
+   "calls": 1
   },
   {
    "id": "GA-101",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "순위": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 2.13,
-   "status": "성공",
+   "sec": 0.98,
+   "status": "실패",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '폐업 수'(으)로 바꿔 다시 계산 — 문을 닫는 가게 수",
-     "action": "다시 계산",
-     "change": [
-      "지표 폐업 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -4775,13 +4641,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.74,
+   "sec": 0.8,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4794,35 +4658,32 @@
    "id": "GA-103",
    "gen": "gemini",
    "ambiguous": true,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "순위": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 2.86,
+   "sec": 0.9,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -4849,13 +4710,11 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 2.81,
+   "sec": 0.78,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4884,13 +4743,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.42,
+   "sec": 0.75,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4918,7 +4775,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.49,
+   "sec": 1.21,
    "status": "실패",
    "turns": [
     {
@@ -4955,13 +4812,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.15,
+   "sec": 0.7,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -4989,7 +4844,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.46,
+   "sec": 0.88,
    "status": "성공",
    "turns": [
     {
@@ -5029,12 +4884,12 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.86,
+   "sec": 1.04,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인"
+      "대체 지표"
      ],
      "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
      "action": "다시 계산",
@@ -5050,10 +4905,10 @@
    "id": "GA-110",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
@@ -5061,18 +4916,16 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 2.45,
+   "sec": 0.73,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -5101,7 +4954,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.01,
+   "sec": 1.61,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5137,7 +4990,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.06,
+   "sec": 1.61,
    "status": "성공",
    "turns": [
     {
@@ -5174,7 +5027,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.27,
+   "sec": 0.93,
    "status": "성공",
    "turns": [
     {
@@ -5210,7 +5063,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.69,
+   "sec": 1.15,
    "status": "성공",
    "turns": [
     {
@@ -5247,7 +5100,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 3.2,
+   "sec": 2.24,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5283,7 +5136,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.46,
+   "sec": 1.16,
    "status": "성공",
    "turns": [
     {
@@ -5319,7 +5172,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.7,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
@@ -5357,7 +5210,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.94,
+   "sec": 1.64,
    "status": "성공",
    "turns": [
     {
@@ -5394,7 +5247,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.48,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
@@ -5425,7 +5278,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.32,
+   "sec": 1.31,
    "status": "범위밖",
    "turns": [
     {
@@ -5449,31 +5302,27 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": true,
+    "안내": false,
     "요소": {
      "동네": false,
-     "지표": true,
+     "지표": false,
      "업종": true
     },
-    "요소 비율": 0.667,
+    "요소 비율": 0.333,
     "정답": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.69,
+   "sec": 1.72,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '외국인 관광객 카드 매출'(으)로 바꿔 다시 계산 — 외국인 손님 결제",
-     "action": "다시 계산",
-     "change": [
-      "지표 외국인 관광객 카드 매출"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -5499,7 +5348,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.66,
+   "sec": 1.32,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5526,29 +5375,25 @@
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": false,
      "기간": false
     },
-    "요소 비율": 0.5,
+    "요소 비율": 0.25,
     "정답": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.62,
+   "sec": 0.84,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '시간대별 카드 매출'(으)로 바꿔 다시 계산 — 몇 시·어느 때 매출이 많은지",
-     "action": "다시 계산",
-     "change": [
-      "지표 시간대별 카드 매출"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -5558,34 +5403,33 @@
    "id": "GA-125",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.56,
+   "sec": 1.24,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
+     "choice": "질문 종류를 '구성'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 점포 수"
+      "종류 구성"
      ],
      "note": null
     }
@@ -5611,7 +5455,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.14,
+   "sec": 0.83,
    "status": "성공",
    "turns": [
     {
@@ -5630,32 +5474,32 @@
    "id": "GA-127",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.667,
+    "정답": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.57,
-   "status": "성공",
+   "sec": 1.38,
+   "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '폐업 수'(으)로 바꿔 다시 계산 — 문을 닫는 가게 수",
+     "choice": "지표를 '카드 이용 건수'(으)로 바꿔 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 폐업 수"
+      "지표 카드 이용 건수"
      ],
      "note": null
     }
@@ -5681,7 +5525,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.23,
+   "sec": 1.59,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5718,7 +5562,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 1.7,
+   "sec": 1.12,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5755,7 +5599,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 2.95,
+   "sec": 1.44,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -5791,13 +5635,11 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.15,
+   "sec": 0.84,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -5825,13 +5667,11 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.28,
+   "sec": 0.88,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -5854,7 +5694,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.03,
+   "sec": 0.82,
    "status": "선택필요",
    "turns": [
     {
@@ -5886,13 +5726,11 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.63,
+   "sec": 1.09,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -5920,18 +5758,14 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.7,
+   "sec": 1.06,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '관광객 매출 비중'(으)로 바꿔 다시 계산 — 관광객·외지인 손님 비중",
-     "action": "다시 계산",
-     "change": [
-      "지표 관광객 매출 비중"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -5956,13 +5790,11 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.23,
+   "sec": 0.7,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -5975,21 +5807,21 @@
    "id": "GA-137",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.86,
+   "sec": 1.27,
    "status": "성공",
    "turns": [
     {
@@ -6017,27 +5849,26 @@
     "안내": false,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": false
     },
-    "요소 비율": 0.333,
+    "요소 비율": 0.667,
     "정답": false
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.96,
+   "sec": 1.0,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
+     "choice": "질문 종류를 '구성'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 점포 수"
+      "종류 구성"
      ],
      "note": null
     }
@@ -6063,13 +5894,11 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.2,
+   "sec": 1.08,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6082,28 +5911,26 @@
    "id": "GA-140",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.17,
+   "sec": 1.04,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6126,7 +5953,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.1,
+   "sec": 0.59,
    "status": "선택필요",
    "turns": [
     {
@@ -6160,13 +5987,11 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.87,
+   "sec": 1.31,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6189,7 +6014,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 1.09,
+   "sec": 0.8,
    "status": "선택필요",
    "turns": [
     {
@@ -6206,32 +6031,28 @@
    "id": "GA-144",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.75,
+   "sec": 0.96,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
-     "action": "다시 계산",
-     "change": [
-      "지표 일평균 방문"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -6247,28 +6068,24 @@
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "기간": false
     },
-    "요소 비율": 0.5,
+    "요소 비율": 0.75,
     "정답": false
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.07,
-   "status": "성공",
+   "sec": 1.18,
+   "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -6293,17 +6110,18 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 3.23,
+   "sec": 1.29,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "질문 종류를 '추이'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 추이"
+     ],
      "note": null
     }
    ],
@@ -6328,12 +6146,11 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 2.81,
+   "sec": 1.83,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "질문 종류를 '추이'(으)로 보고 다시 계산",
@@ -6364,7 +6181,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 1.96,
+   "sec": 1.38,
    "status": "성공",
    "turns": [
     {
@@ -6395,7 +6212,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 1.47,
+   "sec": 0.95,
    "status": "선택필요",
    "turns": [
     {
@@ -6431,12 +6248,11 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 3.02,
+   "sec": 1.8,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "질문 종류를 '관계'(으)로 보고 다시 계산",
@@ -6453,34 +6269,30 @@
    "id": "HK-001",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "기간": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 3.07,
-   "status": "성공",
+   "sec": 1.19,
+   "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -6531,7 +6343,7 @@
     "기간",
     "지표 없음"
    ],
-   "sec": 4.74,
+   "sec": 2.72,
    "status": "성공",
    "turns": [
     {
@@ -6578,13 +6390,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.34,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6613,7 +6423,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 2.81,
+   "sec": 1.9,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -6649,13 +6459,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.24,
+   "sec": 1.14,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6684,13 +6492,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.38,
+   "sec": 1.1,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6720,19 +6526,15 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 2.29,
+   "sec": 2.27,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
-     "action": "다시 계산",
-     "change": [
-      "지표 카드 매출 증가율"
-     ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
+     "note": null
     }
    ],
    "calls": 1
@@ -6757,13 +6559,11 @@
     "생활 지명",
     "대체 지표"
    ],
-   "sec": 2.52,
+   "sec": 1.58,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6788,13 +6588,11 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.07,
+   "sec": 1.02,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6819,19 +6617,15 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.44,
+   "sec": 1.08,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
-     "action": "다시 계산",
-     "change": [
-      "지표 카드 매출 증가율"
-     ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
+     "note": null
     }
    ],
    "calls": 1
@@ -6855,13 +6649,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.48,
+   "sec": 1.12,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6889,12 +6681,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.16,
+   "sec": 1.27,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "질문 종류를 '예상'(으)로 보고 다시 계산",
@@ -6927,13 +6718,11 @@
     "순위",
     "대체 지표"
    ],
-   "sec": 2.91,
+   "sec": 1.29,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -6961,7 +6750,7 @@
     "생활 지명",
     "대체 지표"
    ],
-   "sec": 3.35,
+   "sec": 1.26,
    "status": "성공",
    "turns": [
     {
@@ -6998,19 +6787,15 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.94,
+   "sec": 1.16,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
-     "action": "다시 계산",
-     "change": [
-      "지표 카드 매출 증가율"
-     ],
-     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
+     "note": null
     }
    ],
    "calls": 1
@@ -7019,35 +6804,33 @@
    "id": "HK-017",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true,
      "순위": true
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.75,
+    "정답": false
    },
    "hard": [
     "순위",
     "지표 없음"
    ],
-   "sec": 2.47,
+   "sec": 1.23,
    "status": "성공",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -7073,13 +6856,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.21,
+   "sec": 0.74,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7107,13 +6888,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.39,
+   "sec": 1.04,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7139,13 +6918,11 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.92,
+   "sec": 1.04,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7156,39 +6933,6 @@
   },
   {
    "id": "HK-021",
-   "gen": "haiku",
-   "ambiguous": false,
-   "ok": false,
-   "cells": {
-    "처리": true,
-    "안내": null,
-    "요소": {
-     "동네": true,
-     "지표": false
-    },
-    "요소 비율": 0.5,
-    "정답": false
-   },
-   "hard": [
-    "지표 없음"
-   ],
-   "sec": 2.3,
-   "status": "성공",
-   "turns": [
-    {
-     "gaps": [
-      "지표 없음"
-     ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
-     "note": null
-    }
-   ],
-   "calls": 1
-  },
-  {
-   "id": "HK-022",
    "gen": "haiku",
    "ambiguous": false,
    "ok": true,
@@ -7203,20 +6947,51 @@
     "정답": true
    },
    "hard": [
-    "생활 지명"
+    "지표 없음"
    ],
-   "sec": 2.25,
+   "sec": 1.46,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인"
+      "지표 없음"
      ],
-     "choice": "지표를 '시간대별 카드 매출'(으)로 바꿔 다시 계산 — 몇 시·어느 때 매출이 많은지",
+     "choice": "지표를 '거주 인구 연령 구성'(으)로 바꿔 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 시간대별 카드 매출"
+      "지표 거주 인구 연령 구성"
      ],
+     "note": null
+    }
+   ],
+   "calls": 1
+  },
+  {
+   "id": "HK-022",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.8,
+   "status": "성공",
+   "turns": [
+    {
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -7240,13 +7015,11 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.47,
+   "sec": 1.15,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7277,13 +7050,11 @@
     "기간",
     "순위"
    ],
-   "sec": 2.45,
+   "sec": 1.08,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7311,13 +7082,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.24,
+   "sec": 1.03,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7370,18 +7139,14 @@
     "두 요소",
     "지표 없음"
    ],
-   "sec": 2.99,
-   "status": "성공",
+   "sec": 1.47,
+   "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -7405,7 +7170,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.56,
+   "sec": 1.17,
    "status": "성공",
    "turns": [
     {
@@ -7441,13 +7206,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.84,
+   "sec": 0.73,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7460,28 +7223,26 @@
    "id": "HK-030",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 2.24,
+   "sec": 1.06,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7502,7 +7263,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.23,
+   "sec": 0.96,
    "status": "선택필요",
    "turns": [
     {
@@ -7527,7 +7288,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.92,
+   "sec": 0.87,
    "status": "선택필요",
    "turns": [
     {
@@ -7556,12 +7317,11 @@
     "정답": true
    },
    "hard": [],
-   "sec": 2.41,
+   "sec": 1.44,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "지금 답 그대로",
@@ -7584,7 +7344,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.9,
+   "sec": 0.97,
    "status": "선택필요",
    "turns": [
     {
@@ -7663,7 +7423,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.25,
+   "sec": 1.28,
    "status": "범위밖",
    "turns": [
     {
@@ -7692,7 +7452,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.22,
+   "sec": 1.24,
    "status": "범위밖",
    "turns": [
     {
@@ -7709,26 +7469,24 @@
    "id": "HK-040",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
+    "처리": true,
     "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [],
-   "sec": 2.39,
-   "status": "성공",
+   "sec": 0.82,
+   "status": "범위밖",
    "turns": [
     {
      "gaps": [
-      "지표 확인"
+      "미래 금액"
      ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "choice": "지금 자료로 답할 수 없는 질문이라 범위 밖 안내",
+     "action": "범위 밖",
+     "change": null,
      "note": null
     }
    ],
@@ -7754,13 +7512,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.21,
+   "sec": 1.11,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7789,13 +7545,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.47,
+   "sec": 1.11,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7823,13 +7577,11 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.24,
+   "sec": 0.98,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -7842,36 +7594,33 @@
    "id": "OP-004",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "기간": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "기간",
     "생활 지명"
    ],
-   "sec": 3.33,
-   "status": "no_significant_effect",
+   "sec": 1.28,
+   "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지표를 '카드 매출'(으)로 바꿔 다시 계산 — 카드 매출 규모, 장사가 잘되는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 카드 매출"
-     ],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -7896,7 +7645,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 3.07,
+   "sec": 3.04,
    "status": "성공",
    "turns": [
     {
@@ -7928,34 +7677,30 @@
    "id": "OP-006",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "기간": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.57,
+   "sec": 1.12,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -7981,13 +7726,11 @@
     "기간",
     "두 요소"
    ],
-   "sec": 2.24,
+   "sec": 1.15,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8015,13 +7758,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.39,
+   "sec": 1.3,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8050,7 +7791,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 2.54,
+   "sec": 1.78,
    "status": "성공",
    "turns": [
     {
@@ -8071,29 +7812,27 @@
    "id": "OP-010",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
-     "동네": false,
+     "동네": true,
      "지표": true,
      "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "조건",
     "생활 지명"
    ],
-   "sec": 2.94,
+   "sec": 1.07,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8106,34 +7845,30 @@
    "id": "OP-011",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "조건": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 3.28,
+   "sec": 0.88,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -8158,13 +7893,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.23,
+   "sec": 1.08,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8192,13 +7925,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.33,
+   "sec": 0.8,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8227,13 +7958,11 @@
     "순위",
     "두 요소"
    ],
-   "sec": 2.83,
+   "sec": 0.86,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8262,13 +7991,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.47,
+   "sec": 0.88,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8296,7 +8023,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.28,
+   "sec": 1.01,
    "status": "실패",
    "turns": [
     {
@@ -8332,35 +8059,22 @@
    "hard": [
     "순위"
    ],
-   "sec": 4.48,
+   "sec": 1.4,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "질문 종류를 '이례 변화'(으)로 보고 다시 계산",
+     "choice": "질문 종류를 '조건 탐색'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "종류 이례 변화"
-     ],
-     "note": null
-    },
-    {
-     "gaps": [
-      "순위"
-     ],
-     "choice": "동네 순위(작은 순서)로 다시 계산",
-     "action": "다시 계산",
-     "change": [
-      "종류 순위",
-      "작은 순서"
+      "종류 조건 탐색"
      ],
      "note": null
     }
    ],
-   "calls": 2
+   "calls": 1
   },
   {
    "id": "OP-018",
@@ -8382,13 +8096,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.59,
+   "sec": 1.49,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8416,17 +8128,18 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.61,
+   "sec": 1.3,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "질문 종류를 '조건 탐색'(으)로 보고 다시 계산",
+     "action": "다시 계산",
+     "change": [
+      "종류 조건 탐색"
+     ],
      "note": null
     }
    ],
@@ -8451,13 +8164,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.57,
+   "sec": 1.02,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -8486,7 +8197,7 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 3.18,
+   "sec": 1.62,
    "status": "성공",
    "turns": [
     {
@@ -8523,7 +8234,7 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 3.09,
+   "sec": 1.61,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -8558,7 +8269,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.14,
+   "sec": 1.7,
    "status": "성공",
    "turns": [
     {
@@ -8594,7 +8305,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.0,
+   "sec": 1.54,
    "status": "성공",
    "turns": [
     {
@@ -8629,7 +8340,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.29,
+   "sec": 0.7,
    "status": "성공",
    "turns": [
     {
@@ -8650,33 +8361,29 @@
    "id": "OP-027",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 2.98,
+   "sec": 0.95,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -8686,26 +8393,25 @@
    "id": "OP-028",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 2.45,
+   "sec": 1.05,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "확신 낮음"
      ],
      "choice": "질문 종류를 '구성'(으)로 보고 다시 계산",
@@ -8725,7 +8431,7 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": false
@@ -8737,12 +8443,11 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 3.75,
+   "sec": 1.09,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "대체 지표"
      ],
      "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
@@ -8759,34 +8464,34 @@
    "id": "OP-030",
    "gen": "opus",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true,
+     "지표": false,
      "업종": true
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.667,
+    "정답": false
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 2.55,
-   "status": "no_significant_effect",
+   "sec": 1.22,
+   "status": "성공",
    "turns": [
     {
      "gaps": [
       "지표 없음"
      ],
-     "choice": "지표를 '카드 매출'(으)로 바꿔 다시 계산 — 카드 매출 규모, 장사가 잘되는지",
+     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
      "action": "다시 계산",
      "change": [
-      "지표 카드 매출"
+      "지표 카드 매출 증가율"
      ],
-     "note": null
+     "note": "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
     }
    ],
    "calls": 1
@@ -8803,7 +8508,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.39,
+   "sec": 0.86,
    "status": "선택필요",
    "turns": [
     {
@@ -8832,7 +8537,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.94,
+   "sec": 0.88,
    "status": "선택필요",
    "turns": [
     {
@@ -8886,7 +8591,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.42,
+   "sec": 0.89,
    "status": "선택필요",
    "turns": [
     {
@@ -8915,7 +8620,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.9,
+   "sec": 0.71,
    "status": "선택필요",
    "turns": [
     {
@@ -8994,7 +8699,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.14,
+   "sec": 1.13,
    "status": "범위밖",
    "turns": [
     {
@@ -9019,11 +8724,12 @@
     "정답": false
    },
    "hard": [],
-   "sec": 1.75,
+   "sec": 1.01,
    "status": "선택필요",
    "turns": [
     {
      "gaps": [
+      "미래 금액",
       "확신 낮음"
      ],
      "choice": "지금 해석대로 답 보기(되묻지 않음)",
@@ -9075,7 +8781,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.48,
+   "sec": 0.89,
    "status": "범위밖",
    "turns": [
     {
@@ -9113,16 +8819,18 @@
    "hard": [
     "기간"
    ],
-   "sec": 2.15,
+   "sec": 0.97,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
       "지표 확인"
      ],
-     "choice": "지금 답 그대로",
-     "action": "답하기",
-     "change": null,
+     "choice": "지표를 '카드 매출'(으)로 바꿔 다시 계산 — 카드 매출 규모, 장사가 잘되는지",
+     "action": "다시 계산",
+     "change": [
+      "지표 카드 매출"
+     ],
      "note": null
     }
    ],
@@ -9132,25 +8840,29 @@
    "id": "SN-003",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.74,
-   "status": "범위밖",
+   "sec": 0.78,
+   "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지금 자료로 답할 수 없는 질문이라 범위 밖 안내",
-     "action": "범위 밖",
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
      "change": null,
      "note": null
     }
@@ -9177,7 +8889,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 1.74,
+   "sec": 1.72,
    "status": "성공",
    "turns": [
     {
@@ -9198,32 +8910,28 @@
    "id": "SN-005",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 2.78,
-   "status": "성공",
+   "sec": 0.7,
+   "status": "실패",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -9251,13 +8959,12 @@
     "조건",
     "두 요소"
    ],
-   "sec": 4.99,
+   "sec": 2.99,
    "status": "no_significant_effect",
    "turns": [
     {
      "gaps": [
-      "조건",
-      "지표 확인"
+      "조건"
      ],
      "choice": "'비' 조건 효과로 다시 계산(하루 방문 기준)",
      "action": "다시 계산",
@@ -9354,7 +9061,7 @@
     "조건",
     "생활 지명"
    ],
-   "sec": 2.51,
+   "sec": 1.13,
    "status": "성공",
    "turns": [
     {
@@ -9390,13 +9097,11 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.33,
+   "sec": 0.81,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -9423,7 +9128,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 3.0,
+   "sec": 1.57,
    "status": "성공",
    "turns": [
     {
@@ -9459,18 +9164,14 @@
    "hard": [
     "조건"
    ],
-   "sec": 2.76,
+   "sec": 0.81,
    "status": "no_significant_effect",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '점포 수'(으)로 바꿔 다시 계산 — 가게가 몇 곳 있는지·몰려 있는지",
-     "action": "다시 계산",
-     "change": [
-      "지표 점포 수"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -9490,7 +9191,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 1.01,
+   "sec": 0.71,
    "status": "선택필요",
    "turns": [
     {
@@ -9522,7 +9223,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 1.55,
+   "sec": 1.21,
    "status": "성공",
    "turns": [
     {
@@ -9558,13 +9259,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.42,
+   "sec": 1.18,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -9583,27 +9282,23 @@
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "순위": false
     },
-    "요소 비율": 0.333,
+    "요소 비율": 0.667,
     "정답": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 2.61,
+   "sec": 1.12,
    "status": "실패",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '20~30대 비중'(으)로 바꿔 다시 계산 — 20~30대 젊은 사람 비중",
-     "action": "다시 계산",
-     "change": [
-      "지표 20~30대 비중"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -9628,13 +9323,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.36,
+   "sec": 1.32,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -9662,13 +9355,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.38,
+   "sec": 0.85,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -9696,13 +9387,11 @@
    "hard": [
     "순위"
    ],
-   "sec": 2.62,
+   "sec": 0.89,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
+     "gaps": [],
      "choice": "지금 답 그대로",
      "action": "답하기",
      "change": null,
@@ -9742,21 +9431,21 @@
    "id": "SN-020",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": true
+     "지표": false
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.5,
+    "정답": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.74,
+   "sec": 2.11,
    "status": "성공",
    "turns": [
     {
@@ -9764,11 +9453,9 @@
       "지표 없음",
       "확신 낮음"
      ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
-     "action": "다시 계산",
-     "change": [
-      "지표 일평균 방문"
-     ],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -9792,7 +9479,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.11,
+   "sec": 1.04,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -9823,7 +9510,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 3.23,
+   "sec": 1.79,
    "status": "성공",
    "turns": [
     {
@@ -9859,7 +9546,7 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 2.76,
+   "sec": 1.32,
    "status": "성공",
    "turns": [
     {
@@ -9894,7 +9581,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 2.75,
+   "sec": 1.31,
    "status": "성공",
    "turns": [
     {
@@ -9930,12 +9617,11 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 3.19,
+   "sec": 1.54,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "대체 지표"
      ],
      "choice": "다시 계산하지 않고, 어긋남을 안내해 지금 답",
@@ -9950,16 +9636,16 @@
    "id": "SN-026",
    "gen": "sonnet",
    "ambiguous": true,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true
    },
    "hard": [
     "대체 지표"
@@ -9988,7 +9674,7 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": false,
@@ -10000,18 +9686,14 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 2.9,
+   "sec": 1.5,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
-     "action": "다시 계산",
-     "change": [
-      "지표 일평균 방문"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -10032,7 +9714,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 1.49,
+   "sec": 0.69,
    "status": "선택필요",
    "turns": [
     {
@@ -10067,7 +9749,7 @@
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 1.74,
+   "sec": 1.22,
    "status": "no_significant_effect",
    "turns": [
     {
@@ -10088,32 +9770,28 @@
    "id": "SN-030",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 2.61,
+   "sec": 1.06,
    "status": "성공",
    "turns": [
     {
-     "gaps": [
-      "지표 확인"
-     ],
-     "choice": "지표를 '일평균 방문'(으)로 바꿔 다시 계산 — 사람이 얼마나 오가는지(유동인구)",
-     "action": "다시 계산",
-     "change": [
-      "지표 일평균 방문"
-     ],
+     "gaps": [],
+     "choice": "지금 답 그대로",
+     "action": "답하기",
+     "change": null,
      "note": null
     }
    ],
@@ -10131,7 +9809,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.01,
+   "sec": 0.95,
    "status": "선택필요",
    "turns": [
     {
@@ -10185,7 +9863,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.26,
+   "sec": 0.76,
    "status": "선택필요",
    "turns": [
     {
@@ -10212,7 +9890,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.12,
+   "sec": 0.71,
    "status": "선택필요",
    "turns": [
     {
@@ -10237,19 +9915,18 @@
     "정답": false
    },
    "hard": [],
-   "sec": 3.02,
+   "sec": 2.09,
    "status": "성공",
    "turns": [
     {
      "gaps": [
-      "지표 확인",
       "동네 없음",
       "확신 낮음"
      ],
-     "choice": "지표를 '카드 매출 증가율'(으)로 바꿔 다시 계산 — 매출이 늘고 있는지(성장)",
+     "choice": "질문 종류를 '관계'(으)로 보고 다시 계산",
      "action": "다시 계산",
      "change": [
-      "지표 카드 매출 증가율"
+      "종류 관계"
      ],
      "note": null
     }
@@ -10268,7 +9945,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.32,
+   "sec": 1.25,
    "status": "범위밖",
    "turns": [
     {
@@ -10322,7 +9999,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 1.35,
+   "sec": 1.34,
    "status": "선택필요",
    "turns": [
     {
@@ -10347,7 +10024,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 1.21,
+   "sec": 0.89,
    "status": "범위밖",
    "turns": [
     {
