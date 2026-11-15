@@ -83,3 +83,13 @@ class Honesty20261115(unittest.TestCase):
         self.assertTrue(A.evidenced("공항 근처 숙박업소 매출 궁금해요", "매출"))
         self.assertTrue(A.evidenced("고령비중 제일 높은 동네", "고령비중"))
         self.assertFalse(A.evidenced("연동은 요즘 발길 많수과?", "점포수"))
+
+
+class Verify061(unittest.TestCase):
+    """결과 검증 넓히기(061): 다시 계산이 질문의 기간·조건·지표 근거를 잃으면 앞 답을 유지한다."""
+    def test_lost(self):
+        q = "2024년 노형동 매출 알려줘"
+        self.assertEqual(A._lost(q, {"ask_year": 2024, "metric": ["매출"]}, {"ask_year": None, "metric": ["매출"]}), "기간")
+        self.assertEqual(A._lost(q, {"ask_year": 2024, "metric": ["매출"]}, {"ask_year": 2024, "metric": ["점포수"]}), "지표")
+        self.assertEqual(A._lost(q, {"ask_year": 2024, "metric": ["매출"]}, {"ask_year": 2024, "metric": ["매출"]}), "")
+        self.assertEqual(A._lost("비 오는 날 연동 방문", {"cond": ["비"], "metric": ["일평균방문"]}, {"cond": [], "metric": ["일평균방문"]}), "조건")

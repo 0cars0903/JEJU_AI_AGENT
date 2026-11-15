@@ -657,7 +657,7 @@ NO_BIZ_METRIC = {"일평균방문": "하루 방문", "거주연령구성": "거�
                  "청년비중": "청년 비중", "버스일평균": "버스 이용", "폐업률": "3년 폐업률"}
 CARD_METRIC = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "매출성장"}
 CROWD_Q = re.compile(r"사람|붐비|붐벼|북적|유동|몰려|몰리|하영")
-COND_SALES_Q = re.compile(r"매출|장사|팔|벌")
+COND_SALES_Q = re.compile(r"매출|장사|팔|벌|이용\s*건수|결제|건당")
 
 
 def honest_notes(q, t, center_used=False):
@@ -682,7 +682,7 @@ def honest_notes(q, t, center_used=False):
         out.append(POP_NOTE)
     if (HOUR_Q.search(q) or re.search(r"시간대|몇\s*시", q)) and CROWD_Q.search(q) and not center_used:
         out.append(HOUR_NOTE)
-    if t.get("type") == "T6" and COND_SALES_Q.search(q) and "일평균방문" in m:
+    if t.get("type") == "T6" and (COND_SALES_Q.search(q) or any(x in CARD_METRIC for x in m)):  # 조건 효과는 하루 방문으로만 계산한다(명세 3절)
         out.append("하루 단위 매출 자료가 없어요. 조건에 따른 방문 변화로 대신 봤어요.")
     return out
 def _asked_period(q):

@@ -3,7 +3,12 @@
   "file": "general_answer_v2.jsonl",
   "split": "judge",
   "mode": "workflow",
+  "policy": null,
   "rule_fix": true,
+  "행동 분포": {},
+  "차례 수 분포": {
+   "0": 309
+  },
   "n": 309,
   "애매 제외 n": 277,
   "④ 완전 정답": 155,
@@ -36,7 +41,7 @@
    "기간": 5,
    "순위": 6
   },
-  "지연 중앙값": 0.08,
+  "지연 중앙값": 0.07,
   "지연 90%": 0.2,
   "모델 판단 평균 횟수": 0
  },
@@ -62,7 +67,7 @@
     "조건",
     "순위"
    ],
-   "sec": 0.19,
+   "sec": 0.18,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -83,7 +88,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -107,7 +112,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.72,
+   "sec": 0.68,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -152,7 +157,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 0.46,
+   "sec": 0.43,
    "status": "Agent",
    "turns": [],
    "calls": 0
@@ -195,7 +200,7 @@
     "기간",
     "순위"
    ],
-   "sec": 0.12,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -219,7 +224,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.12,
+   "sec": 1.06,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -262,7 +267,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -279,7 +284,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -302,7 +307,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.25,
+   "sec": 0.24,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -384,7 +389,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.06,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -450,7 +455,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.14,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -495,7 +500,7 @@
     "기간",
     "지표 없음"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -519,7 +524,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -540,7 +545,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 0.39,
+   "sec": 0.38,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -574,7 +579,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -598,7 +603,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.11,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -623,7 +628,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -643,7 +648,7 @@
     "순위",
     "지표 없음"
    ],
-   "sec": 0.05,
+   "sec": 0.06,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -662,7 +667,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -816,7 +821,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.07,
+   "sec": 0.08,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -841,7 +846,7 @@
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 0.43,
+   "sec": 0.4,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -865,7 +870,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.07,
+   "sec": 0.08,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -890,7 +895,7 @@
     "기간",
     "생활 지명"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -914,7 +919,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.4,
+   "sec": 0.39,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -931,7 +936,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -950,7 +955,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -970,7 +975,7 @@
     "조건",
     "지표 없음"
    ],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -1006,7 +1011,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -1042,7 +1047,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -1282,7 +1287,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -1350,7 +1355,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -1458,7 +1463,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.05,
+   "sec": 0.06,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -1477,7 +1482,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -1515,7 +1520,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -1585,7 +1590,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.11,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -1624,7 +1629,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -1662,7 +1667,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.14,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -1755,7 +1760,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.08,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -1780,7 +1785,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -1804,7 +1809,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.13,
+   "sec": 0.14,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -1854,7 +1859,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -1967,7 +1972,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.31,
+   "sec": 0.3,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2042,7 +2047,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.2,
+   "sec": 0.19,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2154,7 +2159,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.13,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2178,7 +2183,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.12,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2203,7 +2208,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.17,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2318,7 +2323,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.17,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2362,7 +2367,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -2503,7 +2508,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.16,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2619,7 +2624,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -2712,7 +2717,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.13,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2786,7 +2791,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "실패",
    "turns": [],
    "calls": 0
@@ -2830,7 +2835,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -2879,7 +2884,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.14,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -2930,7 +2935,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.14,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -3126,7 +3131,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.08,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -3201,7 +3206,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "실패",
    "turns": [],
    "calls": 0
@@ -3250,7 +3255,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.15,
+   "sec": 0.14,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -3505,7 +3510,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.11,
+   "sec": 0.1,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -3720,7 +3725,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.4,
+   "sec": 0.39,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -3740,7 +3745,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.1,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -3765,7 +3770,7 @@
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.16,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -3831,7 +3836,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -3917,7 +3922,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.17,
+   "sec": 0.16,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -3936,7 +3941,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -4002,7 +4007,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.27,
+   "sec": 0.26,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4065,7 +4070,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -4132,7 +4137,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 0.19,
+   "sec": 0.18,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4179,7 +4184,7 @@
    "hard": [
     "두 요소"
    ],
-   "sec": 0.06,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4321,7 +4326,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.1,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4340,7 +4345,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -4359,7 +4364,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -4428,7 +4433,7 @@
     "생활 지명",
     "지표 없음"
    ],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -4453,7 +4458,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.14,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -4476,7 +4481,7 @@
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.07,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4547,7 +4552,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.26,
+   "sec": 0.25,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4682,7 +4687,7 @@
     "조건",
     "대체 지표"
    ],
-   "sec": 0.1,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4725,7 +4730,7 @@
     "두 요소",
     "기간"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -4847,7 +4852,7 @@
     "두 요소",
     "생활 지명"
    ],
-   "sec": 0.08,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -4869,7 +4874,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.26,
+   "sec": 0.27,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5029,7 +5034,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -5110,7 +5115,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.08,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5159,7 +5164,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.17,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5283,7 +5288,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.12,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5404,7 +5409,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.12,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5428,7 +5433,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "실패",
    "turns": [],
    "calls": 0
@@ -5502,7 +5507,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.11,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5526,7 +5531,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.08,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5617,7 +5622,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -5698,7 +5703,7 @@
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -5836,7 +5841,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -5942,7 +5947,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 0.39,
+   "sec": 0.38,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -5961,7 +5966,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.08,
+   "sec": 0.06,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -6010,7 +6015,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.1,
+   "sec": 0.09,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -6035,7 +6040,7 @@
    "hard": [
     "기간"
    ],
-   "sec": 0.27,
+   "sec": 0.26,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -6081,7 +6086,7 @@
     "조건",
     "두 요소"
    ],
-   "sec": 0.11,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -6126,7 +6131,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.11,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -6150,7 +6155,7 @@
    "hard": [
     "조건"
    ],
-   "sec": 0.11,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -6244,7 +6249,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -6263,7 +6268,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.09,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -6287,7 +6292,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.09,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -6360,7 +6365,7 @@
    "hard": [
     "순위"
    ],
-   "sec": 0.21,
+   "sec": 0.2,
    "status": "성공",
    "turns": [],
    "calls": 0
@@ -6383,7 +6388,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.37,
+   "sec": 0.38,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -6452,7 +6457,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.38,
+   "sec": 0.39,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -6475,7 +6480,7 @@
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.4,
+   "sec": 0.38,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0
@@ -6732,7 +6737,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.04,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0
@@ -6749,7 +6754,7 @@
     "정답": false
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0
@@ -6800,7 +6805,7 @@
     "정답": true
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0

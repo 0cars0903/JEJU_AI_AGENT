@@ -53,7 +53,7 @@ def _backend():
     import expert
     b = expert.backend()
     # 로컬 모델의 계획 선택은 세 번 측정 모두 해로웠다(평가용 300: 246→242, 고침 2·망침 6, 2026-11-14). 로컬은 쓰지 않는다.
-    # 일반 질문의 로컬 판단은 질문 담당 Agent(app/question_agent.py)가 맡는다(계산 결과를 본 뒤 고르므로 판정 83→97, 2026-11-15)
+    # 일반 질문의 로컬 판단은 질문 담당 Agent(app/question_agent.py)가 맡는다(계산 결과를 본 뒤 고른다. 측정 tools/eval/general_answer.py, 2026-11-15)
     if b == "ollama":
         return None
     return b

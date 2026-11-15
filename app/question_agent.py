@@ -8,7 +8,7 @@
 - 소형 모델(qwen2.5:7b)이 다단계 자율 계획에 약한 원인(열린 행동 공간, 결과를 안 보고 계획, 근거 없음)을 막으려고, 한 번에 닫힌 선택 하나만 하게 하고
   결과 요약과 어긋남 목록을 근거로 준다(분석 담당 Agent와 같은 방식, 요청 이해 111/120).
 기본으로 켠다(Ollama가 있을 때). 끄기: JEJU_QUESTION_AGENT=0. 모든 일반 질문에서 첫 판단을 한 번 하고(어긋남이 없으면 '지금 답'), 지표가 질문 뜻과 맞는지도 확인한다.
-측정: tools/eval/general_answer.py(판정 150: 계획 표 83 → Agent 97)
+측정: tools/eval/general_answer.py(정답 기준 data/eval/answer_rubric.md, 판정 277: 계획 표 155 → Agent 197, 2026-11-15)
 """
 import json
 import os
@@ -88,6 +88,22 @@ def _conds(q):
     if re.search(result.RAIN_WORD, q) and "비" not in found:
         found = ["비"] + list(found)
     return [c for c in found if c in Q.CONDS]
+
+
+def _lost(q, t1, t2):
+    """다시 계산한 해석 t2가 앞 해석 t1이 지킨 질문 조건을 잃었는지. 잃은 것 이름(없으면 '')."""
+    p = _period_words(q)
+    if p.get("year") and t1.get("ask_year") == p["year"] and t2.get("ask_year") != p["year"]:
+        return "기간"
+    if p.get("month") and t1.get("ask_month") == p["month"] and t2.get("ask_month") != p["month"]:
+        return "기간"
+    cs = set(_conds(q))
+    if cs & set(t1.get("cond") or []) and not cs & set(t2.get("cond") or []):
+        return "조건"
+    m1, m2 = t1.get("metric") or [], t2.get("metric") or []
+    if any(evidenced(q, m) for m in m1) and m2 and not any(evidenced(q, m) for m in m2):
+        return "지표"
+    return ""
 
 
 def summary(r):
@@ -251,6 +267,9 @@ def _apply(t, change):
             t2 = dict(base, expect="답함")
             if not t2.get("metric") and t.get("metric"):  # 사전 규칙이 지표를 못 읽으면 지금 지표(보정 규칙의 대체 지표 포함)를 둔다
                 t2["metric"] = list(t["metric"])
+            for k in ("ask_year", "ask_month", "ask_recent", "ask_hour"):  # 보정 규칙이 읽은 질문의 기간·시각은 이어받는다
+                if t.get(k) and not t2.get(k):
+                    t2[k] = t[k]
             why.append(f"사전 규칙 해석({TYPE_KO.get(base.get('type'), base.get('type'))})")
             return t2, why
     if change.get("type"):
@@ -318,6 +337,10 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3):
             text2 = json.dumps((r2.get("card") or {}).get("conclusion") or "", ensure_ascii=False) + json.dumps(r2.get("result_dongs") or [], ensure_ascii=False)
             if asked and r2.get("card") and not any(d in text2 for d in asked):  # 결과 검증(코드): 다시 계산한 답이 질문의 동네를 담지 않으면 버린다
                 rec["note"] = "다시 계산한 답에 질문의 동네가 없어 앞 답을 유지(결과 검증)"
+                break
+            lost = _lost(question, dict(it["tuple"], **(r.get("tuple") or {})), t2)  # 계산에 쓴 해석끼리 비교(답의 tuple에는 물은 기간 칸이 없음)
+            if lost:  # 결과 검증(코드, 061 지적): 앞 답이 지킨 질문의 기간·조건·지표 근거를 다시 계산이 잃으면 버린다
+                rec["note"] = f"다시 계산한 답이 질문의 {lost}을 잃어 앞 답을 유지(결과 검증)"
                 break
             if r2.get("card") and r2.get("status") not in ("범위밖", "선택필요", "되묻기"):  # 답이 나왔으면 받는다(상태 이름은 경로마다 다름)
                 r, it = r2, it2
