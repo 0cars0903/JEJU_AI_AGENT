@@ -1,0 +1,300 @@
+{"id": "GA-001", "gen": "gemini", "split": "dev", "q": "이 동네 카페 몇 개나 있어요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-002", "gen": "gemini", "split": "dev", "q": "우리 동네 음식점 폐업률 얼마나 돼요?", "hard": [], "intent": ""}
+{"id": "GA-003", "gen": "gemini", "split": "dev", "q": "여기 주말에 사람들 많이 오나요?", "hard": ["조건", "지표 없음"], "intent": ""}
+{"id": "GA-004", "gen": "gemini", "split": "dev", "q": "근처에 한식당 장사 잘 되는 편인가요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-005", "gen": "gemini", "split": "dev", "q": "이쪽 일평균 방문객 추이가 어떻게 돼요?", "hard": [], "intent": ""}
+{"id": "GA-006", "gen": "gemini", "split": "dev", "q": "동네 청년 인구 비중이 얼마나 됩니까?", "hard": [], "intent": ""}
+{"id": "GA-007", "gen": "gemini", "split": "dev", "q": "주변에 편의점 얼마나 많아요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-008", "gen": "gemini", "split": "dev", "q": "여기 버스 하루에 몇 명이나 타요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-009", "gen": "gemini", "split": "dev", "q": "이 근방 치킨집 생존율 어때요?", "hard": [], "intent": ""}
+{"id": "GA-010", "gen": "gemini", "split": "dev", "q": "동네 외국인 카드 매출 수준이 궁금해요", "hard": [], "intent": ""}
+{"id": "GA-011", "gen": "gemini", "split": "dev", "q": "주변 상가 개업이 많은 편인가요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-012", "gen": "gemini", "split": "dev", "q": "여기 점심시간에 식당 매출 잘 나와요?", "hard": ["대체 지표"], "intent": ""}
+{"id": "GA-013", "gen": "gemini", "split": "dev", "q": "제주 서쪽 카페 매출 보여줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-014", "gen": "gemini", "split": "dev", "q": "해수욕장 쪽 편의점 수 어때?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-015", "gen": "gemini", "split": "dev", "q": "삼도동 치킨집 얼마나 있어요?", "hard": [], "intent": ""}
+{"id": "GA-016", "gen": "gemini", "split": "dev", "q": "용담동 주말 방문객 알려줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-017", "gen": "gemini", "split": "dev", "q": "일도동 음식점 개업 추이 어때요?", "hard": [], "intent": ""}
+{"id": "GA-018", "gen": "gemini", "split": "dev", "q": "이도동 5년 생존율 얼마인가요?", "hard": [], "intent": ""}
+{"id": "GA-019", "gen": "gemini", "split": "dev", "q": "공항 근처 숙박업소 매출 궁금해요", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-020", "gen": "gemini", "split": "dev", "q": "서귀포 바닷가 쪽 카페 매출 어때?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-021", "gen": "gemini", "split": "dev", "q": "노형동 카페 월세 평균 얼마예요?", "hard": [], "intent": ""}
+{"id": "GA-022", "gen": "gemini", "split": "dev", "q": "연동 1층 상가 권리금 시세가 어떻게 되나요?", "hard": [], "intent": ""}
+{"id": "GA-023", "gen": "gemini", "split": "dev", "q": "이도2동 식당 보증금이랑 임대료 수준 알려주세요", "hard": [], "intent": ""}
+{"id": "GA-024", "gen": "gemini", "split": "dev", "q": "애월읍 해안가 카페 매매가 얼마야?", "hard": [], "intent": ""}
+{"id": "GA-025", "gen": "gemini", "split": "dev", "q": "중문동 상가 평당 분양가 알 수 있나요?", "hard": [], "intent": ""}
+{"id": "GA-026", "gen": "gemini", "split": "dev", "q": "아라동 원룸 월세 시세 얼마인가요?", "hard": [], "intent": ""}
+{"id": "GA-027", "gen": "gemini", "split": "dev", "q": "중문동에서 가장 맛있는 흑돼지 식당 추천해줘", "hard": [], "intent": ""}
+{"id": "GA-028", "gen": "gemini", "split": "dev", "q": "한림읍 협재 근처 파스타 맛집 별점 순위 알려줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-029", "gen": "gemini", "split": "dev", "q": "아라동 분위기 좋은 감성 카페 추천해주세요", "hard": [], "intent": ""}
+{"id": "GA-030", "gen": "gemini", "split": "dev", "q": "연동 현지인 추천 횟집 어디가 좋아?", "hard": [], "intent": ""}
+{"id": "GA-031", "gen": "gemini", "split": "dev", "q": "성산읍 일출봉 근처 갈치조림 맛집 어디예요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-032", "gen": "gemini", "split": "dev", "q": "조천읍 커피 맛있는 곳 소개해주세요", "hard": [], "intent": ""}
+{"id": "GA-033", "gen": "gemini", "split": "dev", "q": "노형동 스타벅스 점장 연락처 알 수 있나요?", "hard": [], "intent": ""}
+{"id": "GA-034", "gen": "gemini", "split": "dev", "q": "연동 특정 카페 사장님 개인 매출 알려줘", "hard": [], "intent": ""}
+{"id": "GA-035", "gen": "gemini", "split": "dev", "q": "제주시청 근처 삼다식당 대표자 주민번호 알려줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-036", "gen": "gemini", "split": "dev", "q": "애월읍 모 펜션 예약자 명단 볼 수 있나요?", "hard": [], "intent": ""}
+{"id": "GA-037", "gen": "gemini", "split": "dev", "q": "서울 강남역이랑 노형동 카페 매출 비교해줘", "hard": [], "intent": ""}
+{"id": "GA-038", "gen": "gemini", "split": "dev", "q": "부산 해운대구 치킨집 수 알려줘", "hard": [], "intent": ""}
+{"id": "GA-039", "gen": "gemini", "split": "dev", "q": "대구 동성로 유동인구 통계 보여주세요", "hard": [], "intent": ""}
+{"id": "GA-040", "gen": "gemini", "split": "dev", "q": "전국 광역시도별 음식점 폐업률 순위 알려줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-041", "gen": "gemini", "split": "dev", "q": "노형동 카페 작년 매출 총액 얼마예요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-042", "gen": "gemini", "split": "dev", "q": "연동 한식당 2024년 개업수 알려줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-043", "gen": "gemini", "split": "dev", "q": "이도2동 치킨집 올해 폐업수 몇 건인가요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-044", "gen": "gemini", "split": "dev", "q": "애월읍 2025년 7월 일평균 방문객 보여줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-045", "gen": "gemini", "split": "dev", "q": "한림읍 숙박업소 최근 3개월 매출성장 어때요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-046", "gen": "gemini", "split": "dev", "q": "아라동 편의점 점포수 2024년 기준 몇 곳이야?", "hard": ["기간"], "intent": ""}
+{"id": "GA-047", "gen": "gemini", "split": "dev", "q": "화북동 중식당 7월 이용건수 알려주세요", "hard": ["기간"], "intent": ""}
+{"id": "GA-048", "gen": "gemini", "split": "dev", "q": "삼양동 분식집 작년 폐업률 수치가 궁금합니다", "hard": ["기간"], "intent": ""}
+{"id": "GA-049", "gen": "gemini", "split": "dev", "q": "조천읍 일식당 올해 건당금액 평균 얼마 나와요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-050", "gen": "gemini", "split": "dev", "q": "구좌읍 카페 2024년 5년생존율 통계 확인해줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-051", "gen": "gemini", "split": "dev", "q": "성산읍 횟집 최근 3개월 외국인매출 비중 어때?", "hard": ["기간"], "intent": ""}
+{"id": "GA-052", "gen": "gemini", "split": "dev", "q": "표선면 소매업 작년 총 매출액 뽑아주세요", "hard": ["기간"], "intent": ""}
+{"id": "GA-053", "gen": "gemini", "split": "dev", "q": "남원읍 주점 2025년 개업수 몇 군데 생겼어?", "hard": ["기간"], "intent": ""}
+{"id": "GA-054", "gen": "gemini", "split": "dev", "q": "중문동 호텔 숙박업 2024년 관광객비중 얼마였나요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-055", "gen": "gemini", "split": "dev", "q": "대륜동 카페 올해 이용건수 추세 어때요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-056", "gen": "gemini", "split": "dev", "q": "서홍동 음식점 작년 폐업수 집계해줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-057", "gen": "gemini", "split": "dev", "q": "동홍동 버스일평균 2025년 7월 이용객 수 알려줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-058", "gen": "gemini", "split": "dev", "q": "천지동 한식 2024년 건당금액 수준 보고 싶어요", "hard": ["기간"], "intent": ""}
+{"id": "GA-059", "gen": "gemini", "split": "dev", "q": "정방동 일식집 올해 매출성장률 플러스인가요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-060", "gen": "gemini", "split": "dev", "q": "중앙동 소매점 최근 3개월 매출액 알려주세요", "hard": ["기간"], "intent": ""}
+{"id": "GA-061", "gen": "gemini", "split": "dev", "q": "대정읍 편의점 2025년 점포수 변화 어땠어?", "hard": ["기간"], "intent": ""}
+{"id": "GA-062", "gen": "gemini", "split": "dev", "q": "안덕면 카페 7월 한 달간 일평균방문객 통계 줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-063", "gen": "gemini", "split": "dev", "q": "한경면 치킨집 작년 폐업률 얼마나 높았나요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-064", "gen": "gemini", "split": "dev", "q": "외도동 분식집 2024년 5년생존율 수치 알려줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-065", "gen": "gemini", "split": "dev", "q": "오라동 음식점 올해 개업수 몇 건 나왔어요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-066", "gen": "gemini", "split": "dev", "q": "노형동 카페 비 올 때 매출 얼마나 떨어져요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-067", "gen": "gemini", "split": "dev", "q": "연동 한식집 주말 일평균방문객 수 궁금해요", "hard": ["조건"], "intent": ""}
+{"id": "GA-068", "gen": "gemini", "split": "dev", "q": "이도2동 음식점 평일 점심시간대매출 알려주세요", "hard": ["조건"], "intent": ""}
+{"id": "GA-069", "gen": "gemini", "split": "dev", "q": "애월읍 카페 여름 성수기 매출 규모가 어때요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-070", "gen": "gemini", "split": "dev", "q": "한림읍 횟집 겨울철 이용건수 얼마나 나와?", "hard": ["조건"], "intent": ""}
+{"id": "GA-071", "gen": "gemini", "split": "dev", "q": "조천읍 주점 주말 건당금액 평균 얼마인가요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-072", "gen": "gemini", "split": "dev", "q": "구좌읍 숙박업소 비수기 관광객비중 확인해줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-073", "gen": "gemini", "split": "dev", "q": "성산읍 카페 봄 시즌 일평균방문 추이 보여줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-074", "gen": "gemini", "split": "dev", "q": "중문동 한식당 비 오는 날 이용건수 변화 어때?", "hard": ["조건"], "intent": ""}
+{"id": "GA-075", "gen": "gemini", "split": "dev", "q": "대정읍 일식집 가을철 매출성장률 어때요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-076", "gen": "gemini", "split": "dev", "q": "안덕면 카페 주말 시간대매출 피크가 언제야?", "hard": ["조건"], "intent": ""}
+{"id": "GA-077", "gen": "gemini", "split": "dev", "q": "표선면 음식점 성수기 외국인매출 통계 알려주세요", "hard": ["조건"], "intent": ""}
+{"id": "GA-078", "gen": "gemini", "split": "dev", "q": "아라동 치킨집 평일 야간 매출 비중 궁금합니다", "hard": ["조건"], "intent": ""}
+{"id": "GA-079", "gen": "gemini", "split": "dev", "q": "삼양동 분식점 주말 이용건수 많은 편인가요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-080", "gen": "gemini", "split": "dev", "q": "화북동 소매점 비 올 때 방문객 차이 나나요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-081", "gen": "gemini", "split": "dev", "q": "용담2동 카페 주말 버스일평균 이용객 수 알려줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-082", "gen": "gemini", "split": "dev", "q": "건입동 한식 겨울철 건당금액 얼마나 돼요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-083", "gen": "gemini", "split": "dev", "q": "송산동 횟집 비수기 매출 감소율 확인해주세요", "hard": ["조건"], "intent": ""}
+{"id": "GA-084", "gen": "gemini", "split": "dev", "q": "효돈동 카페 평일 일평균방문 인원 얼마예요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-085", "gen": "gemini", "split": "dev", "q": "예래동 숙박업소 여름 관광객비중 집계해줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-086", "gen": "gemini", "split": "dev", "q": "제주도에서 카페 폐업률 가장 낮은 읍면동 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-087", "gen": "gemini", "split": "dev", "q": "음식점 개업수 제일 적은 동네가 어디야?", "hard": ["순위"], "intent": ""}
+{"id": "GA-088", "gen": "gemini", "split": "dev", "q": "청년비중 가장 낮은 행정동 순위 보여줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-089", "gen": "gemini", "split": "dev", "q": "편의점 점포수 제일 적게 있는 읍면은?", "hard": ["순위"], "intent": ""}
+{"id": "GA-090", "gen": "gemini", "split": "dev", "q": "일식집 폐업수 최소인 지역 뽑아주세요", "hard": ["순위"], "intent": ""}
+{"id": "GA-091", "gen": "gemini", "split": "dev", "q": "치킨집 5년생존율 제일 낮은 동네 어디인가요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-092", "gen": "gemini", "split": "dev", "q": "버스일평균 이용객 가장 적은 읍면동 알려줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-093", "gen": "gemini", "split": "dev", "q": "한식당 건당금액 제일 낮은 곳 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-094", "gen": "gemini", "split": "dev", "q": "소매업 매출성장률 꼴찌인 지역 확인해줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-095", "gen": "gemini", "split": "dev", "q": "관광객비중 가장 적게 잡히는 동네가 어디죠?", "hard": ["순위"], "intent": ""}
+{"id": "GA-096", "gen": "gemini", "split": "dev", "q": "제주에서 카페 점포수 제일 많은 읍면동 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-097", "gen": "gemini", "split": "dev", "q": "한식당 매출 총액 1위 동네 알려주세요", "hard": ["순위"], "intent": ""}
+{"id": "GA-098", "gen": "gemini", "split": "dev", "q": "일평균방문객 가장 많은 지역 순위 뽑아줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-099", "gen": "gemini", "split": "dev", "q": "외국인매출 제일 높은 읍면동 어디야?", "hard": ["순위"], "intent": ""}
+{"id": "GA-100", "gen": "gemini", "split": "dev", "q": "음식점 5년생존율 최고인 곳 확인해주세요", "hard": ["순위"], "intent": ""}
+{"id": "GA-101", "gen": "gemini", "split": "dev", "q": "고령비중 제일 높은 동네 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-102", "gen": "gemini", "split": "dev", "q": "숙박업소 이용건수 1등 읍면동 알려줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-103", "gen": "gemini", "split": "dev", "q": "주점 개업수 가장 많이 늘어난 곳 어디죠?", "hard": ["순위"], "intent": ""}
+{"id": "GA-104", "gen": "gemini", "split": "dev", "q": "횟집 건당금액 제일 비싼 지역 순위 줘", "hard": ["순위", "대체 지표"], "intent": ""}
+{"id": "GA-105", "gen": "gemini", "split": "dev", "q": "치킨집 폐업수 가장 많은 동네 어디인가요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-106", "gen": "gemini", "split": "dev", "q": "청년비중 제일 높은 읍면동 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-107", "gen": "gemini", "split": "dev", "q": "분식집 점포수 최다 밀집 동네 알려줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-108", "gen": "gemini", "split": "dev", "q": "버스일평균 탑승객 가장 많은 곳 어디야?", "hard": ["순위"], "intent": ""}
+{"id": "GA-109", "gen": "gemini", "split": "dev", "q": "소매점 매출성장 가장 빠른 지역 찾아줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-110", "gen": "gemini", "split": "dev", "q": "중식당 폐업률 제일 높은 동네 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-111", "gen": "gemini", "split": "dev", "q": "노형동에 카페 얼마나 몰려 있어요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-112", "gen": "gemini", "split": "dev", "q": "연동 고깃집 장사 잘 되는 편인가요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-113", "gen": "gemini", "split": "dev", "q": "애월읍에 평소 사람들 발길 많나요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-114", "gen": "gemini", "split": "dev", "q": "아라동에 어르신들 많이 거주하시나요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-115", "gen": "gemini", "split": "dev", "q": "이도2동에 젊은 친구들 많이 모여요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-116", "gen": "gemini", "split": "dev", "q": "한림읍에서 가게 차리면 오래 버텨요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-117", "gen": "gemini", "split": "dev", "q": "화북동 치킨집들 문 많이 닫나요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-118", "gen": "gemini", "split": "dev", "q": "삼양동에 새로 문 여는 식당 많아요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-119", "gen": "gemini", "split": "dev", "q": "조천읍 편의점 한 번 가면 돈 많이 써요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-120", "gen": "gemini", "split": "dev", "q": "구좌읍 카페에 외지인들 많이 찾아와요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-121", "gen": "gemini", "split": "dev", "q": "성산읍 버스 타고 다니는 사람 붐벼요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-122", "gen": "gemini", "split": "dev", "q": "중문동 식당 외국 손님들 결제 많아요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-123", "gen": "gemini", "split": "dev", "q": "대정읍 일식집 요즘 장사 규모 커지고 있어?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-124", "gen": "gemini", "split": "dev", "q": "안덕면 술집 밤 늦게 손님 몰려요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-125", "gen": "gemini", "split": "dev", "q": "표선면 숙박업소 객단가 비싼 편인가요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-126", "gen": "gemini", "split": "dev", "q": "남원읍 분식집 몇 집이나 있는지 세어줘", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-127", "gen": "gemini", "split": "dev", "q": "외도동 카페들 장사 접는 곳 많습니까?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-128", "gen": "gemini", "split": "dev", "q": "오라동 한식집 새로 창업 활발해요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-129", "gen": "gemini", "split": "dev", "q": "동홍동 상가 사람들 소비 활발하게 일어나나요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-130", "gen": "gemini", "split": "dev", "q": "서홍동 카페 동네 장사 수준이 어때요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-131", "gen": "gemini", "split": "dev", "q": "신제주 쪽 카페 점포수 얼마나 돼요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-132", "gen": "gemini", "split": "dev", "q": "구제주 일대 한식당 매출 규모 알려주게", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-133", "gen": "gemini", "split": "dev", "q": "함덕 해변 근처 카페 일평균방문객 하영 옵니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-134", "gen": "gemini", "split": "dev", "q": "협재 쪽에 숙박업소 점포수 몇 곳이나 이서?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-135", "gen": "gemini", "split": "dev", "q": "중문관광단지 식당 외국인매출 비중 어떵 됩니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-136", "gen": "gemini", "split": "dev", "q": "모슬포 횟집 건당금액 평균 얼마 나와요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-137", "gen": "gemini", "split": "dev", "q": "성산일출봉 앞 카페 평소에 사람 하영 찾아옵니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-138", "gen": "gemini", "split": "dev", "q": "탑동 광장 주변 주점 매출 수준 알려줍서", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-139", "gen": "gemini", "split": "dev", "q": "제주시청 대학로 치킨집 점포수 몇 개 이서?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-140", "gen": "gemini", "split": "dev", "q": "월정리 해변 카페 5년생존율 통계 보여줍서", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-141", "gen": "gemini", "split": "dev", "q": "표선해수욕장 근처 음식점 폐업률 어떵 됩니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-142", "gen": "gemini", "split": "dev", "q": "서귀포 올레시장 주변 분식집 이용건수 알려줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-143", "gen": "gemini", "split": "dev", "q": "한담 해변 카페 관광객비중 얼마나 높아요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-144", "gen": "gemini", "split": "dev", "q": "이호테우 근처 편의점 버스일평균 이용객 수 궁금해요", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-145", "gen": "gemini", "split": "dev", "q": "산방산 쪽 한식당 개업수 최근에 늘었수과?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-146", "gen": "gemini", "split": "dev", "q": "노형동 카페 점포수랑 월 매출 함께 보고 싶어요", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-147", "gen": "gemini", "split": "dev", "q": "연동 한식당 개업수와 폐업수 같이 비교해줘", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-148", "gen": "gemini", "split": "dev", "q": "애월읍 일평균방문객이랑 버스일평균 수치 둘 다 줘", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-149", "gen": "gemini", "split": "dev", "q": "이도2동 청년비중과 고령비중 같이 알려주세요", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-150", "gen": "gemini", "split": "dev", "q": "한림읍 숙박업소 이용건수와 건당금액 동시 확인 부탁해요", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-151", "gen": "gemini", "split": "judge", "q": "카페 창업하려는데 동네 점포수 파악해 줍서", "hard": [], "intent": ""}
+{"id": "GA-152", "gen": "gemini", "split": "judge", "q": "식당 폐업이 요즘 얼마나 심한가요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-153", "gen": "gemini", "split": "judge", "q": "평일에 유동인구 얼마나 돌아다녀요?", "hard": ["조건", "지표 없음"], "intent": ""}
+{"id": "GA-154", "gen": "gemini", "split": "judge", "q": "치킨집 차리면 매출 평균 얼마나 나올까요?", "hard": [], "intent": ""}
+{"id": "GA-155", "gen": "gemini", "split": "judge", "q": "동네 노인분들 인구 비율 통계 뽑아줘", "hard": ["대체 지표"], "intent": ""}
+{"id": "GA-156", "gen": "gemini", "split": "judge", "q": "이 주변 버스 다니는 이용객 많아요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-157", "gen": "gemini", "split": "judge", "q": "분식점 새로 열린 곳 몇 개나 됩니까?", "hard": [], "intent": ""}
+{"id": "GA-158", "gen": "gemini", "split": "judge", "q": "숙박업체 5년 이상 살아남는 비율 어때요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-159", "gen": "gemini", "split": "judge", "q": "외국인 손님 카드 결제 규모 확인해주세요", "hard": [], "intent": ""}
+{"id": "GA-160", "gen": "gemini", "split": "judge", "q": "이 구역 주점 건당 결제 금액 얼마 나와?", "hard": [], "intent": ""}
+{"id": "GA-161", "gen": "gemini", "split": "judge", "q": "요새 소매점 매출성장이 잘 되는 편인가?", "hard": [], "intent": ""}
+{"id": "GA-162", "gen": "gemini", "split": "judge", "q": "주말 저녁에 음식점 매출 집중되는지 궁금해", "hard": ["조건", "대체 지표"], "intent": ""}
+{"id": "GA-163", "gen": "gemini", "split": "judge", "q": "제주 동쪽 카페 창업 현황 어때요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-164", "gen": "gemini", "split": "judge", "q": "올레길 코스 주변 음식점 매출 궁금합니다", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-165", "gen": "gemini", "split": "judge", "q": "오라동 쪽 말고 아라동 분식집 수 알려줘", "hard": [], "intent": ""}
+{"id": "GA-166", "gen": "gemini", "split": "judge", "q": "서귀포 도심 치킨집 생존율 통계 줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-167", "gen": "gemini", "split": "judge", "q": "제주시 구도심 카페 폐업수 집계해줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-168", "gen": "gemini", "split": "judge", "q": "한라산 올라가는 쪽 편의점 몇 곳 있나요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-169", "gen": "gemini", "split": "judge", "q": "동부 해안도로 한식당 매출 추이 보여줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-170", "gen": "gemini", "split": "judge", "q": "서귀포 읍면지역 주점 이용건수 어때?", "hard": [], "intent": ""}
+{"id": "GA-171", "gen": "gemini", "split": "judge", "q": "도두동 바닷가 카페 보증금 시세 얼마예요?", "hard": [], "intent": ""}
+{"id": "GA-172", "gen": "gemini", "split": "judge", "q": "외도동 1층 식당 상가 매매 호가 알려주세요", "hard": [], "intent": ""}
+{"id": "GA-173", "gen": "gemini", "split": "judge", "q": "삼양동 베이커리 권리금 보통 얼마 주고 들어가나요?", "hard": [], "intent": ""}
+{"id": "GA-174", "gen": "gemini", "split": "judge", "q": "표선면 해수욕장 앞 펜션 임대료 수준 궁금해요", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-175", "gen": "gemini", "split": "judge", "q": "봉개동 토지 공시지가 시세 확인해줘", "hard": [], "intent": ""}
+{"id": "GA-176", "gen": "gemini", "split": "judge", "q": "서홍동 신축 상가 평당 분양가 알 수 있습니까?", "hard": [], "intent": ""}
+{"id": "GA-177", "gen": "gemini", "split": "judge", "q": "애월읍 한담 쪽 제일 유명한 감성 카페 추천해줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-178", "gen": "gemini", "split": "judge", "q": "노형동 회식하기 좋은 한식당 별점 순위 줘", "hard": [], "intent": ""}
+{"id": "GA-179", "gen": "gemini", "split": "judge", "q": "연동 누웨마루거리 맛있는 치킨집 어디야?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-180", "gen": "gemini", "split": "judge", "q": "중문관광단지 특급호텔 뷔페 평가 순위 알려주세요", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-181", "gen": "gemini", "split": "judge", "q": "대정읍 모슬포 방어 축제 맛집 리스트 뽑아줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-182", "gen": "gemini", "split": "judge", "q": "한림읍 협재 해녀의집 평점 높은 곳 찾아줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-183", "gen": "gemini", "split": "judge", "q": "이도2동 본죽 매장 사장님 휴대전화 번호 알려줘", "hard": [], "intent": ""}
+{"id": "GA-184", "gen": "gemini", "split": "judge", "q": "노형동 교촌치킨 지난달 순이익 얼마 남겼어?", "hard": [], "intent": ""}
+{"id": "GA-185", "gen": "gemini", "split": "judge", "q": "조천읍 모 리조트 투숙객 개인 인적사항 볼 수 있나요?", "hard": [], "intent": ""}
+{"id": "GA-186", "gen": "gemini", "split": "judge", "q": "서귀포 올레시장 특정 청과물 가게 사업자번호 줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-187", "gen": "gemini", "split": "judge", "q": "인천 송도랑 서귀포 중문 숙박 매출 비교해줘", "hard": [], "intent": ""}
+{"id": "GA-188", "gen": "gemini", "split": "judge", "q": "경기도 수원의 통닭거리 치킨 매출 얼마야?", "hard": [], "intent": ""}
+{"id": "GA-189", "gen": "gemini", "split": "judge", "q": "서울 홍대입구 주말 유동인구 통계 알려줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-190", "gen": "gemini", "split": "judge", "q": "전국 기초지자체별 1인당 카페 소비액 순위 보여줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-191", "gen": "gemini", "split": "judge", "q": "이호동 카페 2025년 연간 총매출 얼마였습니까?", "hard": ["기간"], "intent": ""}
+{"id": "GA-192", "gen": "gemini", "split": "judge", "q": "도두동 일식집 2024년 신규 개업수 알려줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-193", "gen": "gemini", "split": "judge", "q": "용담1동 치킨집 올해 폐업한 가게 수 몇 곳이야?", "hard": ["기간"], "intent": ""}
+{"id": "GA-194", "gen": "gemini", "split": "judge", "q": "삼도2동 2025년 7월 유동인구 일평균방문 통계 줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-195", "gen": "gemini", "split": "judge", "q": "건입동 숙박시설 최근 3개월 매출성장률 확인해주세요", "hard": ["기간"], "intent": ""}
+{"id": "GA-196", "gen": "gemini", "split": "judge", "q": "일도1동 편의점 점포수 2024년에 몇 개였어요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-197", "gen": "gemini", "split": "judge", "q": "봉개동 한식 7월 한 달 카드 이용건수 어때?", "hard": ["기간"], "intent": ""}
+{"id": "GA-198", "gen": "gemini", "split": "judge", "q": "한경면 분식집 작년 폐업률 수치 알려주세요", "hard": ["기간"], "intent": ""}
+{"id": "GA-199", "gen": "gemini", "split": "judge", "q": "우도면 카페 올해 1회 평균 건당금액 얼마 나와?", "hard": ["기간"], "intent": ""}
+{"id": "GA-200", "gen": "gemini", "split": "judge", "q": "추자면 음식점 2024년 5년생존율 데이터 보여줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-201", "gen": "gemini", "split": "judge", "q": "송산동 횟집 최근 3개월간 외국인매출 규모 어때요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-202", "gen": "gemini", "split": "judge", "q": "효돈동 소매점 작년 총 매출액 집계 부탁합니다", "hard": ["기간"], "intent": ""}
+{"id": "GA-203", "gen": "gemini", "split": "judge", "q": "영천동 주점 2025년에 문 연 개업수 몇 군데야?", "hard": ["기간"], "intent": ""}
+{"id": "GA-204", "gen": "gemini", "split": "judge", "q": "서홍동 숙박업 2024년 관광객비중 비중치 얼마였나요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-205", "gen": "gemini", "split": "judge", "q": "대천동 카페 올해 카드 이용건수 추세 알고 싶어요", "hard": ["기간"], "intent": ""}
+{"id": "GA-206", "gen": "gemini", "split": "judge", "q": "예래동 중식당 작년 폐업수 몇 곳 발생했나요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-207", "gen": "gemini", "split": "judge", "q": "남원읍 버스일평균 2025년 7월 이용객 현황 알려줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-208", "gen": "gemini", "split": "judge", "q": "안덕면 한식 2024년 결제 건당금액 수준 보고해줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-209", "gen": "gemini", "split": "judge", "q": "대정읍 일식당 올해 매출성장세 지속되고 있습니까?", "hard": ["기간"], "intent": ""}
+{"id": "GA-210", "gen": "gemini", "split": "judge", "q": "표선면 소매업 최근 3개월간 결제된 매출 얼마야?", "hard": ["기간"], "intent": ""}
+{"id": "GA-211", "gen": "gemini", "split": "judge", "q": "구좌읍 편의점 2025년 점포수 증감 확인해줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-212", "gen": "gemini", "split": "judge", "q": "조천읍 카페 7월 한 달 동안 일평균방문객 통계 줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-213", "gen": "gemini", "split": "judge", "q": "한림읍 치킨집 작년 폐업률 통계 얼마로 잡혔어?", "hard": ["기간"], "intent": ""}
+{"id": "GA-214", "gen": "gemini", "split": "judge", "q": "애월읍 분식업종 2024년 기준 5년생존율 얼마인가요?", "hard": ["기간"], "intent": ""}
+{"id": "GA-215", "gen": "gemini", "split": "judge", "q": "연동 음식점 올해 신규 개업수 건수 집계해줘", "hard": ["기간"], "intent": ""}
+{"id": "GA-216", "gen": "gemini", "split": "judge", "q": "도두동 카페 비 오는 날 매출 변화량 얼마인가요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-217", "gen": "gemini", "split": "judge", "q": "이호동 한식집 주말 일평균방문 인원수 알려줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-218", "gen": "gemini", "split": "judge", "q": "외도동 식당 평일 시간대매출 점심 비중 얼마예요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-219", "gen": "gemini", "split": "judge", "q": "한경면 카페 여름 성수기에 매출 급증하나요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-220", "gen": "gemini", "split": "judge", "q": "우도면 횟집 겨울철 카드 이용건수 통계 궁금해", "hard": ["조건"], "intent": ""}
+{"id": "GA-221", "gen": "gemini", "split": "judge", "q": "추자면 주점 주말 평균 건당금액 수준 얼마야?", "hard": ["조건"], "intent": ""}
+{"id": "GA-222", "gen": "gemini", "split": "judge", "q": "봉개동 숙박업소 비수기 관광객비중 통계 뽑아줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-223", "gen": "gemini", "split": "judge", "q": "삼도1동 카페 봄철 일평균방문 인구 흐름 어때요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-224", "gen": "gemini", "split": "judge", "q": "용담1동 한식당 비 올 때 이용건수 줄어드나요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-225", "gen": "gemini", "split": "judge", "q": "건입동 일식집 가을철 매출성장 추세 어때?", "hard": ["조건"], "intent": ""}
+{"id": "GA-226", "gen": "gemini", "split": "judge", "q": "동홍동 카페 주말 오후 시간대매출 얼마나 나와?", "hard": ["조건"], "intent": ""}
+{"id": "GA-227", "gen": "gemini", "split": "judge", "q": "서홍동 음식점 성수기 외국인매출 총액 알려주세요", "hard": ["조건"], "intent": ""}
+{"id": "GA-228", "gen": "gemini", "split": "judge", "q": "대륜동 치킨집 평일 저녁시간대 시간대매출 규모 어때?", "hard": ["조건"], "intent": ""}
+{"id": "GA-229", "gen": "gemini", "split": "judge", "q": "대천동 분식점 주말 카드 이용건수 많이 늘어나요?", "hard": ["조건"], "intent": ""}
+{"id": "GA-230", "gen": "gemini", "split": "judge", "q": "중문동 소매점 비 올 때 일평균방문 영향 분석해줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-231", "gen": "gemini", "split": "judge", "q": "예래동 카페 주말 버스일평균 유입 승객 얼마야?", "hard": ["조건"], "intent": ""}
+{"id": "GA-232", "gen": "gemini", "split": "judge", "q": "영천동 한식 겨울 결제 건당금액 통계 확인해줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-233", "gen": "gemini", "split": "judge", "q": "효돈동 횟집 비수기 매출 하락폭 얼마나 됩니까?", "hard": ["조건"], "intent": ""}
+{"id": "GA-234", "gen": "gemini", "split": "judge", "q": "송산동 카페 평일 일평균방문 수치 산출해줘", "hard": ["조건"], "intent": ""}
+{"id": "GA-235", "gen": "gemini", "split": "judge", "q": "정방동 숙박시설 여름 피크 관광객비중 얼마야?", "hard": ["조건"], "intent": ""}
+{"id": "GA-236", "gen": "gemini", "split": "judge", "q": "제주도 읍면동 중 한식당 폐업률 제일 낮은 곳 어디인가요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-237", "gen": "gemini", "split": "judge", "q": "카페 개업수 가장 적은 동네 순위 알려줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-238", "gen": "gemini", "split": "judge", "q": "고령비중 제일 낮은 지역 읍면동 어디야?", "hard": ["순위"], "intent": ""}
+{"id": "GA-239", "gen": "gemini", "split": "judge", "q": "치킨집 점포수 최소 밀집 동네 뽑아주세요", "hard": ["순위"], "intent": ""}
+{"id": "GA-240", "gen": "gemini", "split": "judge", "q": "횟집 폐업수 가장 적게 발생한 지역은?", "hard": ["순위"], "intent": ""}
+{"id": "GA-241", "gen": "gemini", "split": "judge", "q": "음식점 5년생존율 최하위 동네 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-242", "gen": "gemini", "split": "judge", "q": "소매업 버스일평균 승객 최저 지역 찾아줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-243", "gen": "gemini", "split": "judge", "q": "일식당 1회 결제 건당금액 가장 싼 동네는?", "hard": ["순위", "대체 지표"], "intent": ""}
+{"id": "GA-244", "gen": "gemini", "split": "judge", "q": "주점 매출성장세 제일 저조한 읍면 어디죠?", "hard": ["순위"], "intent": ""}
+{"id": "GA-245", "gen": "gemini", "split": "judge", "q": "외국인매출 가장 적은 행정동 순위 보여줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-246", "gen": "gemini", "split": "judge", "q": "제주 전역에서 한식당 점포수 가장 많은 동네 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-247", "gen": "gemini", "split": "judge", "q": "카페 총 매출 1위 행정동 알려줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-248", "gen": "gemini", "split": "judge", "q": "일평균방문객 최다 밀집 지역 순위 줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-249", "gen": "gemini", "split": "judge", "q": "관광객비중 제일 높게 잡히는 읍면동 어디야?", "hard": ["순위"], "intent": ""}
+{"id": "GA-250", "gen": "gemini", "split": "judge", "q": "치킨집 5년생존율 최고치 찍은 동네 알려주세요", "hard": ["순위"], "intent": ""}
+{"id": "GA-251", "gen": "gemini", "split": "judge", "q": "청년비중 제일 높은 동네가 어디인가요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-252", "gen": "gemini", "split": "judge", "q": "숙박시설 외국인매출 1등 지역 어디죠?", "hard": ["순위"], "intent": ""}
+{"id": "GA-253", "gen": "gemini", "split": "judge", "q": "음식점 개업수 제일 많이 늘어난 읍면동은?", "hard": ["순위"], "intent": ""}
+{"id": "GA-254", "gen": "gemini", "split": "judge", "q": "일식집 평균 건당금액 최고가 동네 찾아줘", "hard": ["순위", "대체 지표"], "intent": ""}
+{"id": "GA-255", "gen": "gemini", "split": "judge", "q": "카페 폐업수 최다 발생 읍면동 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-256", "gen": "gemini", "split": "judge", "q": "고령비중 제일 높은 행정동 순위 보여줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-257", "gen": "gemini", "split": "judge", "q": "편의점 점포수 가장 많은 동네 순위 알려줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-258", "gen": "gemini", "split": "judge", "q": "버스일평균 승차 승객 가장 많은 읍면동 어디야?", "hard": ["순위"], "intent": ""}
+{"id": "GA-259", "gen": "gemini", "split": "judge", "q": "분식집 매출성장 가장 빠른 지역 어디예요?", "hard": ["순위"], "intent": ""}
+{"id": "GA-260", "gen": "gemini", "split": "judge", "q": "주점 폐업률 1등 동네 확인해줘", "hard": ["순위"], "intent": ""}
+{"id": "GA-261", "gen": "gemini", "split": "judge", "q": "도두동에 횟집 얼마나 빽빽하게 모여 있나요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-262", "gen": "gemini", "split": "judge", "q": "이호동 카페 장사 평균적으로 잘 돌아가요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-263", "gen": "gemini", "split": "judge", "q": "외도동 평소에 길거리에 유동인구 붐비나요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-264", "gen": "gemini", "split": "judge", "q": "봉개동에 나이 많은 어르신 비율 높아요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-265", "gen": "gemini", "split": "judge", "q": "삼도1동 골목에 청년층 인구 많습니까?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-266", "gen": "gemini", "split": "judge", "q": "용담1동 식당들 문 열면 망하지 않고 버텨요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-267", "gen": "gemini", "split": "judge", "q": "건입동 숙박업소들 폐업 속출하고 있나요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-268", "gen": "gemini", "split": "judge", "q": "삼도2동 분식점 새로 생겨나는 곳 많아?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-269", "gen": "gemini", "split": "judge", "q": "일도1동 음식점 결제할 때 손님들 돈 많이 써요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-270", "gen": "gemini", "split": "judge", "q": "한경면 카페 바깥에서 온 외지인 손님 비중 커요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-271", "gen": "gemini", "split": "judge", "q": "우도면 대중교통 이용하는 승객 바글거려요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-272", "gen": "gemini", "split": "judge", "q": "추자면 식당에 외국인 관광객 카드 결제 많아요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-273", "gen": "gemini", "split": "judge", "q": "송산동 한식집 요즘 매출 규모 커지고 있어요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-274", "gen": "gemini", "split": "judge", "q": "효돈동 주점 밤에 늦게 손님 북적이나요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-275", "gen": "gemini", "split": "judge", "q": "영천동 펜션 객단가 비싸게 형성돼 있어요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-276", "gen": "gemini", "split": "judge", "q": "서홍동 편의점 점포 몇 집이나 운영 중이야?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-277", "gen": "gemini", "split": "judge", "q": "대천동 치킨집들 문 닫는 가게 흔해요?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-278", "gen": "gemini", "split": "judge", "q": "정방동 일식당 신규 창업 활발합니까?", "hard": ["지표 없음"], "intent": ""}
+{"id": "GA-279", "gen": "gemini", "split": "judge", "q": "중앙동 옷가게 상가 장사 손님들 발길 잦아요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-280", "gen": "gemini", "split": "judge", "q": "천지동 카페 동네 장사 규모 어느 정도예요?", "hard": ["지표 없음", "대체 지표"], "intent": ""}
+{"id": "GA-281", "gen": "gemini", "split": "judge", "q": "동문시장 인근 분식집 점포수 얼마나 됩니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-282", "gen": "gemini", "split": "judge", "q": "곽지해수욕장 카페 일평균방문객 하영 들어옵니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-283", "gen": "gemini", "split": "judge", "q": "김녕 해변 근처 한식당 매출 규모 알려줍서", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-284", "gen": "gemini", "split": "judge", "q": "서귀포 신시가지 쪽 카페 5년생존율 어떵 됩니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-285", "gen": "gemini", "split": "judge", "q": "영어교육도시 주변 식당 점포수 몇 곳 이서?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-286", "gen": "gemini", "split": "judge", "q": "산방산 일대 숙박업소 외국인매출 비중 어때?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-287", "gen": "gemini", "split": "judge", "q": "서귀포 매일올레시장 치킨집 이용건수 규모 궁금해요", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-288", "gen": "gemini", "split": "judge", "q": "협재해변 앞 카페 관광객비중 하영 높습니까?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-289", "gen": "gemini", "split": "judge", "q": "함덕 서우봉 쪽 편의점 버스일평균 이용객 알려줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-290", "gen": "gemini", "split": "judge", "q": "성산포항 근처 횟집 건당금액 평균 얼마 나와요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-291", "gen": "gemini", "split": "judge", "q": "신제주 로터리 일식당 개업수 최근에 늘었수과?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-292", "gen": "gemini", "split": "judge", "q": "구제주 칠성통 소매점 매출성장세 보여줍서", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-293", "gen": "gemini", "split": "judge", "q": "중문단지 호텔 숙박업 평균 객단가 비싼가요?", "hard": ["생활 지명", "대체 지표"], "intent": ""}
+{"id": "GA-294", "gen": "gemini", "split": "judge", "q": "표선해비치 주변 흑돼지 식당 폐업률 어떵 되나요?", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-295", "gen": "gemini", "split": "judge", "q": "모슬포항 일대 주점 밤 시간대매출 규모 알려줘", "hard": ["생활 지명"], "intent": ""}
+{"id": "GA-296", "gen": "gemini", "split": "judge", "q": "도두동 카페 점포수랑 일평균방문객 통계 같이 볼 수 있나요?", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-297", "gen": "gemini", "split": "judge", "q": "이호동 한식당 개업수와 폐업률 수치 함께 알려주세요", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-298", "gen": "gemini", "split": "judge", "q": "외도동 청년비중이랑 방문연령구성 현황 둘 다 줘", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-299", "gen": "gemini", "split": "judge", "q": "건입동 숙박시설 매출과 외국인매출 비교해서 보여줘", "hard": ["두 요소"], "intent": ""}
+{"id": "GA-300", "gen": "gemini", "split": "judge", "q": "용담1동 편의점 점포수와 버스일평균 탑승객 같이 집계해줘", "hard": ["두 요소"], "intent": ""}

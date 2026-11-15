@@ -1,0 +1,306 @@
+{"id":"GA-124","accept":["답함"],"space":["안덕면"],"metric_ok":["시간대매출"],"target_ok":["음식점"],"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"밤 시간 손님 몰림은 시간대 사람 수가 필요해 시간대매출로 대신"}
+{"id":"SN-030","accept":["답함"],"space":["구좌읍"],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"월정리는 구좌읍, 매출 값으로 답함"}
+{"id":"FB-025","accept":["답함"],"space":["조천읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":["방문으로 대신"],"ambiguous":false,"why":"매출에 비 효과가 없어 방문으로 대신"}
+{"id":"GA-006","accept":["되묻기"],"space":[],"metric_ok":["청년비중"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"동네 이름이 없음"}
+{"id":"FB-070","accept":["답함"],"space":["삼도2동"],"metric_ok":["고령비중","청년비중"],"target_ok":null,"period":{"year":2023},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"두 비중을 2023년 값으로 답함"}
+{"id":"FB-054","accept":["답함"],"space":["영천동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["성수기/비수기"],"order":null,"notice":[],"ambiguous":false,"why":"북적임은 일평균방문, 성수기 조건"}
+{"id":"GA-005","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"이쪽은 동네가 없음"}
+{"id":"FB-044","accept":["답함"],"space":["용담1동"],"metric_ok":["방문연령구성"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"방문객 연령대는 방문연령구성"}
+{"id":"SN-018","accept":["답함"],"space":[],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"버스 많이 타는 동네 순위"}
+{"id":"GA-130","accept":["답함"],"space":["서홍동"],"metric_ok":["매출"],"target_ok":["음식점","카페"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"카페 매출은 센터 자료 필요, 음식점 매출로 대신"}
+{"id":"SN-072","accept":["되묻기"],"space":[],"metric_ok":["점포수"],"target_ok":["치킨집"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"그 동네가 어디인지 알 수 없음"}
+{"id":"FB-007","accept":["답함"],"space":["성산읍"],"metric_ok":["매출","이용건수"],"target_ok":["소매"],"period":{"year":2026,"month":9},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2026년 9월 소매 매출과 건수"}
+{"id":"GA-045","accept":["답함"],"space":["한림읍"],"metric_ok":["매출","매출성장"],"target_ok":["숙박"],"period":{"recent_months":3},"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"최근 3개월은 매출성장 정의(12개월 대비)와 달라 매출 추이로 답함"}
+{"id":"FB-035","accept":["답함"],"space":["구좌읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":null,"notice":[],"ambiguous":false,"why":"겨울 방문을 다른 계절과 비교"}
+{"id":"FB-042","accept":["답함"],"space":[],"metric_ok":["자료목록"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"자료 목록 검색"}
+{"id":"SN-067","accept":["답함"],"space":["동홍동"],"metric_ok":["시간대매출"],"target_ok":null,"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"시간대 사람 수는 센터 자료, 시간대매출로 대신"}
+{"id":"SN-058","accept":["답함"],"space":[],"metric_ok":["5년생존율","폐업률"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"두 지표를 함께 만족하는 동네 찾기, 조건 해석이 갈릴 수 있음"}
+{"id":"GA-038","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"제주 밖 부산 자료는 없음"}
+{"id":"GA-109","accept":["답함"],"space":[],"metric_ok":["매출성장"],"target_ok":["소매"],"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"소매 매출성장 순위 큰 순서"}
+{"id":"GA-056","accept":["답함"],"space":["서홍동"],"metric_ok":["폐업수"],"target_ok":["음식점"],"period":{"year":2025},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"작년 2025 음식점 폐업수"}
+{"id":"FB-039","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"임대료 시세는 범위 밖"}
+{"id":"SN-021","accept":["답함","되묻기"],"space":["구좌읍"],"metric_ok":["매출","일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"잘 나간다의 뜻이 갈림, 동네는 구좌읍"}
+{"id":"GA-112","accept":["답함"],"space":["연동"],"metric_ok":["매출"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"고깃집 매출은 음식점 매출로 대신"}
+{"id":"SN-009","accept":["답함"],"space":["중문동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":null,"notice":[],"ambiguous":false,"why":"여름과 겨울 방문 차이"}
+{"id":"SN-045","accept":["답함"],"space":["표선면"],"metric_ok":["건당금액"],"target_ok":null,"period":{"year":2026,"month":10},"cond":[],"order":null,"notice":["자료 없음"],"ambiguous":true,"why":"지난달 2026-10은 매출 자료 기간(2026-09까지) 밖"}
+{"id":"GA-062","accept":["답함"],"space":["안덕면"],"metric_ok":["일평균방문"],"target_ok":null,"period":{"month":7},"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"방문 지표에 업종 구분 없어 카페 대신 동네 전체 방문"}
+{"id":"GA-064","accept":["답함","되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["분식","음식점"],"period":null,"cond":[],"order":null,"notice":["제주 전체 값"],"ambiguous":false,"why":"업종별 생존율은 제주 전체 값만 있음"}
+{"id":"GA-088","accept":["답함"],"space":[],"metric_ok":["청년비중"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"청년비중 낮은 순서"}
+{"id":"GA-036","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"예약자 개인 정보"}
+{"id":"GA-121","accept":["답함"],"space":["성산읍"],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"버스 이용 붐빔은 버스일평균"}
+{"id":"GA-092","accept":["답함"],"space":[],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"버스일평균 작은 순서"}
+{"id":"GA-081","accept":["답함"],"space":["용담2동"],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"버스에 업종·주말 구분이 없어 동네 버스일평균으로 답함"}
+{"id":"GA-104","accept":["답함"],"space":[],"metric_ok":["건당금액"],"target_ok":["음식점","횟집"],"period":null,"cond":[],"order":"desc","notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"횟집은 음식점 건당금액으로 대신, 큰 순서"}
+{"id":"GA-055","accept":["답함"],"space":["대륜동"],"metric_ok":["이용건수"],"target_ok":["음식점","카페"],"period":{"year":2026},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"카페는 음식점 이용건수로 대신, 2026 추세"}
+{"id":"SN-077","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"숙박 예약자 개인 정보"}
+{"id":"SN-007","accept":["답함"],"space":[],"metric_ok":["개업수"],"target_ok":["음식점"],"period":{"year":2026},"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"2026 개업수 최다 동네, 음식점 묶음"}
+{"id":"SN-014","accept":["답함"],"space":[],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"매출 작은 순서 동네"}
+{"id":"GA-090","accept":["답함"],"space":[],"metric_ok":["폐업수"],"target_ok":["일식","음식점"],"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"일식은 음식점 묶음 폐업수, 작은 순서"}
+{"id":"GA-007","accept":["되묻기"],"space":[],"metric_ok":["점포수"],"target_ok":["편의점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"주변의 기준 동네가 없음"}
+{"id":"FB-059","accept":["답함"],"space":[],"metric_ok":["이용건수"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"결제 건수 작은 순서 동네"}
+{"id":"FB-015","accept":["답함"],"space":[],"metric_ok":["점포수"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"점포수 작은 순서 동네"}
+{"id":"SN-037","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집 추천은 범위 밖"}
+{"id":"GA-126","accept":["답함"],"space":["남원읍"],"metric_ok":["점포수"],"target_ok":["분식"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"남원읍 분식집 점포수"}
+{"id":"FB-017","accept":["답함"],"space":["표선면"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"비슷한 동네 찾기, 비교 지표가 정해지지 않음"}
+{"id":"SN-076","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"권리금은 범위 밖"}
+{"id":"GA-034","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"특정 가게 사장 개인 매출"}
+{"id":"SN-019","accept":["답함","되묻기"],"space":["대정읍"],"metric_ok":["매출","일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"요즘 어떤지의 뜻이 넓어 종합 진단 또는 되묻기"}
+{"id":"GA-142","accept":["답함"],"space":["중앙동","천지동"],"metric_ok":["이용건수"],"target_ok":["분식","음식점"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"올레시장은 중앙동 또는 천지동, 분식은 음식점으로 대신"}
+{"id":"FB-026","accept":["답함"],"space":[],"metric_ok":["5년생존율"],"target_ok":["음식점"],"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"음식점 5년생존율 작은 순서"}
+{"id":"GA-035","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"대표자 주민번호는 개인 정보"}
+{"id":"SN-015","accept":["답함"],"space":[],"metric_ok":["고령비중"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"고령비중 낮은 순서 세 곳"}
+{"id":"GA-011","accept":["되묻기"],"space":[],"metric_ok":["개업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"주변의 기준 동네가 없음"}
+{"id":"GA-132","accept":["답함","되묻기"],"space":["일도1동","일도2동","이도1동","이도2동","삼도1동","삼도2동"],"metric_ok":["매출"],"target_ok":["음식점","한식"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"구제주는 행정동 여러 곳에 걸친 생활 지명"}
+{"id":"FB-062","accept":["답함"],"space":["예래동"],"metric_ok":["매출"],"target_ok":["숙박"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"예래동 숙박 매출 추이 2021-2025"}
+{"id":"GA-050","accept":["답함","되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["카페","음식점"],"period":null,"cond":[],"order":null,"notice":["제주 전체 값"],"ambiguous":false,"why":"카페 생존율은 제주 전체 값만 있음"}
+{"id":"FB-040","accept":["답함"],"space":["용담2동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"다음 7일 방문 예상"}
+{"id":"GA-026","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"월세 시세는 범위 밖"}
+{"id":"FB-078","accept":["답함"],"space":["일도2동"],"metric_ok":["버스일평균"],"target_ok":null,"period":{"year":2025,"month":3},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025년 3월 버스일평균"}
+{"id":"FB-006","accept":["답함","범위밖"],"space":["화북동"],"metric_ok":["거주연령구성"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"주민 수 자체는 없고 거주연령구성으로 대신"}
+{"id":"GA-084","accept":["답함"],"space":["효돈동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["주말/평일"],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"평일 방문 값, 카페 구분은 방문에 없음"}
+{"id":"GA-139","accept":["답함","되묻기"],"space":["이도1동","이도2동","노형동","아라동","연동"],"metric_ok":["점포수"],"target_ok":["치킨집"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"제주시청과 대학로가 가리키는 행정동이 여러 곳"}
+{"id":"SN-047","accept":["답함"],"space":[],"metric_ok":["폐업수"],"target_ok":["음식점"],"period":{"year":2025},"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"2025 폐업수 최다 동네"}
+{"id":"FB-036","accept":["되묻기"],"space":[],"metric_ok":["점포수"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"이 근처의 위치를 알 수 없음"}
+{"id":"SN-029","accept":["답함"],"space":["일도1동"],"metric_ok":["관광객비중"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"동문시장은 일도1동, 관광객비중"}
+{"id":"GA-037","accept":["답함","범위밖"],"space":["노형동"],"metric_ok":["매출"],"target_ok":["카페","음식점"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","자료 없음"],"ambiguous":true,"why":"서울 강남은 범위 밖, 노형동 카페는 음식점 매출로 대신"}
+{"id":"GA-022","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"권리금 시세는 범위 밖"}
+{"id":"SN-043","accept":["답함"],"space":["외도동"],"metric_ok":["매출"],"target_ok":null,"period":{"year":2025},"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"2025년 매출 값으로 2022와 비교 가능"}
+{"id":"SN-024","accept":["답함","되묻기"],"space":["오라동"],"metric_ok":["매출","일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"사정의 뜻이 넓어 종합 진단 또는 되묻기"}
+{"id":"SN-074","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"가까운 곳의 위치를 알 수 없음"}
+{"id":"SN-050","accept":["답함","범위밖"],"space":["아라동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["자료 없음"],"ambiguous":true,"why":"기상 자료는 비만 있어 눈 효과는 자료 없음"}
+{"id":"FB-064","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"권리금은 범위 밖"}
+{"id":"GA-071","accept":["답함"],"space":["조천읍"],"metric_ok":["건당금액"],"target_ok":["음식점","주점"],"period":null,"cond":[],"order":null,"notice":["자료 없음","센터 자료 필요"],"ambiguous":true,"why":"건당금액에 주말 효과 자료가 없고 주점은 음식점으로 대신"}
+{"id":"FB-069","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"저희 집 주변은 행정동이 특정되지 않음"}
+{"id":"GA-120","accept":["답함"],"space":["구좌읍"],"metric_ok":["관광객비중"],"target_ok":["음식점","카페"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"외지인은 관광객비중으로 대신, 카페는 음식점으로 대신"}
+{"id":"GA-095","accept":["답함"],"space":[],"metric_ok":["관광객비중"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"관광객비중 작은 순서"}
+{"id":"GA-016","accept":["답함","되묻기"],"space":["용담1동","용담2동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["주말/평일"],"order":null,"notice":[],"ambiguous":true,"why":"용담동은 행정동이 아니라 용담1동과 용담2동 중 하나"}
+{"id":"GA-127","accept":["답함"],"space":["외도동"],"metric_ok":["폐업수","폐업률"],"target_ok":["카페","음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"카페는 음식점 묶음 폐업수로 답함"}
+{"id":"GA-115","accept":["답함"],"space":["이도2동"],"metric_ok":["방문연령구성"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"모이는 사람의 연령은 방문연령구성"}
+{"id":"GA-047","accept":["답함"],"space":["화북동"],"metric_ok":["이용건수"],"target_ok":["음식점","중식"],"period":{"month":7},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"중식은 음식점 이용건수로 대신, 7월"}
+{"id":"FB-047","accept":["답함"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":{"year":2026,"month":8},"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"2026년 8월 일평균방문 큰 순서"}
+{"id":"GA-076","accept":["답함"],"space":["안덕면"],"metric_ok":["시간대매출"],"target_ok":["음식점","카페"],"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표","자료 없음"],"ambiguous":false,"why":"시간대 피크는 시간대매출, 주말 구분 자료 없음"}
+{"id":"GA-101","accept":["답함"],"space":[],"metric_ok":["고령비중"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"고령비중 높은 순서 1위"}
+{"id":"GA-116","accept":["답함"],"space":["한림읍"],"metric_ok":["5년생존율"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"동네 음식점 전체 생존율로 판단 재료 제시"}
+{"id":"GA-144","accept":["답함"],"space":["이호동"],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"이호테우는 이호동, 편의점 구분 없는 버스일평균"}
+{"id":"SN-080","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"세금 질문은 범위 밖"}
+{"id":"SN-071","accept":["되묻기"],"space":[],"metric_ok":["폐업률"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"창업 위치가 없어 동네 폐업률을 특정할 수 없음"}
+{"id":"SN-062","accept":["답함","되묻기"],"space":["안덕면"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"괜찮다의 기준이 정해지지 않음, 동네는 안덕면"}
+{"id":"GA-073","accept":["답함"],"space":["성산읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"봄 일평균방문 추이, 카페 구분은 방문에 없음"}
+{"id":"SN-025","accept":["답함"],"space":["대륜동"],"metric_ok":["건당금액"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"비싼 식당은 음식점 건당금액으로 대신"}
+{"id":"FB-010","accept":["답함"],"space":["이호동","도두동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"두 동네 일평균방문 비교"}
+{"id":"GA-043","accept":["답함"],"space":["이도2동"],"metric_ok":["폐업수"],"target_ok":["치킨집","음식점"],"period":{"year":2026},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2026 음식점 묶음 폐업수"}
+{"id":"FB-024","accept":["답함"],"space":[],"metric_ok":["폐업수"],"target_ok":["음식점"],"period":{"year":2025},"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"2025 폐업수 최다 동네"}
+{"id":"GA-014","accept":["되묻기"],"space":[],"metric_ok":["점포수"],"target_ok":["편의점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"해수욕장 이름이 특정되지 않음"}
+{"id":"FB-052","accept":["답함","범위밖"],"space":["동홍동"],"metric_ok":["거주연령구성"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"주민 수 자체는 범위 밖, 거주연령구성으로 대신"}
+{"id":"GA-087","accept":["답함"],"space":[],"metric_ok":["개업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"음식점 개업수 작은 순서"}
+{"id":"FB-004","accept":["답함"],"space":[],"metric_ok":["건당금액"],"target_ok":["음식점"],"period":null,"cond":[],"order":"desc","notice":["대체 지표"],"ambiguous":false,"why":"밥값은 음식점 건당금액으로 대신, 큰 순서 다섯"}
+{"id":"GA-002","accept":["되묻기"],"space":[],"metric_ok":["폐업률"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"우리 동네가 어디인지 알 수 없음"}
+{"id":"GA-018","accept":["답함","되묻기"],"space":["이도1동","이도2동"],"metric_ok":["5년생존율"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"이도동은 이도1동과 이도2동 중 하나"}
+{"id":"GA-009","accept":["되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["치킨집"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"이 근방의 위치를 알 수 없음"}
+{"id":"GA-001","accept":["되묻기"],"space":[],"metric_ok":["점포수"],"target_ok":["카페"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"이 동네가 특정되지 않음"}
+{"id":"GA-051","accept":["답함","되묻기"],"space":[],"metric_ok":["외국인매출"],"target_ok":["음식점"],"period":{"recent_months":3},"cond":[],"order":null,"notice":["제주 전체 값","대체 지표"],"ambiguous":false,"why":"외국인매출은 제주 전체만 있어 동네 값 없음"}
+{"id":"FB-072","accept":["답함"],"space":["중문동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":[],"ambiguous":false,"why":"중문관광단지는 중문동, 비 조건 방문"}
+{"id":"GA-099","accept":["답함","범위밖"],"space":[],"metric_ok":["외국인매출"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":["자료 없음"],"ambiguous":true,"why":"외국인매출은 제주 전체만 있어 동네 순위 자료 없음"}
+{"id":"GA-123","accept":["답함"],"space":["대정읍"],"metric_ok":["매출성장","매출"],"target_ok":["음식점","일식"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"일식은 음식점 매출성장으로 대신"}
+{"id":"GA-110","accept":["답함"],"space":[],"metric_ok":["폐업률"],"target_ok":["음식점","중식"],"period":null,"cond":[],"order":"desc","notice":["대체 지표"],"ambiguous":false,"why":"폐업률은 음식점 전체, 중식은 대신"}
+{"id":"GA-091","accept":["답함","되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["치킨집","음식점"],"period":null,"cond":[],"order":"asc","notice":["제주 전체 값","대체 지표"],"ambiguous":true,"why":"치킨 생존율은 제주 전체 값만 있어 음식점 동네 값으로 대신"}
+{"id":"SN-044","accept":["답함"],"space":["일도2동"],"metric_ok":["폐업수"],"target_ok":["음식점"],"period":{"year":2026},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2026년 일도2동 음식점 폐업 증가 확인"}
+{"id":"GA-134","accept":["답함"],"space":["한림읍"],"metric_ok":["점포수"],"target_ok":["숙박"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"협재는 한림읍, 숙박 점포수"}
+{"id":"SN-002","accept":["답함"],"space":["애월읍"],"metric_ok":["매출"],"target_ok":["음식점"],"period":{"year":2025,"month":7},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025년 7월 애월읍 음식점 매출"}
+{"id":"FB-049","accept":["되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["치킨집"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"여기가 어느 동네인지 알 수 없음"}
+{"id":"GA-118","accept":["답함"],"space":["삼양동"],"metric_ok":["개업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"삼양동 음식점 개업수"}
+{"id":"GA-131","accept":["답함","되묻기"],"space":["노형동","연동"],"metric_ok":["점포수"],"target_ok":["카페"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"신제주는 노형동과 연동에 걸친 생활 지명"}
+{"id":"GA-027","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집 추천은 범위 밖"}
+{"id":"GA-019","accept":["답함","되묻기"],"space":["용담2동","아라동"],"metric_ok":["매출"],"target_ok":["숙박"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"공항 근처가 가리키는 행정동이 정해지지 않음"}
+{"id":"SN-070","accept":["답함"],"space":["표선면"],"metric_ok":["점포수"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"표선해수욕장은 표선면"}
+{"id":"FB-009","accept":["답함"],"space":["구좌읍"],"metric_ok":["건당금액"],"target_ok":["음식점","카페"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"가격대는 건당금액, 카페는 음식점으로 대신"}
+{"id":"SN-052","accept":["답함"],"space":["예래동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절","성수기/비수기"],"order":null,"notice":[],"ambiguous":false,"why":"여름 성수기 방문 증가"}
+{"id":"SN-038","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"서울 홍대는 제주 밖"}
+{"id":"SN-063","accept":["답함","되묻기"],"space":["봉개동"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"근황의 범위가 넓어 종합 진단 또는 되묻기"}
+{"id":"GA-145","accept":["답함"],"space":["안덕면"],"metric_ok":["개업수"],"target_ok":["한식","음식점"],"period":{"year":2026},"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"산방산은 안덕면, 한식 개업수 2026 추이"}
+{"id":"FB-030","accept":["답함"],"space":["대정읍"],"metric_ok":["폐업수"],"target_ok":["음식점"],"period":{"year":2026},"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"모슬포는 대정읍, 가게 전체 대신 음식점 폐업수"}
+{"id":"FB-038","accept":["답함","되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["치킨집","음식점"],"period":null,"cond":[],"order":null,"notice":["제주 전체 값"],"ambiguous":false,"why":"치킨 생존율은 제주 전체 값"}
+{"id":"SN-006","accept":["답함"],"space":["용담2동"],"metric_ok":["일평균방문"],"target_ok":null,"period":{"year":2024},"cond":["비","계절"],"order":null,"notice":[],"ambiguous":false,"why":"2024 여름 비 온 날 방문 감소"}
+{"id":"GA-103","accept":["답함"],"space":[],"metric_ok":["개업수"],"target_ok":["음식점","주점"],"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":true,"why":"늘어남의 기준 기간이 정해지지 않음"}
+{"id":"GA-003","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["주말/평일"],"order":null,"notice":[],"ambiguous":false,"why":"여기가 어디인지 알 수 없음"}
+{"id":"SN-051","accept":["답함"],"space":["남원읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["성수기/비수기"],"order":null,"notice":["방문으로 대신"],"ambiguous":false,"why":"매출 대신 방문으로 비수기 차이"}
+{"id":"GA-105","accept":["답함"],"space":[],"metric_ok":["폐업수"],"target_ok":["치킨집","음식점"],"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"치킨 폐업수 최다 동네"}
+{"id":"FB-060","accept":["답함"],"space":[],"metric_ok":["폐업률"],"target_ok":["음식점"],"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"음식점 폐업률 작은 순서"}
+{"id":"SN-013","accept":["답함"],"space":[],"metric_ok":["5년생존율"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"5년생존율 상위 다섯"}
+{"id":"GA-146","accept":["답함"],"space":["노형동"],"metric_ok":["점포수","매출"],"target_ok":["카페","음식점"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"카페 매출은 음식점으로 대신, 점포수는 카페 소분류"}
+{"id":"SN-069","accept":["답함"],"space":["중문동"],"metric_ok":["관광객비중"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"중문관광단지는 중문동 관광객비중"}
+{"id":"GA-102","accept":["답함"],"space":[],"metric_ok":["이용건수"],"target_ok":["숙박"],"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"숙박 이용건수 1위"}
+{"id":"FB-033","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"영업신고 절차는 범위 밖"}
+{"id":"GA-049","accept":["답함"],"space":["조천읍"],"metric_ok":["건당금액"],"target_ok":["음식점","일식"],"period":{"year":2026},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"일식당은 음식점 건당금액으로 대신"}
+{"id":"GA-013","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":["카페"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"제주 서쪽은 행정동이 특정되지 않음"}
+{"id":"SN-073","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":null,"notice":[],"ambiguous":false,"why":"제가 사는 마을이 특정되지 않음"}
+{"id":"GA-089","accept":["답함"],"space":[],"metric_ok":["점포수"],"target_ok":["편의점"],"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":true,"why":"읍면만 골라 순위, 필터 기준 해석이 갈릴 수 있음"}
+{"id":"FB-074","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"시내가 가리키는 동네가 정해지지 않음"}
+{"id":"FB-057","accept":["답함"],"space":[],"metric_ok":["관광객비중"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"관광객이 많은 동네 순위"}
+{"id":"GA-008","accept":["되묻기"],"space":[],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"여기가 어느 동네인지 알 수 없음"}
+{"id":"GA-137","accept":["답함"],"space":["성산읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"성산일출봉은 성산읍, 카페 구분 없는 방문"}
+{"id":"GA-114","accept":["답함"],"space":["아라동"],"metric_ok":["고령비중"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"거주 어르신은 고령비중"}
+{"id":"GA-020","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":["카페"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"서귀포 바닷가 쪽은 행정동이 특정되지 않음"}
+{"id":"GA-024","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"매매가는 부동산 시세로 범위 밖"}
+{"id":"FB-005","accept":["답함"],"space":["연동","노형동"],"metric_ok":["시간대매출"],"target_ok":null,"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"신제주는 연동 또는 노형동, 시간대 사람 수는 시간대매출로 대신"}
+{"id":"FB-061","accept":["답함"],"space":["서홍동"],"metric_ok":["개업수"],"target_ok":["치킨집","음식점"],"period":{"year":2026},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2026 서홍동 치킨 개업"}
+{"id":"FB-071","accept":["답함"],"space":["송산동"],"metric_ok":["건당금액"],"target_ok":["숙박"],"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"숙박비는 숙박 건당금액으로 대신"}
+{"id":"GA-138","accept":["답함"],"space":["이도1동","일도1동"],"metric_ok":["매출"],"target_ok":["음식점","주점"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"탑동은 이도1동 또는 일도1동, 주점은 음식점 매출로 대신"}
+{"id":"GA-066","accept":["답함"],"space":["노형동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":["방문으로 대신"],"ambiguous":false,"why":"카페 매출 비 효과는 방문으로 대신"}
+{"id":"SN-041","accept":["답함"],"space":["정방동"],"metric_ok":["일평균방문"],"target_ok":null,"period":{"year":2025},"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"2025년 1~6월 범위를 연 단위 표기로만 표현"}
+{"id":"SN-054","accept":["답함"],"space":[],"metric_ok":["개업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"음식점 개업수 작은 순서"}
+{"id":"SN-035","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"제 가게 위치를 알 수 없음"}
+{"id":"GA-141","accept":["답함"],"space":["표선면"],"metric_ok":["폐업률"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"표선해수욕장은 표선면, 음식점 폐업률"}
+{"id":"GA-052","accept":["답함"],"space":["표선면"],"metric_ok":["매출"],"target_ok":["소매"],"period":{"year":2025},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025 표선면 소매 매출"}
+{"id":"SN-061","accept":["답함","되묻기"],"space":["도두동"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"경기의 기준이 정해지지 않음, 동네는 도두동"}
+{"id":"FB-075","accept":["답함"],"space":["중앙동","천지동"],"metric_ok":["시간대매출"],"target_ok":null,"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"이중섭거리는 중앙동 또는 천지동, 유동인구는 시간대매출로 대신"}
+{"id":"GA-080","accept":["답함"],"space":["화북동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":["방문으로 대신"],"ambiguous":false,"why":"매출 대신 방문으로 비 효과"}
+{"id":"GA-107","accept":["답함"],"space":[],"metric_ok":["점포수"],"target_ok":["분식"],"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"분식 점포수 최다 동네"}
+{"id":"SN-033","accept":["되묻기"],"space":[],"metric_ok":["폐업수"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"여기가 어디인지 알 수 없음"}
+{"id":"GA-068","accept":["답함"],"space":["이도2동"],"metric_ok":["시간대매출"],"target_ok":["음식점"],"period":{"recent_months":12},"cond":[],"order":null,"notice":["자료 없음"],"ambiguous":true,"why":"점심 시간대 매출은 있으나 평일 구분 자료 없음"}
+{"id":"SN-012","accept":["답함"],"space":["중앙동","정방동","천지동"],"metric_ok":["점포수"],"target_ok":null,"period":null,"cond":["주말/평일"],"order":null,"notice":["자료 없음"],"ambiguous":true,"why":"서귀동 행정동 불명, 점포수는 요일 효과 자료 없음"}
+{"id":"FB-073","accept":["답함"],"space":["중앙동","천지동"],"metric_ok":["시간대매출"],"target_ok":null,"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"올레시장 행정동 확인 필요, 붐비는 시간은 시간대매출로 대신"}
+{"id":"FB-034","accept":["답함"],"space":["우도면"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["성수기/비수기"],"order":null,"notice":[],"ambiguous":false,"why":"우도면 성수기 비수기 방문 차이"}
+{"id":"GA-079","accept":["답함"],"space":["삼양동"],"metric_ok":["이용건수"],"target_ok":["분식","음식점"],"period":null,"cond":["주말/평일"],"order":null,"notice":["자료 없음","센터 자료 필요"],"ambiguous":false,"why":"주말 이용건수 자료 없음, 분식은 음식점으로 대신"}
+{"id":"SN-048","accept":["답함"],"space":["이호동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":[],"ambiguous":false,"why":"비 오는 날 이호동 방문 변화"}
+{"id":"FB-065","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"평점은 범위 밖"}
+{"id":"FB-048","accept":["답함"],"space":["효돈동"],"metric_ok":["폐업률","폐업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"가게 전체 폐업은 음식점 폐업으로 대신"}
+{"id":"GA-098","accept":["답함"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"일평균방문 큰 순서"}
+{"id":"GA-128","accept":["답함"],"space":["오라동"],"metric_ok":["개업수"],"target_ok":["한식","음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"오라동 한식 개업 추이"}
+{"id":"SN-066","accept":["답함"],"space":["이도1동"],"metric_ok":["건당금액"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"식당 물가는 음식점 건당금액으로 대신"}
+{"id":"GA-085","accept":["답함"],"space":["예래동"],"metric_ok":["관광객비중"],"target_ok":["숙박"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"여름 기간 묶음 집계, 월 자료로 계산"}
+{"id":"FB-021","accept":["되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"동네가 없어 생존율 대상 불명"}
+{"id":"SN-079","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집 별점은 범위 밖"}
+{"id":"GA-040","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"제주 밖 광역시도 비교"}
+{"id":"FB-056","accept":["답함","범위밖"],"space":["중앙동"],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"업종 추천은 금지, 판단 재료 매출만 보여줌"}
+{"id":"GA-048","accept":["답함"],"space":["삼양동"],"metric_ok":["폐업률"],"target_ok":["음식점","분식"],"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"폐업률은 3년 묶음 음식점 전체, 작년 값 아님"}
+{"id":"FB-041","accept":["답함"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":"desc","notice":[],"ambiguous":false,"why":"가을 일평균방문 상위 다섯"}
+{"id":"GA-125","accept":["답함"],"space":["표선면"],"metric_ok":["건당금액"],"target_ok":["숙박"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"객단가는 건당금액"}
+{"id":"GA-148","accept":["답함"],"space":["애월읍"],"metric_ok":["일평균방문","버스일평균"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"애월읍 두 지표 동시 답"}
+{"id":"GA-057","accept":["답함"],"space":["동홍동"],"metric_ok":["버스일평균"],"target_ok":null,"period":{"year":2025,"month":7},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025년 7월 동홍동 버스일평균"}
+{"id":"GA-135","accept":["답함","되묻기"],"space":[],"metric_ok":["외국인매출"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["제주 전체 값"],"ambiguous":true,"why":"외국인매출은 제주 전체만 있음"}
+{"id":"FB-032","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"우리 동네가 특정되지 않음"}
+{"id":"GA-030","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집과 현지인 추천은 범위 밖"}
+{"id":"GA-033","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"점장 연락처는 개인 정보"}
+{"id":"GA-032","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집 추천은 범위 밖"}
+{"id":"SN-027","accept":["답함"],"space":["노형동"],"metric_ok":["시간대매출"],"target_ok":null,"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"시간대 사람 수는 시간대매출로 대신"}
+{"id":"FB-013","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"부산은 제주 밖"}
+{"id":"GA-129","accept":["답함"],"space":["동홍동"],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"소비 활발함은 매출로 답함"}
+{"id":"GA-028","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집 별점 순위는 범위 밖"}
+{"id":"SN-049","accept":["답함"],"space":["서홍동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":null,"notice":[],"ambiguous":false,"why":"봄과 가을 방문 비교"}
+{"id":"SN-040","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"미래 매출 금액 예측은 범위 밖"}
+{"id":"FB-003","accept":["답함"],"space":["안덕면"],"metric_ok":["관광객비중"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"안덕면 관광객비중"}
+{"id":"FB-020","accept":["답함"],"space":["애월읍"],"metric_ok":["매출"],"target_ok":["숙박"],"period":{"year":2025,"month":7},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025년 7월 애월읍 숙박 매출"}
+{"id":"SN-064","accept":["답함","되묻기"],"space":["노형동","연동"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"신제주 생활 지명, 요즘 어때요의 기준이 넓음"}
+{"id":"FB-080","accept":["답함"],"space":["건입동"],"metric_ok":["매출"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"건입동 식당 벌이는 음식점 매출"}
+{"id":"GA-060","accept":["답함"],"space":["중앙동"],"metric_ok":["매출"],"target_ok":["소매"],"period":{"recent_months":3},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"중앙동 소매 최근 3개월 매출"}
+{"id":"FB-063","accept":["답함"],"space":["봉개동"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"종합 진단은 여러 지표 조합, 지표 선택이 갈릴 수 있음"}
+{"id":"GA-025","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"분양가는 범위 밖"}
+{"id":"GA-054","accept":["답함"],"space":["중문동"],"metric_ok":["관광객비중"],"target_ok":["숙박"],"period":{"year":2024},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"호텔은 숙박 대분류, 2024 관광객비중"}
+{"id":"SN-046","accept":["답함"],"space":["성산읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":{"year":2024},"cond":["주말/평일","계절"],"order":null,"notice":[],"ambiguous":false,"why":"2024 겨울 주말과 평일 방문 비교"}
+{"id":"GA-140","accept":["답함","되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["카페","음식점"],"period":null,"cond":[],"order":null,"notice":["제주 전체 값"],"ambiguous":false,"why":"카페 생존율은 제주 전체 값만 있음"}
+{"id":"SN-020","accept":["답함"],"space":["화북동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"화북동 발길은 일평균방문"}
+{"id":"SN-055","accept":["답함"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"일평균방문 작은 순서 세 곳"}
+{"id":"SN-001","accept":["답함"],"space":["노형동"],"metric_ok":["폐업수"],"target_ok":["카페","음식점"],"period":{"year":2024},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2024 노형동 카페는 음식점 폐업수"}
+{"id":"FB-079","accept":["답함"],"space":["한림읍"],"metric_ok":["관광객비중"],"target_ok":null,"period":{"year":2024,"month":10},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"협재는 한림읍, 2024년 10월 관광객비중"}
+{"id":"GA-031","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집 추천은 범위 밖"}
+{"id":"GA-119","accept":["답함"],"space":["조천읍"],"metric_ok":["건당금액"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"돈 많이 씀은 건당금액으로 대신"}
+{"id":"GA-100","accept":["답함"],"space":[],"metric_ok":["5년생존율"],"target_ok":["음식점"],"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"음식점 생존율 최고 동네"}
+{"id":"FB-066","accept":["답함"],"space":["오라동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":null,"notice":[],"ambiguous":false,"why":"오라동 봄과 다른 계절 방문 비교"}
+{"id":"FB-053","accept":["답함"],"space":[],"metric_ok":["고령비중"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":true,"why":"제주시 동네 묶음으로 고령비중 정렬"}
+{"id":"GA-059","accept":["답함"],"space":["정방동"],"metric_ok":["매출성장"],"target_ok":["음식점","일식"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"일식은 음식점 매출성장으로 대신"}
+{"id":"GA-117","accept":["답함"],"space":["화북동"],"metric_ok":["폐업수"],"target_ok":["치킨집","음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"화북동 치킨 폐업수"}
+{"id":"SN-057","accept":["답함"],"space":[],"metric_ok":["관광객비중"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"관광객비중 상위 10개"}
+{"id":"FB-055","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"부가세 세금은 범위 밖"}
+{"id":"FB-022","accept":["답함"],"space":[],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":true,"why":"서귀포시 동네 묶음에서 버스일평균 1위"}
+{"id":"SN-016","accept":["답함"],"space":[],"metric_ok":["점포수"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"점포수 작은 순서"}
+{"id":"FB-050","accept":["답함"],"space":["천지동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["주말/평일"],"order":null,"notice":["방문으로 대신"],"ambiguous":false,"why":"매출 대신 방문으로 주말 차이"}
+{"id":"GA-097","accept":["답함"],"space":[],"metric_ok":["매출"],"target_ok":["음식점","한식"],"period":null,"cond":[],"order":"desc","notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"한식 매출은 음식점으로 대신, 1위"}
+{"id":"SN-056","accept":["답함"],"space":[],"metric_ok":["청년비중"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"청년비중 작은 순서"}
+{"id":"FB-008","accept":["답함"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":"desc","notice":[],"ambiguous":true,"why":"여름 방문 증가 폭 순위, 증가 기준이 갈릴 수 있음"}
+{"id":"FB-067","accept":["답함"],"space":["남원읍"],"metric_ok":["매출"],"target_ok":["소매"],"period":{"year":2022},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2022 남원읍 소매 매출"}
+{"id":"SN-005","accept":["답함"],"space":["연동"],"metric_ok":["고령비중"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"연동 고령비중 2023-2025 추이"}
+{"id":"GA-108","accept":["답함"],"space":[],"metric_ok":["버스일평균"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"버스일평균 1위"}
+{"id":"SN-060","accept":["답함"],"space":["송산동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"송산동 사람 다님은 일평균방문"}
+{"id":"SN-004","accept":["답함"],"space":["한림읍"],"metric_ok":["개업수"],"target_ok":["음식점"],"period":{"year":2025},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025 한림읍 음식점 개업수"}
+{"id":"SN-003","accept":["답함"],"space":["이도2동"],"metric_ok":["매출"],"target_ok":["음식점"],"period":{"recent_months":3},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"최근 3개월 음식점 매출 흐름"}
+{"id":"GA-046","accept":["답함"],"space":["아라동"],"metric_ok":["점포수"],"target_ok":["편의점"],"period":{"year":2024},"cond":[],"order":null,"notice":["자료 없음"],"ambiguous":true,"why":"점포수는 최신 한 시점만 있어 2024 값 없음"}
+{"id":"FB-023","accept":["답함"],"space":["이도2동"],"metric_ok":["매출"],"target_ok":["음식점"],"period":{"recent_months":3},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"최근 3개월 식당 매출로 장사 판단"}
+{"id":"GA-069","accept":["답함"],"space":["애월읍"],"metric_ok":["매출","일평균방문"],"target_ok":["음식점","카페"],"period":null,"cond":["계절","성수기/비수기"],"order":null,"notice":["센터 자료 필요","방문으로 대신"],"ambiguous":true,"why":"카페 매출은 음식점으로, 성수기 효과는 방문으로 대신"}
+{"id":"GA-074","accept":["답함"],"space":["중문동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":["방문으로 대신","센터 자료 필요"],"ambiguous":false,"why":"이용건수 비 효과는 방문으로 대신"}
+{"id":"FB-028","accept":["답함"],"space":["조천읍"],"metric_ok":["버스일평균"],"target_ok":null,"period":{"year":2025},"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"함덕은 조천읍, 상반기 기간 표현은 2025년 값으로 답함"}
+{"id":"GA-082","accept":["답함"],"space":["건입동"],"metric_ok":["건당금액"],"target_ok":["음식점","한식"],"period":null,"cond":["계절"],"order":null,"notice":["센터 자료 필요"],"ambiguous":true,"why":"한식 건당금액 겨울 값, 계절 묶음 집계"}
+{"id":"GA-147","accept":["답함"],"space":["연동"],"metric_ok":["개업수","폐업수"],"target_ok":["음식점","한식"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"연동 한식 개업과 폐업 비교"}
+{"id":"FB-051","accept":["되묻기"],"space":[],"metric_ok":["점포수"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"동쪽과 서쪽 마을이 행정동으로 특정되지 않음"}
+{"id":"SN-039","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"영업신고 서류는 인허가 범위 밖"}
+{"id":"GA-083","accept":["답함"],"space":["송산동"],"metric_ok":["매출","일평균방문"],"target_ok":["음식점"],"period":null,"cond":["성수기/비수기"],"order":null,"notice":["방문으로 대신","센터 자료 필요"],"ambiguous":true,"why":"횟집은 음식점 매출, 비수기 효과는 방문으로 대신"}
+{"id":"GA-150","accept":["답함"],"space":["한림읍"],"metric_ok":["이용건수","건당금액"],"target_ok":["숙박"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"한림읍 숙박 두 지표 동시 답"}
+{"id":"SN-065","accept":["답함","범위밖"],"space":["성산읍"],"metric_ok":["거주연령구성"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"인구 수는 없고 거주연령구성으로 대신"}
+{"id":"SN-023","accept":["답함","되묻기"],"space":["한림읍"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"요즘 어때요의 기준이 넓음, 동네는 협재 기준 한림읍"}
+{"id":"SN-078","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"부산 해운대는 제주 밖"}
+{"id":"FB-058","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"그 업종이 무엇인지 정해지지 않음"}
+{"id":"GA-017","accept":["답함","되묻기"],"space":["일도1동","일도2동"],"metric_ok":["개업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"일도동은 일도1동과 일도2동 중 하나"}
+{"id":"SN-031","accept":["되묻기"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"우리 동네가 특정되지 않음"}
+{"id":"GA-044","accept":["답함"],"space":["애월읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":{"year":2025,"month":7},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025년 7월 애월읍 일평균방문"}
+{"id":"FB-018","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"맛집 추천은 범위 밖"}
+{"id":"FB-037","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"내년 매출 금액 예측은 범위 밖"}
+{"id":"FB-002","accept":["답함"],"space":["한림읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":[],"ambiguous":false,"why":"비 오는 날 한림읍 방문 변화"}
+{"id":"GA-010","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"동네가 없음"}
+{"id":"FB-076","accept":["답함"],"space":[],"metric_ok":["외국인매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["제주 전체 값"],"ambiguous":true,"why":"외국인 출신지역은 제주 전체 값만 있음"}
+{"id":"FB-001","accept":["답함"],"space":["연동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"연동 발길은 일평균방문"}
+{"id":"SN-011","accept":["답함"],"space":["삼도2동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["비"],"order":null,"notice":["방문으로 대신"],"ambiguous":false,"why":"매출 대신 방문으로 비 효과"}
+{"id":"FB-043","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["계절"],"order":null,"notice":[],"ambiguous":false,"why":"동네가 없어 방문 비교 대상 불명"}
+{"id":"FB-014","accept":["답함"],"space":["일도1동"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["주말/평일"],"order":null,"notice":[],"ambiguous":false,"why":"동문시장은 일도1동, 주말 평일 방문"}
+{"id":"FB-012","accept":["답함"],"space":[],"metric_ok":["청년비중"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"청년비중 작은 순서 세 곳"}
+{"id":"FB-011","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"동네와 업종이 없음"}
+{"id":"SN-059","accept":["답함","되묻기"],"space":["삼양동"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"요즘 느낌의 기준이 넓음, 동네는 삼양동"}
+{"id":"GA-015","accept":["답함","되묻기"],"space":["삼도1동","삼도2동"],"metric_ok":["점포수"],"target_ok":["치킨집"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"삼도동은 삼도1동과 삼도2동 중 하나"}
+{"id":"SN-032","accept":["되묻기"],"space":[],"metric_ok":["5년생존율"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"이 근처 위치를 알 수 없음"}
+{"id":"GA-086","accept":["답함"],"space":[],"metric_ok":["폐업률"],"target_ok":["카페","음식점"],"period":null,"cond":[],"order":"asc","notice":["대체 지표"],"ambiguous":false,"why":"카페 폐업률은 음식점 폐업률로 대신, 작은 순서"}
+{"id":"SN-053","accept":["답함"],"space":[],"metric_ok":["점포수"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"점포수 상위 다섯"}
+{"id":"GA-093","accept":["답함"],"space":[],"metric_ok":["건당금액"],"target_ok":["음식점","한식"],"period":null,"cond":[],"order":"asc","notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"한식 건당금액은 음식점으로 대신, 작은 순서"}
+{"id":"GA-075","accept":["답함"],"space":["대정읍"],"metric_ok":["매출성장"],"target_ok":["음식점","일식"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"가을 조건은 매출성장에 없어 기간 구분 불가, 일식은 음식점으로 대신"}
+{"id":"GA-063","accept":["답함"],"space":["한경면"],"metric_ok":["폐업률"],"target_ok":["치킨집","음식점"],"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"폐업률은 3년 묶음 음식점 전체, 작년 값 아님"}
+{"id":"FB-029","accept":["답함"],"space":["외도동"],"metric_ok":["점포수","5년생존율"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"외도동 점포수와 음식점 생존율"}
+{"id":"GA-077","accept":["답함","되묻기"],"space":[],"metric_ok":["외국인매출"],"target_ok":["음식점"],"period":null,"cond":["성수기/비수기"],"order":null,"notice":["제주 전체 값"],"ambiguous":true,"why":"외국인매출은 제주 전체 값만 있음"}
+{"id":"GA-053","accept":["답함"],"space":["남원읍"],"metric_ok":["개업수"],"target_ok":["음식점","주점"],"period":{"year":2025},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2025 남원읍 주점 개업수"}
+{"id":"GA-023","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"보증금과 임대료는 범위 밖"}
+{"id":"SN-068","accept":["답함"],"space":["대정읍"],"metric_ok":["5년생존율"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"송악산은 대정읍, 음식점 생존율"}
+{"id":"GA-106","accept":["답함"],"space":[],"metric_ok":["청년비중"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"청년비중 1위"}
+{"id":"FB-046","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"예약 손님 전화번호는 개인 정보"}
+{"id":"SN-075","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"거기가 어느 동네인지 알 수 없음"}
+{"id":"GA-122","accept":["답함","되묻기"],"space":[],"metric_ok":["외국인매출"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["제주 전체 값"],"ambiguous":true,"why":"외국인매출은 제주 전체 값만 있어 중문동 값 없음"}
+{"id":"SN-010","accept":["답함"],"space":["우도면"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["성수기/비수기"],"order":null,"notice":[],"ambiguous":false,"why":"우도면 성수기와 비수기 방문 비율"}
+{"id":"FB-031","accept":["답함"],"space":["삼양동"],"metric_ok":["매출성장"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"삼양동 상권 확대는 매출성장"}
+{"id":"GA-029","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"카페 추천은 범위 밖"}
+{"id":"GA-136","accept":["답함"],"space":["대정읍"],"metric_ok":["건당금액"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"모슬포는 대정읍, 횟집은 음식점으로 대신"}
+{"id":"FB-045","accept":["답함"],"space":["대천동"],"metric_ok":["일평균방문","폐업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"대천동 방문과 음식점 폐업수 함께"}
+{"id":"SN-042","accept":["답함"],"space":["한경면"],"metric_ok":["개업수"],"target_ok":["음식점"],"period":{"year":2025},"cond":[],"order":null,"notice":["자료 없음"],"ambiguous":true,"why":"개업수는 연 단위라 가을 값 없음, 2025년 값으로 답함"}
+{"id":"FB-019","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":["카페"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"거기가 어느 동네인지 알 수 없음"}
+{"id":"GA-041","accept":["답함"],"space":["노형동"],"metric_ok":["매출"],"target_ok":["카페","음식점"],"period":{"year":2025},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"2025 노형동 카페 매출은 음식점으로 대신"}
+{"id":"FB-027","accept":["답함"],"space":["아라동"],"metric_ok":["개업수"],"target_ok":["카페","음식점"],"period":{"year":2023},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2023 아라동 카페 개업수"}
+{"id":"SN-026","accept":["답함","범위밖"],"space":["한림읍"],"metric_ok":["거주연령구성"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"인구 수는 없고 거주연령구성으로 대신"}
+{"id":"GA-067","accept":["답함"],"space":["연동"],"metric_ok":["일평균방문"],"target_ok":["한식","음식점"],"period":null,"cond":["주말/평일"],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"한식 구분 없는 주말 일평균방문"}
+{"id":"SN-022","accept":["답함","되묻기"],"space":["건입동"],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":true,"why":"분위기 기준이 넓음, 동네는 건입동"}
+{"id":"SN-034","accept":["되묻기"],"space":[],"metric_ok":["일평균방문"],"target_ok":["카페"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"그 동네가 특정되지 않음"}
+{"id":"GA-133","accept":["답함"],"space":["조천읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":false,"why":"함덕은 조천읍, 카페 구분 없는 방문"}
+{"id":"GA-094","accept":["답함"],"space":[],"metric_ok":["매출성장"],"target_ok":["소매"],"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"소매 매출성장 꼴찌"}
+{"id":"GA-061","accept":["답함"],"space":["대정읍"],"metric_ok":["점포수"],"target_ok":["편의점"],"period":{"year":2025},"cond":[],"order":null,"notice":["자료 없음"],"ambiguous":true,"why":"점포수는 최신 한 시점만 있어 변화 자료 없음"}
+{"id":"GA-042","accept":["답함"],"space":["연동"],"metric_ok":["개업수"],"target_ok":["한식","음식점"],"period":{"year":2024},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2024 연동 한식 개업수"}
+{"id":"GA-021","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"월세 평균은 임대료로 범위 밖"}
+{"id":"GA-070","accept":["답함"],"space":["한림읍"],"metric_ok":["이용건수"],"target_ok":["음식점","횟집"],"period":null,"cond":["계절"],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":true,"why":"횟집은 음식점 이용건수로 대신, 겨울 값 계절 묶음"}
+{"id":"SN-017","accept":["답함"],"space":[],"metric_ok":["건당금액"],"target_ok":null,"period":null,"cond":[],"order":"desc","notice":[],"ambiguous":false,"why":"건당금액 상위 열 곳"}
+{"id":"SN-028","accept":["답함"],"space":["이도1동"],"metric_ok":["개업수"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":["대체 지표"],"ambiguous":true,"why":"탑동은 이도1동 또는 일도1동, 가게는 음식점으로 대신"}
+{"id":"FB-068","accept":["답함"],"space":[],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":"asc","notice":[],"ambiguous":false,"why":"일평균방문 작은 순서 세 곳"}
+{"id":"GA-004","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":["한식"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"근처의 기준 동네가 없음"}
+{"id":"GA-113","accept":["답함"],"space":["애월읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"애월읍 사람 발길은 일평균방문"}
+{"id":"GA-143","accept":["답함"],"space":["애월읍"],"metric_ok":["관광객비중"],"target_ok":["음식점","카페"],"period":null,"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"한담은 애월읍, 카페는 음식점으로 대신"}
+{"id":"GA-072","accept":["답함"],"space":["구좌읍"],"metric_ok":["관광객비중"],"target_ok":["숙박"],"period":null,"cond":["성수기/비수기"],"order":null,"notice":[],"ambiguous":true,"why":"비수기 월 값 묶음으로 관광객비중 집계"}
+{"id":"FB-077","accept":["답함"],"space":["성산읍"],"metric_ok":["5년생존율"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"성산일출봉은 성산읍, 음식점 생존율"}
+{"id":"GA-065","accept":["답함"],"space":["오라동"],"metric_ok":["개업수"],"target_ok":["음식점"],"period":{"year":2026},"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"2026 오라동 음식점 개업수"}
+{"id":"GA-058","accept":["답함"],"space":["천지동"],"metric_ok":["건당금액"],"target_ok":["음식점","한식"],"period":{"year":2024},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표"],"ambiguous":false,"why":"2024 천지동 한식 건당금액, 한식은 음식점으로 대신"}
+{"id":"GA-149","accept":["답함"],"space":["이도2동"],"metric_ok":["청년비중","고령비중"],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"이도2동 두 비중 함께"}
+{"id":"SN-008","accept":["답함"],"space":["조천읍"],"metric_ok":["일평균방문"],"target_ok":null,"period":null,"cond":["주말/평일"],"order":null,"notice":[],"ambiguous":false,"why":"함덕은 조천읍, 주말 방문"}
+{"id":"GA-039","accept":["범위밖"],"space":[],"metric_ok":[],"target_ok":null,"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"대구 동성로는 제주 밖"}
+{"id":"GA-012","accept":["되묻기"],"space":[],"metric_ok":["매출"],"target_ok":["음식점"],"period":null,"cond":[],"order":null,"notice":[],"ambiguous":false,"why":"여기가 어느 동네인지 알 수 없음"}
+{"id":"GA-078","accept":["답함"],"space":["아라동"],"metric_ok":["시간대매출"],"target_ok":["음식점","치킨집"],"period":{"recent_months":12},"cond":[],"order":null,"notice":["센터 자료 필요","대체 지표","자료 없음"],"ambiguous":false,"why":"야간 비중은 시간대매출, 평일 구분 자료 없음"}

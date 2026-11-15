@@ -1,0 +1,6703 @@
+{
+ "summary": {
+  "file": "general_answer_v2.jsonl",
+  "split": "dev",
+  "mode": "workflow",
+  "rule_fix": true,
+  "n": 304,
+  "애매 제외 n": 282,
+  "④ 완전 정답": 153,
+  "① 처리": 237,
+  "② 요소 비율 평균": 0.737,
+  "③ 안내 정직성": "35/58",
+  "애매 문항 정답": "10/22",
+  "생성 모델별": {
+   "fable": "20/38",
+   "gemini": "64/134",
+   "haiku": "24/34",
+   "opus": "27/39",
+   "sonnet": "18/37"
+  },
+  "유형별": {
+   "(일반)": "55/62",
+   "기간": "27/52",
+   "대체 지표": "9/32",
+   "두 요소": "6/11",
+   "생활 지명": "15/40",
+   "순위": "26/49",
+   "조건": "17/39",
+   "지표 없음": "10/46"
+  },
+  "요소별 오답": {
+   "동네": 8,
+   "지표": 51,
+   "업종": 7,
+   "조건": 3,
+   "기간": 7,
+   "순위": 6
+  },
+  "지연 중앙값": 0.08499999999999999,
+  "지연 90%": 0.25,
+  "모델 판단 평균 횟수": 0
+ },
+ "rows": [
+  {
+   "id": "FB-001",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.59,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-002",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.78,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-003",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-004",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "순위",
+    "대체 지표"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-005",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표",
+    "생활 지명"
+   ],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-006",
+   "gen": "fable",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-007",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간",
+    "두 요소"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-008",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건",
+    "순위"
+   ],
+   "sec": 0.1,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-009",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표",
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-010",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-011",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-012",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "순위": false
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.22,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-013",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-014",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건",
+    "생활 지명"
+   ],
+   "sec": 0.15,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-015",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-017",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.1,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-018",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-019",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-020",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-021",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-022",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.1,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-023",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true,
+     "기간": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "기간",
+    "지표 없음"
+   ],
+   "sec": 1.16,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-024",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간",
+    "순위"
+   ],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-025",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.14,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-026",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "순위",
+    "지표 없음"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-027",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-028",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간",
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-029",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "두 요소"
+   ],
+   "sec": 0.32,
+   "status": "Agent",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-030",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-031",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.28,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-032",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-033",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-034",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-035",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "조건": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건",
+    "지표 없음"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-036",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-037",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.07,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-038",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.1,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-039",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.06,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "FB-040",
+   "gen": "fable",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.08,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-001",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-002",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-003",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건",
+    "지표 없음"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-004",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-005",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-006",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-007",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-008",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-009",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-010",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-011",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-012",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-013",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-014",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-015",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-016",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-017",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-018",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.2,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-019",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.14,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-020",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-021",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-022",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-023",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-024",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-025",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-026",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-027",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-028",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-029",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-030",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.28,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-031",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-032",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-033",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-034",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-035",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-036",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.13,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-037",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-038",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-039",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-040",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-041",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-042",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.18,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-043",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-044",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-045",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.16,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-046",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.13,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-047",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.14,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-048",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.16,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-049",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-050",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-051",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "업종": true,
+     "기간": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-052",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-053",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.33,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-054",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.13,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-055",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.16,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-056",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.29,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-057",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-058",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-059",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.16,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-060",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-061",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.13,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-062",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-063",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.16,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-064",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.1,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-065",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.36,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-066",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.18,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-067",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.15,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-068",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.17,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-069",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-070",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-071",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-072",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "조건": false
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-073",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-074",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": false,
+     "조건": true
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.16,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-075",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-076",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.17,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-077",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-078",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.14,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-079",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "조건": false
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.16,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-080",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-081",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.06,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-082",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-083",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.15,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-084",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-085",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.13,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-086",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.08,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-087",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-088",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "순위": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-089",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": false
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-090",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": false
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-091",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-092",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-093",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-094",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-095",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-097",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-098",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.1,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-099",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-100",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": false
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.19,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-101",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "실패",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-102",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-103",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.08,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-104",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위",
+    "대체 지표"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-105",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-106",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "순위": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-107",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-108",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-109",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-110",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-112",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": false
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.33,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-113",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.27,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-114",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-115",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.26,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-116",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.42,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-117",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-118",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.27,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-119",
+   "gen": "gemini",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": false
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.13,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-120",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.16,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-121",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-122",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": false,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-123",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.17,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-124",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": false,
+     "기간": false
+    },
+    "요소 비율": 0.25,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.17,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-125",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-126",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-127",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.16,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-128",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.33,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-129",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-130",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "대체 지표"
+   ],
+   "sec": 0.32,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-131",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.16,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-132",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.15,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-133",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-134",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.13,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-135",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-136",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-137",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.17,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-138",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-139",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-140",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-141",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.06,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-142",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.19,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-143",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.06,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-144",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-145",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": false
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.19,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-146",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "두 요소"
+   ],
+   "sec": 0.26,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-147",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "두 요소"
+   ],
+   "sec": 0.12,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-148",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "두 요소"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-149",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "두 요소"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "GA-150",
+   "gen": "gemini",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "두 요소"
+   ],
+   "sec": 0.17,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-001",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.2,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-002",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "기간": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.18,
+   "status": "Agent",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-003",
+   "gen": "haiku",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간",
+    "지표 없음"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-004",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.12,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-005",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "조건": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건",
+    "대체 지표"
+   ],
+   "sec": 0.11,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-006",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.16,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-007",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-008",
+   "gen": "haiku",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "순위": false
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명",
+    "순위",
+    "대체 지표"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-009",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명",
+    "대체 지표"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-010",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.12,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-011",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-012",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-013",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.3,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-014",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위",
+    "대체 지표"
+   ],
+   "sec": 0.22,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-015",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명",
+    "대체 지표"
+   ],
+   "sec": 0.26,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-016",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.15,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-017",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "순위",
+    "지표 없음"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-018",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-019",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-020",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.14,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-021",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-022",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.18,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-023",
+   "gen": "haiku",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-024",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간",
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-025",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "조건": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.09,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-026",
+   "gen": "haiku",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "두 요소",
+    "생활 지명"
+   ],
+   "sec": 0.13,
+   "status": "Agent",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-027",
+   "gen": "haiku",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "두 요소",
+    "지표 없음"
+   ],
+   "sec": 0.29,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-028",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": false,
+     "지표": true
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-029",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-030",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-031",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-032",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-033",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.19,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-034",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-035",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-036",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-037",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-038",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "HK-040",
+   "gen": "haiku",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.12,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-001",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.14,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-002",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.17,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-003",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.12,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-004",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간",
+    "생활 지명"
+   ],
+   "sec": 0.23,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-005",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-006",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.17,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-007",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간",
+    "두 요소"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-008",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-009",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "조건": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건",
+    "대체 지표"
+   ],
+   "sec": 0.12,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-010",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": false,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건",
+    "생활 지명"
+   ],
+   "sec": 0.12,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-011",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.16,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-012",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-013",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-014",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위",
+    "두 요소"
+   ],
+   "sec": 0.19,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-015",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.07,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-016",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "순위": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-017",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.16,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-018",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.19,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-019",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-020",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.25,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-022",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "기간": false
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "생활 지명"
+   ],
+   "sec": 0.26,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-023",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "생활 지명"
+   ],
+   "sec": 0.43,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-024",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.44,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-025",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": false
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.41,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-026",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-027",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.08,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-028",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.05,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-029",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표",
+    "생활 지명"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-030",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.29,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-031",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-032",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-033",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-034",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-035",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-036",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.06,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-037",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-038",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-039",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "OP-040",
+   "gen": "opus",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-001",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.06,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-002",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.14,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-003",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.15,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-004",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-005",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "기간"
+   ],
+   "sec": 0.05,
+   "status": "실패",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-006",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": false,
+     "기간": true
+    },
+    "요소 비율": 0.75,
+    "정답": false
+   },
+   "hard": [
+    "기간",
+    "조건",
+    "두 요소"
+   ],
+   "sec": 0.12,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-007",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "기간",
+    "순위",
+    "두 요소"
+   ],
+   "sec": 0.06,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-008",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "조건",
+    "생활 지명"
+   ],
+   "sec": 0.12,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-009",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.11,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-010",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.12,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-011",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "조건": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.1,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-012",
+   "gen": "sonnet",
+   "ambiguous": true,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "조건"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-013",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-014",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.14,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-015",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": false
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.05,
+   "status": "실패",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-016",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-017",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-018",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "순위"
+   ],
+   "sec": 0.15,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-019",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-020",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.26,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-021",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.41,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-022",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.41,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-023",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음",
+    "생활 지명"
+   ],
+   "sec": 0.42,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-024",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false
+   },
+   "hard": [
+    "지표 없음"
+   ],
+   "sec": 0.44,
+   "status": "no_significant_effect",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-025",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.06,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-026",
+   "gen": "sonnet",
+   "ambiguous": true,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.08,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-027",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "기간": false
+    },
+    "요소 비율": 0.333,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표"
+   ],
+   "sec": 0.19,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-028",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표",
+    "생활 지명"
+   ],
+   "sec": 0.05,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-029",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [
+    "대체 지표",
+    "생활 지명"
+   ],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-030",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [
+    "생활 지명"
+   ],
+   "sec": 0.09,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-031",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-032",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-033",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-034",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "선택필요",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-035",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": false,
+   "cells": {
+    "처리": false,
+    "요소": {},
+    "요소 비율": 0.0,
+    "정답": false
+   },
+   "hard": [],
+   "sec": 0.12,
+   "status": "성공",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-037",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.05,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-038",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-039",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  },
+  {
+   "id": "SN-040",
+   "gen": "sonnet",
+   "ambiguous": false,
+   "ok": true,
+   "cells": {
+    "처리": true,
+    "요소": {},
+    "요소 비율": 1.0,
+    "정답": true
+   },
+   "hard": [],
+   "sec": 0.04,
+   "status": "범위밖",
+   "turns": [],
+   "calls": 0
+  }
+ ]
+}
