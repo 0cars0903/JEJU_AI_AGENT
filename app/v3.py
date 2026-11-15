@@ -381,11 +381,17 @@ def biz_compare(dong):
 
 
 # ---------- 뜨는 동네·업종 ----------
-def rising(biz=None, n=10):
+def rising(biz=None, n=10, dongs=None):
     c = card()
     end = c["ym"].max()
     cur = c[c["ym"] > _months_back(end, 12)].groupby(["dong", "biz"])["amt"].sum()
     prev = c[(c["ym"] > _months_back(end, 24)) & (c["ym"] <= _months_back(end, 12))].groupby(["dong", "biz"])["amt"].sum()
+    if dongs:  # 동네를 물으면 그 동네의 증가율(규모 하한 없이, 업종을 안 물으면 전 업종 합). 상위 10개 조합만 내던 결함(2026-11-15 조정용 삼양동)
+        d = pd.concat([cur, prev], axis=1, keys=["cur", "prev"]).dropna().reset_index()
+        d = d[d["dong"].isin(dongs)]
+        d = d[d["biz"] == biz] if biz else d.groupby("dong", as_index=False)[["cur", "prev"]].sum().assign(biz="전 업종")
+        d = d.assign(growth_pct=(d["cur"] / d["prev"] - 1) * 100, gain=d["cur"] - d["prev"]).sort_values("growth_pct", ascending=False)
+        return {"end": end, "median": None, "rows": d.to_dict(orient="records"), "combos": int(len(cur)), "map": {}, "by_dong": True}
     d = pd.concat([cur, prev], axis=1, keys=["cur", "prev"]).dropna()
     med = float(d["cur"].median())
     d = d[d["cur"] >= med]  # 규모가 작은 조합은 결제 몇 건으로 증가율이 크게 뛴다(031)

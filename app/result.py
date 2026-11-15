@@ -875,11 +875,12 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         elif not t["space"] and MY_DONG.search(question or ""):  # '우리 동네': 위치를 모른다는 것을 알리고 동네를 고르게 한다(문서 20 A9)
             ps = G.to_slots(t) if t["expect"] != "범위밖" else {}
             return stop(_choose(question, t, ps if ps.get("topic") else {"topic": "diagnose"}, MY_DONG_MSG, "space"))
-        elif t["expect"] != "범위밖" and _dong_only(question, t):  # 동네 이름만 → 동네 종합 진단
+        elif t["expect"] != "범위밖" and _dong_only(question, t) and not (env or {}).get("_agent_tuple"):  # 동네 이름만 → 동네 종합 진단
             t = dict(Q.empty(), type="T10", space=t["space"][:1], form=Q.DEFAULT_FORM["T10"], expect="답함")
             it = dict(it, tuple=t, card=qparse.card(t))
             assumed = True
-        elif t["space"] and layers.VALUE_WORDS.search(question or "") and len(t["space"]) == 1:
+        elif t["space"] and layers.VALUE_WORDS.search(question or "") and len(t["space"]) == 1 and not (env or {}).get("_agent_tuple"):
+            # 질문 담당 Agent가 지표를 골라 다시 계산할 때는 덮어쓰지 않는다(2026-11-15 조정용: '장사 잘 되는'·'차리면' 질문의 매출·생존율 선택이 종합 진단으로 돌아감)
             # 가치 판단 질문(L5)은 확신도 검사보다 먼저: 판단 재료(상권 묶음 진단)로 답한다(08 문서 0절 합성안)
             t = dict(Q.empty(), type="T10", space=t["space"][:1], target=t.get("target"), form=Q.DEFAULT_FORM["T10"], expect="답함",
                      **({"detail": t["detail"]} if t.get("detail") else {}))

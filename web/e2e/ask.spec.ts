@@ -100,11 +100,11 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
   });
 
   test("판단 과정: AI가 계획(질문 종류)을 고르면 누가 무엇을 골랐는지 보인다(문서 26 안 C)", async ({ page }) => {
-    await page.route("**/api/ask", async (route) => {
-      const res = await route.fetch();
+    await page.route("**/api/ask{,/stream}", async (route) => {
+      const res = await route.fetch({ url: route.request().url().replace("/api/ask/stream", "/api/ask") }); // 단계 줄 없이 답만 받아 고친다
       const j = await res.json();
       j.interpret = { ...(j.interpret ?? {}), plan_agent: { by: "AI(Claude)", from: "T1", from_ko: "현황 조회", to: "T4", to_ko: "추세", kept: false, reason: "흐름을 묻는 질문", cached: true } };
-      await route.fulfill({ response: res, json: j });
+      await route.fulfill({ json: j });
     });
     await page.getByTestId("representative").getByRole("button").first().click();
     await expect(await conclusion(page)).toBeVisible();
@@ -117,7 +117,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
   });
 
   test("일반 경로가 못 푼 질문은 Agent가 도구를 골라 답한 화면이 보인다(중간안)", async ({ page }) => {
-    await page.route("**/api/ask", (r) =>
+    await page.route("**/api/ask{,/stream}", (r) =>
       r.fulfill({
         json: {
           question: "노형동 카페 요즘 어때? 연동이랑 비교하면?", status: "Agent", escalated: "계획 선택 Agent가 여러 단계·종류 밖으로 판단",
@@ -138,11 +138,11 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
   });
 
   test("검수·재실행 라인: 의심 칸은 이해 카드에 '확인이 필요해요'로 보이고 [맞아요]는 기록된다", async ({ page }) => {
-    await page.route("**/api/ask", async (route) => {
-      const res = await route.fetch();
+    await page.route("**/api/ask{,/stream}", async (route) => {
+      const res = await route.fetch({ url: route.request().url().replace("/api/ask/stream", "/api/ask") }); // 단계 줄 없이 답만 받아 고친다
       const j = await res.json();
       if (j.understood) j.understood.check = [{ field: "expect", text: "동네·업종을 정확히 읽었는지 확인해 주세요." }];
-      await route.fulfill({ response: res, json: j });
+      await route.fulfill({ json: j });
     });
     const sent: string[] = [];
     await page.route("**/api/feedback", (r) => {
@@ -445,7 +445,7 @@ test.describe("사용성 점검 반영", () => {
   });
 
   test("A1 이해 상자에 주석을 줄마다 보여 주고, C5 [맞아요]는 확인 표시와 초점을 준다", async ({ page }) => {
-    await page.route("**/api/ask", (route) => route.fulfill({ json: ASK_OK }));
+    await page.route("**/api/ask{,/stream}", (route) => route.fulfill({ json: ASK_OK }));
     await page.getByTestId("question-input").fill("노형동 카페 몇 개야?");
     await page.getByTestId("ask-submit").click();
     const notes = page.getByTestId("understood-notes").locator("li");
@@ -458,7 +458,7 @@ test.describe("사용성 점검 반영", () => {
 
   test("A7·A6 센터 파일 열쇠를 보내고, 원래 질문과 칸을 함께 다시 계산하며, 이후 질문에도 계속 보낸다", async ({ page }) => {
     const bodies: Record<string, unknown>[] = [];
-    await page.route("**/api/ask", (route) => {
+    await page.route("**/api/ask{,/stream}", (route) => {
       bodies.push(route.request().postDataJSON());
       return route.fulfill({
         json: { ...ASK_OK, answer: { conclusion: { text: "c", layer: null, tag: null }, blocks: [], views: [], default_views: 0, value_question: false, freshness: [], requests: [{ kind: "center", title: "센터 자료로 더 정확하게", data: "카드", why: "w", where: "센터", query: [{ field: "법정동", value: "노형동" }] }] } },
@@ -484,7 +484,7 @@ test.describe("사용성 점검 반영", () => {
   });
 
   test("A7 열쇠 없이 d= 주소만 열면 서버 안내 문구와 파일 넣기 카드를 보여 준다", async ({ page }) => {
-    await page.route("**/api/ask", (route) => route.fulfill({ status: 422, json: { detail: "센터 파일을 다시 넣어 주세요. 이 브라우저에는 파일이 없어요." } }));
+    await page.route("**/api/ask{,/stream}", (route) => route.fulfill({ status: 422, json: { detail: "센터 파일을 다시 넣어 주세요. 이 브라우저에는 파일이 없어요." } }));
     await page.goto("/?q=" + encodeURIComponent("노형동 카페 몇 개야?") + "&d=ds1");
     await expect(page.getByTestId("error-state")).toContainText("파일을 다시 넣어 주세요");
     await expect(page.getByTestId("need-file").getByTestId("center-file")).toHaveCount(1);
@@ -756,7 +756,7 @@ test.describe("사용성 점검 2차 반영", () => {
   });
 
   test("C2 응답이 4초 늦어도 안내 문구·뼈대가 보이고 초점이 입력 칸에 남으며 화면이 밀리지 않는다", async ({ page }) => {
-    await page.route("**/api/ask", async (route) => {
+    await page.route("**/api/ask{,/stream}", async (route) => {
       await new Promise((r) => setTimeout(r, 3000));
       await route.continue();
     });
@@ -773,6 +773,87 @@ test.describe("사용성 점검 2차 반영", () => {
     await page.waitForTimeout(1500);
     expect(await docY()).toBe(y0);
     await expect(page.getByTestId("answer-card")).toBeVisible({ timeout: 8000 });
+  });
+
+  test("C2b 처리 중에는 지금 단계·남은 단계·하는 일을 보이고, 단계가 바뀌면 글도 바뀐다(마스터 2026-11-15)", async ({ page }) => {
+    // 서버가 단계를 한 줄씩 보내는 상황을 브라우저 안에서 만든다(시험 서버는 LLM 없이 바로 끝나 단계를 볼 수 없음)
+    await page.addInitScript(() => {
+      const real = window.fetch.bind(window);
+      window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (!String(input).includes("/api/ask/stream")) return real(input, init);
+        const names = ["질문 이해", "계산·검수", "질문 담당 Agent 확인", "답 정리"];
+        const enc = new TextEncoder();
+        const lines = [
+          { stage: 2, total: 4, names, detail: "자료를 골라 계산하고, 답의 숫자를 결과와 대조하고 있어요", sec: 0.1 },
+          { stage: 3, total: 4, names, detail: "질문 담당 Agent가 결과가 질문에 맞는지 확인하고 있어요(1/3회째)", sec: 1.2 },
+        ];
+        const body = new ReadableStream({
+          async start(c) {
+            for (const x of lines) {
+              c.enqueue(enc.encode(JSON.stringify(x) + "\n"));
+              await new Promise((r) => setTimeout(r, 1500));
+            }
+            const res = await real("/api/ask", init);
+            c.enqueue(enc.encode(JSON.stringify({ result: await res.json() }) + "\n"));
+            c.close();
+          },
+        });
+        return new Response(body, { headers: { "Content-Type": "application/x-ndjson" } });
+      };
+    });
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await page.getByTestId("question-input").fill("노형동 카페 가게는 몇 곳이야?");
+    await page.keyboard.press("Enter");
+    await expect(page.getByTestId("waiting-stage")).toContainText("4단계 중 2단계: 계산·검수");
+    await expect(page.getByTestId("waiting")).toContainText("남은 단계 2개");
+    await expect(page.getByTestId("waiting-stage")).toContainText("4단계 중 3단계: 질문 담당 Agent 확인");
+    await expect(page.getByTestId("waiting-detail")).toContainText("1/3회째");
+    await expect(page.getByTestId("answer-card")).toBeVisible({ timeout: 8000 });
+  });
+
+  test("C2c 확인 카드: 멈춤이면 답을 가리고, [이 판단대로 답 보기]·다른 선택지·직접 적기가 동작한다(마스터 2026-11-15)", async ({ page }) => {
+    const bodies: Record<string, unknown>[] = [];
+    const fb: Record<string, unknown>[] = [];
+    await page.route("**/api/ask{,/stream}", async (route) => {
+      const body = route.request().postDataJSON() as Record<string, unknown>;
+      bodies.push(body);
+      const res = await route.fetch({ url: route.request().url().replace("/api/ask/stream", "/api/ask"), postData: JSON.stringify({ question: body.question }) });
+      const j = await res.json();
+      j.confirm = body.agent_pick
+        ? { pause: false, why: "", forced: body.agent_pick, first: null, options: [] }
+        : { pause: true, why: "질문 담당 Agent가 답하는 방식을 바꿨어요", first: { text: "질문을 '현황' 질문으로 다시 읽어 계산했어요.", pick: "사전 규칙 해석('현황')대로 답해 보기", act: "다시 계산" },
+            after: [], options: [{ text: "처음 처리(범위 밖 안내) 그대로 보기", pick: "지금 처리 그대로(되묻기·범위 밖 안내)", act: "답하기" }] };
+      await route.fulfill({ json: j });
+    });
+    await page.route("**/api/feedback", (r) => {
+      fb.push(r.request().postDataJSON());
+      return r.fulfill({ json: { ok: true } });
+    });
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await page.getByTestId("question-input").fill("노형동 카페 가게는 몇 곳이야?");
+    await page.keyboard.press("Enter");
+    const card = page.getByTestId("agent-confirm");
+    await expect(card).toHaveAttribute("data-pause", "true");
+    await expect(card).toContainText("답을 보여 드리기 전에 확인해 주세요");
+    await expect(page.getByTestId("answer-card")).toHaveCount(0);
+    // 직접 적기
+    await page.getByTestId("agent-confirm-write").click();
+    await page.getByTestId("agent-confirm-comment").fill("가게 수를 물었어요");
+    await page.getByTestId("agent-confirm-send").click();
+    await expect(page.getByTestId("agent-confirm-sent")).toBeVisible();
+    expect(fb.some((x) => x.comment === "가게 수를 물었어요" && x.agent_first === "사전 규칙 해석('현황')대로 답해 보기")).toBe(true);
+    // 이 판단대로 답 보기 → 답이 나오고 카드는 접힌 모양
+    await page.getByTestId("agent-confirm-accept").click();
+    await expect(page.getByTestId("answer-card")).toBeVisible();
+    await expect(page.getByTestId("agent-confirm")).toHaveAttribute("data-pause", "false");
+    // 다른 선택지 → 고른 선택지를 서버에 보내 다시 계산
+    await page.getByTestId("agent-confirm").locator("summary").click();
+    await page.getByTestId("agent-confirm-option").first().click();
+    await expect(page.getByTestId("agent-confirm-forced")).toContainText("고른 처리로 계산한 답이에요");
+    expect(bodies.some((b) => b.agent_pick === "지금 처리 그대로(되묻기·범위 밖 안내)")).toBe(true);
+    expect(fb.some((x) => x.agent_pick === "지금 처리 그대로(되묻기·범위 밖 안내)" && x.ok === false)).toBe(true);
   });
 
   test("C7 못 알아들으면 조건 패널이 열리고 이유 문구가 보인다", async ({ page }) => {

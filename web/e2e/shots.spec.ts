@@ -6,7 +6,7 @@ test.skip(!OUT, "SHOTS 경로가 있을 때만 실행");
 
 test("장면 캡처", async ({ page }, info) => {
   const tag = info.project.name;
-  await page.route("**/api/ask", async (route) => {
+  await page.route("**/api/ask{,/stream}", async (route) => {
     await new Promise((r) => setTimeout(r, 1500));
     await route.continue();
   });

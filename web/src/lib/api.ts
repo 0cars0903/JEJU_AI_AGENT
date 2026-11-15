@@ -90,6 +90,8 @@ export type AskResult = {
   downloads?: { kind: "csv" | "chart" | "bundle"; name: string; rows?: number; export?: string; csv?: string }[];
   sec?: number;
   /** 질문 담당 Agent(app/question_agent.py, 2026-11-15): 차례마다 코드가 찾은 어긋남, 모델이 고른 선택지, 이유 */
+  /** 사용자 확인 카드(2026-11-15, AskUserQuestion 방식): 1차 결정·다른 선택지·멈춤 여부. forced면 사용자가 고른 선택지로 계산한 답 */
+  confirm?: { pause: boolean; why: string; forced?: string; first: { text: string; pick: string; act: string } | null; after?: string[]; options: { text: string; pick: string; act: string }[] };
   question_agent?: { turns: { turn: number; gaps: string[]; choice: string; action: string; reason: string; by: string; sec: number; change?: string[]; note?: string }[]; sec?: number; skipped?: string };
 };
 
@@ -117,12 +119,60 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 export const getGuide = () => call<Guide>("/api/guide");
 export const getMap = () => call<JejuMapData>("/api/map");
 export const getSummary = (dong: string) => call<DongSummary>(`/api/summary?dong=${encodeURIComponent(dong)}`);
-export type AskBody = { question?: string; slots?: Slots; dataset_id?: string; dataset_key?: string };
+export type AskBody = { question?: string; slots?: Slots; dataset_id?: string; dataset_key?: string; agent_pick?: string };
 /** 검수·재실행 라인 4단계: [맞아요](ok) 또는 [조건 바꾸기]로 고친 해석을 서버에 남긴다. 실패해도 화면은 그대로 둔다. */
 /** expect: '답할지' 신호(2026-11-15). 범위 밖 안내의 [맞아요]=범위밖·[답할 수 있는 질문이에요]=답함, 되묻기 화면에서 조건을 고름=되묻기. */
-export const sendFeedback = (b: { question: string; slots?: Slots; before?: Slots; ok: boolean; expect?: "답함" | "되묻기" | "범위밖" }) =>
+export const sendFeedback = (b: {
+  question: string; slots?: Slots; before?: Slots; ok: boolean; expect?: "답함" | "되묻기" | "범위밖";
+  agent_first?: string; agent_pick?: string; comment?: string; // 질문 담당 Agent 확인 카드(2026-11-15)
+}) =>
   call<{ ok: boolean }>("/api/feedback", { method: "POST", body: JSON.stringify(b) }).catch(() => undefined);
 export const ask = (body: AskBody) => call<AskResult>("/api/ask", { method: "POST", body: JSON.stringify(body) });
+
+/** 처리 단계(마스터 2026-11-15): 서버 /api/ask/stream이 단계가 바뀔 때마다 한 줄씩 보낸다. */
+export type Stage = { stage: number; total: number; names: string[]; detail: string; sec: number };
+
+async function errorOf(res: Response) {
+  let msg = "문제가 생겼습니다. 다시 시도해 주세요.";
+  try {
+    const body = await res.json();
+    if (typeof body?.detail === "string") msg = body.detail;
+  } catch {
+    /* 본문이 JSON이 아니면 기본 문구 */
+  }
+  return new ApiError(res.status, msg);
+}
+
+/** 단계를 받으며 묻는다. 단계 흘려보내기를 못 하는 서버(옛 판·웹 데모)면 /api/ask로 한 번에 받는다. */
+export async function askStream(body: AskBody, onStage: (s: Stage) => void): Promise<AskResult> {
+  let res: Response;
+  try {
+    res = await fetch("/api/ask/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  } catch {
+    return ask(body);
+  }
+  if (res.status === 404 || res.status === 405) return ask(body);
+  if (!res.ok) throw await errorOf(res);
+  if (!res.body || !(res.headers.get("content-type") ?? "").includes("ndjson")) return res.json() as Promise<AskResult>;
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    buf += dec.decode(value ?? new Uint8Array(), { stream: !done });
+    const lines = buf.split("\n");
+    buf = done ? "" : (lines.pop() ?? "");
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const x = JSON.parse(line);
+      if (x.result) return x.result as AskResult;
+      if (x.error) throw new ApiError(x.error, typeof x.detail === "string" ? x.detail : "문제가 생겼습니다. 다시 시도해 주세요.");
+      onStage(x as Stage);
+    }
+    if (done) break;
+  }
+  throw new ApiError(500, "답을 끝까지 받지 못했어요. 다시 시도해 주세요.");
+}
 
 /** F9: 센터에서 받은 CSV를 그대로 보낸다(본문 = 파일, 파일 이름은 머리글). 서버가 칸 이름으로 자료를 알아본다. */
 export type DatasetMeta = { id: string; key?: string; dataset: string; label: string; file: string; rows: number; period: [string, string]; dongs: string[]; biz: string[]; problems: string[] };

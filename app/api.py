@@ -13,7 +13,7 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -79,6 +79,7 @@ class Ask(BaseModel):
     slots: Optional[dict] = None  # 추천 질문·단계별 선택·대표 질문의 버튼 값(app/guide.py). 있으면 해석하지 않는다
     dataset_id: Optional[str] = Field(default=None, max_length=32)  # F9: /api/dataset로 불러온 센터 CSV
     dataset_key: Optional[str] = Field(default=None, max_length=64)  # 파일을 넣을 때 받은 열쇠. 주소에는 넣지 않는다(문서 20 A7)
+    agent_pick: Optional[str] = Field(default=None, max_length=200)  # 확인 카드에서 고른 선택지 문장(2026-11-15). 서버가 만든 선택지와 같아야 쓴다
 
 
 class Feedback(BaseModel):
@@ -87,6 +88,9 @@ class Feedback(BaseModel):
     before: Optional[dict] = None  # 고치기 전 버튼 값([조건 바꾸기])
     ok: bool = True  # True: [맞아요], False: [조건 바꾸기]로 고침
     expect: Optional[Literal["답함", "되묻기", "범위밖"]] = None  # '답할지' 신호(2026-11-15): 범위 밖 안내 확인·되묻기 뒤 조건 고름
+    agent_first: Optional[str] = Field(default=None, max_length=200)  # 확인 카드: 질문 담당 Agent의 1차 결정
+    agent_pick: Optional[str] = Field(default=None, max_length=200)  # 확인 카드: 사용자가 고른 선택지(그대로 보기면 1차 결정과 같음)
+    comment: Optional[str] = Field(default=None, max_length=300)  # 확인 카드: [직접 적기] 의견
 
 
 def _log_feedback(rec):
@@ -107,6 +111,10 @@ def _log_feedback(rec):
 @app.post("/api/feedback")
 def feedback(body: Feedback):
     """[맞아요] 확인 또는 [조건 바꾸기]로 고친 해석을 기록한다(검수·재실행 라인 4단계)."""
+    if body.question.strip() and (body.agent_first or body.comment):  # 질문 담당 Agent 확인 카드(재학습 자료에는 쓰지 않고 담당자가 읽는다)
+        _log_feedback({"kind": "Agent 확인", "question": body.question.strip(), "agent_first": body.agent_first, "agent_pick": body.agent_pick,
+                       "comment": (body.comment or "").strip() or None, "ok": body.ok})
+        return {"ok": True}
     if body.question.strip():
         rec = {"kind": "확인" if body.ok else "고침", "question": body.question.strip(), "before": body.before, "slots": body.slots}
         if body.expect:
@@ -133,10 +141,52 @@ async def dataset(request: Request, check_dong: Optional[str] = None, check_biz:
 _M1 = {}
 
 
+GENERAL_STAGES = ["질문 이해·계산·검수", "답 정리"]  # 질문 담당 Agent를 거치지 않는 경로(버튼 선택·기법·Ollama 없음)
+
+
 @app.post("/api/ask")
 def ask(body: Ask, request: Request):
     """자유 입력(question) 또는 버튼 값(slots) → 해석 → 계획 → 지시서 → 실행 → 검수 → 결과 생성.
     응답: understood·card·suggestions·process·downloads, 추정할 수 없으면 status '선택필요'와 choose. 명세 docs/기획/07_화면API명세.md"""
+    return _ask_core(body, request)
+
+
+@app.post("/api/ask/stream")
+def ask_stream(body: Ask, request: Request):
+    """/api/ask와 같은 답을 주되, 처리 단계를 한 줄(JSON)씩 먼저 흘려보낸다(NDJSON).
+    줄 형식: {"stage": 지금 단계 번호, "total": 전체 단계 수, "names": 단계 이름들, "detail": 지금 하는 일, "sec": 지난 초}
+    마지막 줄: {"result": /api/ask 응답} 또는 {"error": 상태 코드, "detail": 문구}. 마스터 2026-11-15: 기다리는 사람이 지금 단계와 남은 단계를 알게 한다."""
+    import queue
+    import threading
+    import time
+    import traceback
+    box, t0 = queue.Queue(), time.perf_counter()
+
+    def say(i, detail, names=None):
+        names = names or GENERAL_STAGES
+        box.put({"stage": i, "total": len(names), "names": names, "detail": detail, "sec": round(time.perf_counter() - t0, 1)})
+
+    def work():
+        try:
+            box.put({"result": _ask_core(body, request, say)})
+        except HTTPException as e:
+            box.put({"error": e.status_code, "detail": e.detail})
+        except Exception:  # noqa: BLE001 — 화면에는 정해진 문구만, 자세한 내용은 서버 기록으로
+            traceback.print_exc()
+            box.put({"error": 500, "detail": "문제가 생겼습니다. 다시 시도해 주세요."})
+    threading.Thread(target=work, daemon=True).start()
+
+    def lines():
+        while True:
+            x = box.get()
+            yield json.dumps(x, ensure_ascii=False) + "\n"
+            if "result" in x or "error" in x:
+                return
+    return StreamingResponse(lines(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+def _ask_core(body: Ask, request: Request, progress=None):
+    say = progress or (lambda i, d, names=None: None)
     import m1
     import result
     question = (body.question or "").strip()
@@ -165,8 +215,10 @@ def ask(body: Ask, request: Request):
             sp = body.slots.get("space") or []
             if sp:  # 사이드바가 지금 보던 동네로 물은 경우: 예시 문장의 동네도 바꾼다(이중 검토 040)
                 question = question.replace("노형동", sp[0]).replace("제주 전체", sp[0])
+        say(1, "정해진 통계 기법 코드로 계산하고 있어요")
         return clean(techniques.answer(question, body.slots))
     if body.slots:
+        say(1, "고른 조건으로 자료를 계산하고 숫자를 대조하고 있어요")
         try:
             return clean(result.respond(question or None, env, llm_on=on, slots=body.slots))
         except ValueError as e:
@@ -174,8 +226,12 @@ def ask(body: Ask, request: Request):
     if "m" not in _M1:
         _M1["m"] = m1.M1()
     import question_agent
-    if question_agent.enabled():  # 질문 담당 Agent(2026-11-15): 계산 → 결과 확인 → 다음 행동을 로컬 모델이 고른다(Ollama가 있을 때)
-        return clean(question_agent.run(question, env, llm_on=on))
+    if question_agent.enabled() or body.agent_pick:  # 질문 담당 Agent(2026-11-15): 계산 → 결과 확인 → 다음 행동을 로컬 모델이 고른다(Ollama가 있을 때)
+        try:  # agent_pick: 확인 카드에서 사용자가 고른 선택지로 계산(모델 판단 없음)
+            return clean(question_agent.run(question, env, llm_on=on, progress=lambda i, d: say(i, d, question_agent.STAGES), forced=body.agent_pick))
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    say(1, "질문을 읽고 자료를 계산하고 숫자를 대조하고 있어요")
     return clean(result.respond(question, env, llm_on=on, interpret=_M1["m"].interpret))
 
 

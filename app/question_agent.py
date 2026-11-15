@@ -36,7 +36,10 @@ SUB_HINTS = [(re.compile(r"비싼|비싸|저렴|싼\s*(곳|식당|가게|집|데
              (re.compile(r"커지|커져|성장|확장|키워"), ["매출성장"], "상권이 커지는지는 최근 12개월 카드 매출이 그 전보다 늘었는지로 봐요."),
              (re.compile(r"오래\s*(버티|버텨|가|못)|살아남"), ["5년생존율"], "가게가 오래 버티는지는 5년 생존율로 봐요."),
              (re.compile(r"나이대|연령대|몇\s*살|나이"), ["거주연령구성", "방문연령구성"], ""),
-             (re.compile(r"버스|정류"), ["버스일평균"], ""), (re.compile(r"문\s*(닫|연)|폐업|개업|새로\s*생"), ["폐업수", "개업수", "폐업률"], "")]
+             (re.compile(r"버스|정류"), ["버스일평균"], ""),
+             # 2026-11-15 조정용: '문 많이 닫나요'·'장사 접는'·'새로 창업 활발'을 못 읽어 가게 수로 답하던 문항
+             (re.compile(r"문\S{0,2}\s*((많이|하영|자주)\s*)?닫|폐업|장사\s*(를\s*)?접|접는|그만\s*두"), ["폐업수", "폐업률"], ""),
+             (re.compile(r"문\s*((많이|새로)\s*)?(열|연)|개업|새로\s*(생|열|창업|문)|창업\S{0,2}\s*(활발|많|늘)"), ["개업수"], "")]
 # 지표 낱말이 없을 때 모델이 뜻으로 고르는 주요 지표(설명은 화면 용어와 같음)
 MAIN_METRICS = [("점포수", "가게가 몇 곳 있는지·몰려 있는지"), ("매출", "카드 매출 규모, 장사가 잘되는지"), ("매출성장", "매출이 늘고 있는지(성장)"),
                 ("일평균방문", "사람이 얼마나 오가는지(유동인구)"), ("개업수", "새로 문을 여는 가게 수"), ("폐업수", "문을 닫는 가게 수"),
@@ -61,6 +64,8 @@ DATA_Q = re.compile(r"(자료|데이터)\S{0,2}\s*(뭐|무엇|어떤|있)")
 OUT_HINT = re.compile(r"인허가|허가|신고|서류|절차|법률|법적|세금|맛집|맛있|맛은|후기|평점|리뷰|추천해|매매가|시세|임대|권리금|예약자|투숙객")  # 명세 6절 범위 밖 낱말
 FUTURE_MONEY_Q = re.compile(r"(내년|다음\s*해|앞으로|미래|\d+\s*년\s*뒤|하면).{0,25}(매출|수익|벌|수입).{0,15}(얼마|예측|나올|될지|될까)")
 PRIVATE_Q = re.compile(r"명단|연락처|전화\s*번호|인적\s*사항|개인\s*정보|주민\s*번호|예약자|투숙객\s*정보|누가\s*(사|운영)")
+VAGUE_DONG = re.compile(r"^\s*동네|우리\s*동네|이\s*(동네|근방|근처)|여기|저희\s*(동네|가게)|제\s*가게")
+TIME_BUDGET = 150.0  # 질문당 3분 미만(마스터 2026-11-15, 처음 5초에서 바꿈): 150초가 지나면 판단을 더 하지 않고 지금 답을 낸다
 SNOW_Q = re.compile(r"눈\s*(이\s*)?(오|올|와|내리|온|많|쌓)|폭설|대설")
 
 
@@ -123,6 +128,17 @@ def summary(r):
 
 
 
+def out_evidence(q):
+    """질문에서 자료 범위 밖 근거 낱말(명세 6절)을 찾는다. 없으면 ''."""
+    import result
+    for rx in (OUT_HINT, PRIVATE_Q, result.OUTSIDE_Q, re.compile(r"전국|광역시|시도별")):
+        m = rx.search(q or "")
+        if m:
+            return m.group(0)
+    hs = qparse.hits(q or "", qparse.OUT_W)
+    return hs[0] if hs else ""
+
+
 def gaps(q, it, r, done=()):
     """질문 요소와 결과의 어긋남(코드). 항목: kind, text(모델에 보임), change(다시 계산 후보), note(안내 문장)."""
     t = r.get("tuple") or it.get("tuple") or {}
@@ -168,6 +184,10 @@ def gaps(q, it, r, done=()):
     if FUTURE_MONEY_Q.search(q) and r.get("status") != "범위밖":  # 명세 6절: 미래 매출 금액 예측은 범위 밖(다음 7일 방문 예상은 범위 안)
         out.append({"kind": "미래 금액", "text": "앞으로의 매출 금액을 맞히는 질문 같아요. 자료로는 미래 매출 금액을 예측하지 않아요(다음 7일 방문 예상만 있어요).",
                     "change": {}, "note": ""})
+    ow = out_evidence(q)
+    if ow and r.get("status") != "범위밖" and not done:  # 2026-11-15 조정용: 범위 밖 낱말(매매가·추천·명단·전국)이 있는데 다시 계산으로 답하던 7건
+        out.append({"kind": "범위 밖 낱말", "text": f"질문에 자료 범위 밖일 수 있는 말('{ow}')이 있어요. 자료는 제주 43개 동네의 가게 수·카드 매출·방문·버스·날씨·인허가 기록이고, "
+                    "가격 시세·임대료·후기·추천·개인 정보·제주 밖 지역·미래 매출 금액은 없어요.", "change": {}, "note": ""})
     if DATA_Q.search(q) and t.get("type") != "T11" and not t.get("space"):
         out.append({"kind": "자료 찾기", "text": "자료가 있는지를 묻는 질문 같아요.", "change": {"type": "T11", "metric": ["자료목록"]}, "note": ""})
     import result
@@ -175,7 +195,8 @@ def gaps(q, it, r, done=()):
     if blocked and it.get("rule_expect") == "답함" and it.get("rule_type") not in (None, "T12") and not result.OUTSIDE_Q.search(q) and not PRIVATE_Q.search(q):
         out.append({"kind": "범위 밖 판단", "text": f"분류기는 범위 밖으로 봤지만 사전 규칙은 '{TYPE_KO.get(it['rule_type'], it['rule_type'])}' 질문으로 읽었어요.",
                     "change": {"rule": True}, "note": ""})
-    if not t.get("space") and r.get("status") not in ("범위밖", "선택필요") and t.get("type") in qparse.NEED_DONG and not RANK_Q.search(q) and not qparse.jeju_wide(t):
+    vague = VAGUE_DONG.search(q) and not RANK_Q.search(q)  # '동네'·'이 근방'처럼 어느 동네인지 모르는 말(2026-11-15 조정용 GA-006)
+    if not t.get("space") and r.get("status") not in ("범위밖", "선택필요") and (vague or (t.get("type") in qparse.NEED_DONG and not RANK_Q.search(q) and not qparse.jeju_wide(t))):
         out.append({"kind": "동네 없음", "text": "질문에 동네 이름이 없어 제주 전체로 답했어요('동네', '이 근방'처럼 어느 동네인지 모르는 말일 수 있어요).", "change": {}, "note": ""})
     if t.get("space") and result.OUTSIDE_Q.search(q) and not blocked:
         out.append({"kind": "제주 밖", "text": "질문에 제주 밖 지명이 있어요. 자료는 제주 43개 동네뿐이에요.", "change": {}, "note": ""})
@@ -196,7 +217,7 @@ S_DECIDE = ("너는 제주빅데이터센터에서 도민 질문을 처리하는
             "다시 계산할 방법이 없을 때만 안내를 붙여 답한다. 어긋남이 없고 답이 질문에 맞으면 '지금 답 그대로'를 고른다. 이유는 한 문장.")
 
 
-def options(q, r, it, gs, tried=()):
+def options(q, r, it, gs, tried=(), prev=None):
     """코드가 만든 선택지 목록: [{id, text, act, change}]. change는 해석에 반영할 값(모두 질문·후보에서 뽑음)."""
     t = r.get("tuple") or it.get("tuple") or {}
     p = _period_words(q)
@@ -237,20 +258,26 @@ def options(q, r, it, gs, tried=()):
         add("다시 계산하지 않고, 어긋남을 안내해 지금 답", "안내 붙여 답하기")
     add("지금 답 그대로" if r.get("status") not in ("선택필요", "범위밖") else "지금 처리 그대로(되묻기·범위 밖 안내)", "답하기")
     # 근거 없는 처리 바꾸기를 막는다(2026-11-15 새 기준 조정용: 어긋남이 없는데 모델이 되묻기·범위 밖으로 바꾼 13건 중 10건이 오답)
-    if r.get("status") != "선택필요" and not t.get("space") and not RANK_Q.search(q):  # 동네가 있거나 순위 질문이면 되묻기 선택지를 주지 않는다
+    if prev is not None:  # 다시 계산한 뒤 모델이 앞 답과 견줘 한 번 더 확인한다(2026-11-15 마스터 승인 '실행': 지연 5초 안에서 판단을 더 쓴다)
+        add("앞 답(다시 계산 전)으로 되돌리기 — 다시 계산한 답이 질문에서 더 멀어졌을 때", "되돌리기")
+    # 되묻기는 코드가 '동네 없음'을 찾았을 때만(2026-11-15 조정용 SN-039: 근거 없이 되묻기)
+    if r.get("status") != "선택필요" and any(x["kind"] == "동네 없음" for x in gs):
         add("꼭 필요한 동네가 질문에 없어 되묻기", "되묻기")
-    if r.get("status") != "범위밖" and (gs or OUT_HINT.search(q) or qparse.hits(q, qparse.OUT_W)):
-        add("지금 자료로 답할 수 없는 질문이라 범위 밖 안내", "범위 밖")
+    ow = out_evidence(q)
+    future = any(x["kind"] == "미래 금액" for x in gs)
+    if r.get("status") != "범위밖" and (gs or ow):
+        add(f"질문의 '{ow}'은 지금 자료로 답할 수 없어 범위 밖 안내" if ow else ("앞으로의 매출 금액 예측은 자료로 할 수 없어 범위 밖 안내" if future else "지금 자료로 답할 수 없는 질문이라 범위 밖 안내"), "범위 밖")
     add("통계 분석(기법)이 필요해 분석 담당에게 넘기기", "기법으로")
     return out
 
 
-def decide(q, r, it, gs, chat=None, done=()):
+def decide(q, r, it, gs, chat=None, done=(), prev=None):
     import analyst
-    ops = options(q, r, it, gs, done)
+    ops = options(q, r, it, gs, done, prev)
     g = "\n".join(f"- [{x['kind']}] {x['text']}" for x in gs) or "- 없음"
     tried = ("\n이미 해 본 것: " + "; ".join(done)) if done else ""
-    user = (f"질문: {q}\n{summary(r)}\n코드가 찾은 어긋남:\n{g}{tried}\n선택지:\n" + "\n".join(f"{o['id']}. {o['text']}" for o in ops))
+    before = (f"\n다시 계산 전 답(앞 답):\n{summary(prev)}\n위 '지금 처리'는 다시 계산한 답이다. 두 답 중 질문에 더 맞는 쪽을 고른다.") if prev is not None else ""
+    user = (f"질문: {q}\n{summary(r)}{before}\n코드가 찾은 어긋남:\n{g}{tried}\n선택지:\n" + "\n".join(f"{o['id']}. {o['text']}" for o in ops))
     schema = {"type": "object", "required": ["choice", "reason"], "properties": {"choice": {"type": "string", "enum": [o["id"] for o in ops]}, "reason": {"type": "string"}}}
     d = analyst._ask(chat, S_DECIDE, user, schema, max_tokens=150)
     keep = next(o for o in ops if o["act"] == "답하기")  # 모델이 없거나 실패하면 지금 답을 그대로 둔다
@@ -300,29 +327,114 @@ def _apply(t, change):
     return t2, why
 
 
-def run(question, env=None, llm_on=True, chat=None, max_turns=3):
-    """질문 하나. 돌려주는 값: result.respond와 같은 형식 + question_agent(판단 기록)."""
+# 화면 단계 표시(마스터 2026-11-15: 지연은 3분 미만이면 되고, 기다리는 사람이 지금 단계와 남은 단계를 알아야 한다)
+STAGES = ["질문 이해", "계산·검수", "질문 담당 Agent 확인", "답 정리"]
+
+
+def code_pick(ops, gs):
+    """코드 규칙이 고를 선택지(기준선과 같음): 어긋남이 있으면 첫 '다시 계산', 없으면 지금 답."""
+    keep = next(o for o in ops if o["act"] == "답하기")
+    return next((o for o in ops if o["act"] == "다시 계산"), keep) if gs else keep
+
+
+ALT_ORDER = {"다시 계산": 0, "답하기": 1, "범위 밖": 2, "되묻기": 3}
+PAUSE_ACTS = {"범위 밖", "되묻기", "되돌리기"}
+
+
+def _kind(r):
+    st = (r or {}).get("status")
+    return "범위 밖 안내" if st == "범위밖" else ("되묻기" if st in ("선택필요", "되묻기") else "답함")
+
+
+def plain(o):
+    """선택지를 화면용 해요체 문장으로(사용자 확인 카드의 1차 결정)."""
+    t, a = o["text"], o["act"]
+    m = re.match(r"사전 규칙 해석\('(.+)'\)대로", t)
+    if m:
+        return f"질문을 '{m.group(1)}' 질문으로 다시 읽어 계산했어요."
+    if a == "다시 계산":
+        return t.split(" — ")[0].replace("다시 계산", "다시 계산했어요").replace("답 보기(되묻지 않음)", "답했어요(되묻지 않음)").replace("답하기", "답했어요") + "."
+    return {"답하기": "처음 계산한 답이 질문에 맞다고 봤어요.", "안내 붙여 답하기": "다시 계산하지 않고, 질문과 다른 점을 안내해 답했어요.",
+            "범위 밖": "지금 자료로는 답할 수 없는 질문으로 봤어요.", "되묻기": "질문에 꼭 필요한 동네가 없어 되묻기로 했어요.",
+            "기법으로": "통계 분석이 필요해 분석 담당에게 넘겼어요."}.get(a, t)
+
+
+def confirm_card(first, ops, gs, trace, r0=None, r=None):
+    """사용자 확인 카드(마스터 2026-11-15, Claude AskUserQuestion 방식): 1차 결정 + 다른 선택지 2~3개 + 직접 적기.
+    멈춤(답을 가리고 먼저 고르게 함): Agent가 처리를 바꿈(범위 밖·되묻기·되돌리기) 또는 모델과 코드 규칙의 1차 선택이 다름."""
+    acts = {x.get("action") for x in trace}
+    cp = code_pick(ops, gs)
+    why = ""
+    if acts & PAUSE_ACTS or (r0 is not None and _kind(r0) != _kind(r)):
+        why = "질문 담당 Agent가 답하는 방식을 바꿨어요"
+    elif cp["text"] != first["text"]:
+        why = "질문 담당 Agent와 코드 규칙의 판단이 달랐어요"
+    alts = sorted((o for o in ops if o["text"] != first["text"] and o["act"] in ALT_ORDER), key=lambda o: ALT_ORDER[o["act"]])
+    if cp["text"] != first["text"] and cp in alts:  # 코드 규칙의 선택은 꼭 보인다
+        alts = [cp] + [o for o in alts if o is not cp]
+    k0 = _kind(r0)
+    keep = "처음 계산한 답 그대로 보기" if k0 == "답함" else f"처음 처리({k0}) 그대로 보기"
+    show = [{"text": (keep if o["act"] == "답하기" else o["text"].split(" — ")[0]), "pick": o["text"], "act": o["act"]} for o in alts[:3]]
+    after = [x["note"] for x in trace if x.get("note") and "되돌림" not in x["note"]]  # 결과 검증으로 버린 다시 계산 등
+    return {"pause": bool(why), "why": why, "first": {"text": plain(first), "pick": first["text"], "act": first["act"]},
+            "after": after[:1], "options": show}
+
+
+def run(question, env=None, llm_on=True, chat=None, max_turns=3, progress=None, forced=None):
+    """질문 하나. 돌려주는 값: result.respond와 같은 형식 + question_agent(판단 기록) + confirm(사용자 확인 카드).
+    progress(단계 번호 1~4, 설명): 단계가 바뀔 때마다 부른다(웹 /api/ask/stream이 화면에 흘려보냄).
+    forced: 확인 카드에서 사용자가 고른 선택지 문장. 첫 차례에 모델 대신 그 선택지를 쓰고, 그 뒤 모델 판단은 하지 않는다(결과 검증은 함)."""
     import m1
     import result
     t0 = time.perf_counter()
+    say = progress or (lambda i, d: None)
     env = dict(env or {})
+    say(1, "질문에서 동네·업종·지표·기간을 읽고 있어요")
     M = m1.M1()
     it = M.interpret(question)
+    say(2, "자료를 골라 계산하고, 답의 숫자를 결과와 대조하고 있어요")
     r = result.respond(question, env, llm_on, interpret=lambda q: it)
+    r0 = r
     trace = []
     if r.get("status") == "Agent" or r.get("pieces") or (r.get("agent") and "나눠" in str(r.get("escalated"))):  # 나눠 답한 질문은 조각마다 이미 처리됨
         return dict(r, question_agent={"turns": [], "skipped": "질문 나누기로 조각마다 답함"})
-    done, notes = [], []
+    done, notes, prev = [], [], None
+    first = None
     for turn in range(max_turns):
+        if forced and turn > 0:
+            break
         gs = gaps(question, it, r, done)
-        if not gs and turn > 0:  # 첫 차례는 어긋남이 없어도 모델이 한 번 확인한다
+        if not gs and turn > 0 and prev is None:  # 첫 차례와 다시 계산 직후는 어긋남이 없어도 모델이 한 번 확인한다
+            break
+        if turn > 0 and time.perf_counter() - t0 > TIME_BUDGET:
+            trace.append({"turn": turn + 1, "gaps": [x["kind"] for x in gs], "choice": "시간 예산(150초)이 지나 지금 답을 냄", "action": "시간 초과", "by": "코드", "sec": 0.0})
             break
         t1 = time.perf_counter()
-        pick, reason = decide(question, r, it, gs, chat, done)
+        if turn == 0:
+            ops0, gs0 = options(question, r, it, gs, done, None), gs
+        if forced:
+            say(3, "고른 처리로 계산하고 있어요")
+            pick = next((o for o in ops0 if o["text"] == forced), None)
+            if pick is None:
+                raise ValueError("고른 선택지가 지금 계산과 맞지 않아요. 질문을 다시 보내 주세요.")
+            reason, by = "사용자가 확인 카드에서 고름", "사용자"
+        else:
+            say(3, f"질문 담당 Agent가 결과가 질문에 맞는지 확인하고 있어요({turn + 1}/{max_turns}회째" + (", 다시 계산한 답을 앞 답과 견주는 중)" if prev else ")"))
+            pick, reason = decide(question, r, it, gs, chat, done, prev[0] if prev else None)
+            by = BY
+        if turn == 0:
+            first = pick
         act = pick["act"]
-        rec = {"turn": turn + 1, "gaps": [x["kind"] for x in gs], "choice": pick["text"], "action": act, "reason": reason[:120], "by": BY, "sec": round(time.perf_counter() - t1, 2)}
+        rec = {"turn": turn + 1, "gaps": [x["kind"] for x in gs], "choice": pick["text"], "action": act, "reason": reason[:120], "by": by, "sec": round(time.perf_counter() - t1, 2)}
         trace.append(rec)
         if act == "답하기":
+            break
+        if act == "되돌리기":  # 다시 계산한 답을 버리고 앞 답으로
+            r, it = prev
+            done.pop()
+            last = next(x for x in reversed(trace[:-1]) if x.get("action") == "다시 계산" and not x.get("note"))
+            last["note"] = "다음 차례에 앞 답으로 되돌림"  # 되돌린 다시 계산은 답의 안내 문장에 넣지 않는다
+            rec["note"] = "다시 계산한 답보다 앞 답이 질문에 맞다고 판단해 되돌림"
             break
         if act == "안내 붙여 답하기":
             notes += [x["note"] for x in gs if x.get("note")]
@@ -331,6 +443,7 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3):
             t2, why = _apply(dict(r.get("tuple") or it["tuple"], _q=question), pick["change"])
             t2.pop("_q", None)
             rec["change"] = why
+            say(3, f"질문 담당 Agent가 고른 대로 다시 계산하고 있어요({', '.join(why) or pick['text']}, {turn + 1}/{max_turns}회째)")
             it2 = dict(it, tuple=t2, card=qparse.card(t2), needs_confirm=False, confidence=None)  # Agent가 고른 해석은 다시 확인하지 않는다
             r2 = result.respond(question, dict(env, _agent_tuple=True, _no_split=True), llm_on, interpret=lambda q, _it=it2: _it)
             asked = list((r.get("tuple") or it["tuple"]).get("space") or [])
@@ -343,6 +456,7 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3):
                 rec["note"] = f"다시 계산한 답이 질문의 {lost}을 잃어 앞 답을 유지(결과 검증)"
                 break
             if r2.get("card") and r2.get("status") not in ("범위밖", "선택필요", "되묻기"):  # 답이 나왔으면 받는다(상태 이름은 경로마다 다름)
+                prev = (r, it)
                 r, it = r2, it2
                 done.append(pick["text"])
                 continue
@@ -363,10 +477,16 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3):
             t = r.get("tuple") or it["tuple"]
             r = result._blocked(question, dict(t, type="T12", expect="범위밖"), "지금 자료로는 답할 수 없는 질문이에요.", [])
             break
+    say(4, "답과 안내 문장을 정리하고 있어요")
     changed = [", ".join(x.get("change") or []) for x in trace if x.get("action") == "다시 계산" and x.get("change") and not x.get("note")]
     if changed:
-        notes = [f"질문 담당 Agent가 결과를 보고 다시 계산했어요({' → '.join(changed)})."] + notes
+        who = "고른 대로" if forced else "질문 담당 Agent가 결과를 보고"
+        notes = [f"{who} 다시 계산했어요({' → '.join(changed)})."] + notes
     if notes and r.get("understood"):
         r["understood"]["notes"] = list(dict.fromkeys(list(r["understood"].get("notes") or []) + notes))
-    r = dict(r, question_agent={"turns": trace, "sec": round(time.perf_counter() - t0, 2), "model_calls": len(trace)})
+    r = dict(r, question_agent={"turns": trace, "sec": round(time.perf_counter() - t0, 2), "model_calls": sum(x.get("by") == BY for x in trace)})
+    if first is not None and not forced:
+        r["confirm"] = confirm_card(first, ops0, gs0, trace, r0, r)
+    elif forced:
+        r["confirm"] = {"pause": False, "forced": forced, "why": "", "first": None, "options": []}
     return r

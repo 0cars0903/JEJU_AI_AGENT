@@ -6,7 +6,7 @@ import { sendFeedback } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoaderCircleIcon } from "@/components/icons";
-import type { Answer, AskResult, BizTab, CompareTable as CompareData, Line, Slots, SummaryCell, Suggestion } from "@/lib/api";
+import type { Answer, AskResult, BizTab, Stage, CompareTable as CompareData, Line, Slots, SummaryCell, Suggestion } from "@/lib/api";
 
 /** "이렇게 이해했어요": 해석한 칸과 주석을 보여 주고 [맞아요] [조건 바꾸기]. 답은 이미 이 내용으로 계산한 것이라 결론보다 약하게 둔다(B2). [조건 바꾸기]는 단계별 선택을 연다. */
 /** sample: 로딩 뼈대용 예시 답(보이지 않음). 시험 표시(data-testid)를 붙이지 않는다. */
@@ -746,20 +746,162 @@ export function SuggestionList({ items, title, onPick, testId }: { items: Sugges
 
 const STAGES = ["질문 이해", "자료 고르기", "조회·계산", "검수", "답 만들기"];
 
-/** P12 축소판: 응답은 한 번에 오므로 진행률을 꾸며 내지 않는다. 처리 순서와 대기 문구만 보여 준다. */
-export function Waiting() {
-  const [slow, setSlow] = useState(false);
+/** 기다리는 화면(마스터 2026-11-15): 서버가 보낸 지금 단계·남은 단계·하는 일을 보인다. 단계를 못 받으면(옛 서버) 처리 순서만 보인다. */
+export function Waiting({ stage }: { stage?: Stage | null }) {
+  const [sec, setSec] = useState(0);
   useEffect(() => {
-    const t = setTimeout(() => setSlow(true), 5000);
-    return () => clearTimeout(t);
+    const t0 = Date.now();
+    const t = setInterval(() => setSec(Math.floor((Date.now() - t0) / 1000)), 1000);
+    return () => clearInterval(t);
   }, []);
+  if (!stage) {
+    return (
+      <div role="status" aria-live="polite" data-testid="waiting" className="flex flex-col gap-2 rounded-(--radius) border border-(--krds-border-gray-light) p-3">
+        <p className="flex items-center gap-2 font-semibold">
+          <LoaderCircleIcon size={20} className="animate-spin" aria-hidden />
+          {sec >= 5 ? "자료가 많아 조금 더 걸리고 있어요. 잠시만 기다려 주세요." : "자료를 찾아 계산하고 있어요."}
+        </p>
+        <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">처리 순서: {STAGES.join(" → ")}</p>
+      </div>
+    );
+  }
+  const left = stage.total - stage.stage;
   return (
     <div role="status" aria-live="polite" data-testid="waiting" className="flex flex-col gap-2 rounded-(--radius) border border-(--krds-border-gray-light) p-3">
-      <p className="flex items-center gap-2 font-semibold">
+      <p className="flex items-center gap-2 font-semibold" data-testid="waiting-stage">
         <LoaderCircleIcon size={20} className="animate-spin" aria-hidden />
-        {slow ? "자료가 많아 조금 더 걸리고 있어요. 잠시만 기다려 주세요." : "자료를 찾아 계산하고 있어요."}
+        {stage.total}단계 중 {stage.stage}단계: {stage.names[stage.stage - 1]}
       </p>
-      <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">처리 순서: {STAGES.join(" → ")}</p>
+      <p data-testid="waiting-detail">{stage.detail}</p>
+      <ol className="flex flex-wrap gap-x-3 gap-y-1 text-[length:var(--krds-fs-body-medium)]" aria-label="처리 단계">
+        {stage.names.map((n, i) => {
+          const k = i + 1;
+          const done = k < stage.stage;
+          const now = k === stage.stage;
+          return (
+            <li key={n} className={done ? "flex items-center gap-1 text-(--krds-text-bolder)" : now ? "flex items-center gap-1 font-semibold" : "flex items-center gap-1 text-(--krds-text-subtle)"}>
+              {done && <Check size={14} aria-hidden />}
+              {k}. {n}
+              <span className="sr-only">{done ? "(끝남)" : now ? "(지금)" : "(남음)"}</span>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
+        {left > 0 ? `남은 단계 ${left}개` : "마지막 단계예요"} · {sec}초 지남(보통 1분 안에 끝나요)
+      </p>
     </div>
+  );
+}
+
+/** 질문 담당 Agent 확인 카드(마스터 2026-11-15, Claude의 AskUserQuestion 방식): 1차 결정을 보이고 다른 선택지 2~3개와 [직접 적기]를 준다.
+ *  pause면 답을 가리고 먼저 고르게 한다(Agent가 답하는 방식을 바꿨거나, Agent와 코드 규칙의 판단이 달랐을 때). */
+export function AgentConfirm({ r, accepted, onAccept, onPick }: { r: AskResult; accepted: boolean; onAccept: () => void; onPick: (pick: string) => void }) {
+  const c = r.confirm;
+  const [writing, setWriting] = useState(false);
+  const [note, setNote] = useState("");
+  const [sent, setSent] = useState(false);
+  if (!c) return null;
+  const q = r.question ?? "";
+  if (c.forced) {
+    return (
+      <p data-testid="agent-confirm-forced" className="rounded-(--radius) bg-muted px-3 py-2 text-(--krds-text-bolder)">
+        고른 처리로 계산한 답이에요: {c.forced.split(" — ")[0]}
+      </p>
+    );
+  }
+  if (!c.first) return null;
+  const first = c.first;
+  const blocking = c.pause && !accepted;
+  const comment = (
+    <div className="flex flex-col gap-2">
+      {!writing && !sent && (
+        <Button variant="outline" size="sm" className="self-start" data-testid="agent-confirm-write" onClick={() => setWriting(true)}>
+          직접 적기
+        </Button>
+      )}
+      {writing && !sent && (
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!note.trim()) return;
+            sendFeedback({ question: q, ok: false, agent_first: first.pick, comment: note.trim() });
+            setSent(true);
+          }}
+        >
+          <label htmlFor="agent-comment">이 판단에 대한 의견(예: &quot;매출이 아니라 가게 수를 물었어요&quot;)</label>
+          <textarea
+            id="agent-comment"
+            data-testid="agent-confirm-comment"
+            maxLength={300}
+            rows={2}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="rounded-(--radius) border border-(--krds-border-gray) p-2"
+          />
+          <Button type="submit" size="sm" className="self-start" disabled={!note.trim()} data-testid="agent-confirm-send">
+            의견 보내기
+          </Button>
+        </form>
+      )}
+      {sent && (
+        <p data-testid="agent-confirm-sent" className="flex items-center gap-1" tabIndex={-1}>
+          <Check size={16} aria-hidden /> 의견을 남겼어요. 센터 담당자가 읽고 고쳐요.
+        </p>
+      )}
+    </div>
+  );
+  const choices = c.options.map((o) => (
+    <Button
+      key={o.pick}
+      variant="outline"
+      size="sm"
+      data-testid="agent-confirm-option"
+      onClick={() => {
+        sendFeedback({ question: q, ok: false, agent_first: first.pick, agent_pick: o.pick });
+        onPick(o.pick);
+      }}
+    >
+      {o.text}
+    </Button>
+  ));
+  if (blocking) {
+    return (
+      <section data-testid="agent-confirm" data-pause="true" aria-labelledby="agent-confirm-title" className="flex flex-col gap-3 rounded-(--radius) border-2 border-(--krds-border-primary) p-4">
+        <h3 id="agent-confirm-title">답을 보여 드리기 전에 확인해 주세요</h3>
+        <p className="text-(--krds-text-bolder)">{c.why}.</p>
+        <p data-testid="agent-confirm-first">
+          <strong>질문 담당 Agent의 판단:</strong> {first.text}
+        </p>
+        {c.after?.[0] && <p className="text-(--krds-text-bolder)">그 뒤 결과 검증: {c.after[0]}</p>}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            data-testid="agent-confirm-accept"
+            onClick={() => {
+              sendFeedback({ question: q, ok: true, agent_first: first.pick, agent_pick: first.pick });
+              onAccept();
+            }}
+          >
+            이 판단대로 답 보기
+          </Button>
+          {choices}
+        </div>
+        {comment}
+      </section>
+    );
+  }
+  return (
+    <details data-testid="agent-confirm" data-pause="false" className="rounded-(--radius) border border-(--krds-border-gray-light) px-3 py-2">
+      <summary className="cursor-pointer">
+        <strong>질문 담당 Agent의 판단:</strong> {first.text} <span className="text-(--krds-text-bolder)">(다른 처리로 보기)</span>
+      </summary>
+      <div className="mt-2 flex flex-col gap-2">
+        {c.after?.[0] && <p className="text-(--krds-text-bolder)">그 뒤 결과 검증: {c.after[0]}</p>}
+        {choices.length > 0 && <div className="flex flex-wrap gap-2">{choices}</div>}
+        {comment}
+      </div>
+    </details>
   );
 }

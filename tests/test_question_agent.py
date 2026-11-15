@@ -93,3 +93,62 @@ class Verify061(unittest.TestCase):
         self.assertEqual(A._lost(q, {"ask_year": 2024, "metric": ["매출"]}, {"ask_year": 2024, "metric": ["점포수"]}), "지표")
         self.assertEqual(A._lost(q, {"ask_year": 2024, "metric": ["매출"]}, {"ask_year": 2024, "metric": ["매출"]}), "")
         self.assertEqual(A._lost("비 오는 날 연동 방문", {"cond": ["비"], "metric": ["일평균방문"]}, {"cond": [], "metric": ["일평균방문"]}), "조건")
+
+
+class Stage20261115(unittest.TestCase):
+    """마스터 2026-11-15: 기다리는 사람에게 지금 단계·남은 단계를 알린다. 모델 없이(llm 실패 → 지금 답 유지) 단계 순서만 본다."""
+
+    def test_progress_order(self):
+        seen = []
+        with mock.patch("analyst._ask", return_value={}):
+            A.run("노형동 카페 몇 곳이야?", {}, llm_on=False, progress=lambda i, d: seen.append(i))
+        self.assertEqual(seen[0], 1)
+        self.assertEqual(seen[-1], 4)
+        self.assertEqual(seen, sorted(seen))
+        self.assertIn(3, seen)
+
+    def test_new_evidence(self):
+        self.assertEqual(A.out_evidence("애월읍 해안가 카페 매매가 얼마야?"), "매매가")
+        self.assertEqual(A.out_evidence("노형동 카페 몇 곳?"), "")
+        self.assertTrue(A.evidenced("화북동 치킨집들 문 많이 닫나요?", "폐업수"))
+        self.assertTrue(A.evidenced("오라동 한식집 새로 창업 활발해요?", "개업수"))
+
+
+class StreamApi20261115(unittest.TestCase):
+    def test_stream_lines(self):
+        from fastapi.testclient import TestClient
+        import api
+        with TestClient(api.app).stream("POST", "/api/ask/stream", json={"question": "노형동 카페 몇 곳이야?"}) as r:
+            rows = [json.loads(x) for x in r.iter_lines() if x.strip()]
+        self.assertIn("ndjson", r.headers["content-type"])
+        self.assertTrue(all("stage" in x and x["stage"] <= x["total"] for x in rows[:-1]))
+        self.assertIn("result", rows[-1])
+        self.assertIn("card", rows[-1]["result"])
+
+
+class Confirm20261115(unittest.TestCase):
+    """사용자 확인 카드(마스터 2026-11-15): 1차 결정·대안·멈춤, 고른 선택지로 다시 계산."""
+
+    def test_card_rules(self):
+        rule = {"id": "1", "text": "사전 규칙 해석('현황')대로 답해 보기", "act": "다시 계산", "change": {"rule": True}}
+        keep = {"id": "2", "text": "지금 처리 그대로(되묻기·범위 밖 안내)", "act": "답하기", "change": {}}
+        c = A.confirm_card(rule, [rule, keep], [{"kind": "범위 밖 판단"}], [{"action": "다시 계산"}], {"status": "범위밖"}, {"status": "성공"})
+        self.assertTrue(c["pause"])  # 범위 밖 → 답함으로 바뀜
+        self.assertEqual(c["first"]["text"], "질문을 '현황' 질문으로 다시 읽어 계산했어요.")
+        self.assertEqual(c["options"][0]["text"], "처음 처리(범위 밖 안내) 그대로 보기")
+        c = A.confirm_card(keep, [rule, keep], [{"kind": "범위 밖 판단"}], [{"action": "답하기"}], {"status": "범위밖"}, {"status": "범위밖"})
+        self.assertTrue(c["pause"])  # 코드 규칙(첫 다시 계산)과 모델 선택이 다름
+        self.assertIn("코드 규칙", c["why"])
+
+    def test_forced(self):
+        q = "노형동 카페 몇 곳이야?"
+        r2 = A.run(q, {}, llm_on=False, forced="지금 답 그대로")
+        self.assertEqual([t["by"] for t in r2["question_agent"]["turns"]], ["사용자"])
+        self.assertEqual(r2["confirm"]["forced"], "지금 답 그대로")
+        with self.assertRaises(ValueError):
+            A.run(q, {}, llm_on=False, forced="없는 선택지")
+
+    def test_no_pause_when_agree(self):
+        with mock.patch("analyst._ask", return_value={}):
+            c = A.run("노형동 카페 몇 곳이야?", {}, llm_on=False)["confirm"]
+        self.assertFalse(c["pause"])

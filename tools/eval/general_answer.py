@@ -97,8 +97,8 @@ def main():
             import hashlib
             import random
 
-            def decide(q, r, it, gs, chat=None, done=()):
-                ops = A.options(q, r, it, gs, done)
+            def decide(q, r, it, gs, chat=None, done=(), prev=None):
+                ops = A.options(q, r, it, gs, done, prev)
                 keep = next(o for o in ops if o["act"] == "답하기")
                 if policy == "code":
                     return (next((o for o in ops if o["act"] == "다시 계산"), keep) if gs else keep), "코드 기준선"
@@ -119,7 +119,8 @@ def main():
         qa = r.get("question_agent") or {}
         rows.append({"id": g["id"], "gen": g.get("gen"), "ambiguous": bool(g.get("ambiguous")), "ok": s["정답"], "cells": s, "hard": g.get("hard") or [],
                      "sec": round(time.perf_counter() - t0, 2), "status": r.get("status"),
-                     "turns": [{k: x.get(k) for k in ("gaps", "choice", "action", "change", "note")} for x in qa.get("turns", [])], "calls": len(qa.get("turns", []))})
+                     "turns": [{k: x.get(k) for k in ("gaps", "choice", "action", "change", "note")} for x in qa.get("turns", [])], "calls": sum(x.get("action") != "시간 초과" for x in qa.get("turns", [])),
+                     "pause": bool((r.get("confirm") or {}).get("pause"))})
         print(json.dumps({k: rows[-1][k] for k in ("id", "ok", "status", "sec", "calls")}, ensure_ascii=False), flush=True)
     main_rows = [r for r in rows if not r["ambiguous"]]
 
@@ -136,7 +137,7 @@ def main():
     from collections import Counter
     acts = Counter(t.get("action") for r in rows for t in r["turns"])
     summ = {"file": FILE.name, "split": split, "mode": mode, "policy": policy if mode == "agent" else None, "rule_fix": result.RULE_FIX,
-            "행동 분포": dict(acts.most_common()), "차례 수 분포": dict(sorted(Counter(r["calls"] for r in rows).items())), "n": len(rows), "애매 제외 n": len(main_rows),
+            "행동 분포": dict(acts.most_common()), "차례 수 분포": dict(sorted(Counter(r["calls"] for r in rows).items())), "확인 카드 멈춤": sum(r.get("pause", False) for r in rows), "n": len(rows), "애매 제외 n": len(main_rows),
             "④ 완전 정답": sum(r["ok"] for r in main_rows), "① 처리": sum(r["cells"]["처리"] for r in main_rows),
             "② 요소 비율 평균": round(statistics.mean(r["cells"]["요소 비율"] for r in main_rows), 3) if main_rows else None,
             "③ 안내 정직성": f"{sum(honest)}/{len(honest)}", "애매 문항 정답": f"{sum(r['ok'] for r in rows if r['ambiguous'])}/{sum(r['ambiguous'] for r in rows)}",

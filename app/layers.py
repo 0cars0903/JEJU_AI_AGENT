@@ -462,6 +462,13 @@ def _extra_lines(o, t, v):
         o.view("bizgrowth", "업종별 증가율", "bar", [{"name": "1년 전 대비(%)", "points": [[r["biz"], r["growth_pct"]] for r in x["rows"] if r["growth_pct"] is not None]}],
                "업종마다 최근 12개월이 그 전 12개월보다 얼마나 늘거나 줄었는지 보여 줘요", x="biz")
         return
+    if k == "rising" and x.get("by_dong"):  # 물은 동네의 증가율
+        for r in x["rows"][:5]:
+            lab = f"{r['dong']} {r['biz'] if r['biz'] != '전 업종' else '카드'}"
+            o.line("L1", f"{lab} 매출이 1년 전보다 {o.num(abs(r['growth_pct']), '%')} {'늘었어요' if r['growth_pct'] > 0 else '줄었어요'}({'증가액' if r['gain'] >= 0 else '감소액'} {o.num(abs(r['gain']), '원')}).", src, x["end"])
+        o.view("rising", "증가율", "bar", [{"name": "증가율(%)", "points": [[f"{r['dong']} {r['biz']}", r["growth_pct"]] for r in x["rows"]]}],
+               "최근 12개월 카드 매출을 그 전 12개월과 견줬어요", x="name")
+        return
     if k == "rising":
         o.line("L2", f"최근 12개월 매출이 동네 × 업종 {x['combos']}개 조합의 중간값({o.num(x['median'], '원')}) 이상인 곳만 비교했어요.", src)
         for r in x["rows"][:5]:

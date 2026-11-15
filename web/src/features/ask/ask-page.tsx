@@ -9,13 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorState } from "@/components/states";
 import { SendIcon } from "@/components/icons";
-import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMeta, type Slots, ask, getGuide, readCenter, writeCenter, sendFeedback } from "@/lib/api";
+import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMeta, type Slots, getGuide, readCenter, writeCenter, sendFeedback, askStream, type Stage } from "@/lib/api";
 import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
 import { ExpertMode, ResultView } from "./expert";
 import { useNav } from "@/components/nav-context";
-import { AnswerCard, BizTabs, CompareWith, Downloads, Process, ScopeCheck, SourceList, SuggestionList, Understood, Waiting } from "./answer";
+import { AgentConfirm, AnswerCard, BizTabs, CompareWith, Downloads, Process, ScopeCheck, SourceList, SuggestionList, Understood, Waiting } from "./answer";
 
 // 로딩 뼈대의 모양을 그리기 위한 예시 답(화면에 보이지 않는다).
 const SAMPLE: AskResult = {
@@ -53,6 +53,7 @@ function toUrl(body: Body, label: string) {
   if (body.question) p.set("q", body.question);
   if (body.slots) p.set("s", JSON.stringify(body.slots));
   if (body.dataset_id) p.set("d", body.dataset_id);
+  if (body.agent_pick) p.set("a", body.agent_pick);
   if (label && label !== body.question) p.set("l", label);
   return `/?${p}`;
 }
@@ -67,7 +68,7 @@ function fromParams(sp: URLSearchParams): { body: Body; label: string } | null {
   } catch {
     slots = undefined;
   }
-  const body: Body = { question: q ?? undefined, slots, dataset_id: sp.get("d") ?? undefined };
+  const body: Body = { question: q ?? undefined, slots, dataset_id: sp.get("d") ?? undefined, agent_pick: sp.get("a") ?? undefined };
   return { body, label: sp.get("l") ?? q ?? PICK_LABEL };
 }
 
@@ -97,8 +98,13 @@ export function AskPage() {
   const askedKey = useRef<string | null>(null);
 
   const askedBack = useRef<string | null>(null);
+  const [stage, setStage] = useState<Stage | null>(null); // 서버가 보낸 지금 처리 단계(마스터 2026-11-15)
+  const [accepted, setAccepted] = useState<string | null>(null); // 확인 카드에서 [이 판단대로 답 보기]를 누른 주소
   const m = useMutation({
-    mutationFn: ask,
+    mutationFn: (b: AskBody) => {
+      setStage(null);
+      return askStream(b, setStage);
+    },
     onSuccess: (r) => {
       if (r.status === "선택필요" && r.choose) {
         setPicker({ preset: r.choose.preset, notice: r.choose.message });
@@ -390,7 +396,7 @@ export function AskPage() {
               질문: {r?.question ?? req?.body.question ?? asked}
             </p>
           )}
-          {m.isPending && <Waiting />}
+          {m.isPending && <Waiting stage={stage} />}
           {m.isError && <ErrorState error={m.error} onRetry={needFile ? undefined : () => req && m.mutate(withCenter(req.body))} />}
           {needFile && req && (
             <div data-testid="need-file" className="flex flex-col gap-2 rounded-(--radius) border border-(--krds-border-gray) p-4">
@@ -428,8 +434,14 @@ export function AskPage() {
                     </p>
                     <ResultView r={res.agent} q={res.question ?? ""} />
                   </div>
+                ) : res !== SAMPLE && res.confirm?.pause && accepted !== key ? (
+                  // 확인 카드가 멈춤이면 답을 가리고 먼저 고르게 한다(마스터 2026-11-15)
+                  <AgentConfirm r={res} accepted={false} onAccept={() => setAccepted(key)} onPick={(pick) => run({ question: res.question ?? undefined, agent_pick: pick }, res.question ?? "")} />
                 ) : (
                 <div className="flex flex-col gap-4">
+                  {res !== SAMPLE && (
+                    <AgentConfirm r={res} accepted onAccept={() => undefined} onPick={(pick) => run({ question: res.question ?? undefined, agent_pick: pick }, res.question ?? "")} />
+                  )}
                   <Understood
                     key={JSON.stringify(res.understood)}
                     r={res}

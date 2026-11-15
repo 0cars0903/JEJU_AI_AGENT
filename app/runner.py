@@ -190,6 +190,15 @@ def s1_query(task, store, env):
         k = by_dong(pd.read_parquet(TAB / "km.parquet")).pivot_table(index="dong", columns="year", values="survival_pct")
         v = k[5] if m == "5년생존율" else k[5] / k[2] * 100
         return {"table": v.rename("value").reset_index(), "dataset": "780 음식점 인허가(동네별, 업종 구분 없음)", "unit": "%"}
+    if m in ("고령비중", "청년비중", "방문연령구성"):  # 선택지에 있으나 공개 경로가 없던 지표(2026-11-15 조정용 아라동 '어르신')
+        a = by_dong(pd.read_parquet(TAB / "pop_age.parquet"))
+        a = a[a["year"] == a["year"].max()]
+        if m == "방문연령구성":
+            return {"table": a.groupby(["dong", "ageGroup"])["visit"].sum().rename("value").reset_index(), "dataset": "583 유동인구(연령)", "unit": "지수"}
+        ages = ["60대", "70대이상"] if m == "고령비중" else ["20대", "30대"]
+        tot = a.groupby("dong")["resd"].sum()
+        part = a[a["ageGroup"].isin(ages)].groupby("dong")["resd"].sum()
+        return {"table": (part / tot * 100).rename("value").reset_index(), "dataset": "583 유동인구(연령, 거주)", "unit": "%"}
     if m == "거주연령구성":
         a = by_dong(pd.read_parquet(TAB / "pop_age.parquet"))
         a = a[a["year"] == a["year"].max()].groupby(["dong", "ageGroup"])["resd"].sum().rename("value").reset_index()
@@ -238,7 +247,9 @@ def _card(m, tgt, dongs, det=None, details=None):
                 "note": "매출 비교는 업종 대분류 5개 기준이에요. 카페·한식 같은 세부 업종끼리는 가게 수·개업·폐업으로 비교해요.", "extra": {"kind": "bizcompare", **bc}}
     if m == "매출성장":  # 뜨는 동네·업종
         biz, note = _biz5(tgt)
-        rs = v3.rising(biz)
+        rs = v3.rising(biz, dongs=dongs)
+        if dongs and not rs["rows"]:
+            raise TaskError("실행", "그 동네의 2년치 카드 매출이 없어 증가율을 계산하지 못함")
         tab = pd.DataFrame([{"dong": r["dong"], "biz": r["biz"], "value": r["growth_pct"], "gain": r["gain"]} for r in rs["rows"]])
         return {"table": tab, "dataset": f"{KTO}(최근 12개월 대비 그 전 12개월, ~{rs['end']})", "unit": "증감률(%)", "note": note,
                 "extra": {"kind": "rising", **rs}}
