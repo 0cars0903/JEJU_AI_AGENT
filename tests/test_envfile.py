@@ -38,16 +38,20 @@ class EnvFileTest(unittest.TestCase):
 
 class ReportTest(unittest.TestCase):
     def test_paths(self):
+        def tag(lines, t):  # 줄 순서 대신 머리말로 찾는다(질문 담당 Agent 줄 추가, 2026-11-16)
+            return next(x for x in lines if x.startswith(t))
         off = check_env.report(None, False)
         self.assertIn("사전 규칙", off[0])
-        self.assertIn("템플릿", off[1])
+        self.assertIn("템플릿", tag(off, "[설명 문장]"))
         full = check_env.report({"bge-m3", "qwen3:1.7b"}, False)
         self.assertIn("임베딩", full[0])
-        self.assertIn("qwen3:1.7b", full[1])
+        self.assertIn("qwen3:1.7b", tag(full, "[설명 문장]"))
+        self.assertIn("꺼져", tag(full, "[질문 담당 Agent]"))
+        self.assertIn("확인 카드", tag(check_env.report({"qwen2.5:7b"}, False), "[질문 담당 Agent]"))
         no_embed = check_env.report({"qwen3:1.7b"}, True)
         self.assertIn("ollama pull bge-m3", no_embed[0])
         self.assertIn("Claude", " ".join(no_embed))  # 키가 있으면 요청 단위 Claude 안내(2026-11-14)
-        self.assertIn("템플릿", check_env.report({"bge-m3"}, True, "rule")[1])
+        self.assertIn("템플릿", tag(check_env.report({"bge-m3"}, True, "rule"), "[설명 문장]"))
 
 
 if __name__ == "__main__":

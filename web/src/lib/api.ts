@@ -92,6 +92,8 @@ export type AskResult = {
   /** 질문 담당 Agent(app/question_agent.py, 2026-11-15): 차례마다 코드가 찾은 어긋남, 모델이 고른 선택지, 이유 */
   /** 사용자 확인 카드(2026-11-15, AskUserQuestion 방식): 1차 결정·다른 선택지·멈춤 여부. forced면 사용자가 고른 선택지로 계산한 답 */
   confirm?: { pause: boolean; why: string; forced?: string; first: { text: string; pick: string; act: string } | null; after?: string[]; options: { text: string; pick: string; act: string }[] };
+  /** 질문 담당 Agent가 꺼진 까닭(2026-11-16): Ollama 꺼짐·판단 모델 없음·웹 데모. 있으면 답 위에 작게 표시 */
+  agent_off?: string;
   question_agent?: { turns: { turn: number; gaps: string[]; choice: string; action: string; reason: string; by: string; sec: number; change?: string[]; note?: string }[]; sec?: number; skipped?: string };
 };
 

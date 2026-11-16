@@ -182,19 +182,54 @@ class ChoiceProbs20261115(unittest.TestCase):
 
 
 class ClaudeChoice20261116(unittest.TestCase):
-    """Claude 키 실험: 모델 이름이 claude-로 시작하면 강제 도구 호출로 선택지를 받고 확률은 None."""
+    """Claude 키 실험: 모델 이름이 claude-로 시작하면 구조화 출력으로 선택지를 받고 확률은 None."""
 
     def test_claude_branch(self):
         import llm_claude
-        blk = mock.Mock(type="tool_use", input={"choice": "B"})
+        blk = mock.Mock(type="text", text='{"choice": "B"}')
         cl = mock.Mock()
         cl.messages.create.return_value = mock.Mock(content=[blk])
         with mock.patch.object(llm_claude, "client", return_value=cl):
             d, p = A._ask_choice(None, "s", "u", {"type": "object"}, ["A", "B"], model="claude-haiku-5-5")
         self.assertEqual((d, p), ({"choice": "B"}, None))
-        self.assertEqual(cl.messages.create.call_args.kwargs["tool_choice"], {"type": "tool", "name": "answer"})
+        self.assertEqual(cl.messages.create.call_args.kwargs["output_config"]["format"]["type"], "json_schema")
 
     def test_claude_error(self):
         import llm_claude
         with mock.patch.object(llm_claude, "client", side_effect=RuntimeError("no key")):
             self.assertEqual(A._ask_choice(None, "s", "u", {}, ["A"], model="claude-sonnet-5-5"), ({}, None))
+
+
+class Status20261116(unittest.TestCase):
+    """Windows 시험(2026-11-16): Ollama만 있고 qwen2.5:7b가 없으면 질문 담당 Agent를 끄고 까닭을 알린다."""
+
+    def setUp(self):
+        A._STATUS.clear()
+
+    def tearDown(self):
+        A._STATUS.clear()
+
+    def test_model_missing(self):
+        import check_env
+        import llm
+        with mock.patch.dict(os.environ, {"LLM_BACKEND": "ollama", "JEJU_QUESTION_AGENT": "1"}), \
+                mock.patch.object(llm, "_ollama_alive", return_value=True), \
+                mock.patch.object(check_env, "ollama_models", return_value={"bge-m3", "qwen3:1.7b"}):
+            os.environ.pop("VERCEL", None)
+            self.assertEqual(A.status(), (False, "qwen2.5:7b 모델 없음"))
+
+    def test_model_present(self):
+        import check_env
+        import llm
+        with mock.patch.dict(os.environ, {"LLM_BACKEND": "ollama", "JEJU_QUESTION_AGENT": "1"}), \
+                mock.patch.object(llm, "_ollama_alive", return_value=True), \
+                mock.patch.object(check_env, "ollama_models", return_value={"qwen2.5:7b"}):
+            os.environ.pop("VERCEL", None)
+            self.assertEqual(A.status(), (True, None))
+
+    def test_missing_lines(self):
+        import check_env
+        lines = check_env.missing_lines({"bge-m3"})
+        self.assertTrue(any("ollama pull qwen2.5:7b" in x for x in lines))
+        self.assertEqual(check_env.missing_lines({"bge-m3", "qwen3:1.7b", "qwen2.5:7b"}), [])
+        self.assertTrue(any("Ollama가 꺼져" in x for x in check_env.missing_lines(None)))

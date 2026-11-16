@@ -2,6 +2,7 @@
 
 - 질문 해석: Ollama `bge-m3`가 있으면 임베딩 + 분류기(판정용 300문항 82.7%), 없으면 사전 규칙(66.3%).
 - 설명 문장: Ollama `qwen3:1.7b`, 없으면 템플릿 문장(JEJU_CLAUDE=auto면 키가 있을 때 Claude). Claude는 기본으로 요청 단위.
+- 질문 담당 Agent·분석 담당 Agent: Ollama `qwen2.5:7b`. 없으면 질문 담당 Agent가 꺼지고 계획 표 답만 나온다. 빠진 모델은 받는 명령과 함께 크게 알린다(2026-11-16).
 - 키 값은 출력하지 않는다. 실패해도 앱 실행을 막지 않는다(항상 종료 코드 0).
 """
 import json
@@ -14,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import envfile  # noqa: E402
 
 EMBED = "bge-m3"
-AGENT = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")  # 전문가 모드 로컬 도구 루프(문서 26)
+AGENT = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")  # 질문 담당 Agent 판단 + 전문가 모드 분석 담당·도구 루프
 CHAT = os.environ.get("JEJU_OLLAMA_MODEL", "qwen3:1.7b")
 # 정확도를 잰 모델 판(Ollama digest 앞 12자리, 2026-11-15 확인). 'ollama pull'은 같은 이름이라도 새 판을 받을 수 있어 실행 전에 대조한다.
 PINNED = {"bge-m3": "790764642607", "qwen3:1.7b": "8f68893c685c", "qwen2.5:7b": "845dbda0ea48"}
@@ -66,6 +67,12 @@ def report(models, has_key, backend=None):
         lines.append(f"[질문 해석] Ollama {EMBED} 임베딩 + 분류기를 씁니다.")
     else:
         lines.append(f"[질문 해석] Ollama에 {EMBED}가 없어 사전 규칙으로 해석합니다. 'ollama pull {EMBED}'를 실행해 주세요.")
+    if backend == "rule":
+        lines.append("[질문 담당 Agent] LLM_BACKEND=rule이라 꺼져 있습니다. 계획 표 답만 나옵니다.")
+    elif models is not None and AGENT in models:
+        lines.append(f"[질문 담당 Agent] Ollama {AGENT}가 답을 확인하고 다음 행동을 고릅니다(판단이 갈리면 확인 카드).")
+    elif models is not None:
+        lines.append(f"[질문 담당 Agent] {AGENT}가 없어 꺼져 있습니다. 계획 표 답만 나옵니다.")
     auto = os.environ.get("JEJU_CLAUDE", "request") == "auto"  # 기본은 요청 단위(담당자가 [Claude로 분석]을 누를 때만)
     if backend == "rule":
         lines.append("[설명 문장] LLM_BACKEND=rule이라 템플릿 문장으로 답합니다.")
@@ -86,11 +93,25 @@ def report(models, has_key, backend=None):
     return lines
 
 
+def missing_lines(models):
+    """빠진 모델을 받는 명령과 함께 눈에 띄게 알린다. Ollama가 꺼져 있으면 켜는 방법을 알린다."""
+    bar = "=" * 60
+    if models is None:
+        return [bar, "!! Ollama가 꺼져 있거나 설치되어 있지 않습니다. 질문 담당 Agent가 꺼진 채로 실행됩니다.",
+                "!! https://ollama.com/download 에서 설치하고 Ollama를 켠 뒤, 설치 스크립트를 다시 실행하세요.", bar]
+    miss = [m for m in (EMBED, CHAT, AGENT) if m not in models]
+    if not miss:
+        return []
+    return [bar, "!! 받지 않은 모델이 있습니다: " + ", ".join(miss),
+            "!! 새 명령 창에서 아래를 실행한 뒤 이 앱을 다시 시작하세요."] + [f"     ollama pull {m}" for m in miss] + [bar]
+
+
 def main():
     loaded = envfile.load()
     if loaded:
         print(".env에서 환경 변수를 읽었습니다: " + ", ".join(loaded))
-    for line in report(ollama_models(), bool(os.environ.get("ANTHROPIC_API_KEY")), os.environ.get("LLM_BACKEND")) + version_lines(digests()):
+    models = ollama_models()
+    for line in report(models, bool(os.environ.get("ANTHROPIC_API_KEY")), os.environ.get("LLM_BACKEND")) + version_lines(digests()) + missing_lines(models):
         print(line)
     return 0
 

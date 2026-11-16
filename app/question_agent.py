@@ -70,12 +70,39 @@ TIME_BUDGET = 150.0  # 질문당 3분 미만(마스터 2026-11-15, 처음 5초�
 SNOW_Q = re.compile(r"눈\s*(이\s*)?(오|올|와|내리|온|많|쌓)|폭설|대설")
 
 
-def enabled():
-    """켜는 조건: JEJU_QUESTION_AGENT가 0이 아니고, 로컬 모델(Ollama)이 살아 있을 때. 웹 데모(Vercel)처럼 Ollama가 없으면 지금 경로로 답한다."""
+_STATUS = {}
+
+
+def status():
+    """(켜짐 여부, 꺼진 까닭). 켜는 조건: JEJU_QUESTION_AGENT가 0이 아니고, Ollama가 살아 있고, 판단 모델(기본 qwen2.5:7b)이 받아져 있을 때.
+    모델이 없는데 켜면 판단이 모두 실패해 첫 답을 그대로 내므로(2026-11-16 Windows 시험에서 발견) 모델까지 확인한다. 30초 동안 결과를 재사용한다."""
+    import time
     if os.environ.get("JEJU_QUESTION_AGENT", DEFAULT_ON) == "0":
-        return False
+        return False, "꺼 둠"
+    now = time.time()
+    if _STATUS and now - _STATUS["t"] < 30:
+        return _STATUS["v"]
+    import expert
     import llm
-    return llm.backend() != "rule" and llm._ollama_alive()
+    model = expert.AGENT_MODEL
+    if os.environ.get("VERCEL"):
+        v = (False, "웹 데모(로컬 모델 없음)")
+    elif os.environ.get("LLM_BACKEND") == "rule":
+        v = (False, "꺼 둠")  # 일부러 LLM을 끈 구성(시험·확인 서버)은 화면에 알리지 않는다
+    elif llm.backend() == "rule" or not llm._ollama_alive():
+        v = (False, "Ollama 꺼짐")
+    elif model.startswith("claude-"):
+        v = (True, None)
+    else:
+        import check_env
+        have = check_env.ollama_models()
+        v = (True, None) if have is None or model in have else (False, f"{model} 모델 없음")
+    _STATUS.update(t=now, v=v)
+    return v
+
+
+def enabled():
+    return status()[0]
 
 
 DEFAULT_ON = "1"
@@ -303,10 +330,10 @@ def _ask_choice(chat, system, user, schema, ids, key="choice", model=None):
     if model.startswith("claude-"):  # Claude 키 실험(2026-11-16): 같은 선택지를 Claude가 고름. 확률(logprobs)은 API가 주지 않아 None
         try:
             import llm_claude
-            resp = llm_claude.client().messages.create(model=model, max_tokens=300, system=system, messages=[{"role": "user", "content": user}],
-                                                        tools=[{"name": "answer", "description": "판단 결과", "input_schema": schema}],
-                                                        tool_choice={"type": "tool", "name": "answer"})
-            d = next((b.input for b in resp.content if b.type == "tool_use"), {})
+            sch = dict(schema, additionalProperties=False)  # 구조화 출력(output_config.format). Sonnet·Opus 5.5는 강제 도구 호출을 받지 않는다
+            resp = llm_claude.client().messages.create(model=model, max_tokens=2000, system=system, messages=[{"role": "user", "content": user}],
+                                                        output_config={"effort": "low", "format": {"type": "json_schema", "schema": sch}})
+            d = json.loads(next((b.text for b in resp.content if b.type == "text"), "{}"))
         except Exception:
             return {}, None
         return (d if isinstance(d, dict) else {}), None

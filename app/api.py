@@ -232,7 +232,11 @@ def _ask_core(body: Ask, request: Request, progress=None):
         except ValueError as e:
             raise HTTPException(422, str(e))
     say(1, "질문을 읽고 자료를 계산하고 숫자를 대조하고 있어요")
-    return clean(result.respond(question, env, llm_on=on, interpret=_M1["m"].interpret))
+    r = result.respond(question, env, llm_on=on, interpret=_M1["m"].interpret)
+    off = question_agent.status()[1]
+    if off and off != "꺼 둠" and isinstance(r, dict):
+        r["agent_off"] = off  # 화면에 '질문 담당 Agent 꺼짐'을 작게 표시(시험 때 바로 알아보도록, 2026-11-16)
+    return clean(r)
 
 
 @app.get("/api/map")

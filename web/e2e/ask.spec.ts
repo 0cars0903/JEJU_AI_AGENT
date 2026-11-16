@@ -812,6 +812,23 @@ test.describe("사용성 점검 2차 반영", () => {
     await expect(page.getByTestId("answer-card")).toBeVisible({ timeout: 8000 });
   });
 
+  test("C2d 질문 담당 Agent가 꺼지면(모델 없음) 답 위에 작게 알린다(2026-11-16)", async ({ page }) => {
+    await page.route("**/api/ask{,/stream}", async (route) => {
+      const body = route.request().postDataJSON() as Record<string, unknown>;
+      const res = await route.fetch({ url: route.request().url().replace("/api/ask/stream", "/api/ask"), postData: JSON.stringify({ question: body.question }) });
+      const j = await res.json();
+      delete j.confirm;
+      j.agent_off = "qwen2.5:7b 모델 없음";
+      await route.fulfill({ json: j });
+    });
+    await page.goto("/");
+    await expect(page.getByTestId("dong-home")).toBeVisible();
+    await page.getByTestId("question-input").fill("노형동 카페 가게는 몇 곳이야?");
+    await page.keyboard.press("Enter");
+    await expect(page.getByTestId("agent-off")).toContainText("질문 담당 Agent 꺼짐(qwen2.5:7b 모델 없음)");
+    await expect(page.getByTestId("answer-card")).toBeVisible();
+  });
+
   test("C2c 확인 카드: 멈춤이면 답을 가리고, [이 판단대로 답 보기]·다른 선택지·직접 적기가 동작한다(마스터 2026-11-15)", async ({ page }) => {
     const bodies: Record<string, unknown>[] = [];
     const fb: Record<string, unknown>[] = [];

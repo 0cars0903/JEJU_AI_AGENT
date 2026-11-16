@@ -442,6 +442,11 @@ export function AskPage() {
                   {res !== SAMPLE && (
                     <AgentConfirm r={res} accepted onAccept={() => undefined} onPick={(pick) => run({ question: res.question ?? undefined, agent_pick: pick }, res.question ?? "")} />
                   )}
+                  {res !== SAMPLE && res.agent_off && (
+                    <p data-testid="agent-off" className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
+                      질문 담당 Agent 꺼짐({res.agent_off}): 정해진 계산으로만 답했어요.
+                    </p>
+                  )}
                   <Understood
                     key={JSON.stringify(res.understood)}
                     r={res}

@@ -10,14 +10,15 @@
 ## 빠른 실행
 | 순서 | Windows(센터 PC) | macOS |
 |---|---|---|
-| 1. 설치(처음 1회, 인터넷 필요) | `scripts\setup_windows.bat` | `sh scripts/setup_mac.sh` |
+| 0. Ollama 설치(처음 1회, 필수) | [Ollama](https://ollama.com/download)를 설치하고 **새 명령 창**을 연다 | 같음(새 터미널) |
+| 1. 설치(처음 1회, 인터넷 필요) | `scripts\setup_windows.bat`(패키지와 로컬 모델 3개를 받고, 빠진 모델은 한 번 더 받는다) | `sh scripts/setup_mac.sh` |
 | 2. 실행 | `scripts\run_windows.bat` | `sh scripts/run_mac.sh` |
 | 3. 접속 | 실행하면 기록을 남기지 않는 브라우저 창(Edge InPrivate, 없으면 Chrome 시크릿)이 http://localhost:8501 로 열린다 | 같음(Chrome 시크릿, 없으면 Edge InPrivate) |
 | 4. 방문자가 바뀔 때 | 브라우저 창을 닫고 `scripts\run_windows.bat`을 다시 실행한다(서버는 그대로 쓰고 새 창만 연다) | 창을 닫고 `sh scripts/run_mac.sh`를 다시 실행 |
 
 필요 환경: Python 3.9(설치 스크립트가 `requirements.txt`로 설치한다. `pyproject.toml`의 3.12 이상은 Vercel 웹 데모 전용이다). 표준 테이블(`data/tables/`)이 들어 있어 데이터를 내려받지 않아도 바로 동작한다.
 
-권장: 설치 전에 [Ollama](https://ollama.com/download)를 설치한다. 설치 스크립트가 Ollama를 찾으면 로컬 모델 3개를 함께 받는다. `bge-m3`(질문 해석, 1.2GB), `qwen3:1.7b`(설명 문장, 1.4GB), `qwen2.5:7b`(전문가 모드 분석 담당, 4.7GB)이다. 실행 스크립트는 시작할 때 어느 경로로 도는지 실행 창에 알려 준다. 정확도를 잰 모델 판(digest 앞 12자리)은 `bge-m3` 790764642607, `qwen3:1.7b` 8f68893c685c, `qwen2.5:7b` 845dbda0ea48이다. 받은 판이 다르면 실행 창에 '[모델 판]' 안내가 나온다(`app/check_env.py`).
+필수: 설치 스크립트보다 먼저 [Ollama](https://ollama.com/download)를 설치한다. 설치 스크립트가 로컬 모델 3개를 받는다. `bge-m3`(질문 해석, 1.2GB), `qwen3:1.7b`(설명 문장, 1.4GB), `qwen2.5:7b`(질문 담당 Agent와 전문가 모드 분석 담당의 판단, 4.7GB)이다. `qwen2.5:7b`가 없으면 질문 담당 Agent가 꺼지고 계획 표 답만 나온다. 실행 스크립트는 시작할 때 어느 경로로 도는지 실행 창에 알려 주고, 빠진 모델이 있으면 받는 명령(`ollama pull 모델이름`)을 눈에 띄게 보여 준다. 답 화면에도 'Agent 꺼짐'이 작게 표시된다. 모델을 받은 뒤에는 앱을 다시 시작한다. 정확도를 잰 모델 판(digest 앞 12자리)은 `bge-m3` 790764642607, `qwen3:1.7b` 8f68893c685c, `qwen2.5:7b` 845dbda0ea48이다. 받은 판이 다르면 실행 창에 '[모델 판]' 안내가 나온다(`app/check_env.py`).
 
 **앱 실행에는 API 키가 필요 없다.** 기본은 로컬 소형 모델과 코드 규칙으로 돈다. Claude는 센터 담당자가 로그인한 뒤 전문가 모드에서 [Claude로 분석]을 누른 요청에만 쓴다. 이때만 아래 [Claude 키 설정](#claude-키-설정선택)을 따른다.
 
@@ -108,7 +109,7 @@ Anthropic의 구분(*Building effective agents*, 2024-12-19)으로 보면 도민
 | 질문 해석 248·199 | `data/x1/test_std150_gold.jsonl`·`test_std150d_gold.jsonl`(판정) | `python tools/eval/m1_eval.py`, `--rule` |
 | 질문 나누기 76·36·36 | `data/eval/split_eval_150.jsonl`(판정) + std150d 50 | `python tools/eval/split_eval.py`, `--off` |
 | 요청 이해 106·107·111·64 | `data/eval/tech_route_eval_120.jsonl`(판정). 조정·질문 기록: `tech_dev_24.jsonl`·`tech_dev_052_48.jsonl`·`tech_dev_general_60.jsonl`·`tech_dev_rag_654.jsonl`(색인 `python tools/rag_build.py --tune`) | `python tools/eval/tech_route.py data/eval/tech_route_eval_120.jsonl`, `--no-checks`, `--rule`(결과 `data/eval/result_tech_route_120*.json`. 107은 지운 분류기 의견 방식, 커밋 0d74e20) |
-| 일반 질문 155·200 | `data/eval/general_answer_v2.jsonl`(split judge 판정, dev 조정. 정답 기준 `data/eval/answer_rubric.md`, 자료 능력 명세 `data/eval/capability_spec.md`, 라벨 합치기 `tools/eval/merge_labels.py`) | `python tools/eval/general_answer.py --split judge --mode workflow`, `--mode agent`, 기준선 `--policy code`·`--policy random`, 보정 규칙 끔 `--no-rule-fix`(결과 `data/eval/result_ga2_*.json`) |
+| 일반 질문 155·200 | `data/eval/general_answer_v2.jsonl`(split judge 판정, dev 조정. 질문은 표준어 타이핑 기준이고 제주어는 지원 범위 밖. 정답 기준 `data/eval/answer_rubric.md`, 자료 능력 명세 `data/eval/capability_spec.md`, 라벨 합치기 `tools/eval/merge_labels.py`) | `python tools/eval/general_answer.py --split judge --mode workflow`, `--mode agent`, 기준선 `--policy code`·`--policy random`, 보정 규칙 끔 `--no-rule-fix`(결과 `data/eval/result_ga2_*.json`) |
 | 5단계 전체 | 위와 같은 판정 문항의 기법 96개 | `python tools/eval/analyst_eval.py data/eval/tech_route_eval_120.jsonl` |
 
 - 학습 자료(`data/x1/human_train.jsonl`·`fragment_train.jsonl`)와 판정 문항은 모두 Gemini가 만들었다. 같은 문장은 0개지만 같은 생성기라 말투가 비슷할 수 있다. 판정 문항으로 지시문·규칙을 고치지 않았고, 고친 뒤에는 새 판정 문항을 받았다(052 → 055, 052는 이후 조정용). 일반 질문 판정용(309문항)은 질문 담당 Agent 구성이 바뀔 때마다 한 번씩 5회(174 → 197 → 197 → 201 → 200) 쟀고, 코드 규칙 기준선은 3회, 무작위는 2회 쟀다. 조정용에서는 마지막 구성이 207 → 223/282로 올랐지만 판정용은 197 → 201에 그쳤다. 규칙·선택지·안내 문장은 조정용 304문항의 오답만 보고 고쳤다. 안내 낱말 대조는 061 검토 뒤 좁혔다('센터'·'방문'·'기준으로'만으로는 통과하지 않음). 측정 결과 파일은 `data/eval/result_*.json`에 남긴다.
@@ -274,6 +275,7 @@ LLM은 아래처럼 쓴다. 기본(`JEJU_CLAUDE=request`)은 키가 있어도 Cl
 ### 오류와 제약
 | 증상 | 원인과 조치 |
 |---|---|
+| 답 아래에 '질문 담당 Agent 꺼짐'이 보이고 확인 카드가 뜨지 않음 | Ollama가 꺼져 있거나 `qwen2.5:7b`가 없다. 새 명령 창에서 `ollama pull qwen2.5:7b`를 실행하고 앱을 다시 시작한다 |
 | 해설 문장이 템플릿으로만 나옴 | Ollama가 꺼져 있거나 `qwen3:1.7b`가 없다. 실행 창 첫 줄을 확인한다. 수치 답은 그대로 나온다 |
 | 질문을 자주 잘못 알아들음 | Ollama `bge-m3`가 없어 사전 규칙으로 해석 중이다. `ollama pull bge-m3` 뒤 다시 실행한다 |
 | 코드를 고쳤는데 그대로임 | 앱을 다시 시작한다 |
