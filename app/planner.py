@@ -192,7 +192,11 @@ def plan(t, env=None):
         out["steps"].append({"sub": "S1", "op": "조회", "metric": m, "route": route, "source": src, "filter": flt, "breakdown": breakdown})
     # 조건(비·주말 등): 조건 효과 레시피가 지원하는 지표가 아니면 조건 완화
     if t["cond"] and t["type"] not in ("T6",) and not season:
-        out["relaxed"].append(f"조건({', '.join(t['cond'])})은 이 질문 유형에서 쓰지 않음")
+        cs = "·".join(t["cond"])
+        if t["type"] == "T13" and set(t["cond"]) <= {"주말", "평일", "주말/평일"}:  # 화면에 그대로 보이는 문장이라 쉬운 말로(마스터 Windows 시험 2026-11-16)
+            out["relaxed"].append("시간대 매출은 주말·평일을 나눈 자료가 없어요. 모든 요일을 합친 값이에요.")
+        else:
+            out["relaxed"].append(f"'{cs}' 조건으로 나눈 자료가 없어 이 답에는 반영하지 못했어요. 조건 없이 전체 값으로 답했어요.")
     if by_biz:
         for st in out["steps"]:
             if st.get("filter"):

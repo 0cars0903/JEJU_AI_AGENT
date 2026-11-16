@@ -39,7 +39,7 @@ class QuestionAgent(unittest.TestCase):
         self.assertEqual(r["tuple"].get("ask_year"), 2024)
         self.assertTrue(r["card"]["conclusion"].startswith("2024년 노형동"))
         self.assertEqual(r["question_agent"]["turns"][0]["action"], "다시 계산")
-        self.assertIn("질문 담당 Agent", " ".join(r["understood"]["notes"]))
+        self.assertIn("질문을 다시 확인해", " ".join(r["understood"]["notes"]))
 
     def test_model_failure_keeps_answer(self):  # 모델이 엉뚱한 값을 내면 지금 답을 그대로 둔다
         def bad(model, messages, tools):

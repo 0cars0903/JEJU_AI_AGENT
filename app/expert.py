@@ -1,4 +1,4 @@
-"""전문가 모드: 도구 호출 루프(문서 26 안 A, 2026-11-14). 요청 → LLM이 도구를 골라 호출 → 코드가 검사·실행 → 답 제출 → 숫자 대조.
+"""상세 분석: 도구 호출 루프(문서 26 안 A, 2026-11-14). 요청 → LLM이 도구를 골라 호출 → 코드가 검사·실행 → 답 제출 → 숫자 대조.
 
 - 도구 5개(`prompts.AGENT_TOOLS`): describe_data, run_technique(기법 12종), run_python(격리 실행), search_center_catalog, submit_answer.
 - 루프는 코드가 통제한다: 도구 호출 합계 MAX_STEPS(5)번, 시간 예산 BUDGET(90초, Vercel 상한 120초 안).
@@ -148,8 +148,12 @@ def _technique(question, args):
     named = techniques.detect(question)
     if named and named != tech:  # 질문에 적힌 기법과 다르면 코드가 되돌린다(자기 교정, 문서 26 8절 측정의 오선택 대응)
         return False, {"error": f"질문에는 '{techniques.TECH[named][0]}'이(가) 적혀 있어요. 기법을 다시 고르세요.", "hint": named}, None
-    bad = [d for d in (args.get("dongs") or []) if d and d not in techniques.Q.DONGS]
-    dongs = [d for d in (args.get("dongs") or []) if d in techniques.Q.DONGS] or None
+    import qparse
+    raw = []
+    for d in args.get("dongs") or []:  # 생활 지명은 행정동으로 바꾼다('신제주' → 연동·노형동, 2026-11-16 마스터 Windows 시험)
+        raw += qparse.MULTI_PLACES.get(d) or ([techniques.Q.DONG_ALIAS[d]] if d in techniques.Q.DONG_ALIAS else [d])
+    bad = [d for d in raw if d and d not in techniques.Q.DONGS]
+    dongs = list(dict.fromkeys(d for d in raw if d in techniques.Q.DONGS)) or None
     tgt = (args.get("target") or "").strip() or None
     bad_t = tgt if tgt and tgt not in techniques.Q.TARGETS_BIZ else None  # 목록 밖 업종은 빼고 알린다(2026-11-14: 없는 업종 이름을 붙여 답한 결함)
     slots = {"method": tech, "space": dongs, "target": None if bad_t else tgt}
@@ -223,16 +227,16 @@ TOOL_KO = {"describe_data": "자료 확인", "run_technique": "통계 기법 실
 
 
 def ask(question, chat=None, user="local", mode="expert", use_claude=False):
-    """전문가 모드 한 번(도구 루프). use_claude: 담당자가 [Claude로 분석]을 누른 요청(키가 있을 때만).
+    """상세 분석 한 번(도구 루프). use_claude: 담당자가 [Claude로 분석]을 누른 요청(키가 있을 때만).
     돌려주는 값: status, method, plan, code, result, lines, by, attempts, trace, backend, error, usage, sec."""
     t0 = time.perf_counter()
     name = "claude" if use_claude and claude_key() else backend()
     if name is None:
-        return {"status": "꺼짐", "error": "Claude API 키나 로컬 분석 모델이 없어 전문가 모드를 쓸 수 없어요. 기법 목록이나 일반 질문을 써 주세요."}
+        return {"status": "꺼짐", "error": "Claude API 키나 로컬 분석 모델이 없어 상세 분석을 쓸 수 없어요. 기법 목록이나 일반 질문을 써 주세요."}
     if not _quota(user):
-        return {"status": "상한", "error": f"오늘 전문가 모드 요청 상한({DAILY}건)에 닿았어요."}
+        return {"status": "상한", "error": f"오늘 상세 분석 요청 상한({DAILY}건)에 닿았어요."}
     if name == "ollama" and mode == "expert" and os.environ.get("JEJU_ANALYST") != "0":
-        # 로컬 전문가 모드는 단계형 분석 담당 Agent(app/analyst.py): 단계마다 모델이 판단하고 코드가 검사한다(2026-11-14 마스터 지시)
+        # 로컬 상세 분석은 단계형 분석 담당 Agent(app/analyst.py): 단계마다 모델이 판단하고 코드가 검사한다(2026-11-14 마스터 지시)
         import analyst
         return analyst.run(question, chat=chat)
     chat = chat or _chat_fn(name)

@@ -1,6 +1,6 @@
 "use client";
 
-/** 전문가 모드(설계 11-2절, 2026-11-13; 2026-11-14 구조 수정): 센터 담당자가 자유 문장으로 분석을 요청하면
+/** 상세 분석(설계 11-2절, 2026-11-13; 2026-11-14 구조 수정): 센터 담당자가 자유 문장으로 분석을 요청하면
  * 로컬 분석 담당 Agent(qwen2.5:7b, app/analyst.py)가 요청을 기법 12종에 연결해 계산·해석한다(Claude 없이 동작).
  * Claude는 담당자 계정으로 로그인한 뒤 [Claude로 분석]을 누른 요청에만 쓴다. 코드·결과표·그래프를 함께 보여 주고 내려받게 한다. */
 import { useEffect, useRef, useState } from "react";
@@ -79,7 +79,7 @@ function fmtNum(v: unknown) {
   return typeof v === "number" ? v.toLocaleString("ko-KR", { maximumFractionDigits: 4 }) : String(v ?? "");
 }
 
-/** 전문가 모드 PDF(사용자 지적 2026-11-13: 내려받기 없음). 인쇄할 때만 보이는 정리본. 장은 일반 보고서와 같은 쪽 나눔 규칙을 따른다. */
+/** 상세 분석 PDF(사용자 지적 2026-11-13: 내려받기 없음). 인쇄할 때만 보이는 정리본. 장은 일반 보고서와 같은 쪽 나눔 규칙을 따른다. */
 function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
   const [host, setHost] = useState<HTMLElement | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -95,7 +95,7 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
   const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
   return createPortal(
     <div ref={rootRef} className="print-only print-expert" data-testid="expert-report" aria-hidden>
-      <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent · 전문가 모드 분석</h1>
+      <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent · 상세 분석</h1>
       <p>요청: {q}</p>
       <p>
         기법: {r.method} · {r.code ? "AI가 작성한 코드" : "정해진 기법 코드"}를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 도구 {r.trace?.length ?? 0}단계 · 만든 때 {now}
@@ -304,7 +304,7 @@ export function ExpertMode() {
   if (!local && !st.data.claude)
     return (
       <details id={AREA} data-testid="expert-locked" className="scroll-mt-24 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
-        <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(담당자 로그인 필요)</summary>
+        <summary className="cursor-pointer font-semibold">상세 분석: 분석 기법을 직접 요청하기(담당자 로그인 필요)</summary>
         <div className="mt-2 flex max-w-sm flex-col gap-2">
           <p className="text-(--krds-text-bolder)">이 화면에는 로컬 분석 모델이 없어요. 센터 담당자가 로그인하면 Claude로 분석할 수 있어요.</p>
           <LoginForm />
@@ -314,7 +314,7 @@ export function ExpertMode() {
   const send = (useClaude: boolean) => m.mutate({ question: q.trim(), useClaude });
   return (
     <details id={AREA} data-testid="expert" className="scroll-mt-24 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) p-3 print:hidden">
-      <summary className="cursor-pointer font-semibold">전문가 모드: 분석 기법을 직접 요청하기(AI가 도구를 골라 실행)</summary>
+      <summary className="cursor-pointer font-semibold">상세 분석: 분석 기법을 직접 요청하기(AI가 도구를 골라 실행)</summary>
       <div className="mt-2 flex flex-col gap-2">
         <p className="text-(--krds-text-bolder)">
           센터 담당자처럼 분석 기법을 정해 묻고 싶을 때 써요. AI가 자료 확인·통계 기법 12종·센터 자료 찾기 가운데 필요한 도구를 골라 제출본 표로 실행하고, 고른 순서와 결과를 모두 보여 드려요.

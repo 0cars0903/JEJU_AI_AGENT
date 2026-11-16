@@ -346,7 +346,7 @@ def do_logout():
 
 @app.get("/api/expert/status")
 def expert_status(request: Request):
-    """전문가 모드 사용 가능 여부. Claude 키 또는 로컬 분석 모델(qwen2.5:7b)이 있을 때 켜지고, 데모에서는 로그인했을 때만 켜진다."""
+    """상세 분석 사용 가능 여부. Claude 키 또는 로컬 분석 모델(qwen2.5:7b)이 있을 때 켜지고, 데모에서는 로그인했을 때만 켜진다."""
     import auth
     import expert
     uid = _user(request)
@@ -360,13 +360,13 @@ def expert_status(request: Request):
 
 @app.post("/api/expert")
 def expert_ask(body: Expert, request: Request):
-    """전문가 모드: 도구 루프(자료 확인·기법 실행·격리 코드 실행·센터 자료 찾기·답 제출) → 숫자 대조. 데모에서는 로그인 필요."""
+    """상세 분석: 도구 루프(자료 확인·기법 실행·격리 코드 실행·센터 자료 찾기·답 제출) → 숫자 대조. 데모에서는 로그인 필요."""
     import expert
     uid = _user(request)
     if body.use_claude and (uid is None or uid == "local"):
         raise HTTPException(401, "Claude 분석은 담당자 계정으로 로그인한 뒤에 쓸 수 있어요.")
     if uid is None and not body.use_claude:
-        raise HTTPException(401, "전문가 모드는 로그인한 뒤에 쓸 수 있어요.")
+        raise HTTPException(401, "상세 분석은 로그인한 뒤에 쓸 수 있어요.")
     q = body.question.strip()
     if not q:
         raise HTTPException(422, "요청을 입력해 주세요.")

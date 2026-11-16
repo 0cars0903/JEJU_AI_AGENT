@@ -2,12 +2,12 @@
 
 | 이름 | 쓰는 곳 | 모델 | 출력 구조 |
 | M3B_SYSTEM + M3B_TOOL | 계획 해설(result.explain_plan) | Claude 또는 Ollama | Claude: submit_plan_text 도구(strict) / Ollama: format JSON 스키마 {"text"} |
-| EXPERT_SYSTEM + TOOL_ANALYSIS | 전문가 모드 코드 설계(expert.ask) | Claude | submit_analysis 도구(strict) |
-| EXPLAIN_SYSTEM + TOOL_EXPLAIN | 전문가 모드 해설(expert.ask) | Claude | submit_explanation 도구(strict) |
-| AGENT_SYSTEM + AGENT_TOOLS | 전문가 모드 도구 루프(expert.ask, 문서 26 안 A) | Claude(도구 5개) 또는 로컬 Ollama(run_python 뺀 4개) | 도구 호출 |
+| EXPERT_SYSTEM + TOOL_ANALYSIS | 상세 분석 코드 설계(expert.ask) | Claude | submit_analysis 도구(strict) |
+| EXPLAIN_SYSTEM + TOOL_EXPLAIN | 상세 분석 해설(expert.ask) | Claude | submit_explanation 도구(strict) |
+| AGENT_SYSTEM + AGENT_TOOLS | 상세 분석 도구 루프(expert.ask, 문서 26 안 A) | Claude(도구 5개) 또는 로컬 Ollama(run_python 뺀 4개) | 도구 호출 |
 """
 VERSION = "P-2026-11-14.4"  # .4: 기법 도구 설명에 고르는 기준. .3: 기법 4종 추가(입지계수·생존분석·업종 다양성·변이할당). .2: 넘김 모드 자료 탐색·종류 밖 지시, 업종 목록
-# 이전: "P-2026-11-14.1"  # .1: 전문가 모드 도구 5개 루프(안 A)
+# 이전: "P-2026-11-14.1"  # .1: 상세 분석 도구 5개 루프(안 A)
 # 이전: "P-2026-11-13.2"  # .2: 전문가 해설에 일반 답과 같은 '~예요·~했어요'체 규칙(사용자 지적: 두 모드 말투가 다름)
 
 M3B_SYSTEM = ("너는 제주 동네 자료 안내원이다. 시스템이 고른 자료와 계산 순서를 도민에게 한두 문장으로 설명한다. "
@@ -59,7 +59,7 @@ EXPLAIN_SYSTEM = """당신은 분석 결과를 상권 분석 담당자에게 설
 - 반드시 submit_explanation 도구로 답합니다."""
 
 
-# ---------- 전문가 모드 도구 루프(문서 26 안 A, 2026-11-14) ----------
+# ---------- 상세 분석 도구 루프(문서 26 안 A, 2026-11-14) ----------
 TECHNIQUES = ["change", "corr", "cluster", "decomp", "regress", "test", "dist", "outlier", "lq", "surv", "hhi", "shift"]
 
 AGENT_SYSTEM = """당신은 제주빅데이터센터 상권 분석 담당자를 돕는 데이터 분석 Agent입니다. 요청을 받으면 도구를 골라 분석하고 답을 제출합니다.

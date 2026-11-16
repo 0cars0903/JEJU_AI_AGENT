@@ -129,6 +129,10 @@ def understand(question, chat=None, checks=True):
             kind, a = k2, {**a, **{k: v for k, v in again.items() if k in ("dongs", "target", "keyword") and v}}
     if checks and RAG_ON and not (T.detect(question) and kind == T.detect(question)):
         kind = _rag_check(question, kind, chat, log)
+    if checks and kind in TECHS and not T.detect(question) and SIMPLE_Q.search(question) and not ANALYSIS_HINT.search(question):
+        # 기법 이름도 분석을 뜻하는 말도 없는 질문('신제주는 오후 3시쯤 사람 많아요?')에 기법을 고르면 일반 답으로 돌린다(마스터 Windows 시험 2026-11-16: 상관분석으로 대신 답함)
+        log.append({"tool": "check", "name": "코드 검사", "by": "코드", "ok": True, "args": "", "note": f"분석 기법을 뜻하는 말이 없어 '{T.TECH[kind][0]}' 대신 일반 답으로", "sec": 0.0})
+        kind = "general"
     dongs = [d for d in (a.get("dongs") or []) if d in Q.DONGS]
     target = (a.get("target") or "").strip()
     target = target if target in Q.TARGETS_BIZ else ""
@@ -142,6 +146,9 @@ def understand(question, chat=None, checks=True):
     return {"kind": kind, "dongs": dongs, "target": target, "keyword": a.get("keyword") or "", "reason": a.get("reason") or ""}, log
 
 
+# 일반 질문 모양(시각·가게 수·붐빔)이 뚜렷하고 분석을 뜻하는 말이 없는 요청만 일반 답으로 돌린다. 조정용 기법 요청 667문항에서 잘못 돌림 0건(2026-11-16)
+SIMPLE_Q = re.compile(r"(오전|오후|새벽|아침|저녁|밤|낮)\s*\d{1,2}\s*시|\d{1,2}\s*시\s*(쯤|경|에)|몇\s*(곳|집)|사람\s*(이\s*)?많|붐비|붐벼|북적|발길|손님\s*(이\s*)?(많|몰)|밤\s*늦게|점심\s*시간")
+ANALYSIS_HINT = re.compile(r"관계|상관|연관|영향|요인|원인|이유|때문|아니면|차이|비교해|견줘|군집|묶|무리|그룹|덩어리|패거리|세트|나눠|유형|비슷한|닮은|추세|계절|분해|분포|이상치|튀는|예측|전망|회귀|검정|유의|생존\s*분석|패턴|수록|함께|같이|따라|곳이\s*\S+도\s")  # '사람 많이 오는 곳이 장사도 잘 되는지'(관계)
 FOREIGN = re.compile(r"[\u4e00-\u9fff\u3040-\u30ff]|[A-Za-z]{3,}")  # 한자·가나·영문 단어(소형 모델이 중국어로 새는 경우, 2026-11-14 B1 측정 중 발견)
 
 

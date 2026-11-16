@@ -649,6 +649,7 @@ RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌|최
 RANK_ANY = re.compile(r"가장|제일|젤|최소|최대|최고|최저|꼴찌|상위|하위")
 RANK_PLACE = re.compile(r"동네|곳|지역|읍면|군데|어디|데\b")
 MULTI_COND = re.compile(r"동시에|이면서|면서|이고\s|하고\s.*(많|높|적|낮)")
+HOUR_BANDS = [("밤(22~다음 날 4시)", r"밤\s*늦|야간|심야|늦은\s*밤|새벽"), ("점심(11~14시)", r"점심|낮\s*시간|한낮"), ("저녁(17~21시)", r"저녁")]
 HOUR_ANY = re.compile(r"(오전|오후|새벽|아침|저녁|밤|낮)\s*\d{1,2}\s*시|\d{1,2}\s*시\s*(쯤|경|에|부터|대|께)|점심|야간|밤\s*늦|심야|시간대|몇\s*시|피크|몰리는\s*시간")
 HOUR_VISIT = re.compile(r"사람|손님|붐비|북적|방문|몰려")
 HOUR_NOTE = "시간대별 사람 수 자료는 없어요. 카드 결제가 몰리는 시간대(매출 비중)로 대신 봤어요."
@@ -840,7 +841,8 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                 # 시간대 자료는 카드 매출(시간대 비중)뿐이다. 사람·손님을 물었으면 대신 쓴 사실을 알린다(2026-11-16)
                 if HOUR_VISIT.search(q_) and "매출" not in q_:
                     notes.append(HOUR_NOTE)
-                t = dict(t, type="T13", metric=["시간대매출"], form=Q.DEFAULT_FORM["T13"])
+                t = dict(t, type="T13", metric=["시간대매출"], form=Q.DEFAULT_FORM["T13"],
+                         expect="답함" if t.get("expect") == "범위밖" and t.get("space") else t.get("expect"))  # '신제주 오후 3시'가 처음 해석의 범위 밖 표시로 끝나던 결함(2026-11-16)
             m_ = set(t.get("metric") or [])
             if GROWTH_Q.search(q_) and m_ <= {"매출", "점포수", "특화계수"}:
                 t, m_ = dict(t, metric=["매출성장"]), {"매출성장"}
@@ -920,6 +922,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             if hm:  # 물은 시각의 값도 답한다('오후 3시' → 15시)
                 h = int(hm.group(2)) % 24
                 t = dict(t, ask_hour=h + 12 if hm.group(1) and h < 12 else h)
+            hb = next((b for b, rx in HOUR_BANDS if re.search(rx, q_)), None) if not hm else None
+            if hb:  # 시간 묶음('점심·저녁·밤 늦게·야간')을 물으면 그 묶음의 매출 비중을 결론 첫머리에(마스터 Windows 시험 2026-11-16)
+                t = dict(t, ask_band=hb)
             ay, am = _asked_period(q_)
             rm = re.search(r"(최근|지난)\s*(\d{1,2})\s*개월", q_)
             if rm and 1 <= int(rm.group(2)) <= 24:  # '최근 3개월'은 그 기간 합계(평균)로(2026-11-15)
@@ -969,7 +974,7 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             it = dict(it, tuple=t, card=qparse.card(t))
         if it.get("rule_fixed"):  # 보정 규칙이 고친 해석으로 '이렇게 이해했어요'를 다시 쓴다. 고치기 전 해석의 확인 줄(종류·답할지)은 내지 않는다(2026-11-16 Windows 시험)
             it = dict(it, tuple=t, card=qparse.card(t if t.get("expect") == "되묻기" else {k: v for k, v in t.items() if k != "_why"}), needs_confirm=False)
-        meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}
+        meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent", "rule_fixed")}  # rule_fixed: 질문 담당 Agent가 보정 규칙이 정한 지표를 다시 바꾸지 않게(2026-11-16)
 
         def stop(r):  # 일반 경로가 계산 전에 끝내는 출구(고르게 하기·범위 밖). (다) 넘김 판정도 여기서 한다
             r = dict(r, interpret=meta, sec=round(time.perf_counter() - t0, 3))
@@ -1081,7 +1086,7 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         if ag:
             return ag
     t = rv["tuple"]
-    out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent", "route_check")}}
+    out = {"question": question, "status": rv["status"], "tuple": t, "interpret": {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent", "route_check", "rule_fixed")}}
     if rv["status"] == "되묻기":  # 검수 단계에서 칸을 채우지 못한 경우
         ex = _exception(question, t) or _choose(question, t, G.to_slots(t), "질문을 이해하지 못했어요. 궁금한 것을 골라 주세요.", "topic")
         ex["sec"] = round(time.perf_counter() - t0, 3)
@@ -1106,6 +1111,8 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             notes = notes + [REASON_NOTE]
         if question and STOP_Q.search(question) and not (env or {}).get("center_bus"):  # 정류소를 물었는데 동네 값으로 답한 경우(A6)
             notes = notes + [STOP_NOTE]
+        relaxed = set(rv["run"].get("relaxed", []))
+        notes = [n for n in notes if n not in relaxed]  # 같은 안내가 '이렇게 이해했어요'와 '알 수 있는 것과 없는 것'에 두 번 나오지 않게(2026-11-16)
         out["understood"] = {"text": (it.get("card") or {}).get("text"), "by": it.get("path"), "assumed": assumed or bool(it.get("needs_confirm")),
                              "slots": slots or ({"space": t["space"]} if "외국인매출" in t["metric"] else G.to_slots(t)),
                              "notes": list(dict.fromkeys(notes + (qparse.notes(typed, t) if typed else []))),

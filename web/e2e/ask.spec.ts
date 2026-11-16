@@ -977,8 +977,8 @@ test.describe("문서 23 답 화면 편의성", () => {
   });
 });
 
-test.describe("전문가 모드(설계 11-2절)", () => {
-  test("키가 없으면(rule 경로) 전문가 모드가 보이지 않는다", async ({ page }) => {
+test.describe("상세 분석(설계 11-2절)", () => {
+  test("키가 없으면(rule 경로) 상세 분석이 보이지 않는다", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("dong-home")).toBeVisible();
     await expect(page.getByTestId("expert")).toHaveCount(0);
@@ -1041,7 +1041,7 @@ test.describe("데모 로그인(2026-11-13)", () => {
     await expect(page.getByTestId("login-open")).toHaveCount(0);
   });
 
-  test("데모: 로그인 전에는 전문가 모드가 잠겨 있고, 로그인하면 열린다. 틀린 비밀번호는 안내", async ({ page }) => {
+  test("데모: 로그인 전에는 상세 분석이 잠겨 있고, 로그인하면 열린다. 틀린 비밀번호는 안내", async ({ page }) => {
     let logged = false;
     await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: logged, id: logged ? "judge1" : null, claude: true } }));
     await page.route("**/api/expert/status", (r) =>
@@ -1072,7 +1072,7 @@ test.describe("데모 로그인(2026-11-13)", () => {
     await expect(page.getByTestId(mobile ? "drawer" : "sidebar").getByTestId("login-state")).toContainText("judge1");
   });
 
-  test("사이드바(안 1): 로그인 창은 바깥 누름·Esc로 닫히고, [전문가 모드]는 전문가 모드 칸을 펼친다", async ({ page }, info) => {
+  test("사이드바(안 1): 로그인 창은 바깥 누름·Esc로 닫히고, [상세 분석]는 상세 분석 칸을 펼친다", async ({ page }, info) => {
     await page.route("**/api/me", (r) => r.fulfill({ json: { login_required: true, logged_in: false, id: null, claude: true } }));
     await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: false, available: true, backend: null, claude: false, claude_locked: true, login_required: true, daily_limit: 50 } }));
     await page.goto("/");

@@ -40,6 +40,7 @@ for _w, _d in (LEARNED.get("places") or {}).items():
     PLACES.setdefault(_w, {"dong": _d, "share": 1.0, "learned": True})
 for _k, _d in Q.DONG_ALIAS.items():  # 사전 파일을 다시 만들지 않아도 별칭(해변·시장 생활 지명 등)이 지명으로 잡히게(2026-11-16)
     PLACES.setdefault(_k, {"dong": _d, "share": 1.0})
+MULTI_PLACES = {"신제주": ["연동", "노형동"]}  # 행정동 이름이 아닌 생활 지명 가운데 두 동 이상에 걸친 곳. 답에 '○○은 △△로 봤어요'로 밝힌다
 PLACE_KEYS = sorted((k for k in PLACES if k not in COMMON_NOUNS), key=len, reverse=True)
 BIZ_KEYS = sorted([(w, g) for g, ws in BIZ["colloquial"].items() for w in ws] + [("주점", "주점"), ("일식당", "일식"), ("중식당", "중식"), ("한식당", "한식"), ("횟집", "횟집")]  # 2026-11-16: '주점'·'일식당'을 못 읽던 결함
                    + [(c, (v.get("rest_group") or c)) for c, v in BIZ["categories"].items() if len(c) >= 2]
@@ -220,7 +221,14 @@ def find_places(q, mode=None, trace=None):
             ok = place_ok(used, k) if mode == "old" else place_ok_rule(used, k, i) if mode == "rule" else place_ok_kiwi(used, k, i, toks)
             if ok:
                 v = PLACES[k]
-                if "dong" in v:
+                if k in MULTI_PLACES:  # 행정동 여러 곳에 걸친 생활 지명(신제주 = 연동·노형동, 2026-11-16 마스터 Windows 시험)
+                    for d in MULTI_PLACES[k]:
+                        if d not in found:
+                            found.append(d)
+                        strong.add(d)
+                    if trace is not None:
+                        trace.append((k, "·".join(MULTI_PLACES[k])))
+                elif "dong" in v:
                     if v["dong"] not in found:
                         found.append(v["dong"])
                     if trace is not None:
@@ -471,7 +479,9 @@ def notes(question, t):
     tr = []
     find_places(q, trace=tr)
     for k, dong in tr:
-        if dong in (t.get("space") or []) and not dong.startswith(k):
+        if k in MULTI_PLACES and set(MULTI_PLACES[k]) & set(t.get("space") or []):
+            out.append(f"'{k}'{_eun(k)} 행정동 이름이 아니어서 {dong}으로 봤어요. 다르게 보시면 [조건 바꾸기]로 동네를 고쳐 주세요.")
+        elif dong in (t.get("space") or []) and not dong.startswith(k):
             out.append(f"'{k}'{_eun(k)} {dong}에 속해서 {dong} 전체 값으로 답해요.")
     m = NEAR.search(q)
     brand = next((b for b in BRANDS if b in q), None)

@@ -434,7 +434,7 @@ export function Report({ r }: { r: AskResult }) {
     const n = name ? srcs.findIndex((x) => x.name === name) + 1 : 0;
     return n > 0 ? ` [${n}]` : "";
   };
-  const sources = Array.from(new Set(lines.map((l) => l.source).filter(Boolean))) as string[];
+  const sources = Array.from(new Set([a.conclusion.source, ...lines.map((l) => l.source)].filter(Boolean))) as string[]; // 결론에만 쓴 출처도 넣는다(여러 동네를 결론 한 줄로 이을 때, 2026-11-16)
   // 문서 21 3.2절 구성: 줄의 종류(kind)로 절을 나눈다. 해당 줄이 없는 절은 찍지 않는다.
   const SECTION: Record<string, string> = { forecast: "next", salesfc: "next", reference: "next", anomaly: "next", trend: "now", decomp: "now", survival: "surv", similar: "near", season: "near", rain: "rain" };
   const sec = (l: (typeof lines)[number]) => (l.block === "guide" ? "guide" : (l.kind && SECTION[l.kind]) || (l.block === "facts" ? "now" : "etc"));
@@ -620,7 +620,7 @@ export function Report({ r }: { r: AskResult }) {
         <h2>{methods.length > 0 ? "부록 B" : "부록"}. 자료 목록과 기준 시점</h2>
         {agentLine && <p data-testid="report-agent">{agentLine}</p>}
         <ol className="report-srcs">
-          {srcs.map((x, i) => (brief && !used.has(x.name) ? null :
+          {srcs.map((x, i) => (brief && !Array.from(used).some((u) => base(u) === base(x.name)) ? null :
             <li key={x.name}>
               [{i + 1}] {x.name}
               {asOfText(x.as_of)}

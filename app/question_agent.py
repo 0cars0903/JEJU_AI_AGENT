@@ -167,8 +167,34 @@ def out_evidence(q):
     return hs[0] if hs else ""
 
 
+def plain_change(c):
+    """다시 계산한 까닭(apply의 why: '종류 현황, 지표 일평균 방문')을 화면 문장으로."""
+    out = []
+    for w in [x.strip() for x in c.split(",") if x.strip()]:
+        if w.startswith("종류 "):
+            out.append(f"{w[3:]} 질문으로")
+        elif w.startswith("지표 "):
+            out.append(f"{w[3:]} 기준으로")
+        elif w.startswith("조건 "):
+            out.append(f"'{w[3:]}' 조건을 넣어")
+        elif w == "질문 기간":
+            out.append("질문한 기간으로")
+        elif w in ("작은 순서", "큰 순서"):
+            out.append(f"{w}로")
+        elif w.startswith("사전 규칙 해석"):
+            out.append(f"낱말 사전으로 읽은 뜻{w[len('사전 규칙 해석'):]}으로")
+        elif w == "지금 해석대로":
+            out.append("읽은 뜻 그대로")
+        elif w.startswith("동네 "):
+            out.append(f"{w[3:]} 기준으로")
+        else:
+            out.append(w)
+    return " ".join(out)
+
+
 def gaps(q, it, r, done=()):
     """질문 요소와 결과의 어긋남(코드). 항목: kind, text(모델에 보임), change(다시 계산 후보), note(안내 문장)."""
+    import result
     t = r.get("tuple") or it.get("tuple") or {}
     out = []
     if r.get("status") in ("범위밖", "선택필요"):
@@ -194,7 +220,10 @@ def gaps(q, it, r, done=()):
     metric_done = any("지표를" in x for x in done)
     # 지표 확인: 지금 지표가 질문 낱말로 뒷받침되면(예: '매출'·'고령비중'을 그대로 물음) 바꾸는 선택지를 내지 않는다.
     # 2026-11-15 새 기준 조정용 304: 질문에 적힌 지표를 모델이 다른 지표로 바꿔 틀린 문항 12건(도운 문항 23건)
-    if not done and (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T11", "T9", "T10") \
+    # 보정 규칙이 질문 낱말로 정한 지표·시간대 질문은 다른 지표로 바꾸는 선택지를 내지 않는다(마스터 Windows 시험 2026-11-16:
+    # '밤 늦게 손님 몰려요'를 일평균 방문으로, '비 오는 날 매출'을 다른 지표로 바꿔 맞는 답을 틀리게 만듦)
+    fixed = bool((r.get("interpret") or {}).get("rule_fixed")) or (t.get("type") == "T13" and bool(result.HOUR_ANY.search(q)))
+    if not done and not fixed and (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T11", "T9", "T10") \
             and not any(evidenced(q, m) for m in t["metric"]):
         cur = ", ".join(Q.METRICS.get(m, m) for m in t["metric"])
         alt = [m for m, _ in MAIN_METRICS if m not in t["metric"]]
@@ -206,7 +235,7 @@ def gaps(q, it, r, done=()):
     elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요"):
         out.append({"kind": "지표 없음", "text": "질문에서 지표 낱말을 찾지 못해 기본 지표(가게 수 등)로 계산했어요." + (f" 질문과 가까운 지표 후보: {', '.join(dict.fromkeys(cand))}." if cand else ""),
                     "change": {"metric": list(dict.fromkeys(cand))}, "note": next((why for _, why in hints if why), "")})
-    elif cand and not set(t.get("metric") or []) & {m for ms, _ in hints for m in ms}:
+    elif cand and not fixed and not set(t.get("metric") or []) & {m for ms, _ in hints for m in ms}:
         out.append({"kind": "대체 지표", "text": f"질문의 말에 더 가까운 지표 후보가 있어요: {', '.join(dict.fromkeys(cand))}.", "change": {"metric": list(dict.fromkeys(cand))},
                     "note": next((why for _, why in hints if why), "")})
     if FUTURE_MONEY_Q.search(q) and r.get("status") != "범위밖":  # 명세 6절: 미래 매출 금액 예측은 범위 밖(다음 7일 방문 예상은 범위 안)
@@ -234,7 +263,7 @@ def gaps(q, it, r, done=()):
         out.append({"kind": "순위 되묻기", "text": "동네 없이 '가장·어디'를 물어 되물었지만, 제주 전체 동네 순위로 답할 수 있어요.",
                     "change": {"type": "T3", "order": "asc" if LOW_Q.search(q) else "desc", "confirm": True}, "note": ""})
     conf = it.get("confidence")
-    if conf is not None and conf < 0.5 and r.get("status") not in ("범위밖",):
+    if conf is not None and conf < 0.5 and r.get("status") not in ("범위밖",) and not (r.get("interpret") or {}).get("rule_fixed"):  # 보정 규칙이 정한 종류는 분류기 확신도로 다시 흔들지 않는다(GA-093, 2026-11-16)
         top = ", ".join(f"{TYPE_KO.get(c, c)}({c}) {p_:.2f}" for c, p_ in (it.get("type_top") or []))
         out.append({"kind": "확신 낮음", "text": f"질문 종류 해석의 확신이 낮아요({conf:.2f}). 후보: {top}.", "change": {"type": [c for c, _ in (it.get("type_top") or [])]}, "note": ""})
     return out
@@ -421,7 +450,7 @@ def _apply(t, change):
             t2 = dict(base, expect="답함")
             if not t2.get("metric") and t.get("metric"):  # 사전 규칙이 지표를 못 읽으면 지금 지표(보정 규칙의 대체 지표 포함)를 둔다
                 t2["metric"] = list(t["metric"])
-            for k in ("ask_year", "ask_month", "ask_recent", "ask_hour"):  # 보정 규칙이 읽은 질문의 기간·시각은 이어받는다
+            for k in ("ask_year", "ask_month", "ask_recent", "ask_hour", "ask_band", "ask_n"):  # 보정 규칙이 읽은 질문의 기간·시각은 이어받는다
                 if t.get(k) and not t2.get(k):
                     t2[k] = t[k]
             why.append(f"사전 규칙 해석({TYPE_KO.get(base.get('type'), base.get('type'))})")
@@ -634,9 +663,9 @@ def run(question, env=None, llm_on=True, chat=None, max_turns=3, progress=None, 
                           "by": f"자문({ADVISOR_MODEL or BY})", "p_ok": pf, "sec": round(time.perf_counter() - t1, 2)})
     say(4, "답과 안내 문장을 정리하고 있어요")
     changed = [", ".join(x.get("change") or []) for x in trace if x.get("action") == "다시 계산" and x.get("change") and not x.get("note")]
-    if changed:
-        who = "고른 대로" if forced else "질문 담당 Agent가 결과를 보고"
-        notes = [f"{who} 다시 계산했어요({' → '.join(changed)})."] + notes
+    if changed:  # 화면에 보이는 문장이라 내부 표현('종류 현황')을 쉬운 말로 푼다(마스터 Windows 시험 2026-11-16)
+        parts = [plain_change(c) for c in changed]
+        notes = [f"{'고르신 대로' if forced else '질문을 다시 확인해'} {', 이어서 '.join(p_ for p_ in parts if p_) or '조건을 바꿔'} 다시 계산했어요."] + notes
     if notes and r.get("understood"):
         r["understood"]["notes"] = list(dict.fromkeys(list(r["understood"].get("notes") or []) + notes))
     r = dict(r, question_agent={"turns": trace, "sec": round(time.perf_counter() - t0, 2), "model_calls": sum(x.get("by") == BY for x in trace)})

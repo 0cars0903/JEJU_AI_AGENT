@@ -268,6 +268,9 @@ def _asked_ym(o, t, tab, label, src, metric, word, unit=None):
     return pick[-1]
 
 
+HOUR_BAND_HOURS = {"점심(11~14시)": [11, 12, 13, 14], "저녁(17~21시)": [17, 18, 19, 20, 21], "밤(22~다음 날 4시)": [22, 23, 0, 1, 2, 3, 4]}  # v3.hourly 비교 묶음과 같은 구간
+
+
 def _table_lines(o, t, metric, v, note):
     tab = v["table"]
     unit = v.get("unit")
@@ -289,9 +292,20 @@ def _table_lines(o, t, metric, v, note):
                 rk = int((g["value"] > x).sum()) + 1
                 o.numbers += [float(ah), float(rk), float(len(g))]
                 hs += f". {ah}시는 {o.num(x, '%')}로 {len(g)}개 시간 중 {rk}위"
-            o.line("L1", f"{d} {word}매출이 많은 시간은 {hs}{_cop(hs)}.", src, src.split("최근 12개월 ")[-1].rstrip(")") if "최근 12개월" in str(src) else None)
-            o.view("hour", "시간대", "bar", [{"name": d, "points": [[int(h), float(x)] for h, x in zip(g["hour"], g["value"])]}],
-                   f"{int(top['hour'].iloc[0])}시에 매출 비중이 가장 큽니다", x="hour", unit="%")
+            band = t.get("ask_band")
+            hours = HOUR_BAND_HOURS.get(band)
+            if hours:  # 물은 시간 묶음의 비중을 먼저(점심·밤 늦게, 2026-11-16)
+                x = float(g.loc[g["hour"].isin(hours), "value"].sum())
+                o.numbers += [x, float(hours[0]), float(hours[-1])]
+                hs = f"{o.num(x, '%')}이고, 매출이 많은 시간은 {hs}"
+                o.line("L1", f"{d} {word}{band} 매출 비중은 {hs}{_cop(hs)}.", src, src.split("최근 12개월 ")[-1].rstrip(")") if "최근 12개월" in str(src) else None)
+            else:
+                o.line("L1", f"{d} {word}매출이 많은 시간은 {hs}{_cop(hs)}.", src, src.split("최근 12개월 ")[-1].rstrip(")") if "최근 12개월" in str(src) else None)
+        groups = list(tab.groupby("dong"))
+        g0 = groups[0][1].sort_values("value", ascending=False)
+        o.view("hour", "시간대", "bar" if len(groups) == 1 else "line",  # 동네가 여럿이면 한 그래프에 함께(한 동네만 그리던 결함, 2026-11-16)
+               [{"name": d, "points": [[int(h), float(x)] for h, x in zip(g["hour"], g["value"])]} for d, g in groups][:6],
+               f"{int(g0['hour'].iloc[0])}시에 매출 비중이 가장 큽니다" if len(groups) == 1 else "동네마다 시간대별 매출 비중을 함께 보여 줘요", x="hour", unit="%")
         return
     if "origin" in tab:
         last = tab[tab["ym"] == tab["ym"].max()].sort_values("value", ascending=False)
@@ -802,7 +816,9 @@ def _biz_notice(t, lines):
     b, note = v3.biz5_of(tgt)
     if not note or not any(f"{b} 전체({tgt} 포함)" in x["text"] for x in lines):
         return {}
-    return {"notice": f"{tgt}만의 카드 매출 자료는 없어요. 매출 값은 {b} 전체(카페·한식 등 모두 포함)예요. 가게 수·개업·폐업은 {tgt}만 센 값이에요."}
+    own = [w for w, rx in (("가게 수", r"점포 수|가게 수"), ("개업", r"개업"), ("폐업", r"폐업")) if any(re.search(rx, x["text"]) and tgt in x["text"] for x in lines)]
+    tail = f" {'·'.join(own)}{'는' if own[-1] == '가게 수' else '은'} {tgt}만 센 값이에요." if own else ""  # 답에 그 분석이 있을 때만(마스터 Windows 시험 2026-11-16)
+    return {"notice": f"{tgt}만의 카드 매출 자료는 없어요. 매출 값은 {b} 전체({tgt} 포함)예요.{tail}"}
 
 
 def _side_recipes(rv):
@@ -892,10 +908,11 @@ def nice_source(src):
 
 
 def _months_old(as_of, now):
-    m = re.match(r"(\d{4})-(\d{2})", str(as_of or ""))
-    if not m:
+    ms = re.findall(r"(\d{4})-(\d{2})", str(as_of or ""))  # 기간(2025-10~2026-09)이면 끝 달 기준(시작 달로 세어 '13개월 전'이라 하던 결함, 2026-11-16)
+    if not ms or not re.match(r"\d{4}-\d{2}", str(as_of or "")):
         return None
-    return (now.year - int(m.group(1))) * 12 + now.month - int(m.group(2))
+    y, m = ms[-1]
+    return (now.year - int(y)) * 12 + now.month - int(m)
 
 
 STALE_MONTHS = 3  # 기준 시점이 지금보다 3개월 넘게 지난 줄은 '오래된 자료'로 표시(v3 B)
@@ -1545,6 +1562,7 @@ def build(t, rv, ev, value_q=False):
     summary = None
     # 결론: 층이 가장 높은 줄. 가치 판단 질문은 판단 재료 요약
     sig = next((v["extra"] for v in store.values() if isinstance(v, dict) and (v.get("extra") or {}).get("kind") == "signals"), None)
+    joined = set()  # 여러 동네를 한 결론에 이어 쓴 줄(아래 블록에서 다시 쓰지 않음)
     if (value_q or diag) and sig:
         dong = sig["dong"]
         lvl = {"많음": "많은 편", "적음": "적은 편", "높음": "높은 편", "낮음": "낮은 편", "보통": "보통"}
@@ -1561,15 +1579,21 @@ def build(t, rv, ev, value_q=False):
         if t.get("type") == "T4":  # 센터 자료의 흐름 줄이 있으면 그것이 결론(문서 20 A6)
             lead = next((x for x in main if x.get("kind") == "flow"), lead)
         csum = next((x for x in main if x.get("kind") == "compare_sum"), None)
-        best = csum if csum else cmp_ if (t.get("type") == "T2" or t.get("details")) and cmp_ else lead if lead else max(main, key=lambda x: (rank[x["layer"]], -o.lines.index(x)), default=None)
+        multi = 2 <= len(sp) <= 6 and t.get("type") not in ("T3", "T10")  # '신제주'처럼 한 지명이 두 동으로 읽힌 질문(2026-11-16): 결론에 두 동을 다 쓴다
+        best = csum if csum else cmp_ if (t.get("type") == "T2" or t.get("details") or multi) and cmp_ else lead if lead else max(main, key=lambda x: (rank[x["layer"]], -o.lines.index(x)), default=None)
         conclusion = {"text": best["text"], "layer": best["layer"], "tag": best["tag"]} if best else {"text": "확인된 결과가 없어요.", "layer": None, "tag": None}
+        if multi and best and best is not cmp_ and best is not csum and best["layer"] == "L1":
+            per = [next((x for x in main if x["layer"] == best["layer"] and x.get("kind") == best.get("kind") and re.search(rf"(^|\s){re.escape(d)}\s", x["text"])), None) for d in sp]
+            if all(per) and len({id(x) for x in per}) == len(per):
+                conclusion["text"] = " ".join(x["text"] for x in per)
+                joined = {x["text"] for x in per}  # 결론에 쓴 동네별 줄은 아래 블록에서 다시 쓰지 않는다
         if best and best.get("source"):  # 결론과 같은 줄은 블록에서 빠지므로 출처를 결론에 붙인다(이중 검토 035)
             conclusion["source"] = nice_source(best["source"])
         if best and best["layer"] == "L1" and getattr(o, "rank_head", None):  # 순위 질문은 1~3위를 결론으로(문서 20 A9)
             conclusion["text"] = o.rank_head
     blocks = []
     for b in ("facts", "analysis", "guide"):
-        ls = [x for x in o.lines if x["block"] == b and x["text"] != conclusion["text"]]  # 결론과 같은 줄은 한 번만(이중 검토 035)
+        ls = [x for x in o.lines if x["block"] == b and x["text"] != conclusion["text"] and x["text"] not in joined]  # 결론과 같은 줄은 한 번만(이중 검토 035)
         if ls or (b == "guide" and value_q):
             blk = {"id": b, "title": BLOCK_TITLE[b], "lines": ls}
             if b == "guide" and (value_q or sig):

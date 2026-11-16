@@ -378,7 +378,7 @@ export function AskPage() {
         )}
         {!req && guide.data && <DongHome dongs={guide.data.dongs} onAsk={(s, t) => run({ slots: s }, t)} />}
         {guide.isError && <ErrorState error={guide.error} onRetry={() => guide.refetch()} />}
-        {/* 설계 11-2절 전문가 모드: 첫 화면은 지도 아래, 답 화면은 답 아래. 찾기 쉽게 머리말에 [전문가 모드] 바로 가기를 둔다 */}
+        {/* 설계 11-2절 상세 분석: 첫 화면은 지도 아래, 답 화면은 답 아래. 찾기 쉽게 머리말에 [상세 분석] 바로 가기를 둔다 */}
         {!req && <ExpertMode />}
 
         <div

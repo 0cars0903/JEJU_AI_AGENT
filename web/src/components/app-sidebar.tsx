@@ -181,7 +181,7 @@ function Menu({ compact, close }: { compact: boolean; close: () => void }) {
             compact={compact}
             testId="nav-expert"
             icon={<Code2 size={S} aria-hidden />}
-            label="전문가 모드"
+            label="상세 분석"
             extra={st.data?.login_required ? "로그인 필요" : undefined}
             onClick={() => {
               close();

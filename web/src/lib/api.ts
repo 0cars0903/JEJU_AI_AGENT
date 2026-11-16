@@ -215,7 +215,7 @@ export function writeCenter(c: CenterFile | null) {
   }
 }
 
-/** 전문가 모드(설계 11-2절): Claude가 계획·pandas 코드를 짜고 격리 실행한 결과 */
+/** 상세 분석(설계 11-2절): Claude가 계획·pandas 코드를 짜고 격리 실행한 결과 */
 export type ExpertTable = { title?: string; columns: string[]; rows: (string | number | null)[][] };
 export type ExpertSeries = { title?: string; kind?: "line" | "bar" | "scatter"; name?: string; x: (string | number)[]; y: (number | null)[] };
 export type ExpertResult = {

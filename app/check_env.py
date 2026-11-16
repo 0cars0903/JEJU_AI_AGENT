@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import envfile  # noqa: E402
 
 EMBED = "bge-m3"
-AGENT = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")  # 질문 담당 Agent 판단 + 전문가 모드 분석 담당·도구 루프
+AGENT = os.environ.get("JEJU_AGENT_MODEL", "qwen2.5:7b")  # 질문 담당 Agent 판단 + 상세 분석 담당·도구 루프
 CHAT = os.environ.get("JEJU_OLLAMA_MODEL", "qwen3:1.7b")
 # 정확도를 잰 모델 판(Ollama digest 앞 12자리, 2026-11-15 확인). 'ollama pull'은 같은 이름이라도 새 판을 받을 수 있어 실행 전에 대조한다.
 PINNED = {"bge-m3": "790764642607", "qwen3:1.7b": "8f68893c685c", "qwen2.5:7b": "845dbda0ea48"}
@@ -83,13 +83,13 @@ def report(models, has_key, backend=None):
     else:
         lines.append(f"[설명 문장] LLM이 없어 템플릿 문장으로 답합니다. 숫자 계산은 그대로입니다(선택: 'ollama pull {CHAT}').")
     if backend == "rule":
-        lines.append("[전문가 모드] LLM_BACKEND=rule이라 꺼져 있습니다.")
+        lines.append("[상세 분석] LLM_BACKEND=rule이라 꺼져 있습니다.")
     elif models is not None and AGENT in models:
-        lines.append(f"[전문가 모드] Ollama {AGENT}가 도구 4개(코드 실행 제외)와 통계 기법 12종을 골라 씁니다.")
+        lines.append(f"[상세 분석] Ollama {AGENT}가 도구 4개(코드 실행 제외)와 통계 기법 12종을 골라 씁니다.")
     elif not has_key:
-        lines.append(f"[전문가 모드] 로컬 모델이 없어 꺼져 있습니다(선택: 'ollama pull {AGENT}'). 통계 기법 12종은 사이드바에서 그대로 씁니다.")
+        lines.append(f"[상세 분석] 로컬 모델이 없어 꺼져 있습니다(선택: 'ollama pull {AGENT}'). 통계 기법 12종은 사이드바에서 그대로 씁니다.")
     if has_key and not auto:
-        lines.append("[Claude] 키가 있습니다. 담당자가 로그인한 뒤 전문가 모드의 [Claude로 분석]을 누른 요청에만 씁니다(계정: JEJU_ACCOUNTS).")
+        lines.append("[Claude] 키가 있습니다. 담당자가 로그인한 뒤 상세 분석의 [Claude로 분석]을 누른 요청에만 씁니다(계정: JEJU_ACCOUNTS).")
     return lines
 
 

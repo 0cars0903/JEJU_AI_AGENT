@@ -888,3 +888,39 @@ class Windows20261116(unittest.TestCase):
         self.assertEqual(len(names), 5)
         self.assertTrue(r["card"]["conclusion"].index(names[0]) < r["card"]["conclusion"].index(names[-1]))
         self.assertNotIn("4위", R.respond("편의점 많은 동네 순위 보여줘.", None, llm_on=False)["card"]["conclusion"])
+
+
+class WindowsPdf20261116(unittest.TestCase):
+    """마스터 Windows 시험 PDF 세 개(신제주·이도2동 점심·안덕면 밤 늦게)와 의견에서 나온 결함."""
+
+    def test_sinjeju_two_dongs(self):
+        r = R.respond("신제주는 오후 3시쯤에 사람 많아요?", None, llm_on=False)
+        self.assertEqual(r["status"], "성공")
+        self.assertEqual(set(r["tuple"]["space"]), {"연동", "노형동"})
+        self.assertTrue(any("연동·노형동으로 봤어요" in n for n in r["understood"]["notes"]))
+        c = r["card"]["conclusion"]
+        self.assertIn("연동", c)
+        self.assertIn("노형동", c)
+
+    def test_hour_band_first(self):
+        c = R.respond("안덕면 술집 밤 늦게 손님 몰려요?", None, llm_on=False)["card"]["conclusion"]
+        self.assertIn("밤(22~다음 날 4시) 매출 비중은", c)
+        c = R.respond("이도2동 음식점 평일 점심시간대매출 알려주세요", None, llm_on=False)
+        self.assertIn("점심(11~14시) 매출 비중은", c["card"]["conclusion"])
+        self.assertFalse(any("이 질문 유형에서 쓰지 않음" in x for x in c["card"]["limits"]))
+
+    def test_months_old_uses_period_end(self):
+        import layers
+        import pandas as pd
+        now = pd.Timestamp("2026-11-16")
+        self.assertEqual(layers._months_old("2025-10~2026-09", now), 2)
+        self.assertIsNone(layers._months_old("개업 2015-01~2021-11", now))
+
+    def test_plain_change_note(self):
+        import question_agent as A
+        self.assertEqual(A.plain_change("종류 현황, 지표 일평균 방문"), "현황 질문으로 일평균 방문 기준으로")
+
+    def test_simple_question_not_technique(self):
+        import analyst
+        self.assertTrue(analyst.SIMPLE_Q.search("신제주는 오후 3시쯤에 사람 많아요?") and not analyst.ANALYSIS_HINT.search("신제주는 오후 3시쯤에 사람 많아요?"))
+        self.assertTrue(analyst.ANALYSIS_HINT.search("동네별로 사람이 많이 오는 곳이 장사도 잘 되는지 보여줘"))

@@ -74,10 +74,7 @@ export function Understood({ r, onChange, sample }: { r: AskResult; onChange: (s
           조건 바꾸기
         </Button>
       </div>
-      {/* 피드백 기록 안내(2026-11-15): 누른 질문 문장은 해석 개선용으로 이 PC의 data/interim/feedback.jsonl에 남는다 */}
-      <p className="text-[length:var(--krds-fs-label-medium)] text-(--krds-text-subtle)" data-testid="feedback-privacy">
-        [맞아요]나 [조건 바꾸기]를 누르면 질문 문장이 해석 개선용으로 이 PC에 저장돼요. 이름·전화번호 같은 개인정보는 질문에 적지 마세요.
-      </p>
+      {/* 누른 질문 문장은 해석 개선용으로 이 PC의 data/interim/feedback.jsonl에 남는다(화면 안내 문구는 마스터 지시 2026-11-16으로 뺌) */}
     </div>
   );
 }
@@ -791,7 +788,7 @@ export function Waiting({ stage }: { stage?: Stage | null }) {
         })}
       </ol>
       <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
-        {left > 0 ? `남은 단계 ${left}개` : "마지막 단계예요"} · {sec}초 지남(보통 1분 안에 끝나요)
+        {left > 0 ? `남은 단계 ${left}개` : "마지막 단계예요"} · {sec}초 지남
       </p>
     </div>
   );

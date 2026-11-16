@@ -1,6 +1,6 @@
 "use client";
 
-/** 데모 로그인(2026-11-13): 계정이 설정된 데모에서만 보인다. 로그인해야 Claude를 쓰는 기능(판단 과정 AI 설명·전문가 모드)이 켜진다. */
+/** 데모 로그인(2026-11-13): 계정이 설정된 데모에서만 보인다. 로그인해야 Claude를 쓰는 기능(판단 과정 AI 설명·상세 분석)이 켜진다. */
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LogIn, LogOut, UserRound } from "lucide-react";
@@ -106,7 +106,7 @@ export function LoginButton({ compact = false }: { compact?: boolean }) {
       </Button>
       {open && (
         <div style={{ left: at.x, top: at.y }} className="fixed z-[60] w-72 rounded-(--krds-radius-large1) border border-(--krds-border-gray-light) bg-card p-3 shadow-xl">
-          <p className="mb-2 text-[length:var(--krds-fs-body-small)] text-(--krds-text-bolder)">로그인하면 AI 설명과 전문가 모드가 켜져요. 질문과 답은 로그인 없이도 쓸 수 있어요.</p>
+          <p className="mb-2 text-[length:var(--krds-fs-body-small)] text-(--krds-text-bolder)">로그인하면 AI 설명과 상세 분석이 켜져요. 질문과 답은 로그인 없이도 쓸 수 있어요.</p>
           <LoginForm onDone={() => setOpen(false)} />
         </div>
       )}
