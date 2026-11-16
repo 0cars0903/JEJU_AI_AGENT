@@ -12,38 +12,39 @@
   "확인 카드 멈춤": 0,
   "n": 309,
   "애매 제외 n": 277,
-  "④ 완전 정답": 155,
-  "① 처리": 227,
-  "② 요소 비율 평균": 0.72,
-  "③ 안내 정직성": "43/53",
-  "애매 문항 정답": "20/32",
+  "④ 완전 정답": 217,
+  "④ 완전 정답(엄격, 2026-11-16 보정 제외)": 207,
+  "① 처리": 253,
+  "② 요소 비율 평균": 0.869,
+  "③ 안내 정직성": "50/58",
+  "애매 문항 정답": "21/32",
   "생성 모델별": {
-   "fable": "23/38",
-   "gemini": "71/130",
-   "haiku": "22/35",
-   "opus": "19/38",
-   "sonnet": "20/36"
+   "fable": "29/38",
+   "gemini": "103/130",
+   "haiku": "29/35",
+   "opus": "26/38",
+   "sonnet": "30/36"
   },
   "유형별": {
-   "(일반)": "46/59",
-   "기간": "26/48",
-   "대체 지표": "9/32",
-   "두 요소": "6/12",
-   "생활 지명": "20/41",
-   "순위": "30/49",
-   "조건": "22/39",
-   "지표 없음": "14/46"
+   "(일반)": "49/59",
+   "기간": "39/48",
+   "대체 지표": "19/32",
+   "두 요소": "7/12",
+   "생활 지명": "30/41",
+   "순위": "41/49",
+   "조건": "34/39",
+   "지표 없음": "31/46"
   },
   "요소별 오답": {
-   "동네": 9,
-   "지표": 48,
-   "업종": 9,
-   "조건": 2,
-   "기간": 5,
-   "순위": 6
+   "동네": 6,
+   "지표": 18,
+   "업종": 3,
+   "조건": 1,
+   "기간": 4,
+   "순위": 4
   },
-  "지연 중앙값": 0.13,
-  "지연 90%": 0.3,
+  "지연 중앙값": 0.09,
+  "지연 90%": 0.21,
   "모델 판단 평균 횟수": 0
  },
  "rows": [
@@ -62,13 +63,14 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "순위"
    ],
-   "sec": 0.25,
+   "sec": 0.2,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -87,10 +89,11 @@
      "지표": false
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.13,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -110,12 +113,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.84,
+   "sec": 0.72,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -134,7 +138,8 @@
      "지표": false
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
    "sec": 0.12,
@@ -157,12 +162,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "두 요소"
    ],
-   "sec": 0.64,
+   "sec": 0.69,
    "status": "Agent",
    "turns": [],
    "calls": 0,
@@ -177,10 +183,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -201,13 +208,14 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간",
     "순위"
    ],
-   "sec": 0.19,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -227,13 +235,14 @@
      "업종": false
     },
     "요소 비율": 0.333,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 1.42,
-   "status": "no_significant_effect",
+   "sec": 0.06,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -247,12 +256,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.07,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -272,12 +282,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.21,
+   "sec": 0.87,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -292,10 +303,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -314,12 +326,13 @@
      "지표": false
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.35,
+   "sec": 0.26,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -339,12 +352,13 @@
      "순위": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.08,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -363,13 +377,14 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "지표 없음"
    ],
-   "sec": 0.11,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -384,7 +399,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
    "sec": 0.06,
@@ -402,10 +418,11 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.1,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -415,23 +432,24 @@
    "id": "FB-057",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "순위": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위",
     "대체 지표"
    ],
-   "sec": 0.1,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -441,16 +459,17 @@
    "id": "FB-058",
    "gen": "fable",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
-    "처리": true,
+    "처리": false,
     "요소": {},
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.0,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.12,
-   "status": "선택필요",
+   "sec": 0.1,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -469,12 +488,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.25,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -484,18 +504,25 @@
    "id": "FB-060",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.11,
-   "status": "선택필요",
+   "sec": 0.07,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -515,14 +542,15 @@
      "기간": true
     },
     "요소 비율": 0.75,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간",
     "지표 없음"
    ],
-   "sec": 0.23,
-   "status": "no_significant_effect",
+   "sec": 0.14,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -541,12 +569,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.26,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -556,19 +585,20 @@
    "id": "FB-063",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.5,
+   "sec": 0.46,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -583,10 +613,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -601,10 +632,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.16,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -624,12 +656,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.16,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -650,12 +683,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.24,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -667,17 +701,23 @@
    "ambiguous": false,
    "ok": false,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "순위": false
+    },
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위",
     "지표 없음"
    ],
-   "sec": 0.08,
-   "status": "선택필요",
+   "sec": 0.1,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -691,12 +731,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.1,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -716,13 +757,14 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간",
     "두 요소"
    ],
-   "sec": 0.21,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -734,16 +776,22 @@
    "ambiguous": false,
    "ok": false,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": false,
+     "업종": true
+    },
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.27,
-   "status": "선택필요",
+   "sec": 0.11,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -752,23 +800,24 @@
    "id": "FB-072",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
      "지표": true,
-     "조건": false
+     "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "생활 지명"
    ],
-   "sec": 0.53,
+   "sec": 0.12,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -778,22 +827,23 @@
    "id": "FB-073",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 0.85,
+   "sec": 0.2,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -808,12 +858,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.08,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -828,13 +879,14 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 0.2,
+   "sec": 0.06,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -854,10 +906,11 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.29,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -867,23 +920,24 @@
    "id": "FB-077",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 0.52,
+   "sec": 0.41,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -903,12 +957,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.1,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -928,13 +983,14 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간",
     "생활 지명"
    ],
-   "sec": 0.16,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -944,22 +1000,23 @@
    "id": "FB-080",
    "gen": "fable",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.45,
+   "sec": 0.41,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -974,10 +1031,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.09,
+   "sec": 0.06,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -992,12 +1050,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.07,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1012,13 +1071,14 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "지표 없음"
    ],
-   "sec": 0.09,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1033,10 +1093,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.09,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1051,12 +1112,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.11,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1071,12 +1133,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1091,10 +1154,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1109,12 +1173,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.07,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1133,10 +1198,11 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.08,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1151,10 +1217,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1169,10 +1236,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.08,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1187,13 +1255,14 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "대체 지표"
    ],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1208,12 +1277,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.18,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1228,12 +1298,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.1,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1253,10 +1324,11 @@
      "업종": true
     },
     "요소 비율": 0.333,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.22,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1276,12 +1348,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.26,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1296,12 +1369,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.18,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1321,12 +1395,13 @@
      "업종": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.13,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1341,7 +1416,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
@@ -1361,10 +1437,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -1379,7 +1456,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
    "sec": 0.05,
@@ -1397,7 +1475,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
    "sec": 0.05,
@@ -1415,7 +1494,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
    "sec": 0.05,
@@ -1433,7 +1513,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
@@ -1453,7 +1534,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
    "sec": 0.05,
@@ -1471,10 +1553,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.08,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1489,7 +1572,8 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
@@ -1509,10 +1593,11 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.2,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1527,12 +1612,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.09,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1547,12 +1633,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.12,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1567,12 +1654,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.09,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1587,12 +1675,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.25,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1607,10 +1696,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.15,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1625,10 +1715,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.27,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1638,16 +1729,17 @@
    "id": "GA-185",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
+    "처리": true,
     "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.36,
-   "status": "성공",
+   "sec": 0.05,
+   "status": "범위밖",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -1656,18 +1748,19 @@
    "id": "GA-186",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
+    "처리": true,
     "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.46,
-   "status": "성공",
+   "sec": 0.05,
+   "status": "범위밖",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -1686,10 +1779,11 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.1,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1704,10 +1798,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1722,12 +1817,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -1742,12 +1838,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.2,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1768,12 +1865,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.18,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -1783,18 +1881,25 @@
    "id": "GA-192",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.06,
-   "status": "선택필요",
+   "sec": 0.15,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -1814,12 +1919,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.26,
+   "sec": 0.2,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1839,13 +1945,14 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.1,
-   "status": "성공",
+   "sec": 0.11,
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -1865,13 +1972,14 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.22,
-   "status": "no_significant_effect",
+   "sec": 0.06,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -1890,12 +1998,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.22,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1916,12 +2025,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.18,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -1942,12 +2052,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.24,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1968,12 +2079,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.12,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -1983,18 +2095,24 @@
    "id": "GA-200",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.09,
-   "status": "선택필요",
+   "sec": 0.21,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2008,18 +2126,19 @@
     "처리": true,
     "안내": true,
     "요소": {
-     "동네": false,
+     "동네": true,
      "지표": true,
      "업종": true,
      "기간": false
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 0.75,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.14,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2029,18 +2148,25 @@
    "id": "GA-202",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
    "sec": 0.14,
-   "status": "선택필요",
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2049,23 +2175,24 @@
    "id": "GA-203",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
      "지표": true,
-     "업종": false,
+     "업종": true,
      "기간": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.34,
+   "sec": 0.21,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2086,12 +2213,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.14,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2112,12 +2240,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.21,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -2138,12 +2267,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.26,
+   "sec": 0.2,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2153,18 +2283,24 @@
    "id": "GA-207",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
    "sec": 0.06,
-   "status": "범위밖",
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2184,12 +2320,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.11,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2199,23 +2336,24 @@
    "id": "GA-209",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.19,
-   "status": "no_significant_effect",
+   "sec": 0.06,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2224,18 +2362,25 @@
    "id": "GA-210",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.05,
-   "status": "범위밖",
+   "sec": 0.15,
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2255,12 +2400,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.14,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2280,12 +2426,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.12,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2306,12 +2453,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.2,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2331,12 +2479,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.15,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2346,18 +2495,25 @@
    "id": "GA-215",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.08,
-   "status": "선택필요",
+   "sec": 0.27,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2366,22 +2522,23 @@
    "id": "GA-216",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.18,
+   "sec": 0.11,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -2401,12 +2558,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.21,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2416,22 +2574,23 @@
    "id": "GA-218",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.21,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2452,12 +2611,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.21,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -2472,12 +2632,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -2487,23 +2648,24 @@
    "id": "GA-221",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
      "지표": true,
-     "업종": false,
+     "업종": true,
      "조건": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.11,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2524,12 +2686,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.16,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2544,12 +2707,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.11,
+   "sec": 0.06,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -2569,12 +2733,13 @@
      "조건": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.3,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -2594,13 +2759,14 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.17,
-   "status": "no_significant_effect",
+   "sec": 0.07,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2609,22 +2775,23 @@
    "id": "GA-226",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.23,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2634,22 +2801,23 @@
    "id": "GA-227",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
-     "동네": false,
+     "동네": true,
      "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.1,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2659,22 +2827,23 @@
    "id": "GA-228",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.3,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2695,12 +2864,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.22,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -2720,12 +2890,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.16,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2740,12 +2911,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.11,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -2760,12 +2932,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.1,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -2786,12 +2959,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.19,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -2811,12 +2985,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.14,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2837,12 +3012,13 @@
      "조건": false
     },
     "요소 비율": 0.75,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.17,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2863,12 +3039,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.16,
+   "sec": 0.08,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2889,12 +3066,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.09,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2914,12 +3092,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2929,7 +3108,7 @@
    "id": "GA-239",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
@@ -2937,15 +3116,16 @@
      "동네": true,
      "지표": true,
      "업종": true,
-     "순위": false
+     "순위": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.08,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -2955,18 +3135,25 @@
    "id": "GA-240",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.12,
-   "status": "선택필요",
+   "sec": 0.06,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -2986,12 +3173,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.23,
+   "sec": 0.18,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3001,22 +3189,23 @@
    "id": "GA-242",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
-     "순위": false
+     "순위": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.19,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3029,7 +3218,7 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
      "지표": true,
@@ -3037,13 +3226,14 @@
      "순위": false
     },
     "요소 비율": 0.75,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위",
     "대체 지표"
    ],
-   "sec": 0.19,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3056,20 +3246,21 @@
    "ok": false,
    "cells": {
     "처리": true,
-    "안내": false,
+    "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
-     "업종": false,
+     "지표": true,
+     "업종": true,
      "순위": false
     },
-    "요소 비율": 0.25,
-    "정답": false
+    "요소 비율": 0.75,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.27,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3089,12 +3280,13 @@
      "순위": false
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.1,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3115,12 +3307,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.21,
+   "sec": 0.14,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3140,12 +3333,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.12,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3165,12 +3359,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.19,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3191,12 +3386,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.08,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3206,22 +3402,23 @@
    "id": "GA-251",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "순위": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.07,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3242,12 +3439,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.09,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3268,12 +3466,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.12,
+   "sec": 0.08,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3294,13 +3493,14 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위",
     "대체 지표"
    ],
-   "sec": 0.2,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3321,12 +3521,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.09,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3346,12 +3547,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3372,12 +3574,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3397,12 +3600,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.21,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3412,23 +3616,24 @@
    "id": "GA-259",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "순위": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.18,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3449,12 +3654,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.12,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3474,12 +3680,13 @@
      "업종": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.33,
+   "sec": 0.26,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3489,19 +3696,25 @@
    "id": "GA-262",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.06,
-   "status": "선택필요",
+   "sec": 0.14,
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3510,19 +3723,24 @@
    "id": "GA-263",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.09,
-   "status": "선택필요",
+   "sec": 0.11,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3540,13 +3758,14 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.23,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3565,13 +3784,14 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.27,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3581,23 +3801,24 @@
    "id": "GA-266",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.63,
+   "sec": 0.4,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -3612,13 +3833,14 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.07,
-   "status": "선택필요",
+   "sec": 0.05,
+   "status": "범위밖",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3627,23 +3849,24 @@
    "id": "GA-268",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.16,
-   "status": "no_significant_effect",
+   "sec": 0.14,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3662,13 +3885,14 @@
      "업종": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.11,
+   "sec": 0.1,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -3688,13 +3912,14 @@
      "업종": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.11,
+   "sec": 0.13,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3713,7 +3938,8 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
@@ -3728,23 +3954,24 @@
    "id": "GA-272",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
-     "동네": false,
+     "동네": true,
      "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.09,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3764,14 +3991,15 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.18,
-   "status": "no_significant_effect",
+   "sec": 0.06,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3787,16 +4015,17 @@
     "요소": {
      "동네": true,
      "지표": false,
-     "업종": false
+     "업종": true
     },
-    "요소 비율": 0.333,
-    "정답": false
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.22,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3806,19 +4035,25 @@
    "id": "GA-275",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.08,
-   "status": "범위밖",
+   "sec": 0.09,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3827,22 +4062,23 @@
    "id": "GA-276",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.18,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3862,12 +4098,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.19,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3884,15 +4121,16 @@
     "요소": {
      "동네": true,
      "지표": false,
-     "업종": false
+     "업종": true
     },
-    "요소 비율": 0.333,
-    "정답": false
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.49,
+   "sec": 0.29,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -3904,17 +4142,23 @@
    "ambiguous": true,
    "ok": false,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": false
+    },
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.08,
-   "status": "선택필요",
+   "sec": 0.11,
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3933,13 +4177,14 @@
      "업종": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "대체 지표"
    ],
-   "sec": 0.2,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3959,13 +4204,14 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.29,
-   "status": "no_significant_effect",
+   "sec": 0.14,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -3983,12 +4229,13 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.18,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -3998,18 +4245,24 @@
    "id": "GA-283",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.07,
-   "status": "선택필요",
+   "sec": 0.14,
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -4023,12 +4276,13 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.1,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4043,12 +4297,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4058,17 +4313,18 @@
    "id": "GA-286",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
-     "동네": false,
+     "동네": true,
      "지표": true,
      "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
@@ -4093,12 +4349,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.2,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -4113,7 +4370,8 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명"
@@ -4137,7 +4395,8 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
@@ -4157,7 +4416,8 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명"
@@ -4172,23 +4432,24 @@
    "id": "GA-291",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
      "지표": true,
-     "업종": false
+     "업종": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.3,
-   "status": "성공",
+   "sec": 0.15,
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -4203,17 +4464,18 @@
     "안내": null,
     "요소": {
      "동네": false,
-     "지표": false,
+     "지표": true,
      "업종": true
     },
-    "요소 비율": 0.333,
-    "정답": false
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.18,
-   "status": "no_significant_effect",
+   "sec": 0.06,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -4227,13 +4489,14 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명",
     "대체 지표"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -4248,12 +4511,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4263,22 +4527,23 @@
    "id": "GA-295",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
-     "업종": false
+     "지표": true,
+     "업종": true
     },
-    "요소 비율": 0.333,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.24,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4293,12 +4558,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "두 요소"
    ],
-   "sec": 0.08,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4318,12 +4584,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "두 요소"
    ],
-   "sec": 0.23,
+   "sec": 0.18,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4333,21 +4600,22 @@
    "id": "GA-298",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "두 요소"
    ],
-   "sec": 0.15,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4357,22 +4625,23 @@
    "id": "GA-299",
    "gen": "gemini",
    "ambiguous": false,
-   "ok": true,
+   "ok": false,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
-     "동네": true,
+     "동네": false,
      "지표": true,
      "업종": true
     },
-    "요소 비율": 1.0,
-    "정답": true
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "두 요소"
    ],
-   "sec": 0.09,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4387,12 +4656,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "두 요소"
    ],
-   "sec": 0.12,
+   "sec": 0.06,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4413,12 +4683,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.38,
+   "sec": 0.26,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -4439,12 +4710,13 @@
      "기간": false
     },
     "요소 비율": 0.75,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.16,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4464,13 +4736,14 @@
      "기간": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간",
     "지표 없음"
    ],
-   "sec": 0.33,
+   "sec": 0.27,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -4480,22 +4753,23 @@
    "id": "HK-044",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "대체 지표"
    ],
-   "sec": 0.11,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4515,12 +4789,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.16,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4535,12 +4810,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4550,18 +4826,25 @@
    "id": "HK-047",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.11,
-   "status": "범위밖",
+   "sec": 0.3,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -4580,13 +4863,14 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위",
     "대체 지표"
    ],
-   "sec": 0.25,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4606,12 +4890,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.11,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4626,13 +4911,14 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "생활 지명",
     "지표 없음"
    ],
-   "sec": 0.13,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4653,12 +4939,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.27,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -4677,12 +4964,13 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.1,
+   "sec": 0.07,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4702,10 +4990,11 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.3,
+   "sec": 0.26,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4726,12 +5015,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.07,
+   "sec": 0.08,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4751,12 +5041,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.29,
+   "sec": 0.26,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4776,12 +5067,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4791,22 +5083,23 @@
    "id": "HK-057",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
      "지표": true,
-     "순위": false
+     "순위": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.13,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4826,10 +5119,11 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.24,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -4839,19 +5133,27 @@
    "id": "HK-059",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간",
     "순위"
    ],
    "sec": 0.07,
-   "status": "선택필요",
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -4865,13 +5167,14 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "대체 지표"
    ],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -4887,17 +5190,18 @@
     "안내": false,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "조건",
     "대체 지표"
    ],
-   "sec": 0.13,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4916,12 +5220,13 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.12,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4931,19 +5236,26 @@
    "id": "HK-063",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "두 요소",
     "기간"
    ],
-   "sec": 0.09,
-   "status": "선택필요",
+   "sec": 0.28,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -4952,23 +5264,24 @@
    "id": "HK-064",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "지표 없음"
    ],
-   "sec": 0.17,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -4988,13 +5301,14 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위",
     "지표 없음"
    ],
-   "sec": 0.37,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5004,22 +5318,23 @@
    "id": "HK-066",
    "gen": "haiku",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "순위": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.17,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5039,12 +5354,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.12,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5063,7 +5379,8 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "두 요소",
@@ -5089,10 +5406,11 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.3,
+   "sec": 0.27,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5112,12 +5430,13 @@
      "업종": true
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.13,
+   "sec": 0.12,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5132,10 +5451,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -5150,10 +5470,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -5168,10 +5489,11 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.05,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -5186,10 +5508,11 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.24,
+   "sec": 0.17,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5204,10 +5527,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -5222,10 +5546,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -5240,10 +5565,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -5258,10 +5584,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -5280,10 +5607,11 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5298,10 +5626,11 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.15,
+   "sec": 0.12,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5313,16 +5642,23 @@
    "ambiguous": false,
    "ok": false,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": false,
+     "기간": true
+    },
+    "요소 비율": 0.75,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.11,
-   "status": "범위밖",
+   "sec": 0.09,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -5341,12 +5677,13 @@
      "기간": false
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.11,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5366,12 +5703,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.15,
+   "sec": 0.11,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5381,23 +5719,24 @@
    "id": "OP-044",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "업종": true,
      "기간": true
     },
-    "요소 비율": 0.75,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.21,
+   "sec": 0.17,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5417,13 +5756,14 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간",
     "생활 지명"
    ],
-   "sec": 0.13,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5444,13 +5784,14 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간",
     "두 요소"
    ],
-   "sec": 0.28,
+   "sec": 0.2,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5471,12 +5812,13 @@
      "기간": false
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.16,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5486,22 +5828,23 @@
    "id": "OP-048",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.14,
+   "sec": 0.1,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5521,12 +5864,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.19,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5546,13 +5890,14 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "생활 지명"
    ],
-   "sec": 0.14,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5573,13 +5918,14 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "생활 지명"
    ],
-   "sec": 0.19,
+   "sec": 0.15,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5589,19 +5935,25 @@
    "id": "OP-052",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "조건": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "생활 지명"
    ],
-   "sec": 0.1,
-   "status": "선택필요",
+   "sec": 0.11,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -5610,23 +5962,24 @@
    "id": "OP-053",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "조건": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건",
     "대체 지표"
    ],
-   "sec": 0.14,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5647,12 +6000,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.17,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5672,12 +6026,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.09,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5697,12 +6052,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.2,
+   "sec": 0.15,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5722,12 +6078,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.12,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5749,12 +6106,13 @@
      "순위": false
     },
     "요소 비율": 0.8,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.2,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5774,12 +6132,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.1,
+   "sec": 0.08,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5800,13 +6159,14 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위",
     "두 요소"
    ],
-   "sec": 0.21,
+   "sec": 0.17,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -5825,12 +6185,13 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.14,
+   "sec": 0.1,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5840,21 +6201,22 @@
    "id": "OP-062",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.5,
+   "sec": 0.4,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5869,12 +6231,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.09,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -5889,12 +6252,13 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.09,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -5909,13 +6273,14 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 0.11,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -5925,21 +6290,22 @@
    "id": "OP-066",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.61,
+   "sec": 0.39,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -5951,16 +6317,21 @@
    "ambiguous": false,
    "ok": false,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": false,
+    "요소": {
+     "동네": true,
+     "지표": false
+    },
+    "요소 비율": 0.5,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.13,
-   "status": "선택필요",
+   "sec": 0.06,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -5978,12 +6349,13 @@
      "지표": false
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.31,
+   "sec": 0.24,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6002,12 +6374,13 @@
      "지표": false
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.21,
+   "sec": 0.17,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6027,12 +6400,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.1,
+   "sec": 0.08,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6047,10 +6421,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.07,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6065,10 +6440,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6083,10 +6459,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.12,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6101,10 +6478,11 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.1,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6114,16 +6492,21 @@
    "id": "OP-075",
    "gen": "opus",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": true,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.08,
-   "status": "범위밖",
+   "sec": 0.17,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -6137,10 +6520,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.13,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -6155,10 +6539,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -6173,10 +6558,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.07,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -6191,10 +6577,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -6204,19 +6591,20 @@
    "id": "OP-080",
    "gen": "opus",
    "ambiguous": true,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [],
-   "sec": 0.53,
+   "sec": 0.4,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6226,18 +6614,24 @@
    "id": "SN-041",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "기간": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.08,
-   "status": "선택필요",
+   "sec": 0.11,
+   "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -6257,12 +6651,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.54,
+   "sec": 0.34,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6282,13 +6677,14 @@
      "기간": false
     },
     "요소 비율": 0.667,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.12,
-   "status": "no_significant_effect",
+   "sec": 0.09,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -6308,12 +6704,13 @@
      "기간": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.58,
+   "sec": 0.27,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6325,16 +6722,22 @@
    "ambiguous": true,
    "ok": false,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "기간": false
+    },
+    "요소 비율": 0.667,
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간"
    ],
-   "sec": 0.09,
-   "status": "범위밖",
+   "sec": 0.08,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -6354,14 +6757,15 @@
      "기간": true
     },
     "요소 비율": 0.75,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간",
     "조건",
     "두 요소"
    ],
-   "sec": 0.19,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6376,14 +6780,15 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "기간",
     "순위",
     "두 요소"
    ],
-   "sec": 0.13,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6403,12 +6808,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.21,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6428,12 +6834,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.14,
+   "sec": 0.11,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6452,12 +6859,13 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.14,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6476,12 +6884,13 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.16,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6501,12 +6910,13 @@
      "조건": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "조건"
    ],
-   "sec": 0.18,
+   "sec": 0.1,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6526,12 +6936,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.08,
+   "sec": 0.06,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6541,18 +6952,25 @@
    "id": "SN-054",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true,
+     "업종": true,
+     "순위": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.08,
-   "status": "선택필요",
+   "sec": 0.07,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -6571,12 +6989,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.18,
+   "sec": 0.1,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6586,22 +7005,23 @@
    "id": "SN-056",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false,
+     "지표": true,
      "순위": true
     },
-    "요소 비율": 0.667,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.12,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6621,12 +7041,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.28,
+   "sec": 0.16,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6647,12 +7068,13 @@
      "순위": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "순위"
    ],
-   "sec": 0.23,
+   "sec": 0.21,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6662,21 +7084,22 @@
    "id": "SN-059",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.43,
+   "sec": 0.39,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6695,12 +7118,13 @@
      "지표": false
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.3,
+   "sec": 0.24,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6710,21 +7134,22 @@
    "id": "SN-061",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.47,
+   "sec": 0.38,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6734,21 +7159,22 @@
    "id": "SN-062",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.5,
+   "sec": 0.39,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6758,21 +7184,22 @@
    "id": "SN-063",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": null,
     "요소": {
      "동네": true,
-     "지표": false
+     "지표": true
     },
-    "요소 비율": 0.5,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": false
    },
    "hard": [
     "지표 없음"
    ],
-   "sec": 0.45,
+   "sec": 0.4,
    "status": "no_significant_effect",
    "turns": [],
    "calls": 0,
@@ -6787,13 +7214,14 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "지표 없음",
     "생활 지명"
    ],
-   "sec": 0.07,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6812,13 +7240,14 @@
      "지표": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 0.08,
+   "sec": 0.05,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6838,12 +7267,13 @@
      "업종": true
     },
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.12,
+   "sec": 0.09,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6853,22 +7283,23 @@
    "id": "SN-067",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
     "처리": true,
     "안내": true,
     "요소": {
      "동네": true,
-     "지표": false,
-     "기간": false
+     "지표": true,
+     "기간": true
     },
-    "요소 비율": 0.333,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "대체 지표"
    ],
-   "sec": 0.22,
+   "sec": 0.17,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6887,13 +7318,14 @@
      "지표": true
     },
     "요소 비율": 0.5,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 0.23,
+   "sec": 0.19,
    "status": "성공",
    "turns": [],
    "calls": 0,
@@ -6908,13 +7340,14 @@
     "처리": false,
     "요소": {},
     "요소 비율": 0.0,
-    "정답": false
+    "정답": false,
+    "정답(엄격)": false
    },
    "hard": [
     "대체 지표",
     "생활 지명"
    ],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6924,18 +7357,23 @@
    "id": "SN-070",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
-    "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "처리": true,
+    "안내": null,
+    "요소": {
+     "동네": true,
+     "지표": true
+    },
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [
     "생활 지명"
    ],
-   "sec": 0.08,
-   "status": "선택필요",
+   "sec": 0.24,
+   "status": "성공",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -6949,10 +7387,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6967,10 +7406,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.05,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -6985,10 +7425,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -7003,10 +7444,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -7021,10 +7463,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.06,
+   "sec": 0.04,
    "status": "선택필요",
    "turns": [],
    "calls": 0,
@@ -7039,10 +7482,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.2,
+   "sec": 0.05,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -7052,16 +7496,17 @@
    "id": "SN-077",
    "gen": "sonnet",
    "ambiguous": false,
-   "ok": false,
+   "ok": true,
    "cells": {
-    "처리": false,
+    "처리": true,
     "요소": {},
-    "요소 비율": 0.0,
-    "정답": false
+    "요소 비율": 1.0,
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.1,
-   "status": "선택필요",
+   "sec": 0.04,
+   "status": "범위밖",
    "turns": [],
    "calls": 0,
    "pause": false
@@ -7075,10 +7520,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.15,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -7093,10 +7539,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.15,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,
@@ -7111,10 +7558,11 @@
     "처리": true,
     "요소": {},
     "요소 비율": 1.0,
-    "정답": true
+    "정답": true,
+    "정답(엄격)": true
    },
    "hard": [],
-   "sec": 0.18,
+   "sec": 0.04,
    "status": "범위밖",
    "turns": [],
    "calls": 0,

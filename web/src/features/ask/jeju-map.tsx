@@ -1,4 +1,5 @@
 "use client";
+import { withUnit } from "@/lib/format";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -115,7 +116,7 @@ export function JejuMap({
     if (v === undefined) return NONE;
     return SHADES[cuts.filter((c) => v > c).length];
   };
-  const fmt = (v: number) => (cat ? `군집 ${v}` : `${shortNum(v)}${unit ? (unit === "%" || unit === "%p" ? unit : ` ${unit}`) : ""}`);
+  const fmt = (v: number) => (cat ? `군집 ${v}` : withUnit(shortNum(v), unit));
   const hv = hover ?? highlight[0] ?? selected[0];
   // 확대 영역: 가로세로 비율을 전체 지도와 같게 두어 화면 높이가 변하지 않는다
   const [X0, Y0, W, H] = m.viewBox;

@@ -102,7 +102,8 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
       </p>
       <div className="report-part">
         <h2>설명</h2>
-        <ul>{(r.lines ?? []).map((l, i) => <li key={i}>{l}</li>)}</ul>
+        {/* 하위 줄('   · ...')은 글머리를 겹쳐 찍지 않고 들여 쓴다(2026-11-16 Windows PDF 검토) */}
+        <ul>{(r.lines ?? []).map((l, i) => (/^\s*·\s*/.test(l) ? <li key={i} style={{ listStyle: "none", marginLeft: "12pt" }}>{l.replace(/^\s*·\s*/, "– ")}</li> : <li key={i}>{l}</li>))}</ul>
         {nums.length > 0 && (
           <table className="report-table">
             <tbody>
@@ -144,9 +145,9 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
         </div>
       ))}
       <div className="report-part report-appendix">
-        <h2>부록. 분석 계획과 코드</h2>
-        <ol>{(r.plan ?? []).map((p, i) => <li key={i}>{p}</li>)}</ol>
-        <pre>{r.code}</pre>
+        <h2>{r.code ? "부록. 분석 계획과 코드" : "부록. 분석 계획"}</h2>
+        <ul className="report-srcs">{(r.plan ?? []).map((p, i) => <li key={i}>{p}</li>)}</ul>
+        {r.code ? <pre>{r.code}</pre> : <p>이 분석은 AI가 코드를 쓰지 않고, 정해진 계산 코드로 조각마다 답했어요.</p>}
       </div>
     </div>,
     host,

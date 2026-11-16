@@ -593,6 +593,8 @@ def _dong_only(question, t):
 def _exception(question, t):
     """M1이 되묻기로 본 질문 가운데 추정할 수 없는 경우를 고른다. 추정할 수 있으면 None."""
     preset = G.to_slots(t)
+    if MY_DONG.search(question or "") and not t.get("space"):  # '제 가게 있는 곳'은 추정하지 않고 동네를 묻는다(2026-11-16)
+        return _choose(question, t, preset, MY_DONG_MSG, "space")
     amb = qparse.parse(question).get("_amb") or {}
     if amb and not t.get("space"):
         name, cands = next(iter(amb.items()))
@@ -637,7 +639,41 @@ def _escalate(question, it, t0, why):
 
 
 RULE_FIX = True
-RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌|(적|낮|작)은\s*(동네|곳|지역|데)|안\s*되는\s*(동네|곳|지역|데)")
+RANK_LOW = re.compile(r"(가장|제일|덜)\s*(적|낮|작)|최하위|꼴찌|최소|최저|못\s*버티|오래\s*못|(적|낮|작)은\s*(동네|곳|지역|데)|안\s*되는\s*(동네|곳|지역|데)")
+# 2026-11-16 조정용 오답(선택지 상한 측정에서 '정답 경로 없음'): 해석 보정 규칙 묶음
+RANK_ANY = re.compile(r"가장|제일|젤|최소|최대|최고|최저|꼴찌|상위|하위")
+RANK_PLACE = re.compile(r"동네|곳|지역|읍면|군데|어디|데\b")
+MULTI_COND = re.compile(r"동시에|이면서|면서|이고\s|하고\s.*(많|높|적|낮)")
+HOUR_ANY = re.compile(r"(오전|오후|새벽|아침|저녁|밤|낮)\s*\d{1,2}\s*시|\d{1,2}\s*시\s*(쯤|경|에|부터|대|께)|점심|야간|밤\s*늦|심야|시간대|몇\s*시|피크|몰리는\s*시간")
+HOUR_VISIT = re.compile(r"사람|손님|붐비|북적|방문|몰려")
+HOUR_NOTE = "시간대별 사람 수 자료는 없어요. 카드 결제가 몰리는 시간대(매출 비중)로 대신 봤어요."
+VISIT_Q = re.compile(r"발길|사람\s*(이\s*)?(많|붐|북적)|북적|붐비|오가는")
+CLOSE_Q = re.compile(r"문\s*(\S{1,3}\s*)?닫|폐업|망하")
+SURV_Q = re.compile(r"버티|버텨|살아남|오래\s*가")
+OPEN_Q = re.compile(r"새로\s*(생기|생긴|생겨|문\s*열|여는)|개업|오픈|창업한")
+RECENT_Q = re.compile(r"요즘|요새|근래|최근(?!\s*\d)")
+TREND_Q = re.compile(r"늘|줄|변화|추이|흐름|오르|올랐|내리|내렸|증가|감소|커지|작아지")
+SHARE_POP = re.compile(r"(청년|고령|노인|어르신|젊은)\S{0,3}\s*비(중|율)")
+GROWTH_Q = re.compile(r"성장률|성장\s*(가장|제일|빠|느|꼴찌)|매출\s*성장|커지(고|는|나)|커지고|규모\s*(가\s*)?커")
+COUNT_Q = re.compile(r"몇\s*(집|곳|개|군데)|세어|가게\s*수")
+OPEN_HOT = re.compile(r"창업\S{0,2}\s*(이\s*)?(활발|많|늘|줄)|새로\s*문\s*(여|열)")
+CLOSE_MORE = re.compile(r"접는|접은|그만두|문\s*(을\s*)?닫")
+TOUR_WORD = re.compile(r"외지인|관광객|육지\s*사람|여행객")
+ELDER_Q = re.compile(r"(어르신|노인|할머니|할아버지|고령)\S{0,3}\s*(이\s*)?(많|거주|사)")
+YOUNG_Q = re.compile(r"(젊은|청년|20\s*대|30\s*대)\S{0,4}\s*(이\s*)?(많|모|사)")
+AGE_Q = re.compile(r"나이대|연령대|나이\s*(가|는|구성)?\s*(어때|어떻|많)")
+FUTURE_MONEY = re.compile(r"(내년|다음\s*해|앞으로|미래|\d+\s*년\s*뒤).{0,25}(매출|수익|벌|수입).{0,20}(얼마|예측|나올|될지|될까)")
+RECOMMEND_Q = re.compile(r"추천|맛집|어디가\s*(좋|맛있)")
+PRIVATE_Q2 = re.compile(r"명단|연락처|전화\s*번호|예약자|투숙객|개인\s*(매출|정보)|특정\s*\S+\s*(사장|가게)")
+MY_SHOP_Q = re.compile(r"(제|저희|우리)\s*가게|내\s*가게")
+VAGUE_START = re.compile(r"^\s*동네\s")
+PLACE_MARKET = re.compile(r"(동문|올레|매일올레|서문|오일)\s*시장")
+LEVEL_Q = re.compile(r"(많|적|붐|북적|한산|높|낮)\S{0,4}\s*[?？]|(많|적)은\s*편")
+FUTURE_NOTE = "앞으로의 매출 금액은 예측하지 않아요(모델이 단순 기준보다 낫지 않았어요). 지난 같은 달 값은 '지난 기록'으로 물어봐 주세요."
+FOOD_ONLY_NOTE = "개업·폐업·생존 자료는 음식점(휴게·일반) 인허가 기록만 있어요. 가게 전체 대신 음식점 기록으로 봤어요."
+HOUR_DAY_NOTE = "시간대 매출은 주말·평일을 나눈 자료가 없어요. 모든 요일을 합친 값이에요."
+OUT_WORDS = re.compile(r"전국|광역|시도별|다른\s*지역|서울|부산|인허가|허가|신고|서류|절차|법률|세금|맛집|맛있|후기|평점|리뷰|추천해|매매가|시세|임대료|권리금|예약|특정|개인|사장님|명단|연락처|정확히|내년|미래|\d+\s*년\s*뒤")  # 범위 밖(명세 6절)·개인 정보·미래 금액
+DIAG_Q = re.compile(r"창업|차려|열어도|열면|괜찮|어때|분위기|전반|종합|진단|상권")
 # 동네를 말하지 않고 '높은·낮은·많은 동네', '어디가 제일 잘 돼'처럼 물으면 순위 질문이다(2026-11-15 최종 평가 결함: 단일 조회 T1로 읽음)
 RANK_ADJ = re.compile(r"(높|낮|많|적|큰|작|잘\s*되|안\s*되)(은|는)\s*(동네|곳|지역|데)|어디(가|서|에서|가\s*더)?\s*(가장|제일|젤|더|잘)|(가장|제일)\s*잘\s*(돼|되)")
 DATA_Q = re.compile(r"(자료|데이터)\S{0,2}\s*(뭐|무엇|어떤|있)")  # '버스 자료 뭐 있어?'는 자료 찾기(T11)
@@ -784,8 +820,97 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             if TOUR_MANY.search(q_) and set(t.get("metric") or []) <= {"점포수"}:
                 t = dict(t, metric=["관광객비중"])
                 notes.append(TOUR_NOTE)
-            if HOUR_Q.search(q_) and set(t.get("metric") or []) <= {"점포수", "일평균방문"}:
-                t = dict(t, type="T13", metric=["시간대방문"], form=Q.DEFAULT_FORM["T13"])
+            if PLACE_MARKET.search(q_) and "시장추이" in (t.get("metric") or []) and not re.search(r"시장\s*(규모|전망|추이)|업계", q_):
+                t = dict(t, metric=[m for m in t["metric"] if m != "시장추이"])  # '동문시장'의 시장은 지명이다
+            if FUTURE_MONEY.search(q_):
+                t = dict(t, type="T12", expect="범위밖")
+                notes.append(FUTURE_NOTE)
+            elif PRIVATE_Q2.search(q_) or (RECOMMEND_Q.search(q_) and (t.get("target") or re.search(r"집|식당|가게|카페", q_))):
+                t = dict(t, type="T12", expect="범위밖")
+            t_before = dict(t)
+            ask_back = bool((MY_SHOP_Q.search(q_) or (VAGUE_START.search(q_) and t.get("type") not in ("T3", "T14"))) and not t.get("space"))
+            if ask_back:
+                t = dict(t, expect="되묻기")  # '제 가게 있는 곳'·'동네 청년 비중'은 동네를 되묻는다
+            if HOUR_ANY.search(q_) and not OUT_WORDS.search(q_) and set(t.get("metric") or []) <= {"점포수", "일평균방문", "매출", "시간대방문", "이용건수", "시장추이"}:
+                # 시간대 자료는 카드 매출(시간대 비중)뿐이다. 사람·손님을 물었으면 대신 쓴 사실을 알린다(2026-11-16)
+                if HOUR_VISIT.search(q_) and "매출" not in q_:
+                    notes.append(HOUR_NOTE)
+                t = dict(t, type="T13", metric=["시간대매출"], form=Q.DEFAULT_FORM["T13"])
+            m_ = set(t.get("metric") or [])
+            if GROWTH_Q.search(q_) and m_ <= {"매출", "점포수", "특화계수"}:
+                t, m_ = dict(t, metric=["매출성장"]), {"매출성장"}
+            elif COUNT_Q.search(q_) and not m_:
+                t, m_ = dict(t, metric=["점포수"]), {"점포수"}
+            elif OPEN_HOT.search(q_):
+                t, m_ = dict(t, metric=["개업수"], type="T1" if t.get("type") == "T10" else t.get("type")), {"개업수"}
+            elif CLOSE_MORE.search(q_) and m_ <= {"점포수", "특화계수"} and not SURV_Q.search(q_):
+                t, m_ = dict(t, metric=["폐업수"]), {"폐업수"}
+            elif TOUR_WORD.search(q_) and m_ <= {"점포수", "특화계수", "시장추이", "일평균방문"} and re.search(r"많|찾|와|오", q_):
+                if "관광객" not in q_:
+                    notes.append(TOUR_NOTE)
+                t, m_ = dict(t, metric=["관광객비중"]), {"관광객비중"}
+            elif ELDER_Q.search(q_) and m_ <= {"점포수"}:
+                t, m_ = dict(t, metric=["고령비중"], target=None if t.get("target") in ("어르신", "노인") else t.get("target")), {"고령비중"}
+            elif YOUNG_Q.search(q_) and m_ <= {"점포수"}:
+                t, m_ = dict(t, metric=["청년비중"], target=None if t.get("target") in ("청년",) else t.get("target")), {"청년비중"}
+            elif AGE_Q.search(q_) and m_ <= {"점포수"}:
+                t, m_ = dict(t, metric=["거주연령구성"]), {"거주연령구성"}
+            if PRICE_Q.search(q_) and "건당금액" not in m_ and m_ <= {"점포수", "특화계수"} and t.get("type") != "T12":
+                t, m_ = dict(t, metric=["건당금액"]), {"건당금액"}
+                notes.append(PRICE_NOTE)
+            if not m_ and t.get("type") == "T6":
+                t, m_ = dict(t, metric=["일평균방문"]), {"일평균방문"}  # 조건(주말·계절·비) 효과는 방문으로 본다
+            if not m_ and t.get("type") == "T3" and t.get("target"):
+                t, m_ = dict(t, metric=["점포수"]), {"점포수"}  # '편의점 많은 동네 순위'
+            if not m_ and VISIT_Q.search(q_):
+                t = dict(t, metric=["일평균방문"])
+            elif (not m_ or m_ <= {"점포수", "특화계수"}) and OPEN_Q.search(q_):
+                t = dict(t, metric=["개업수"])
+            elif (not m_ or m_ <= {"점포수"}) and CLOSE_Q.search(q_) and not SURV_Q.search(q_):
+                t = dict(t, metric=["폐업수"])
+            elif (not m_ or m_ <= {"점포수"}) and SURV_Q.search(q_):
+                t = dict(t, metric=["5년생존율"])
+            sp = SHARE_POP.search(q_)
+            if sp and not (set(t.get("metric") or []) & {"고령비중", "청년비중"}):
+                t = dict(t, metric=["청년비중" if sp.group(1) in ("청년", "젊은") else "고령비중"], target=None if t.get("target") in ("청년", "어르신", "노인") else t.get("target"))
+            if not t.get("space") and RANK_ANY.search(q_) and RANK_PLACE.search(q_) and not MULTI_COND.search(q_) and t.get("type") in ("T1", "T14", "T12", "T5"):
+                if t.get("type") == "T12" and not PRICE_Q.search(q_):
+                    pass  # 범위 밖 판단은 가격('비싼 동네')처럼 대신 볼 지표가 있을 때만 순위로 바꾼다
+                else:
+                    t = dict(t, type="T3", expect="답함", form=Q.DEFAULT_FORM["T3"])
+            if t.get("type") == "T3" and t.get("metric") and t.get("expect") == "되묻기":
+                t = dict(t, expect="답함")  # 순위 기준(지표)을 찾았으면 되묻지 않는다('제일 오래 못 버티는 동네')
+            if set(t.get("metric") or []) and set(t["metric"]) <= qparse.FOOD_ONLY and not t.get("target"):
+                notes.append(FOOD_ONLY_NOTE)  # '가게들 잘 버텨?'·'문 많이 닫았어요?': 개업·폐업·생존 자료는 음식점만 있다
+                t = dict(t, target="음식점")
+            if t.get("type") in ("T12", "T5") and set(t.get("metric") or []) and not OUT_WORDS.search(q_) and not FUTURE_MONEY.search(q_) and not ask_back \
+                    and (t.get("space") or qparse.jeju_wide(t) or set(t["metric"]) <= qparse.FOOD_ONLY) \
+                    and (t.get("type") == "T12" or set(t["metric"]) <= {"버스일평균", "일평균방문", "폐업수", "개업수", "점포수"}):
+                t = dict(t, type="T1", expect="답함", form=Q.DEFAULT_FORM["T1"])  # 지표를 읽었는데 범위 밖·구성으로 본 질문
+            if t.get("type") == "T12" and not t.get("space") and set(t.get("metric") or []) and RANK_ANY.search(q_) and not OUT_WORDS.search(q_) and not FUTURE_MONEY.search(q_):
+                t = dict(t, type="T3", expect="답함", form=Q.DEFAULT_FORM["T3"])  # '한식당 건당금액 제일 낮은 곳'
+            if t.get("type") == "T8" and not FUTURE_MONEY.search(q_) and (_asked_period(q_)[0] or re.search(r"(20\d\d)\s*년|상반기|하반기|작년|지난해", q_)) and not re.search(r"다음|내년|앞으로|예측|예상", q_):
+                t = dict(t, type="T4" if re.search(r"추이|흐름|변화", q_) else "T1", expect="답함")  # 지난 기간을 묻는 질문을 예측으로 읽던 결함
+            if t.get("type") == "T2" and len(t.get("space") or []) == 1 and {"고령비중", "청년비중"} & set(t.get("metric") or []):
+                t = dict(t, type="T5", metric=["청년비중", "고령비중"], target=None, expect="답함")  # 한 동네의 두 비중
+            if t.get("type") == "T10" and not DIAG_Q.search(q_):
+                if not t.get("metric") and SALES_WORDS.search(q_):
+                    t = dict(t, type="T1", metric=["매출"], form=Q.DEFAULT_FORM["T1"])  # '고깃집 장사 잘 되는 편'은 매출 한 지표
+                elif len(t.get("metric") or []) == 1:
+                    t = dict(t, type="T1", form=Q.DEFAULT_FORM["T1"])
+            if re.search(RAIN_WORD, q_) and t.get("type") == "T6" and "비" not in (t.get("cond") or []) and not SNOW_Q.search(q_):
+                t = dict(t, cond=list(t.get("cond") or []) + ["비"])  # '2024년 여름에 비 온 날'의 비를 잃던 결함
+            if t.get("type") == "T13" and "시간대매출" in (t.get("metric") or []):
+                if not t.get("ask_recent"):
+                    t = dict(t, ask_recent=12)  # 시간대 비중은 최근 12개월 합계로 계산한다(layers DEFS)
+                if set(t.get("cond") or []) & {"주말", "평일"}:
+                    notes.append(HOUR_DAY_NOTE)
+            if t.get("type") == "T4" and not TREND_Q.search(q_) and not GROWTH_Q.search(q_) and "매출성장" not in (t.get("metric") or []):  # '요즘 발길 많아요?'는 흐름이 아니라 지금 수준
+                t = dict(t, type="T1", form=Q.DEFAULT_FORM["T1"])
+            if t.get("type") == "T6" and "비" in (t.get("cond") or []) and "매출" in (t.get("metric") or []):
+                t = dict(t, metric=["일평균방문"])  # 하루 단위 매출 자료가 없다
+                notes.append(RAIN_SALES_NOTE)
+
             hm = re.search(r"(오후|저녁|밤)?\s*(\d{1,2})\s*시", q_) if HOUR_Q.search(q_) else None
             if hm:  # 물은 시각의 값도 답한다('오후 3시' → 15시)
                 h = int(hm.group(2)) % 24
@@ -794,8 +919,16 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             rm = re.search(r"(최근|지난)\s*(\d{1,2})\s*개월", q_)
             if rm and 1 <= int(rm.group(2)) <= 24:  # '최근 3개월'은 그 기간 합계(평균)로(2026-11-15)
                 t = dict(t, ask_recent=int(rm.group(2)))
+            if not (rm or ay or am) and RECENT_Q.search(q_) and (t.get("type") in ("T1", "T3", "T6") or set(t.get("metric") or []) & {"개업수", "폐업수", "폐업률"}):
+                # '요즘·요새'(2026-11-16 정답 기준): 달 단위 지표는 최근 3개월, 해 단위(개업·폐업)는 올해
+                if set(t.get("metric") or []) & {"개업수", "폐업수", "폐업률"}:
+                    ay = int(str(layers.v3.meta().get("rest_last", "2026"))[:4])
+                elif set(t.get("metric") or []) & {"일평균방문", "매출", "이용건수", "건당금액", "관광객비중"}:
+                    t = dict(t, ask_recent=3)
             if ay or am:  # 질문에 적힌 기간(문서 계산은 layers._asked_ym)
                 t = dict(t, ask_year=ay, ask_month=am)
+                if am and not re.search(r"여름|겨울|봄|가을|계절|철\b|성수기|비수기", q_):
+                    t = dict(t, cond=[c for c in (t.get("cond") or []) if c not in ("여름", "겨울", "봄", "가을")])  # '7월'은 그 달 값이지 계절 조건이 아니다
                 if am and t.get("type") == "T6" and not re.search(r"여름|겨울|봄|가을|계절|성수기|비수기|날씨|" + RAIN_WORD, q_):
                     t = dict(t, type="T1", cond=[], form=Q.DEFAULT_FORM["T1"])  # '7월 연동 방문객'은 계절 효과가 아니라 7월 값
             if SNOW_Q.search(q_):
@@ -815,6 +948,11 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             if t.get("type") == "T1" and not t.get("space") and RANK_ADJ.search(question or ""):
                 t = dict(t, type="T3", expect="답함")
                 it = dict(it, tuple=t)
+            if {k: t.get(k) for k in ("type", "metric", "target", "space", "cond", "ask_year", "ask_month", "ask_recent")} != \
+                    {k: t_before.get(k) for k in ("type", "metric", "target", "space", "cond", "ask_year", "ask_month", "ask_recent")}:
+                it = dict(it, tuple=t, rule_fixed=True)  # 보정 규칙이 질문 낱말로 해석을 고쳤으면 '확신 낮음' 되묻기를 하지 않는다
+            if ask_back:
+                it = dict(it, ask_back=MY_DONG_MSG if MY_DONG.search(q_) else "질문에서 동네를 찾지 못했어요. 동네를 골라 주세요.")
         if t.get("type") == "T3" and RANK_LOW.search(question or ""):  # 순위 방향(작은 순서)
             t = dict(t, order="asc")
             it = dict(it, tuple=t)
@@ -823,6 +961,8 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         def stop(r):  # 일반 경로가 계산 전에 끝내는 출구(고르게 하기·범위 밖). (다) 넘김 판정도 여기서 한다
             r = dict(r, interpret=meta, sec=round(time.perf_counter() - t0, 3))
             return (_route_check(question, it, r["status"], t0, (r.get("choose") or {}).get("message") or (r.get("card") or {}).get("conclusion")) or r) if agent_ok else r
+        if it.get("ask_back"):  # 보정 규칙이 되묻기로 정한 질문('제 가게 있는 곳')
+            return stop(_choose(question, t, G.to_slots(t), it["ask_back"], "space"))
         od = qparse.DETAIL.get(t.get("detail"), {}).get("word")
         if od in Q.TARGETS_OUT and (qparse.CARD_METRICS | qparse.FOOD_ONLY) & set(t["metric"]):
             # 미용실·약국·학원·병원·부동산중개는 가게 수만 답한다(문서 20 7.5절 3번). 카드 매출·개업·폐업은 다른 업종·동네 전체 값으로 바꿔 답하지 않고 이유를 알린다.
@@ -853,7 +993,8 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             return stop(_choose(question, t, ps if ps.get("topic") else {"topic": "diagnose"}, CITY_MSG, "space"))
         if "외국인매출" in t["metric"] or (FOREIGN_Q.search(question or "") and SPEND_Q.search(question or "")):
             # 외국인 매출은 공개 자료에 제주 전체(업종·출신지역)만 있다. 전체 매출 순위로 바꿔 답하지 않고 있는 값과 받을 곳을 알린다(문서 20 A9)
-            t = dict(Q.empty(), type="T5" if t["space"] else "T3", metric=["외국인매출"], space=t["space"][:1],
+            # 물은 동네는 asked_space로만 남기고 해석의 동네는 비운다(값이 제주 전체라서, 2026-11-16 조정용 정답 기준과 맞춤)
+            t = dict(Q.empty(), type="T5" if t["space"] else "T3", metric=["외국인매출"], space=[], asked_space=t["space"][:1],
                      target=t.get("target") if t.get("target") in G.CARD_TARGETS else None, form=Q.DEFAULT_FORM["T5" if t["space"] else "T3"], expect="답함")
             it = dict(it, tuple=t, card=qparse.card(t))
             assumed = True
@@ -896,7 +1037,7 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                     return stop(ex)
             conf = it.get("confidence")
             agree = it.get("rule_type") == t["type"]  # 분류기와 사전 해석기가 같은 유형: 블라인드 4묶음에서 확신도 0.5 미만이어도 29/30 정답(불일치 9/27), 2026-11-11 측정
-            if conf is not None and conf < LOW_CONF and not agree:  # 추정할 근거가 약하면 답하지 않고 고르게 한다
+            if conf is not None and conf < LOW_CONF and not agree and not it.get("rule_fixed"):  # 추정할 근거가 약하면 답하지 않고 고르게 한다
                 ps = G.to_slots(t)  # 확신이 낮으면 답하지 않는다(사용자 승인 규칙). 다만 읽은 뜻을 보여 주고 한 번에 확인할 수 있게 한다(문서 20 A1)
                 msg = (f"질문을 '{G.sentence(ps)}'로 읽었는데 확실하지 않아요. 맞으면 [이대로 답 보기]를 누르고, 아니면 궁금한 것을 다시 골라 주세요."
                        if ps.get("topic") and not G.missing(ps) else "질문을 정확히 이해하지 못했어요. 궁금한 것을 골라 주세요.")
@@ -957,7 +1098,16 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
         c = card(t, rv, ev, intervals)
         ans = layers.build(t, rv, ev, value_q or t.get("type") == "T10")
         rv["run"]["store"]["_display"] = {"numbers": ans.pop("numbers")}
-        all_lines = ans.pop("all_lines")  # 답 카드 근거는 화면 중복 제거(결론과 같은 줄) 전의 줄 전부  # 코드가 만든 표시값(억·만 원, 배수, 순위)과 정책 상수
+        all_lines = ans.pop("all_lines")
+        if t.get("type") == "T1" and len(t.get("space") or []) == 1 and LEVEL_Q.search(question or ""):
+            # '많아요?'·'붐벼요?'처럼 수준을 물으면 결론에 43곳 가운데 위치를 붙인다(2026-11-16 Windows 시험: 값만 답함)
+            src = next((x["text"] for x in all_lines if x.get("kind") in ("position", None) and re.search(r"43곳 중 \d+위", x["text"])), "")
+            rk = re.search(r"43곳 중 (\d+)위", src)
+            if rk and "위" not in ans["conclusion"]["text"]:
+                k = int(rk.group(1))
+                lvl = "많은" if k <= 11 else "적은" if k >= 33 else "중간쯤인"
+                basis = "최근 12개월 기준 " if "최근 12개월" in src else ""  # 순위의 기준 기간을 밝힌다
+                ans["conclusion"]["text"] = ans["conclusion"]["text"].rstrip() + f" {basis}제주 43곳 중 {k}위로 {lvl} 편이에요."  # 답 카드 근거는 화면 중복 제거(결론과 같은 줄) 전의 줄 전부  # 코드가 만든 표시값(억·만 원, 배수, 순위)과 정책 상수
         c = dict(c, conclusion=ans["conclusion"]["text"],
                  evidence=[{"text": x["text"], "tag": x["tag"], "layer": x["layer"], "dataset": x.get("source"), "as_of": x.get("as_of"), "kind": x.get("kind")} for x in all_lines])
         probs = card_problems(c, rv["run"])

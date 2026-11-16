@@ -32,7 +32,7 @@ export type FooterItem = { source: string; as_of: string; next: string };
 export type JejuMapData = { viewBox: [number, number, number, number]; dongs: { dong: string; d: string; cx: number; cy: number; area: number }[]; inset: { x: number; y: number; w: number; h: number; label: string }; attribution: string };
 export type SummaryCard = { kind: string; question: string; value: number; unit: string; as_of: string; median: number; rank: number; of: number; slots: Slots; values: Record<string, number> };
 export type DongSummary = { dong: string; cards: SummaryCard[] };
-export type Freshness = { source: string; as_of: string; months_old: number; stale: boolean };
+export type Freshness = { source: string; as_of: string; months_old: number | null; stale: boolean };
 export type QueryField = { field: string; value: string };
 export type DataRequest = { kind: "update" | "center"; title: string; data: string; why: string; where: string; now?: string; steps?: string[]; query?: QueryField[] };
 /** 답에 쓰인 모델의 방법·검증 설명(문서 21 3.2절): 화면의 접힌 설명과 인쇄 보고서 부록 A가 함께 쓴다 */

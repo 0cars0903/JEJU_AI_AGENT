@@ -1,5 +1,6 @@
 "use client";
 
+import { asOfText } from "@/lib/format";
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { sendFeedback } from "@/lib/api";
@@ -273,7 +274,7 @@ export function SourceList({ r }: { r: AskResult }) {
         {srcs.map((f, i) => (
           <li key={f.name}>
             [{i + 1}] {f.name}
-            {f.as_of ? ` · 기준 ${f.as_of}` : ""}
+            {asOfText(f.as_of)}
             {f.next ? ` · 다음 갱신: ${f.next}` : ""}
           </li>
         ))}
@@ -518,7 +519,9 @@ export function Process({ r }: { r: AskResult }) {
             <ul className="list-disc pl-5">
               {r.answer!.freshness.map((f) => (
                 <li key={f.source}>
-                  {f.source}: {f.as_of} ({f.months_old}개월 전){f.stale ? " — 오래된 자료" : ""}
+                  {f.source}: {f.as_of}
+                  {f.months_old != null ? ` (${f.months_old}개월 전)` : ""}
+                  {f.stale ? " — 오래된 자료" : ""}
                 </li>
               ))}
             </ul>

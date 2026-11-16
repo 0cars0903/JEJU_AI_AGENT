@@ -38,8 +38,11 @@ COMMON_NOUNS = {"상가", "해안", "해변", "시내", "항구", "시장", "오
 LEARNED = json.loads((LEX / "learned.json").read_text(encoding="utf-8")) if (LEX / "learned.json").exists() else {}
 for _w, _d in (LEARNED.get("places") or {}).items():
     PLACES.setdefault(_w, {"dong": _d, "share": 1.0, "learned": True})
+for _k, _d in Q.DONG_ALIAS.items():  # 사전 파일을 다시 만들지 않아도 별칭(해변·시장 생활 지명 등)이 지명으로 잡히게(2026-11-16)
+    PLACES.setdefault(_k, {"dong": _d, "share": 1.0})
 PLACE_KEYS = sorted((k for k in PLACES if k not in COMMON_NOUNS), key=len, reverse=True)
-BIZ_KEYS = sorted([(w, g) for g, ws in BIZ["colloquial"].items() for w in ws] + [(c, (v.get("rest_group") or c)) for c, v in BIZ["categories"].items() if len(c) >= 2]
+BIZ_KEYS = sorted([(w, g) for g, ws in BIZ["colloquial"].items() for w in ws] + [("주점", "주점"), ("일식당", "일식"), ("중식당", "중식"), ("한식당", "한식"), ("횟집", "횟집")]  # 2026-11-16: '주점'·'일식당'을 못 읽던 결함
+                   + [(c, (v.get("rest_group") or c)) for c, v in BIZ["categories"].items() if len(c) >= 2]
                   + list((LEARNED.get("targets") or {}).items()), key=lambda x: -len(x[0]))  # 채택 낱말(업종)도 더한다
 FOOD_ONLY = {"개업수", "폐업수", "폐업률", "5년생존율", "조건부생존"}  # 780 음식점에서만 계산되는 지표
 FOOD_GROUPS = {"카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점", "편의점", "음식점", "기타"}
@@ -135,7 +138,7 @@ def norm(q):
     return re.sub(r"\s+", " ", q.strip())
 
 
-BOUNDARY = re.compile(r"^(\s|$|[,.?!]|에서|에|은|는|이|가|을|를|의|과|와|랑|이랑|하고|쪽|근처|주변|일대|부근|까지|부터|도|만)")
+BOUNDARY = re.compile(r"^(\s|$|[,.?!]|에서|에|은|는|이|가|을|를|의|과|와|랑|이랑|하고|쪽|근처|주변|일대|부근|까지|부터|도|만|해변|해수욕장|해안|포구|항구|오름|광장|시장)")  # 해변·해수욕장 등 붙여 쓴 관광지(2026-11-16)
 ADMIN_SUFFIX = re.compile(r"(동|읍|면|리)$")
 
 
@@ -155,7 +158,7 @@ def place_ok(q, k):
 # ---------- 지명 오해석 수정(2026-11-11, docs/조사/15_지명해석_실험.md) ----------
 # 원인: 법정동·리 이름(접미어 없는 2글자 324개 포함)을 경계 검사 없이 인정해 '상대적으로'·'고성장'·'내도 될까'·'대포 집'을 지명으로 읽었다.
 STRONG = set(Q.DONGS) | set(Q.DONG_ALIAS)  # 행정동 이름과 주민이 접미어 없이 부르는 별칭
-NOT_PLACE_AFTER = re.compile(r"^\s*(될|돼|되|됐|해|했|집|업종|브랜드|기간)")  # ③ 보조: 뒤가 동사·일반어면 지명이 아님
+NOT_PLACE_AFTER = re.compile(r"^\s*(될|돼|되|됐|해(?!변|수욕장|안)|했|집|업종|브랜드|기간)")  # '함덕 해변'의 '해'는 동사가 아니다(2026-11-16)  # ③ 보조: 뒤가 동사·일반어면 지명이 아님
 # ① 접미어 없는 짧은 마을 이름 가운데 일상어·상표이거나 도 밖 지명과 표기가 같은 것(Claude 선별, 2026-11-11). 제주에서 흔히 부르는 마을 이름(고산·사계·화순 등)은 넣지 않았다. 이 이름은 '리'·'동'을 붙여야 인정한다.
 # 형태소 분석기로 자동 선별을 시험했으나 처음 보는 마을 이름(강정·세화·김녕)도 일반명사로 분류해 쓰지 않았다(15 문서).
 SHORT_STOP = set("""상가 대포 회수 상대 동일 하원 가시 대기 대신 사장 시민 자연 체육 국제 공업 평화 남성 연대 연수 세기 신비 향기 소란 부록 전원 양지 하천 화산 수산 인성
@@ -340,6 +343,8 @@ def type_scores(q, t):
 def jeju_wide(t):
     """동네 없이 제주 전체 값으로 답하는 질문인가. 시장 추이·뜨는 곳, 그리고 업종 생존율(업종 묶음 단위로만 계산한다, 문서 21)."""
     m = set(t.get("metric") or [])
+    if m == {"외국인매출"}:  # 외국인 매출은 제주 전체 값만 있다(물은 동네는 asked_space, 2026-11-16)
+        return True
     return bool({"시장추이", "매출성장"} & m) or bool(m and m <= {"5년생존율", "조건부생존"} and t.get("target")) or (t.get("type") == "T15" and t.get("breakdown") == "업종")
 
 

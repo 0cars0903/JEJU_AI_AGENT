@@ -100,8 +100,10 @@ def fmt(v, unit):
     if unit in ("지수", "곳", "건", "명/일", "곳/년"):
         n = round(v) if abs(v) >= 100 else round(v, 1)
         n = int(n) if float(n) == int(n) else n
-        return f"{n:,} {unit}", float(n)
+        return (f"{n:,} {unit}" if unit == "지수" else f"{n:,}{unit}"), float(n)  # 세는 단위는 붙여 쓴다(175곳, 2026-11-16 띄어쓰기 통일)
     n = round(v, 2)
+    if unit == "배":
+        return f"{n:,}배", n  # 1.48배(붙여 씀, 2026-11-16)
     return f"{n:,} {unit or ''}".strip(), n
 
 

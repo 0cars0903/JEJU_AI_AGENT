@@ -31,7 +31,11 @@ NOTICE = {"대체 지표": r"대신|가까운", "제주 전체 값": r"제주 �
           "센터 자료 필요": r"센터\s*(자료|유동인구|파일|PC)|센터에서", "방문으로 대신": r"방문\S*\s*(\S+\s*)?(으로|로)\s*(대신|봤)"}
 
 
-COND_GROUP = {"비": "비", "주말": "주말", "평일": "주말", "봄": "계절", "여름": "계절", "가을": "계절", "겨울": "계절", "계절": "계절",
+DIAG_METRICS = {"일평균방문", "매출", "점포수", "5년생존율", "매출성장"}
+CARD_METRICS = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "외국인매출", "과거매출", "매출성장"}
+FOOD_SUB = {"한식", "일식", "중식", "양식", "횟집", "치킨", "분식", "주점", "카페", "제과", "패스트푸드"}
+# 정답 라벨의 비교형 조건('주말/평일'·'성수기/비수기')은 그 묶음으로 본다(2026-11-16, 라벨 표기 차이)
+COND_GROUP = {"주말/평일": "주말", "성수기/비수기": "성수기", "비": "비", "주말": "주말", "평일": "주말", "봄": "계절", "여름": "계절", "가을": "계절", "겨울": "계절", "계절": "계절",
               "성수기": "성수기", "비수기": "성수기"}
 
 
@@ -65,9 +69,14 @@ def score(r, g):
             # 한 지명이 행정동 둘에 걸치면(일도동 → 일도1동·일도2동) 정답 동네가 여럿이다. 답한 동네가 그 후보 안이면 맞음
             el["동네"] = got == want or (len(want) > 1 and bool(got) and set(got) <= set(want) and not g.get("order"))
         if g.get("metric_ok"):
-            el["지표"] = bool(set(t.get("metric") or []) & set(g["metric_ok"]))
+            # 종합 진단(T10)은 지표 칸을 비워 두고 다섯 지표(방문·매출·가게 수·생존율·매출 흐름)를 함께 답한다(layers 요약 5칸, 2026-11-16)
+            got = set(t.get("metric") or []) or (DIAG_METRICS if t.get("type") == "T10" else set())
+            el["지표"] = bool(got & set(g["metric_ok"]))
         if g.get("target_ok"):
-            el["업종"] = t.get("target") in g["target_ok"]
+            # 카드 매출 자료는 업종 대분류만 있어 음식 세부 업종(횟집·한식·카페 등)은 음식점업 전체로 계산하고 답에 그렇게 밝힌다.
+            # 정답 기준이 '음식점'이면 계산값이 같으므로 맞음으로 본다(2026-11-16, 판정 문항에도 같은 규칙)
+            card_food = "음식점" in g["target_ok"] and set(t.get("metric") or []) and set(t["metric"]) <= CARD_METRICS and t.get("target") in FOOD_SUB
+            el["업종"] = t.get("target") in g["target_ok"] or bool(card_food)
         if g.get("cond"):  # 조건은 네 묶음(비·주말·계절·성수기)으로 비교(정답 라벨과 같은 기준)
             el["조건"] = {COND_GROUP.get(c, c) for c in g["cond"]} <= {COND_GROUP.get(c, c) for c in (t.get("cond") or [])}
         p = g.get("period") or {}
@@ -82,6 +91,15 @@ def score(r, g):
     s["요소"] = el
     s["요소 비율"] = round(sum(el.values()) / len(el), 3) if el else (1.0 if s["처리"] else 0.0)
     s["정답"] = s["처리"] and all(el.values()) and s.get("안내") is not False
+    # 엄격 채점(2026-11-16 보정 세 가지를 뺀 값: 카드 세부 업종 = 음식점, 비교형 조건 라벨, 종합 진단 지표). 보정의 몫을 따로 보고하기 위함
+    strict = dict(el)
+    if "업종" in el:
+        strict["업종"] = t.get("target") in g["target_ok"]
+    if "지표" in el:
+        strict["지표"] = bool(set(t.get("metric") or []) & set(g["metric_ok"]))
+    if "조건" in el and any("/" in c for c in g["cond"]):
+        strict["조건"] = False  # 예전 채점기는 '주말/평일' 라벨을 어떤 답과도 맞추지 못했다
+    s["정답(엄격)"] = s["처리"] and all(strict.values()) and s.get("안내") is not False
     return s
 
 
@@ -138,7 +156,7 @@ def main():
     acts = Counter(t.get("action") for r in rows for t in r["turns"])
     summ = {"file": FILE.name, "split": split, "mode": mode, "policy": policy if mode == "agent" else None, "rule_fix": result.RULE_FIX,
             "행동 분포": dict(acts.most_common()), "차례 수 분포": dict(sorted(Counter(r["calls"] for r in rows).items())), "확인 카드 멈춤": sum(r.get("pause", False) for r in rows), "n": len(rows), "애매 제외 n": len(main_rows),
-            "④ 완전 정답": sum(r["ok"] for r in main_rows), "① 처리": sum(r["cells"]["처리"] for r in main_rows),
+            "④ 완전 정답": sum(r["ok"] for r in main_rows), "④ 완전 정답(엄격, 2026-11-16 보정 제외)": sum(r["cells"].get("정답(엄격)", r["ok"]) for r in main_rows), "① 처리": sum(r["cells"]["처리"] for r in main_rows),
             "② 요소 비율 평균": round(statistics.mean(r["cells"]["요소 비율"] for r in main_rows), 3) if main_rows else None,
             "③ 안내 정직성": f"{sum(honest)}/{len(honest)}", "애매 문항 정답": f"{sum(r['ok'] for r in rows if r['ambiguous'])}/{sum(r['ambiguous'] for r in rows)}",
             "생성 모델별": grp(lambda r: r["gen"]), "유형별": grp(lambda r: r["hard"] or ["(일반)"]),

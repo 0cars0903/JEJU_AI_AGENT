@@ -1,4 +1,5 @@
 "use client";
+import { asOfText } from "@/lib/format";
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -437,9 +438,20 @@ export function Report({ r }: { r: AskResult }) {
   // 문서 21 3.2절 구성: 줄의 종류(kind)로 절을 나눈다. 해당 줄이 없는 절은 찍지 않는다.
   const SECTION: Record<string, string> = { forecast: "next", salesfc: "next", reference: "next", anomaly: "next", trend: "now", decomp: "now", survival: "surv", similar: "near", season: "near", rain: "rain" };
   const sec = (l: (typeof lines)[number]) => (l.block === "guide" ? "guide" : (l.kind && SECTION[l.kind]) || (l.block === "facts" ? "now" : "etc"));
-  const pick = (id: string) => lines.filter((l) => sec(l) === id);
-  const CHART: Record<string, string> = { survcurve: "surv", validation: "next" };
-  const shown = a.views.filter((v, i) => i < a.default_views || CHART[v.id]);
+  // 짧은 보고서(2026-11-16 마스터: 단순한 질문에도 보고서가 길다): 현황 조회·순위는 물은 값과 그 비교만 싣고,
+  // 생존·예측·계절·날씨처럼 묻지 않은 분석 장과 그 차트·방법 부록은 뺀다(화면의 '분석'에는 그대로 있다)
+  const brief = ["현황 조회", "순위"].includes(r.process?.type ?? "");
+  const EXTRA = new Set(["next", "surv", "near", "rain"]);
+  const pick = (id: string) => (brief && EXTRA.has(id) ? [] : lines.filter((l) => sec(l) === id));
+  const CHART: Record<string, string> = { survcurve: "surv", survdong: "surv", validation: "next" };
+  const shown = a.views.filter((v, i) => (i < a.default_views || CHART[v.id]) && !(brief && CHART[v.id] && EXTRA.has(CHART[v.id])));
+  const methods = (a.methods ?? []).filter((m) => !(brief && ["survival", "forecast", "season", "rain"].includes(m.kind)));
+  const qa = r.question_agent;
+  const agentLine = r.agent_off
+    ? `질문 담당 Agent: 꺼짐(${r.agent_off}) — 정해진 계산으로만 답했어요.`
+    : qa && !qa.skipped
+      ? `질문 담당 Agent: 켜짐 · 판단 ${qa.turns.filter((x) => x.by !== "코드").length}회 · ${qa.turns.map((x) => x.action).join(" → ") || "확인만 함"}`
+      : null;
   const charts = (id: string) =>
     shown
       .filter((v) => (CHART[v.id] ?? "now") === id)
@@ -477,7 +489,9 @@ export function Report({ r }: { r: AskResult }) {
   for (const f of a.freshness) if (!asOf.has(base(f.source))) asOf.set(base(f.source), f.as_of);
   const named = new Map<string, string>(); // 같은 자료는 제공처가 붙은 이름 하나로
   for (const x of sources) if (!named.has(base(x)) || /포털|허브|행정안전부/.test(x)) named.set(base(x), /÷|−|합계|계산/.test(x) ? base(x) : x);
-  const dataList = Array.from(named.entries());
+  // 짧은 보고서는 실은 줄이 쓴 자료만 목록에 남긴다(번호는 화면과 같게 유지)
+  const used = new Set<string>([a.conclusion.source ?? "", ...["now", "etc", "guide"].flatMap((id) => pick(id).map((l) => l.source ?? ""))]);
+  const dataList = Array.from(named.entries()).filter(([, name]) => !brief || Array.from(used).some((u) => base(u) === base(name)));
   const guide = a.blocks.find((b) => b.id === "guide");
   const limits = r.card?.limits ?? [];
   const center = a.requests.filter((q) => q.kind === "center");
@@ -567,7 +581,10 @@ export function Report({ r }: { r: AskResult }) {
           </ul>
         </div>
       )}
-      {(a.methods?.length ?? 0) > 0 && (
+      {brief && (
+        <p data-testid="report-brief">현황·순위 질문이라 물은 값과 그 비교만 실었어요. 생존율·예측 같은 더 자세한 분석은 화면의 '분석'에서 볼 수 있어요.</p>
+      )}
+      {methods.length > 0 && (
         <div data-testid="report-methods" className="report-part report-appendix">
           <table className="report-table report-methods">
             <thead>
@@ -584,7 +601,7 @@ export function Report({ r }: { r: AskResult }) {
               </tr>
             </thead>
             <tbody>
-              {a.methods!.map((m) => (
+              {methods.map((m) => (
                 <tr key={m.kind}>
                   <th>{m.title}</th>
                   <td>{m.how}</td>
@@ -599,13 +616,14 @@ export function Report({ r }: { r: AskResult }) {
         </div>
       )}
       {/* 첫 부록만 새 쪽에서 시작한다(부록 B만 몇 줄 남은 쪽을 따로 쓰지 않게) */}
-      <div data-testid="report-sources" className={(a.methods?.length ?? 0) > 0 ? "report-part" : "report-part report-appendix"}>
-        <h2>부록 B. 자료 목록과 기준 시점</h2>
+      <div data-testid="report-sources" className={methods.length > 0 ? "report-part" : "report-part report-appendix"}>
+        <h2>{methods.length > 0 ? "부록 B" : "부록"}. 자료 목록과 기준 시점</h2>
+        {agentLine && <p data-testid="report-agent">{agentLine}</p>}
         <ol className="report-srcs">
-          {srcs.map((x, i) => (
+          {srcs.map((x, i) => (brief && !used.has(x.name) ? null :
             <li key={x.name}>
               [{i + 1}] {x.name}
-              {x.as_of ? ` · 기준 ${x.as_of}` : ""}
+              {asOfText(x.as_of)}
             </li>
           ))}
         </ol>
@@ -620,7 +638,7 @@ export function Report({ r }: { r: AskResult }) {
             {dataList.map(([k, name]) => (
               <tr key={k}>
                 <td>{name}</td>
-                <td>{asOf.get(k) ?? "답의 해당 줄에 적음"}</td>
+                <td>{asOf.get(k) ?? srcs.find((x) => base(x.name) === k)?.as_of ?? "답의 해당 줄에 적음"}</td>
               </tr>
             ))}
           </tbody>

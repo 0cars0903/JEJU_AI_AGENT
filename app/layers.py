@@ -270,7 +270,8 @@ def _table_lines(o, t, metric, v, note):
     if "origin" in tab:
         last = tab[tab["ym"] == tab["ym"].max()].sort_values("value", ascending=False)
         og = ", ".join(f"{a}({o.num(b, '원')})" for a, b in zip(last["origin"].head(3), last["value"].head(3)))
-        only = f"{t['space'][0]}만 따로 센 자료는 없어 제주 전체 값이에요. " if t.get("space") else ""
+        asked = t.get("asked_space") or t.get("space")  # 물은 동네(해석의 동네는 비움, 2026-11-16)
+        only = f"{asked[0]}만 따로 센 자료는 없어 제주 전체 값이에요. " if asked else ""
         o.line("L1", f"{only}제주 전체 외국인 관광객 카드 매출이 많은 출신지역은 {og}{_cop(og)}.", src, tab["ym"].max())
         return
     if "ym" in tab:
@@ -693,13 +694,19 @@ def _dong_survival_line(o, dong, grp):
     word, tag = KM_LABEL.get(five["label"], (None, NOT_SURE))
     parts = ", ".join(f"{y}년차 {o.num(r, '%')}" for y, r in zip(k["year"], rate))
     o.numbers += [float(y) for y in k["year"]] + [float(five["n"]), 95.0]
-    txt = (f"{dong} 음식점(업종 구분 없음, {int(five['n']):,}곳)이 해마다 다음 해까지 영업을 이어 간 비율이에요. {parts}예요. "
-           f"5년 생존율은 {o.num(five['survival_pct'], '%')}(95% 구간 {o.num(five['lo_pct'], '%')}~{o.num(five['hi_pct'], '%')})")
+    # 2026-11-16 Windows 보고서 검토: 해마다 이어 간 비율(연차 통과율)과 누적 생존율을 구분해 쓰고, 라벨은 판정이 아니라 대상(업종 구분 없음)을 밝힌다
+    txt = (f"{dong} 음식점(업종 구분 없음, {int(five['n']):,}곳)의 5년 생존율은 {o.num(five['survival_pct'], '%')}(95% 구간 {o.num(five['lo_pct'], '%')}~{o.num(five['hi_pct'], '%')})")
     txt += f"이고, {word}." if word else "예요."
-    o.line("L3", txt, "780 음식점 인허가(동네별 카플란-마이어, 연차 통과율 = 그해 생존율 ÷ 전해 생존율)", None, tag=tag, kind="survival")
-    o.view("survdong", "동네 생존 곡선", "line", [{"name": f"{dong} 음식점 전체(%)", "points": [[f"{y}년", round(float(v), 1)] for y, v in zip(k["year"], s)]},
-                                                {"name": f"제주 {grp['group']}(%)", "points": [[f"{r['year']}년", r["pct"]] for r in grp["curve"]]}],
-           f"{dong} 음식점과 제주 {grp['group']}의 생존 곡선을 견줘요", x="year", unit="%")
+    txt += f" 그해까지 남은 가게 가운데 다음 해까지 영업을 이어 간 비율은 {parts}예요."
+    o.line("L3", txt, "780 음식점 인허가(동네별 카플란-마이어, 연차 통과율 = 그해 생존율 ÷ 전해 생존율)", None, tag=f"{dong} 음식점(업종 구분 없음)", kind="survival")
+    # 동네 곡선은 업종 구분이 없으므로 제주 전체도 같은 범위(음식점 전체)로 견준다(업종·지역이 다른 곡선끼리 견주지 않음)
+    j = pd.read_parquet(v3.TAB / "km.parquet")
+    j = j[j["dong"] == "제주 전체"].sort_values("year")
+    series = [{"name": f"{dong} 음식점 전체(%)", "points": [[f"{y}년", round(float(v), 1)] for y, v in zip(k["year"], s)]}]
+    if len(j):
+        series.append({"name": "제주 음식점 전체(%)", "points": [[f"{int(y)}년", round(float(v), 1)] for y, v in zip(j["year"], j["survival_pct"])]})
+        o.numbers += [round(float(v), 1) for v in j["survival_pct"]]
+    o.view("survdong", "동네 생존 곡선", "line", series, f"{dong} 음식점과 제주 음식점 전체(둘 다 업종 구분 없음)의 생존 곡선을 견줘요", x="year", unit="%")
 
 
 def _same_month(r, years=3):
@@ -862,7 +869,34 @@ def freshness(o, now=None):
             x["tag"] = f"{x['tag']} · 오래된 자료({k}개월 전)"
         src = x.get("source") or "-"
         rows[src] = max(rows.get(src, ("", -1)), (x["as_of"], k), key=lambda r: r[0])
-    return [{"source": s, "as_of": a, "months_old": k, "stale": k > STALE_MONTHS} for s, (a, k) in rows.items()]
+    out = [{"source": s, "as_of": a, "months_old": k, "stale": k > STALE_MONTHS} for s, (a, k) in rows.items()]
+    # 줄에 기준 시점이 없는 자료(유동인구·인허가·버스·비슷한 동네)도 보고서 부록에 실제 기간을 숫자로 적는다(2026-11-16 Windows 보고서 검토)
+    seen = set(rows)
+    for x in o.lines:
+        src = x.get("source")
+        if src and src not in seen:
+            p = dataset_period(src)
+            if p:
+                out.append({"source": src, "as_of": p, "months_old": None, "stale": False})
+                seen.add(src)
+    return out
+
+
+def dataset_period(src):
+    """자료 이름 → 실제 기간 문장(meta.json). 모르는 자료면 None."""
+    m = __import__("json").loads((v3.TAB / "meta.json").read_text(encoding="utf-8"))
+    s = str(src)
+    if "비슷한 동네" in s or "닮은 동네" in s:
+        return "2024·2025년 자료로 계산"
+    if "기상" in s:
+        return f"{m.get('wx_start')}~{m.get('wx_end')}"
+    if "인허가" in s:
+        return f"개업 {m.get('km_cohort')} · 자료 갱신 {m.get('rest_last')}"
+    if "유동인구" in s:
+        return f"{m.get('pop_first')}~{m.get('pop_last')}"
+    if "버스" in s:
+        return f"~{m.get('bus_last')}"
+    return None
 
 
 def requests(t, store, lines):
@@ -973,7 +1007,7 @@ def _composite_lines(o, t, dong):
     if d and sw:
         o.numbers += [1.0, float(d["rank"]), float(d["of"])]
         a, m = o.num(d["value"], "곳"), o.num(d["median"], "곳")
-        o.line("L2", f"{dong} {shop}는 하루 방문 1만 지수당 {a}{_ro(a)}, 43곳 중 {d['rank']}위예요(중간값 {m}). 값이 클수록 방문에 견줘 {shop}가 많다는 뜻이에요.",
+        o.line("L2", f"방문 규모에 견준 {dong} {shop} 수는 하루 방문 지수 1만마다 {a}{_ro(a)}, 43곳 중 {d['rank']}위예요(중간값 {m}). 값이 클수록 오가는 사람에 견줘 {shop}가 많다는 뜻이에요(하루 방문 지수는 유동인구 자료의 하루 평균 방문 규모).",
                f"상가 정보·유동인구({d['basis']})", None, kind="density")
     q = x.get("lq")
     if q and sw:
@@ -1172,7 +1206,7 @@ def _deep_lines(o, t, rv):
             if dn and tgt:
                 o.numbers += [1.0, float(dn["rank"]), float(dn["of"])]
                 a, m = o.num(dn["value"], "곳"), o.num(dn["median"], "곳")
-                o.line("L2", f"{dong} {shop}는 하루 방문 1만 지수당 {a}{_ro(a)}, 43곳 중 {dn['rank']}위예요(중간값 {m}). 값이 클수록 방문에 견줘 {shop}가 많다는 뜻이에요.",
+                o.line("L2", f"방문 규모에 견준 {dong} {shop} 수는 하루 방문 지수 1만마다 {a}{_ro(a)}, 43곳 중 {dn['rank']}위예요(중간값 {m}). 값이 클수록 오가는 사람에 견줘 {shop}가 많다는 뜻이에요(하루 방문 지수는 유동인구 자료의 하루 평균 방문 규모).",
                        f"상가 정보·유동인구({dn['basis']})", None, kind="density")
         if any(m in ("개업수", "폐업수") for m in metrics) and (not tgt or tgt in v3.FOOD):
             import places

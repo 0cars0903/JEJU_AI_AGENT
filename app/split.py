@@ -36,6 +36,10 @@ PARALLEL = re.compile(r"((?:가장|제일)\s*\S+\s*(?:동네|곳))\s*(?:와|과|
 ELLIPSIS = re.compile(r"^(?:그리고|그럼|또|그러면)?\s*(\S+?)(?:은|는|도)\s*(?:어때|어때요|요)?\s*[?？]?$")
 
 
+# 앞 질문의 비교 기준만 덧붙인 문장('평소랑 비교해서 알려줘'): 새 질문이 아니라 앞 질문의 일부다(2026-11-16 Windows 시험, HK-002)
+BASELINE_FOLLOW = re.compile(r"^(?:그리고\s*|그럼\s*)?(?:평소|평상시|보통|예년|평균|다른\s*달|다른\s*때|작년|지난해)\S*\s*(?:랑|이랑|과|와|하고|에|보다)?\s*(?:비교|견줘|견주|대비|어때|차이)")
+
+
 def enabled():
     return os.environ.get("JEJU_SPLIT") != "0"
 
@@ -86,6 +90,9 @@ def pieces(q):
             if dongs and prev_dongs:  # 앞 질문을 그대로 두고 동네만 바꾼다
                 merged.append(merged[-1].replace(prev_dongs[0], dongs[0], 1))
                 continue
+        if merged and BASELINE_FOLLOW.search(x) and not qparse.find_places(x)[0]:
+            merged[-1] = f"{merged[-1]} {x}"
+            continue
         if merged and len(x.replace(" ", "")) < SHORT and not _content(x):
             merged[-1] = f"{merged[-1]} {x}"
         else:
@@ -184,7 +191,8 @@ def answer(question, interpret, env=None):
         return None
     import result
     import techniques
-    outs, lines, trace, topics = [], [], [], []
+    outs, lines, trace, topics, series, tables = [], [], [], [], [], []
+    ans = None
     for k, part in enumerate(parts):
         dong, note = None, None
         if part["ref"] is not None:
@@ -228,6 +236,9 @@ def answer(question, interpret, env=None):
             ok = out.get("status") not in ("범위밖", "선택필요", "되묻기") and bool(card.get("evidence"))
             tool = "answer_topic"
         outs.append({"ok": ok, "out": out})
+        if ok:  # 조각 답의 그래프·표를 전문가 결과 모양으로 넘긴다(PDF·화면에 그래프가 빠지던 결함, 2026-11-16)
+            series += _piece_series(k, out, ans if tool == "run_technique" else None)
+            tables += _piece_tables(k, ans if tool == "run_technique" else None)
         head = f"{k + 1}. {text}"
         if ok:
             lines.append(f"{head} → {card.get('conclusion') or ''}")
@@ -242,10 +253,34 @@ def answer(question, interpret, env=None):
                       "ok": ok, "note": note or "", "args": text, "sec": round(time.perf_counter() - t1, 1)})
     n_ok = sum(o["ok"] for o in outs)
     ag = {"status": "성공" if n_ok else "실패", "method": f"질문 나누기({len(parts)}개)", "lines": lines, "by": "프로그램(조각별 일반 답을 묶음)",
-          "result": {"numbers": {}, "notes": [], "series": [], "tables": []}, "trace": trace, "topics": topics or None, "backend": "code",
+          "result": {"numbers": {}, "notes": [], "series": series, "tables": tables}, "trace": trace, "topics": topics or None, "backend": "code",
           "plan": [f"{i + 1}. {p['text']}" + (f" (앞 {p['ref'] + 1}번 답의 동네를 씀)" if p["ref"] is not None else "")
                    + (f" (물려받음: {', '.join(p['inherited'])})" if p["inherited"] else "") for i, p in enumerate(parts)],
           "sec": round(time.perf_counter() - t0, 1)}
     if not n_ok:
         ag["error"] = "나눈 질문 어느 것도 답하지 못했어요."
     return ag
+
+
+def _piece_series(k, out, ans=None):
+    """조각 답의 차트(화면 기본 차트 2개까지, 지도 제외) → [{title, kind, name, x, y}]."""
+    res = []
+    if ans:
+        for x in ((ans.get("result") or {}).get("series") or [])[:2]:
+            res.append(dict(x, title=f"{k + 1}번 · {x.get('title') or '그래프'}"))
+        return res
+    a = (out or {}).get("answer") or {}
+    for v in (a.get("views") or [])[: max(1, min(2, a.get("default_views") or 2))]:
+        if v.get("kind") not in ("line", "bar") or not v.get("series"):
+            continue
+        s0 = v["series"][0]
+        pts = s0.get("points") or []
+        res.append({"title": f"{k + 1}번 · {v.get('label')} — {v.get('summary') or ''}".rstrip(" —"), "kind": v["kind"], "name": s0.get("name"),
+                    "x": [p[0] for p in pts], "y": [p[1] for p in pts]})
+    return res
+
+
+def _piece_tables(k, ans=None):
+    if not ans:
+        return []
+    return [dict(t, title=f"{k + 1}번 · {t.get('title') or '표'}") for t in ((ans.get("result") or {}).get("tables") or [])[:2]]

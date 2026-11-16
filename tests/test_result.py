@@ -443,7 +443,7 @@ class Persona20(unittest.TestCase):  # 페르소나 사용성 점검 지적의 �
         n = int(b[(b["dong"] == "노형동") & (b["minor"] == "미용실")]["count"].sum())
         r = ask("노형동 미용실 몇 곳이야?")
         self.assertEqual(r["status"], "성공")
-        self.assertIn(f"노형동 미용실 점포 수는 {n} 곳", r["answer"]["conclusion"]["text"])
+        self.assertIn(f"노형동 미용실 점포 수는 {n}곳", r["answer"]["conclusion"]["text"])
         self.assertTrue(any("'미용실' 분류" in x for x in r["understood"]["notes"]))
         self.assertTrue(any("동물병원 제외" in x for x in ask("이도2동 병원은 몇 곳?")["understood"]["notes"]))  # 어느 분류로 셌는지 알린다
         self.assertEqual(ask("노형동 학원 수 알려줘")["tuple"]["metric"], ["점포수"])
@@ -457,7 +457,7 @@ class Persona20(unittest.TestCase):  # 페르소나 사용성 점검 지적의 �
             self.assertIn(why, r["card"]["conclusion"], q)
             self.assertEqual(r["suggestions"][0]["slots"]["detail"], "미용실", q)  # 대신 볼 수 있는 가게 수 질문을 준다
         nxt = R.respond(slots=ask("노형동 미용실 카드 매출 알려줘")["suggestions"][0]["slots"], llm_on=False)
-        self.assertIn(f"{n} 곳", nxt["answer"]["conclusion"]["text"])
+        self.assertIn(f"{n}곳", nxt["answer"]["conclusion"]["text"])
         self.assertNotEqual(ask("노형동 병원 가는 버스 이용 얼마나 돼")["card"]["conclusion"][:12], "병원은 가게 수만 볼")  # 버스·방문 질문은 막지 않는다
 
     def test_views_carry_unit_and_plain_block_name(self):  # A10: 그래프·표에 단위를 싣고, 묶음 이름은 쉬운 말로 쓴다
@@ -676,9 +676,9 @@ class Deep22(unittest.TestCase):  # 문서 22: 업종 탭, 단순 주제의 모�
 
     def test_position_against_neighbors(self):
         r = self.slots({"topic": "stores", "space": ["노형동"], "target": "카페"})
-        self.assertEqual(r["answer"]["conclusion"]["text"], "노형동 카페 점포 수는 175 곳이에요.")
+        self.assertEqual(r["answer"]["conclusion"]["text"], "노형동 카페 점포 수는 175곳이에요.")
         pos = next(x["text"] for x in self.ana(r) if x["kind"] == "position")
-        self.assertRegex(pos, r"43곳 중 4위.*비슷한 동네 5곳의 평균 105 곳보다 66.0% 많아요\(아라동, 연동, 외도동, 이도2동, 화북동\)")
+        self.assertRegex(pos, r"43곳 중 4위.*비슷한 동네 5곳의 평균 105곳보다 66.0% 많아요\(아라동, 연동, 외도동, 이도2동, 화북동\)")
 
     def test_r1_interval_calibrated_and_dong_accuracy(self):  # 4단계 R1: 포함률 78~82, 동네별 정확도, 비 보정 8곳
         txt = " ".join(x["text"] for x in self.ana(self.slots({"topic": "visit", "space": ["구좌읍"]})))

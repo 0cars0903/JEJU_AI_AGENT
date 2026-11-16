@@ -1,7 +1,23 @@
 @echo off
 rem Run once. Creates .venv and installs packages. Needs Python 3.9 and internet.
 py -3.9 -m venv .venv || python -m venv .venv
+rem If pip in .venv does not run on this Python (seen on a Windows PC, 2026-11-16), reinstall the pip made for Python 3.9.
+.venv\Scripts\python -m pip --version >nul 2>nul
+if not %errorlevel%==0 (
+  echo pip in .venv does not run. Reinstalling pip for Python 3.9 ...
+  powershell -NoProfile -Command "Invoke-WebRequest https://bootstrap.pypa.io/pip/3.9/get-pip.py -OutFile get-pip.py"
+  .venv\Scripts\python get-pip.py
+  del get-pip.py
+)
 .venv\Scripts\python -m pip install -r requirements.txt
+if not %errorlevel%==0 (
+  echo ============================================================
+  echo Package install FAILED. The app cannot run yet.
+  echo Check the internet connection and the message above, then run this script again.
+  echo ============================================================
+  pause
+  exit /b 1
+)
 echo.
 rem Local models (needed for the Agent): bge-m3 (question understanding, 1.2GB), qwen3:1.7b (explanations, 1.4GB),
 rem qwen2.5:7b (question agent and expert-mode analyst, 4.7GB). Without qwen2.5:7b the question agent is off.

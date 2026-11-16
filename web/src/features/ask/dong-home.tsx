@@ -1,4 +1,5 @@
 "use client";
+import { withUnit } from "@/lib/format";
 
 import { useEffect, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -8,7 +9,7 @@ import { shortNum } from "./views";
 
 const HINT = (picked: boolean) => (picked ? "지도에서 눌러도 바뀌어요." : "지도에서 눌러서 골라도 돼요.");
 const MAP_BASE = "노형동"; // 지도 색(43곳 값)을 받는 데만 쓴다. 43곳 값은 어느 동네로 물어도 같다.
-const fmt = (v: number, unit: string) => (unit === "원" ? `${shortNum(v)} 원` : unit === "지수" ? shortNum(v) : `${Math.round(v).toLocaleString("ko-KR")} ${unit}`);
+const fmt = (v: number, unit: string) => (unit === "원" ? `${shortNum(v)} 원` : unit === "지수" ? shortNum(v) : withUnit(Math.round(v).toLocaleString("ko-KR"), unit));
 
 /** Notion '텍스트 등장' 카운트 업: 0 → 값으로 0.6초. 운영체제의 '움직임 줄이기'면 바로 값을 보여 준다. */
 function useCountUp(target: number, ms = 600) {
