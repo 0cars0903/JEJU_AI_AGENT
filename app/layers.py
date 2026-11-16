@@ -348,11 +348,14 @@ def _table_lines(o, t, metric, v, note):
                f"해마다 {_josa(label, '을', '를')} 보여 줘요", x="year", unit=unit)
         return
     if "biz" not in tab and "dong" in tab and "value" in tab:
-        cur = tab.sort_values("value", ascending=False) if tab["dong"].nunique() > 6 else tab
+        asc = t.get("order") == "asc"
+        cur = tab.sort_values("value", ascending=asc) if tab["dong"].nunique() > 6 else tab  # 근거 줄도 결론과 같은 순서로(2026-11-16, 작은 순서 결론 아래 큰 순서 근거가 나오던 결함)
         mt = v3.meta()
         asof = {"점포수": v3.BIZ_ASOF, "특화계수": v3.BIZ_ASOF, "5년생존율": f"개업 {mt.get('km_cohort')}", "조건부생존": f"개업 {mt.get('km_cohort')}", "폐업률": mt.get("close_years")}.get(metric)
         if metric in ("5년생존율", "조건부생존", "폐업률"):  # 동네별 값은 업종 구분이 없는 음식점 전체 값
             word = "음식점 전체 "
+        if metric in ("5년생존율", "폐업률") and t.get("type") == "T3" and tab["dong"].nunique() > 6 and _rate_rank(o, t, metric, word, label, src, asof, unit):
+            return  # 폐업·생존은 순위 없이 값 + 95% 구간 + 표본 수(사용자 확정 2026-11-06, docs/조사/06_EDA_H1H3.md 3번)
         for r in cur.head(6).itertuples():
             v_ = o.num(r.value, unit)
             o.line("L1", f"{r.dong} {word}{_josa(label)} {v_}{_cop(v_)}.", src, asof)
@@ -375,9 +378,10 @@ def _table_lines(o, t, metric, v, note):
         if tab["dong"].nunique() > 6:
             _rank_head(o, t, word, label, cur, tab["dong"].nunique(), unit)
             top = cur.iloc[0]
-            o.map("map", f"지도: {label}", dict(zip(tab["dong"], tab["value"])), unit, f"{_josa(top['dong'], '이', '가')} 가장 큽니다", definition=DEFS.get(metric))
+            o.map("map", f"지도: {label}", dict(zip(tab["dong"], tab["value"])), unit, f"{_josa(top['dong'], '이', '가')} 가장 {'작아요' if asc else '큽니다'}", definition=DEFS.get(metric))
         if tab["dong"].nunique() > 1:
-            o.view("dongs", "동네별", "bar", [{"name": label, "points": [[d, float(x)] for d, x in zip(cur["dong"].head(10), cur["value"].head(10))]}], f"{_josa(label, '이', '가')} 큰 순서예요", x="dong", unit=unit)
+            o.view("dongs", "동네별", "bar", [{"name": label, "points": [[d, float(x)] for d, x in zip(cur["dong"].head(10), cur["value"].head(10))]}],
+                   f"{_josa(label, '이', '가')} {'작은' if asc else '큰'} 순서예요", x="dong", unit=unit)
 
 
 def _extra_lines(o, t, v):
@@ -471,12 +475,15 @@ def _extra_lines(o, t, v):
                "최근 12개월 카드 매출을 그 전 12개월과 견줬어요", x="name")
         return
     if k == "rising":
+        asc = t.get("order") == "asc" and x.get("low_rows")  # 증가율이 가장 낮은(가장 많이 준) 곳을 물음
+        rows = x["low_rows"] if asc else x["rows"]
         o.line("L2", f"최근 12개월 매출이 동네 × 업종 {x['combos']}개 조합의 중간값({o.num(x['median'], '원')}) 이상인 곳만 비교했어요.", src)
-        for r in x["rows"][:5]:
-            o.line("L1", f"{r['dong']} {r['biz']} 매출이 1년 전보다 {o.num(abs(r['growth_pct']), '%')} {'늘었어요' if r['growth_pct'] > 0 else '줄었어요'}(증가액 {o.num(r['gain'], '원')}).", src, x["end"])
+        for r in rows[:5]:
+            o.line("L1", f"{r['dong']} {r['biz']} 매출이 1년 전보다 {o.num(abs(r['growth_pct']), '%')} {'늘었어요' if r['growth_pct'] > 0 else '줄었어요'}"
+                         f"({'증가액' if r['gain'] >= 0 else '감소액'} {o.num(abs(r['gain']), '원')}).", src, x["end"])
         o.map("map", "지도: 동네별 가장 많이 는 업종의 증가율", x.get("map") or {}, "%", "색이 진할수록 최근 12개월 매출이 많이 늘었어요", definition=DEFS["rising"])
-        o.view("rising", "증가율 순위", "bar", [{"name": "증가율(%)", "points": [[f"{r['dong']} {r['biz']}", r["growth_pct"]] for r in x["rows"]]}],
-               f"{x['rows'][0]['dong']} {x['rows'][0]['biz']}가 가장 많이 늘었어요", x="name")
+        o.view("rising", "증가율 순위(낮은 순)" if asc else "증가율 순위", "bar", [{"name": "증가율(%)", "points": [[f"{r['dong']} {r['biz']}", r["growth_pct"]] for r in rows]}],
+               f"{rows[0]['dong']} {rows[0]['biz']} 증가율이 가장 낮아요" if asc else f"{rows[0]['dong']} {rows[0]['biz']}가 가장 많이 늘었어요", x="name")
         return
     if k == "signals":
         biz, _ = v3.biz5_of(t.get("target"))
@@ -1115,8 +1122,9 @@ def _deep_lines(o, t, rv):
     try:
         if t.get("type") == "T3":  # 순위: 상위 집중도
             tab = next((v["table"] for v in store.values() if isinstance(v, dict) and "table" in v and "dong" in v["table"] and "value" in v["table"]), None)
-            if tab is not None and len(tab):
-                cur = tab[tab["ym"] == tab["ym"].max()] if "ym" in tab else tab
+            additive = set(t.get("metric") or []) <= {"점포수", "매출", "이용건수", "버스일평균", "일평균방문", "개업수", "폐업수"}  # 비율(생존율·비중·건당 금액)은 합계의 몫이 뜻이 없다(2026-11-16)
+            if tab is not None and len(tab) and additive and t.get("metric"):
+                cur = tab[tab["ym"] == tab["ym"].max()] if "ym" in tab else tab[tab["year"] == tab["year"].max()] if "year" in tab else tab
                 sp = deep.spread(dict(zip(cur["dong"], cur["value"])))
                 if sp:
                     o.numbers += [5.0, sp["top5_pct"], sp["first_vs_median"], float(sp["n"])]
@@ -1339,6 +1347,45 @@ def _summary_cells(o, sig, lvl):
             cell["sub"] = f"하루 방문 예상 {fc['lo']}~{fc['hi']}({fc['days']})"
         cells.append(cell)
     return cells
+
+
+def _rate_rank(o, t, metric, word, label, src, asof, unit):
+    """폐업·생존 '가장 높은·낮은 동네' 질문(사용자 확정 2026-11-06 3번): 순위를 매기지 않고, BH 보정(q=0.10) 뒤에도
+    제주 평균과 차이가 남는 동네만 값·95% 구간·표본 수로 보인다. 판정 표가 없으면 False(기존 순위 답)."""
+    try:
+        T = {"5년생존율": ("km", "survival_pct", "개업"), "폐업률": ("close_3y", "rate_pct", "영업")}[metric]
+        d = pd.read_parquet(v3.ROOT / "data" / "tables" / f"{T[0]}.parquet")
+    except Exception:
+        return False
+    if metric == "5년생존율":
+        d = d[d["year"] == d["year"].max()]
+    base = d[d["dong"] == "제주 전체"]
+    d = d[d["dong"] != "제주 전체"]
+    if "label" not in d or d.empty:
+        return False
+    low = t.get("order") == "asc"
+    want = "제주 평균보다 낮음" if low else "제주 평균보다 높음"
+    hit = d[d["label"] == want].sort_values(T[1], ascending=low)
+    size = lambda r: f"{T[2]} {int(r.n):,}곳" if metric == "5년생존율" else f"영업 {int(r.store_years):,}곳·년"  # noqa: E731
+    bnum = float(base[T[1]].iloc[0]) if len(base) else v3.meta().get("close_base_pct" if metric == "폐업률" else "km5_jeju_pct")  # 폐업률 표에는 제주 전체 행이 없어 meta 값
+    bv = f" {o.num(float(bnum), '%')}" if bnum is not None else ""
+    way = "낮다고" if low else "높다고"
+    if len(hit):
+        parts = ", ".join(f"{r.dong}({o.num(float(getattr(r, T[1])), '%')})" for r in hit.itertuples())
+        o.rank_head = f"{word}{_josa(label, '이', '가')} 제주 평균{bv}보다 {way} 확인된 동네는 {parts}{_cop(parts)}. 나머지 {len(d) - len(hit)}곳은 차이가 확인되지 않아요."
+    else:
+        o.rank_head = f"{word}{_josa(label, '이', '가')} 제주 평균{bv}보다 {way} 확인된 동네는 없어요. {len(d)}곳 모두 차이가 확인되지 않아요."
+    o.numbers += [float(len(d) - len(hit)), float(len(d)), 95.0, 0.1]
+    o.line("L2", "폐업·생존은 동네마다 가게 수가 적어 순위를 매기지 않아요. 95% 구간과 표본 수로 제주 평균과 견주고, "
+                 "여러 동네를 한꺼번에 견줄 때 생기는 우연한 차이를 걸러(BH 보정, q=0.10) 차이가 남는 동네만 보여 줘요.", src, asof)
+    for r in hit.head(6).itertuples():
+        v_ = o.num(float(getattr(r, T[1])), "%")
+        o.numbers.append(float(r.n if metric == "5년생존율" else r.store_years))
+        o.line("L1", f"{r.dong} {word}{_josa(label)} {v_}{_cop(v_)}(95% 구간 {o.num(float(r.lo_pct), '%')}~{o.num(float(r.hi_pct), '%')}, {size(r)}).", src, asof)
+    o.map("map", f"지도: {label}", dict(zip(d["dong"], d[T[1]])), unit, f"동네별 {_josa(label, '을', '를')} 지도로 보여 줘요. 색의 차이가 곧 확인된 차이는 아니에요", definition=DEFS.get(metric))
+    o.view("dongs", "제주 평균과 차이가 확인된 동네", "bar", [{"name": label, "points": [[r.dong, float(getattr(r, T[1]))] for r in hit.itertuples()]}],
+           f"제주 평균{bv}보다 {way} 확인된 동네예요", x="dong", unit=unit)
+    return True
 
 
 def _rate_ci(metric, dongs):

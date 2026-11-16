@@ -58,6 +58,25 @@ def said(r):
     return " ".join(parts)
 
 
+def scope_ok(r, g, got, want):
+    """질문에 적힌 범위(서귀포시·제주시·읍면) 안의 순위: 정답 기준은 '동네 없음'(제주 전체 순위)이지만, 서비스는 그 범위의 동네로 좁혀 답한다.
+    범위가 질문 낱말과 정확히 같을 때만 맞음으로 본다(2026-11-16, 판정 문항에도 같은 규칙)."""
+    import result as R
+    import qtuple as Q
+    q = r.get("question") or g.get("q") or ""
+    if want or not g.get("order") or not got:
+        return False
+    sgp = {d for d in R.SEOGWIPO if d in Q.DONGS}
+    scopes = []
+    if re.search(r"서귀포", q):
+        scopes.append(sgp)
+    if re.search(r"제주시", q):
+        scopes.append(set(Q.DONGS) - sgp)
+    if R.TOWN_Q.search(q):
+        scopes.append({d for d in Q.DONGS if d.endswith(("읍", "면"))})
+    return set(got) in scopes
+
+
 def score(r, g):
     t = r.get("tuple") or {}
     st = status_of(r)
@@ -67,7 +86,7 @@ def score(r, g):
         if g.get("space") is not None:
             got, want = sorted(t.get("space") or []), sorted(g.get("space") or [])
             # 한 지명이 행정동 둘에 걸치면(일도동 → 일도1동·일도2동) 정답 동네가 여럿이다. 답한 동네가 그 후보 안이면 맞음
-            el["동네"] = got == want or (len(want) > 1 and bool(got) and set(got) <= set(want) and not g.get("order"))
+            el["동네"] = got == want or (len(want) > 1 and bool(got) and set(got) <= set(want) and not g.get("order")) or scope_ok(r, g, got, want)
         if g.get("metric_ok"):
             # 종합 진단(T10)은 지표 칸을 비워 두고 다섯 지표(방문·매출·가게 수·생존율·매출 흐름)를 함께 답한다(layers 요약 5칸, 2026-11-16)
             got = set(t.get("metric") or []) or (DIAG_METRICS if t.get("type") == "T10" else set())
@@ -91,8 +110,11 @@ def score(r, g):
     s["요소"] = el
     s["요소 비율"] = round(sum(el.values()) / len(el), 3) if el else (1.0 if s["처리"] else 0.0)
     s["정답"] = s["처리"] and all(el.values()) and s.get("안내") is not False
-    # 엄격 채점(2026-11-16 보정 세 가지를 뺀 값: 카드 세부 업종 = 음식점, 비교형 조건 라벨, 종합 진단 지표). 보정의 몫을 따로 보고하기 위함
+    # 엄격 채점(2026-11-16 보정 네 가지를 뺀 값: 카드 세부 업종 = 음식점, 비교형 조건 라벨, 종합 진단 지표, 시·읍면 범위). 보정의 몫을 따로 보고하기 위함
     strict = dict(el)
+    if "동네" in el and g.get("space") is not None:  # 시·읍면 범위 보정(2026-11-16 Windows 시험 뒤)도 엄격 채점에서는 뺀다
+        strict["동네"] = sorted(t.get("space") or []) == sorted(g.get("space") or []) or (
+            len(g["space"]) > 1 and bool(t.get("space")) and set(t["space"]) <= set(g["space"]) and not g.get("order"))
     if "업종" in el:
         strict["업종"] = t.get("target") in g["target_ok"]
     if "지표" in el:

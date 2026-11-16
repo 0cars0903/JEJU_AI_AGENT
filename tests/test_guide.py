@@ -67,7 +67,7 @@ class Slots(unittest.TestCase):
 
     def test_bad_values_rejected(self):
         for s in [{"topic": "없는주제"}, {"topic": "stores", "space": ["없는동"]}, {"topic": "stores", "space": ["노형동"], "target": "어르신"},
-                  {"topic": "rank", "metric": "폐업률"}]:
+                  {"topic": "rank", "metric": "조건부생존"}, {"topic": "rank", "metric": "점포수", "order": "옆"}]:
             with self.assertRaises(ValueError, msg=str(s)):
                 G.to_tuple(s)
 

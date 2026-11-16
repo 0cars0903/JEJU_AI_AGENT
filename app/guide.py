@@ -3,7 +3,7 @@
 화면의 네 진입로 가운데 ②추천 질문 ③단계별 선택 ④대표 질문은 버튼 값(slots)으로 질문 Tuple을 바로 채운다.
 해석(M1)을 거치지 않으므로 해석 오류가 생기지 않는다. ①자유 입력만 M1이 해석한다.
 
-slots 형식: {"topic": 주제 id, "space": [동네], "target": 업종·인구, "variant": 보기 id, "metric": 순위 지표}
+slots 형식: {"topic": 주제 id, "space": [동네], "target": 업종·인구, "variant": 보기 id, "metric": 순위 지표, "order": 순위 방향(asc|desc)}
 단계별 선택의 첫 단계는 '궁금한 것'(주제)이고, 그 주제에 필요한 칸만 이어서 고른다.
 """
 import copy
@@ -12,8 +12,14 @@ import re
 import qtuple as Q
 
 FOOD = ["음식점", "카페", "한식", "일식", "횟집", "중식", "치킨", "분식", "주점"]  # 개업·폐업·생존은 음식점 인허가(780)만 있음
-# 순위 지표: 폐업·생존은 순위를 내지 않는다(docs/조사/06_EDA_H1H3.md 사용자 확정). 고령·청년 비중은 공개 경로 조회 미구현이라 뺐다.
-RANK_METRICS = {"매출": "카드 매출", "매출성장": "요즘 매출이 많이 는 곳", "관광객비중": "관광객 매출 비중", "점포수": "가게 수", "일평균방문": "일평균 방문"}
+# 순위 지표. 폐업률·5년 생존율은 순위를 매기지 않고 제주 평균과 차이가 확인된 동네만 보인다(docs/조사/06_EDA_H1H3.md 사용자 확정 3번, layers._rate_rank).
+# 2026-11-16: 자유 입력으로 답하는 순위 지표를 [조건 바꾸기]에서도 고를 수 있게 넓혔다(지표마다 43곳 순위 계산을 실행해 확인).
+RANK_METRICS = {"매출": "카드 매출", "매출성장": "요즘 매출이 많이 는 곳", "관광객비중": "관광객 매출 비중", "점포수": "가게 수", "일평균방문": "일평균 방문",
+                "이용건수": "카드 이용 건수", "건당금액": "결제 1건당 금액", "고령비중": "60대 이상 비중", "청년비중": "20~30대 비중", "버스일평균": "버스 이용",
+                "개업수": "음식점 개업 수", "폐업률": "음식점 폐업률(제주 평균과 비교)", "5년생존율": "음식점 5년 생존율(제주 평균과 비교)"}
+ORDER_LABEL = {"desc": "큰 순서(많은·높은 곳)", "asc": "작은 순서(적은·낮은 곳)"}
+RANK_COUNT = {"매출", "점포수", "일평균방문", "이용건수", "버스일평균", "개업수"}  # '가장 적은'으로 묻는 수량 지표
+RANK_SENT = {"폐업률": "음식점 폐업률", "5년생존율": "음식점 5년 생존율"}  # 질문 문장에 쓰는 이름(버튼 이름의 괄호 설명은 문장에 넣지 않는다)
 # 카드 매출(제주관광공사)은 업종 대분류만 있다. 세부 업종을 고르면 대분류(음식점업 등) 기준으로 답하고 한계에 적는다.
 CARD_TARGETS = ["음식점", "카페", "한식", "치킨", "횟집", "숙박", "소매"]
 
@@ -47,7 +53,7 @@ TOPICS = [
     {"id": "similar", "label": "비슷한 동네 추천받기", "base": {"type": "T9"}, "need": ["space"]},
     {"id": "compare", "label": "동네끼리 비교(2곳 이상)", "base": {"type": "T2"}, "need": ["space"], "min_space": 2, "optional": ["target"], "options": {"target": Q.TARGETS_BIZ}},
     {"id": "diagnose", "label": "상권 종합 진단", "base": {"type": "T10"}, "need": ["space"], "optional": ["target"], "options": {"target": DIAG_TARGETS}},
-    {"id": "rank", "label": "동네 순위", "base": {"type": "T3"}, "need": ["metric"], "optional": ["target"], "options": {"metric": list(RANK_METRICS), "target": CARD_TARGETS}},
+    {"id": "rank", "label": "동네 순위", "base": {"type": "T3"}, "need": ["metric"], "optional": ["order", "target"], "options": {"metric": list(RANK_METRICS), "order": list(ORDER_LABEL), "target": CARD_TARGETS}},
 ]
 TOPIC = {x["id"]: x for x in TOPICS}
 
@@ -96,7 +102,8 @@ def sentence(slots):
         "similar": f"{d}이랑 비슷한 동네는?",
         "compare": f"{' · '.join(slots.get('space') or [])} {det + ' ' if det else ''}비교해줘",
         "diagnose": f"{d} {det + ' ' if det else ''}상권 종합 진단해줘",
-        "rank": f"{tgt + ' ' if tgt else ''}{RANK_METRICS.get(slots.get('metric'), '')} 동네 순위는?",
+        "rank": (f"{tgt + ' ' if tgt else ''}{'매출 증가율' if slots.get('metric') == '매출성장' else RANK_SENT.get(slots.get('metric'), RANK_METRICS.get(slots.get('metric'), ''))}{_iga(RANK_SENT.get(slots.get('metric'), RANK_METRICS.get(slots.get('metric'), '')) if slots.get('metric') != '매출성장' else '율')} 가장 {'적은' if slots.get('metric') in RANK_COUNT else '낮은'} 동네는?"
+                 if slots.get("order") == "asc" else f"{tgt + ' ' if tgt else ''}{RANK_SENT.get(slots.get('metric'), RANK_METRICS.get(slots.get('metric'), ''))} 동네 순위는?"),
     }[tp["id"]]
     return " ".join(s.split())
 
@@ -117,9 +124,10 @@ def match_sentence(question):
             for v in [None, *tp.get("variants", {})]:
                 for tgt in [None, *opts.get("target", [])]:
                     for m in opts.get("metric", [None]):
-                        slots = {k: x for k, x in {"topic": tp["id"], "space": sp, "variant": v, "target": tgt, "metric": m}.items() if x}
-                        if not missing(slots) and _SQUASH.sub("", sentence(slots)) == q:
-                            return slots
+                        for od in [None, *opts.get("order", [])]:
+                            slots = {k: x for k, x in {"topic": tp["id"], "space": sp, "variant": v, "target": tgt, "metric": m, "order": od}.items() if x}
+                            if not missing(slots) and _SQUASH.sub("", sentence(slots)) == q:
+                                return slots
     return None
 
 
@@ -173,6 +181,12 @@ def missing_message(slots, step):
     return STEP_MESSAGE.get(step, "이어서 골라 주세요.")
 
 
+def _iga(word):
+    """받침이 있으면 '이', 없으면 '가'."""
+    c = (word or "가")[-1]
+    return "이" if "가" <= c <= "힣" and (ord(c) - 0xAC00) % 28 else "가"
+
+
 def to_tuple(slots):
     """버튼 값 → 질문 Tuple. 잘못된 값이면 ValueError."""
     tp = TOPIC.get(slots.get("topic"))
@@ -210,6 +224,10 @@ def to_tuple(slots):
         if slots.get("metric") not in RANK_METRICS:
             raise ValueError(f"고를 수 없는 순위 지표: {slots.get('metric')}")
         t["metric"] = [slots["metric"]]
+        if slots.get("order") == "asc":
+            t["order"] = "asc"
+        elif slots.get("order") not in (None, "desc"):
+            raise ValueError(f"고를 수 없는 순서: {slots.get('order')}")
     t["form"] = Q.DEFAULT_FORM.get(t["type"])
     t["expect"] = "답함"
     return t
@@ -246,6 +264,8 @@ def to_slots(t):
         out["variant"] = "age"
     if topic == "rank" and m in RANK_METRICS:
         out["metric"] = m
+    if topic == "rank" and t.get("order") == "asc":
+        out["order"] = "asc"
     if t.get("detail"):
         out["detail"] = t["detail"]
     if t.get("details"):
@@ -275,6 +295,6 @@ def catalog_view():
     topics = []
     for tp in TOPICS:
         topics.append({"id": tp["id"], "label": tp["label"], "need": tp.get("need", []), "optional": tp.get("optional", []), "min_space": tp.get("min_space", 1), "center_only": tp.get("center_only", False),
-                       "options": {k: [{"value": v, "label": RANK_METRICS.get(v, v)} for v in vs] for k, vs in tp.get("options", {}).items()},
+                       "options": {k: [{"value": v, "label": {**RANK_METRICS, **ORDER_LABEL}.get(v, v)} for v in vs] for k, vs in tp.get("options", {}).items()},
                        "variants": [{"value": k, "label": v["label"]} for k, v in tp.get("variants", {}).items()]})
     return {"topics": topics, "groups": GROUPS, "dongs": Q.DONGS, "representative": representative()}

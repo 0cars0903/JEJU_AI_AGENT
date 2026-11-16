@@ -501,7 +501,9 @@ def card(t):
     if t["expect"] == "범위밖":
         return {"text": "이 질문은 지금 자료로 답할 수 없어요. " + "; ".join(t.get("_why", [])), "buttons": ["다른 질문 예시 보기"]}
     parts = []
-    if t["space"]:
+    if len(t["space"]) > 6:  # 시·읍면 범위로 좁힌 순위: 동네 이름을 다 늘어놓지 않는다(범위는 답의 주석에 적는다)
+        parts.append(f"{'읍·면' if all(d.endswith(('읍', '면')) for d in t['space']) else '동네'} {len(t['space'])}곳")
+    elif t["space"]:
         parts.append("·".join(t["space"]))
     if t["target"] or t.get("detail"):
         count = {"점포수", "특화계수"} & set(t["metric"]) or (not t["metric"] and t.get("type") in (None, "T1", "T2", "T3"))
@@ -515,7 +517,7 @@ def card(t):
     if t["type"] == "T11":
         return {"text": "센터·공개 자료 목록에서 찾아볼게요.", "buttons": ["맞아요", "질문 종류 바꾸기"]}
     body = " · ".join(parts) if parts else "(대상 미정)"
-    text = f"이렇게 이해했어요: {body} — {TYPE_KO.get(t['type'], t['type'])}"
+    text = f"이렇게 이해했어요: {body} — {TYPE_KO.get(t['type'], t['type'])}{'(작은 순서)' if t['type'] == 'T3' and t.get('order') == 'asc' else ''}"
     buttons = ["맞아요", "동네 바꾸기", "업종 바꾸기", "질문 종류 바꾸기"]
     if t["expect"] == "되묻기":
         text += ". " + "; ".join(t.get("_why", [])) + "."

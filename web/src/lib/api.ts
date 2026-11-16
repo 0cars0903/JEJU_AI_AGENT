@@ -6,6 +6,7 @@ export type Slots = {
   target?: string;
   variant?: string;
   metric?: string;
+  order?: string;
   keyword?: string;
 };
 

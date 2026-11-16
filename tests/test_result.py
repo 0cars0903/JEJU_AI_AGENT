@@ -270,12 +270,12 @@ class RankFix20261115(unittest.TestCase):
         self.assertIn("작은 순서", self.conc("개업이 가장 적은 동네"))
 
     def test_low_without_superlative_is_rank(self):
-        c = self.conc("생존율 낮은 동네는?")
-        self.assertIn("순위", c)
-        self.assertIn("작은 순서", c)
+        c = self.conc("생존율 낮은 동네는?")  # 폐업·생존은 순위 대신 제주 평균과 차이가 확인된 동네(사용자 확정 2026-11-06 3번)
+        self.assertIn("제주 평균 61.1%보다 낮다고 확인된 동네는", c)
+        self.assertNotIn("순위", c)
 
     def test_metric_named_first(self):
-        self.assertIn("폐업률 순위", self.conc("폐업률이 제일 높은 동네"))
+        self.assertIn("폐업률이 제주 평균 7.4%보다 높다고", self.conc("폐업률이 제일 높은 동네"))
 
     def test_jal_dwae_is_sales(self):
         self.assertIn("매출 순위", self.conc("카페 어디가 제일 잘 돼?"))
@@ -821,3 +821,49 @@ class FinalEvalRegressions(unittest.TestCase):
         r = R.respond("서귀포시 동네 중 카페 가장 많은 곳은?", None, llm_on=False)
         self.assertIn("17곳", r["card"]["conclusion"])
         self.assertNotIn("애월읍", r["card"]["conclusion"])
+
+
+class Windows20261116(unittest.TestCase):
+    """2026-11-16 Windows 시험: 보정 규칙이 고친 해석이 '이렇게 이해했어요'에 반영되지 않던 결함과 같은 뿌리의 결함들."""
+
+    def test_understood_shows_fixed_tuple(self):
+        r = R.respond("음식점이 제일 오래 못 버티는 동네가 어디야?", None, llm_on=False)
+        u = r["understood"]
+        self.assertIn("5년 생존율", u["text"])
+        self.assertIn("작은 순서", u["text"])
+        self.assertNotIn("동네가 필요함", u["text"])
+        self.assertEqual(u["check"], [])
+        self.assertIn("낮다고 확인된 동네는 이호동", r["card"]["conclusion"])
+        self.assertTrue(all("95% 구간" in e["text"] for e in r["card"]["evidence"] if e.get("layer") == "L1" and "제주 전체" not in e["text"]))
+
+    def test_town_scope(self):
+        r = R.respond("편의점 점포수 제일 적게 있는 읍면은?", None, llm_on=False)
+        self.assertTrue(r["tuple"]["space"] and all(d.endswith(("읍", "면")) for d in r["tuple"]["space"]))
+        self.assertIn("읍·면 12곳", r["understood"]["text"])
+        self.assertIn("12곳 가운데 작은 순서", r["card"]["conclusion"])
+        self.assertEqual(R.respond("청년 비중이 가장 낮은 읍면동 3곳을 뽑아 주세요.", None, llm_on=False)["tuple"]["space"], [])
+
+    def test_rising_low(self):
+        import guide as G
+        r = R.respond(None, None, llm_on=False, slots={"topic": "rank", "metric": "매출성장", "order": "asc"})
+        self.assertIn("줄었어요", r["card"]["conclusion"])
+        self.assertEqual(G.sentence({"topic": "rank", "metric": "매출성장", "order": "asc"}), "매출 증가율이 가장 낮은 동네는?")
+
+    def test_rank_order_slots(self):
+        import guide as G
+        t = R.respond("음식점이 제일 오래 못 버티는 동네가 어디야?", None, llm_on=False)["understood"]["slots"]
+        self.assertEqual(t, {"topic": "rank", "target": "음식점", "metric": "5년생존율", "order": "asc"})
+        for m in G.RANK_METRICS:
+            for od in ("asc", None):
+                sl = {"topic": "rank", "metric": m, **({"order": od} if od else {})}
+                self.assertEqual(G.match_sentence(G.sentence(sl)), sl)
+
+    def test_scorer_scope(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools" / "eval"))
+        sys.argv = [sys.argv[0], "--split", "dev"]
+        import general_answer as GA
+        g = {"q": "서귀포시 안에서 하루 버스 이용이 제일 많은 동네 좀 알려줘.", "accept": ["답함"], "space": [], "metric_ok": ["버스일평균"], "order": "desc"}
+        r = R.respond(g["q"], None, llm_on=False)
+        s = GA.score(r, g)
+        self.assertTrue(s["정답"])
+        self.assertFalse(s["정답(엄격)"])

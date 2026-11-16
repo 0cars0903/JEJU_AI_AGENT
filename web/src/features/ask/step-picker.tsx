@@ -9,7 +9,7 @@ import { type Guide, type Slots, ready } from "@/lib/api";
 // 패턴 B: 업종은 아이콘 타일(소상공인365·SGIS 방식). 아이콘이 없는 값은 가게 그림
 const BIZ_ICON: Record<string, typeof Store> = { 음식점: UtensilsCrossed, 카페: Coffee, 한식: Soup, 치킨: Drumstick, 횟집: Fish, 숙박: BedDouble, 소매: ShoppingBag };
 
-const FIELD_LABEL: Record<string, string> = { space: "동네", target: "업종", variant: "보고 싶은 것", metric: "순위 기준", keyword: "찾을 자료" };
+const FIELD_LABEL: Record<string, string> = { space: "동네", target: "업종", variant: "보고 싶은 것", metric: "순위 기준", order: "순서", keyword: "찾을 자료" };
 // Stageshow 지적 6: 동네 43곳을 한꺼번에 늘어놓지 않고 자주 찾는 곳을 먼저, 나머지는 '더 보기'(상가 수가 많은 동네 기준)
 const FREQUENT = ["노형동", "연동", "이도2동", "아라동", "애월읍", "조천읍", "한림읍", "중문동", "성산읍", "구좌읍", "대정읍", "표선면"];
 

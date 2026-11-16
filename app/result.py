@@ -477,6 +477,7 @@ MATJIP_Q = re.compile(r"맛집|맛있|맛\s*좋|후기|리뷰|평점|(가게|식
 MATJIP_MSG = "맛·후기·평점 자료가 없어 맛집을 고르거나 가게를 추천할 수 없어요. 대신 그 지역 음식점 수, 카드 매출, 생존율을 볼 수 있어요."
 RECO_Q = re.compile(r"(업종|창업|아이템|뭐\s*하|무엇을\s*하)\S*\s*.*추천|추천\s*(해|좀)?\s*줘")
 RECO_MSG = "이 서비스는 어떤 업종을 할지 추천하거나 정하지 않아요(판단은 도민이 해요). 대신 업종별 가게 수·카드 매출·생존율을 견주어 판단 재료를 보여 드려요."
+TOWN_Q = re.compile(r"읍\s*[·,/]?\s*면(?!\s*[·,/]?\s*동)|읍이나\s*면|읍\s*단위|면\s*단위|어느\s*(읍|면)\b")
 CITY_Q = re.compile(r"제주시|서귀포시|서귀포\s*(쪽|지역|시내)|제주\s*시내")
 SEOGWIPO = ["대정읍", "남원읍", "성산읍", "안덕면", "표선면", "송산동", "정방동", "중앙동", "천지동", "효돈동", "영천동", "동홍동", "서홍동",
             "대륜동", "대천동", "중문동", "예래동"]  # 서귀포시 17곳(12동·3읍·2면)
@@ -617,6 +618,8 @@ def _to_check(question, it):
     import plan_agent
     pa = it.get("plan_agent")
     out = []
+    if it.get("rule_fixed"):  # 보정 규칙이 질문 낱말로 고친 해석: 분류기와 사전 해석기가 어긋났던 기록은 고치기 전 해석에 대한 것이다
+        return out
     for n in plan_agent.notes(it, question):
         if n["field"] == "expect":
             out.append({"field": "expect", "text": "동네·업종을 정확히 읽었는지 확인해 주세요. 다르면 [조건 바꾸기]로 고쳐 주세요."})
@@ -955,7 +958,9 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                 it = dict(it, ask_back=MY_DONG_MSG if MY_DONG.search(q_) else "질문에서 동네를 찾지 못했어요. 동네를 골라 주세요.")
         if t.get("type") == "T3" and RANK_LOW.search(question or ""):  # 순위 방향(작은 순서)
             t = dict(t, order="asc")
-            it = dict(it, tuple=t)
+            it = dict(it, tuple=t, card=qparse.card(t))
+        if it.get("rule_fixed"):  # 보정 규칙이 고친 해석으로 '이렇게 이해했어요'를 다시 쓴다. 고치기 전 해석의 확인 줄(종류·답할지)은 내지 않는다(2026-11-16 Windows 시험)
+            it = dict(it, tuple=t, card=qparse.card(t if t.get("expect") == "되묻기" else {k: v for k, v in t.items() if k != "_why"}), needs_confirm=False)
         meta = {k: it.get(k) for k in ("path", "confidence", "card", "sec", "plan_agent")}
 
         def stop(r):  # 일반 경로가 계산 전에 끝내는 출구(고르게 하기·범위 밖). (다) 넘김 판정도 여기서 한다
@@ -988,6 +993,12 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
             t = dict(t, space=city)
             it = dict(it, tuple=t, card=qparse.card(t))
             notes.append(f"{'서귀포시' if re.search(r'서귀포', question or '') else '제주시'} {len(city)}개 동네 안에서 견줬어요.")
+        elif TOWN_Q.search(question or "") and not t.get("space") and t.get("type") in ("T3", "T14", "T15"):
+            # '가장 적은 읍면은?': 읍·면만 견준다(동까지 섞어 효돈동이 답이 되던 결함, 2026-11-16 Windows 시험)
+            town = [d for d in Q.DONGS if d.endswith(("읍", "면"))]
+            t = dict(t, space=town)
+            it = dict(it, tuple=t, card=qparse.card(t))
+            notes.append(f"읍·면 {len(town)}곳 안에서 견줬어요.")
         elif CITY_Q.search(question or "") and not t.get("space") and (t.get("expect") == "되묻기" or t.get("type") in qparse.NEED_DONG):
             ps = G.to_slots(t) if t.get("expect") != "범위밖" else {}  # 시 단위는 합치지 않는다는 것을 알리고 동네를 고르게 한다(평가 2026-11-14 A5)
             return stop(_choose(question, t, ps if ps.get("topic") else {"topic": "diagnose"}, CITY_MSG, "space"))

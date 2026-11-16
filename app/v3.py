@@ -402,8 +402,10 @@ def rising(biz=None, n=10, dongs=None):
     d["growth_pct"] = (d["cur"] / d["prev"] - 1) * 100
     d["gain"] = d["cur"] - d["prev"]
     by_dong = d.reset_index().sort_values("growth_pct", ascending=False).drop_duplicates("dong").set_index("dong")["growth_pct"]  # 지도: 동네마다 가장 많이 는 업종의 증가율
-    d = d.sort_values("growth_pct", ascending=False).head(n).reset_index()
-    return {"end": end, "median": med, "rows": d.to_dict(orient="records"), "combos": int(len(cur)), "map": {k: float(v) for k, v in by_dong.items()}}
+    d = d.sort_values("growth_pct", ascending=False).reset_index()
+    low = d.sort_values("growth_pct").head(n)  # '증가율이 가장 낮은 곳' 순위(2026-11-16, 큰 순서로만 답하던 결함)
+    return {"end": end, "median": med, "rows": d.head(n).to_dict(orient="records"), "low_rows": low.to_dict(orient="records"), "combos": int(len(cur)),
+            "map": {k: float(v) for k, v in by_dong.items()}}
 
 
 # ---------- F2 판단 재료 ----------
