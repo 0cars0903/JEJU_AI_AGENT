@@ -715,7 +715,8 @@ class RankOrder(unittest.TestCase):
     def test_lowest_rank_is_ascending(self):  # '가장 적은' 순위는 작은 순서(2026-11-14)
         r = R.respond("카페가 가장 적은 동네는?", None, llm_on=False)
         self.assertIn("작은 순서", r["card"]["conclusion"])
-        self.assertIn("1위 추자면", r["card"]["conclusion"])
+        self.assertNotIn("추자면", r["card"]["conclusion"])  # 표본이 적은 섬 2곳은 순위에서 뺀다(마스터 2026-11-16)
+        self.assertIn("41곳 가운데", r["card"]["conclusion"])
 
 
 class Persona20261114(unittest.TestCase):
@@ -840,7 +841,7 @@ class Windows20261116(unittest.TestCase):
         r = R.respond("편의점 점포수 제일 적게 있는 읍면은?", None, llm_on=False)
         self.assertTrue(r["tuple"]["space"] and all(d.endswith(("읍", "면")) for d in r["tuple"]["space"]))
         self.assertIn("읍·면 12곳", r["understood"]["text"])
-        self.assertIn("12곳 가운데 작은 순서", r["card"]["conclusion"])
+        self.assertIn("10곳 가운데 작은 순서", r["card"]["conclusion"])  # 읍·면 12곳 − 표본이 적은 섬 2곳
         self.assertEqual(R.respond("청년 비중이 가장 낮은 읍면동 3곳을 뽑아 주세요.", None, llm_on=False)["tuple"]["space"], [])
 
     def test_rising_low(self):
@@ -867,3 +868,14 @@ class Windows20261116(unittest.TestCase):
         s = GA.score(r, g)
         self.assertTrue(s["정답"])
         self.assertFalse(s["정답(엄격)"])
+
+    def test_small_sample_dropped(self):  # 마스터 2026-11-16: 표본이 적은 동네(섬 2곳, 생존율·폐업률 표본 50 미만)는 순위·비교에서 빼고 단서 문구만
+        r = R.respond("카드 매출 가장 적은 동네는?", None, llm_on=False)
+        c = r["card"]["conclusion"]
+        self.assertNotIn("추자면", c)
+        self.assertIn("41곳 가운데", c)
+        self.assertTrue(any("우도면·추자면은 표본이 적어 순위에서 뺐어요" in e["text"] for e in r["card"]["evidence"]))
+        r = R.respond("음식점이 제일 오래 못 버티는 동네가 어디야?", None, llm_on=False)
+        self.assertNotIn("우도면", r["card"]["conclusion"])
+        self.assertTrue(any("표본이 적어 비교에서 뺐어요" in e["text"] for e in r["card"]["evidence"]))
+        self.assertNotIn("뺐어요", R.respond("노형동 카페 가게는 몇 곳이야?", None, llm_on=False)["card"]["conclusion"])

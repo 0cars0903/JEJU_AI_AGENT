@@ -197,6 +197,25 @@ def _median_compare(o, metric, dong, tgt, note, unit, cur, word="", det=None):
         return
 
 
+SMALL_DONGS = {"우도면", "추자면"}  # 표본이 적은 섬 지역: 순위·비율 비교에서 빼고 단서 문구만 남긴다(사용자 확정 2026-11-06 6번, 마스터 2026-11-16)
+SMALL_N = 50  # 생존율·폐업률의 동네 표본(개업 수·영업 곳·년)이 이보다 적으면 비교에서 뺀다(마스터 2026-11-16)
+
+
+def _small_note(o, gone, what="순위"):
+    if gone and not getattr(o, "small_noted", False):
+        o.small_noted = True
+        o.line("L5", f"{_josa('·'.join(gone), '은', '는')} 표본이 적어 {what}에서 뺐어요.", None, None)
+
+
+def _drop_small(o, t, df):
+    """순위 질문(T3)에서 표본이 적은 동네를 뺀다. 뺀 동네는 단서 문구로만 남긴다."""
+    if t.get("type") != "T3" or "dong" not in df:
+        return df
+    small = df["dong"].isin(SMALL_DONGS)
+    _small_note(o, sorted(df.loc[small, "dong"].unique()))
+    return df[~small]
+
+
 def _rank_head(o, t, word, label, top, n, unit):
     """순위 질문의 결론: 1위 한 곳의 값만 쓰지 않고 몇 위인지 밝힌다(문서 20 A9)."""
     if t.get("type") != "T3" or getattr(o, "rank_head", None) or len(top) < 3:
@@ -280,8 +299,10 @@ def _table_lines(o, t, metric, v, note):
         cur0 = cur
         dongs = cur["dong"].unique()
         if len(dongs) > 6:
+            cur = _drop_small(o, t, cur)
+            n_rank = cur["dong"].nunique()
             cur = cur.sort_values("value", ascending=t.get("order") == "asc").head(6)
-            _rank_head(o, t, f"{_ym_ko(end)} {word}", label, cur, len(dongs), unit)
+            _rank_head(o, t, f"{_ym_ko(end)} {word}", label, cur, n_rank, unit)
         for r in cur.itertuples():
             v_ = o.num(r.value, unit)
             tail = ""
@@ -334,7 +355,7 @@ def _table_lines(o, t, metric, v, note):
         when = f"{last}년({int(rl[5:7])}월 {int(rl[8:10])}일까지)" if part else f"{last}년"
         cur = tab[tab["year"] == last]
         if cur["dong"].nunique() > 6:  # 순위(전체 동네): 가나다순 첫 동네가 아니라 값 순서로(2026-11-15 최종 평가 결함)
-            cur = cur.sort_values("value", ascending=t.get("order") == "asc")
+            cur = _drop_small(o, t, cur).sort_values("value", ascending=t.get("order") == "asc")
             _rank_head(o, t, f"{when} {word}", label, cur.head(6), cur["dong"].nunique(), "곳" if part else unit)
             o.map("map", f"지도: {label}", dict(zip(cur["dong"], cur["value"])), "곳" if part else unit, f"{when} 동네별 {_josa(label, '을', '를')} 지도로 보여 줘요", definition=DEFS.get(metric))
             if part:
@@ -349,13 +370,13 @@ def _table_lines(o, t, metric, v, note):
         return
     if "biz" not in tab and "dong" in tab and "value" in tab:
         asc = t.get("order") == "asc"
-        cur = tab.sort_values("value", ascending=asc) if tab["dong"].nunique() > 6 else tab  # 근거 줄도 결론과 같은 순서로(2026-11-16, 작은 순서 결론 아래 큰 순서 근거가 나오던 결함)
         mt = v3.meta()
         asof = {"점포수": v3.BIZ_ASOF, "특화계수": v3.BIZ_ASOF, "5년생존율": f"개업 {mt.get('km_cohort')}", "조건부생존": f"개업 {mt.get('km_cohort')}", "폐업률": mt.get("close_years")}.get(metric)
         if metric in ("5년생존율", "조건부생존", "폐업률"):  # 동네별 값은 업종 구분이 없는 음식점 전체 값
             word = "음식점 전체 "
         if metric in ("5년생존율", "폐업률") and t.get("type") == "T3" and tab["dong"].nunique() > 6 and _rate_rank(o, t, metric, word, label, src, asof, unit):
             return  # 폐업·생존은 순위 없이 값 + 95% 구간 + 표본 수(사용자 확정 2026-11-06, docs/조사/06_EDA_H1H3.md 3번)
+        cur = _drop_small(o, t, tab).sort_values("value", ascending=asc) if tab["dong"].nunique() > 6 else tab  # 근거 줄도 결론과 같은 순서로(2026-11-16, 작은 순서 결론 아래 큰 순서 근거가 나오던 결함)
         for r in cur.head(6).itertuples():
             v_ = o.num(r.value, unit)
             o.line("L1", f"{r.dong} {word}{_josa(label)} {v_}{_cop(v_)}.", src, asof)
@@ -376,7 +397,7 @@ def _table_lines(o, t, metric, v, note):
             if metric in ("5년생존율", "조건부생존", "폐업률") and t.get("target") and t.get("target") != "음식점":
                 o.line("L5", f"{t['target']}만의 동네별 값은 자료에 없어 음식점 전체 값으로 비교했어요. {t['target']}의 제주 전체 값은 아래에 있어요.", None, None)
         if tab["dong"].nunique() > 6:
-            _rank_head(o, t, word, label, cur, tab["dong"].nunique(), unit)
+            _rank_head(o, t, word, label, cur, cur["dong"].nunique(), unit)
             top = cur.iloc[0]
             o.map("map", f"지도: {label}", dict(zip(tab["dong"], tab["value"])), unit, f"{_josa(top['dong'], '이', '가')} 가장 {'작아요' if asc else '큽니다'}", definition=DEFS.get(metric))
         if tab["dong"].nunique() > 1:
@@ -1125,6 +1146,7 @@ def _deep_lines(o, t, rv):
             additive = set(t.get("metric") or []) <= {"점포수", "매출", "이용건수", "버스일평균", "일평균방문", "개업수", "폐업수"}  # 비율(생존율·비중·건당 금액)은 합계의 몫이 뜻이 없다(2026-11-16)
             if tab is not None and len(tab) and additive and t.get("metric"):
                 cur = tab[tab["ym"] == tab["ym"].max()] if "ym" in tab else tab[tab["year"] == tab["year"].max()] if "year" in tab else tab
+                cur = cur[~cur["dong"].isin(SMALL_DONGS)]  # 순위와 같은 기준(표본이 적은 섬 2곳 뺌, 마스터 2026-11-16)
                 sp = deep.spread(dict(zip(cur["dong"], cur["value"])))
                 if sp:
                     o.numbers += [5.0, sp["top5_pct"], sp["first_vs_median"], float(sp["n"])]
@@ -1361,6 +1383,9 @@ def _rate_rank(o, t, metric, word, label, src, asof, unit):
         d = d[d["year"] == d["year"].max()]
     base = d[d["dong"] == "제주 전체"]
     d = d[d["dong"] != "제주 전체"]
+    small = d["dong"].isin(SMALL_DONGS) | (d["n" if metric == "5년생존율" else "store_years"] < SMALL_N)
+    _small_note(o, sorted(d.loc[small, "dong"]), "비교")
+    d = d[~small]
     if "label" not in d or d.empty:
         return False
     low = t.get("order") == "asc"
