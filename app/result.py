@@ -477,6 +477,8 @@ MATJIP_Q = re.compile(r"맛집|맛있|맛\s*좋|후기|리뷰|평점|(가게|식
 MATJIP_MSG = "맛·후기·평점 자료가 없어 맛집을 고르거나 가게를 추천할 수 없어요. 대신 그 지역 음식점 수, 카드 매출, 생존율을 볼 수 있어요."
 RECO_Q = re.compile(r"(업종|창업|아이템|뭐\s*하|무엇을\s*하)\S*\s*.*추천|추천\s*(해|좀)?\s*줘")
 RECO_MSG = "이 서비스는 어떤 업종을 할지 추천하거나 정하지 않아요(판단은 도민이 해요). 대신 업종별 가게 수·카드 매출·생존율을 견주어 판단 재료를 보여 드려요."
+KO_NUM = {"한": 1, "두": 2, "세": 3, "네": 4, "다섯": 5, "여섯": 6, "일곱": 7, "여덟": 8, "아홉": 9, "열": 10}
+RANK_N = re.compile(r"(?:상위|하위|top)\s*(\d{1,2})|(\d{1,2}|한|두|세|네|다섯|여섯|일곱|여덟|아홉|열)\s*(?:곳|군데|개\s*(?:동네|지역|읍면|곳)|개\b|위까지)", re.I)
 TOWN_Q = re.compile(r"읍\s*[·,/]?\s*면(?!\s*[·,/]?\s*동)|읍이나\s*면|읍\s*단위|면\s*단위|어느\s*(읍|면)\b")
 CITY_Q = re.compile(r"제주시|서귀포시|서귀포\s*(쪽|지역|시내)|제주\s*시내")
 SEOGWIPO = ["대정읍", "남원읍", "성산읍", "안덕면", "표선면", "송산동", "정방동", "중앙동", "천지동", "효돈동", "영천동", "동홍동", "서홍동",
@@ -956,6 +958,12 @@ def respond(question=None, env=None, llm_on=True, interpret=None, slots=None, pa
                 it = dict(it, tuple=t, rule_fixed=True)  # 보정 규칙이 질문 낱말로 해석을 고쳤으면 '확신 낮음' 되묻기를 하지 않는다
             if ask_back:
                 it = dict(it, ask_back=MY_DONG_MSG if MY_DONG.search(q_) else "질문에서 동네를 찾지 못했어요. 동네를 골라 주세요.")
+        if t.get("type") == "T3" and question:  # 물은 개수('다섯 군데만', '상위 5곳', '3곳'): 결론과 근거를 그 수만큼(2026-11-16 Windows 시험)
+            mn = RANK_N.search(question)
+            if mn:
+                w = mn.group(1) or mn.group(2)
+                t = dict(t, ask_n=int(w) if w.isdigit() else KO_NUM[w])
+                it = dict(it, tuple=t)
         if t.get("type") == "T3" and RANK_LOW.search(question or ""):  # 순위 방향(작은 순서)
             t = dict(t, order="asc")
             it = dict(it, tuple=t, card=qparse.card(t))

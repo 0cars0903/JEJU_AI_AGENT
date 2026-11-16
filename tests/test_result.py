@@ -879,3 +879,12 @@ class Windows20261116(unittest.TestCase):
         self.assertNotIn("우도면", r["card"]["conclusion"])
         self.assertTrue(any("표본이 적어 비교에서 뺐어요" in e["text"] for e in r["card"]["evidence"]))
         self.assertNotIn("뺐어요", R.respond("노형동 카페 가게는 몇 곳이야?", None, llm_on=False)["card"]["conclusion"])
+
+    def test_asked_count_and_ranked_series(self):  # '다섯 군데만': 결론 5곳, 월별 그래프는 순위에 든 동네(가나다순 첫 6곳 아님)
+        r = R.respond("식당 밥값이 제일 비싼 동네 다섯 군데만 알려줘.", None, llm_on=False)
+        self.assertIn("5위", r["card"]["conclusion"])
+        self.assertNotIn("6위", r["card"]["conclusion"])
+        names = [s["name"] for v in r["answer"]["views"] if v.get("id") == "monthly" for s in v["series"]]
+        self.assertEqual(len(names), 5)
+        self.assertTrue(r["card"]["conclusion"].index(names[0]) < r["card"]["conclusion"].index(names[-1]))
+        self.assertNotIn("4위", R.respond("편의점 많은 동네 순위 보여줘.", None, llm_on=False)["card"]["conclusion"])

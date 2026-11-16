@@ -216,14 +216,21 @@ def _drop_small(o, t, df):
     return df[~small]
 
 
+def _rank_n(t, default=3):
+    """순위 질문이 물은 개수(result.py가 ask_n에 넣음). 1~10곳."""
+    n = t.get("ask_n")
+    return max(1, min(10, int(n))) if n else default
+
+
 def _rank_head(o, t, word, label, top, n, unit):
     """순위 질문의 결론: 1위 한 곳의 값만 쓰지 않고 몇 위인지 밝힌다(문서 20 A9)."""
     if t.get("type") != "T3" or getattr(o, "rank_head", None) or len(top) < 3:
         return
     asc = t.get("order") == "asc"  # '가장 적은·낮은' 순위 질문(2026-11-14): 작은 순서로 쓴다
     src = top.sort_values("value", ascending=True) if asc else top
-    parts = ", ".join(f"{i}위 {d}({o.num(x, unit)})" for i, (d, x) in enumerate(zip(src["dong"].head(3), src["value"].head(3)), 1))
-    o.numbers += [1.0, 2.0, 3.0, float(n)]
+    k = _rank_n(t)  # 물은 개수('다섯 군데')만큼, 없으면 3곳(2026-11-16 Windows 시험)
+    parts = ", ".join(f"{i}위 {d}({o.num(x, unit)})" for i, (d, x) in enumerate(zip(src["dong"].head(k), src["value"].head(k)), 1))
+    o.numbers += [float(i) for i in range(1, k + 1)] + [float(n)]
     o.rank_head = f"{word}{label} 순위는 {parts}{_cop(parts)}(값이 있는 동네 {n}곳 가운데 {'작은' if asc else '큰'} 순서)."
 
 
@@ -301,7 +308,7 @@ def _table_lines(o, t, metric, v, note):
         if len(dongs) > 6:
             cur = _drop_small(o, t, cur)
             n_rank = cur["dong"].nunique()
-            cur = cur.sort_values("value", ascending=t.get("order") == "asc").head(6)
+            cur = cur.sort_values("value", ascending=t.get("order") == "asc").head(max(6, _rank_n(t)))
             _rank_head(o, t, f"{_ym_ko(end)} {word}", label, cur, n_rank, unit)
         for r in cur.itertuples():
             v_ = o.num(r.value, unit)
@@ -335,7 +342,11 @@ def _table_lines(o, t, metric, v, note):
                     o.line("L2", f"작년 같은 달과 견주려면 13개월 이상의 자료가 필요해요. 넣은 자료는 {len(s)}개월이에요.", src)
             if "이용자 불러옴" not in str(src):  # 동네 중간값 비교는 같은 자료(관광공사)끼리만
                 _median_compare(o, metric, dongs[0], t.get("target"), note, unit, float(cur["value"].iloc[0]), word=word)
-        o.view("monthly", "월별 흐름", "line", [{"name": s_["name"], "points": s_["points"][-36:]} for s_ in _series(tab)][:6],
+        ranked = list(cur["dong"])[:_rank_n(t, 6)] if len(dongs) > 6 else None  # 순위 질문: 순위에 든 동네를 순위 순서로(가나다순 첫 6곳을 그리던 결함, 2026-11-16)
+        ser = _series(tab[tab["dong"].isin(ranked)]) if ranked else _series(tab)
+        if ranked:
+            ser = sorted(ser, key=lambda s_: ranked.index(s_["name"]))
+        o.view("monthly", "순위에 든 동네의 월별 흐름" if ranked else "월별 흐름", "line", [{"name": s_["name"], "points": s_["points"][-36:]} for s_ in ser][:6],
                f"최근 {min(36, tab['ym'].nunique())}개월 동안 달마다 {_josa(label, '을', '를')} 보여 줘요", definition=DEFS.get(metric), unit=unit)
         yr = _yearly(tab)
         if yr and metric not in ("관광객비중", "건당금액", "일평균방문"):
@@ -356,16 +367,20 @@ def _table_lines(o, t, metric, v, note):
         cur = tab[tab["year"] == last]
         if cur["dong"].nunique() > 6:  # 순위(전체 동네): 가나다순 첫 동네가 아니라 값 순서로(2026-11-15 최종 평가 결함)
             cur = _drop_small(o, t, cur).sort_values("value", ascending=t.get("order") == "asc")
-            _rank_head(o, t, f"{when} {word}", label, cur.head(6), cur["dong"].nunique(), "곳" if part else unit)
+            _rank_head(o, t, f"{when} {word}", label, cur.head(max(6, _rank_n(t))), cur["dong"].nunique(), "곳" if part else unit)
             o.map("map", f"지도: {label}", dict(zip(cur["dong"], cur["value"])), "곳" if part else unit, f"{when} 동네별 {_josa(label, '을', '를')} 지도로 보여 줘요", definition=DEFS.get(metric))
             if part:
                 o.numbers += [float(int(rl[5:7])), float(int(rl[8:10]))]
-        for r in cur.head(6).itertuples():
+        for r in cur.head(max(6, _rank_n(t))).itertuples():
             v_ = o.num(r.value, "곳" if part else unit)
             if part:
                 o.numbers += [float(int(rl[5:7])), float(int(rl[8:10]))]
             o.line("L1", f"{when} {getattr(r, 'dong', '')} {word}{_josa(label)} {v_}{_cop(v_)}.", src, f"{last}년")
-        o.view("yearly", "연도별", "bar", [{"name": str(k), "points": [[int(a), float(b)] for a, b in zip(g["year"], g["value"])]} for k, g in tab.groupby("dong")][:6],
+        ranked = list(cur["dong"])[:_rank_n(t, 6)] if cur["dong"].nunique() > 6 or (t.get("type") == "T3" and len(cur) > 1) else None  # 순위 질문: 순위에 든 동네를 순위 순서로(2026-11-16)
+        groups = dict(list(tab.groupby("dong")))
+        names = [d for d in ranked if d in groups] if ranked else list(groups)
+        o.view("yearly", "순위에 든 동네의 연도별 값" if ranked else "연도별", "bar",
+               [{"name": str(k), "points": [[int(a), float(b)] for a, b in zip(groups[k]["year"], groups[k]["value"])]} for k in names][:6],
                f"해마다 {_josa(label, '을', '를')} 보여 줘요", x="year", unit=unit)
         return
     if "biz" not in tab and "dong" in tab and "value" in tab:
@@ -377,7 +392,7 @@ def _table_lines(o, t, metric, v, note):
         if metric in ("5년생존율", "폐업률") and t.get("type") == "T3" and tab["dong"].nunique() > 6 and _rate_rank(o, t, metric, word, label, src, asof, unit):
             return  # 폐업·생존은 순위 없이 값 + 95% 구간 + 표본 수(사용자 확정 2026-11-06, docs/조사/06_EDA_H1H3.md 3번)
         cur = _drop_small(o, t, tab).sort_values("value", ascending=asc) if tab["dong"].nunique() > 6 else tab  # 근거 줄도 결론과 같은 순서로(2026-11-16, 작은 순서 결론 아래 큰 순서 근거가 나오던 결함)
-        for r in cur.head(6).itertuples():
+        for r in cur.head(max(6, _rank_n(t))).itertuples():
             v_ = o.num(r.value, unit)
             o.line("L1", f"{r.dong} {word}{_josa(label)} {v_}{_cop(v_)}.", src, asof)
         if tab["dong"].nunique() == 1 and metric == "점포수":
