@@ -151,7 +151,13 @@ def _facts(out, facts):
     ds = [d for d in (out or {}).get("result_dongs") or [] if d in Q.DONGS]
     concl = ((out or {}).get("card") or {}).get("conclusion") or ""
     top = re.findall(r"\d+위 ([가-힣0-9]+(?:동|읍|면))", concl)
-    got = [d for d in top if d in Q.DONGS] or ds
+    got = [d for d in top if d in Q.DONGS]
+    if not got and not facts.get("ranked"):
+        got = ds[:1] if ds else []  # 순위가 아닌 답은 그 답의 동네 하나만(비슷한 동네 목록이 '앞 결과'를 덮던 결함, 2026-11-16)
+    if top and got:
+        facts["ranked"] = True  # 순위 단계의 결과는 뒤 단계가 덮지 않는다('1위 동네'는 순위 결과를 가리킨다)
+    elif facts.get("ranked"):
+        return facts
     if got:
         facts["dongs"] = got
         facts["text"] = f"앞 단계에서 나온 동네: {', '.join(got[:3])}" + (" (1위부터)" if top else "")
@@ -296,3 +302,173 @@ def _do(fn, args, s, facts):
         sug = suggest(step, facts, s["uses_prev"])
         rep = {"error": f"{rep.get('error')} 고칠 값 제안: {json.dumps(sug, ensure_ascii=False)}"}
     return ok, rep, out, a2
+
+
+# ---------- 서비스 연결(2026-11-16 마스터 '단계형 루프는 전체 서비스에 적용') ----------
+STAGES = ["단계 나누기", "단계마다 도구 골라 계산", "답 정리"]
+TOOL_ASK = {"type": "function", "function": {"name": "answer_question", "description":
+            "지금 단계를 혼자 물어도 되는 질문 한 문장으로 써서 일반 답(해석·계산·검수·근거가 붙은 답 카드)을 만든다. 동네·업종·무엇을 볼지를 문장에 넣는다.",
+            "parameters": {"type": "object", "required": ["question"], "properties": {"question": {"type": "string", "description": "예: 애월읍 카페 점포 수는?"}}}}}
+S_SERVE = ("너는 제주 상권 질문에 답하는 Agent다. 아래 상태를 보고 '지금 단계' 하나를 처리할 도구를 하나 부른다. 숫자는 직접 만들지 않는다.\n"
+           "- 동네·업종의 값·순위·비교·추세·예측·시간대·비 효과 같은 것은 answer_question에 그 단계만 묻는 질문 한 문장을 쓴다.\n"
+           "- 통계 기법(상관·군집·시계열 분해·회귀·검정·분포·이상치·변화 분해·입지계수·생존분석·다양성·변이할당)을 지목한 단계는 run_technique.\n"
+           "- 제출본 자료로 할 수 없고 센터 자료가 필요하면 search_center_catalog.\n"
+           "- 자료로 할 수 없는 단계면 skip_step에 이유를 쓴다.\n"
+           "- 앞 단계 결과에 나온 동네를 써야 하면 그 동네 이름을 질문 문장에 그대로 넣는다.")
+
+
+def serve(question, env=None, llm_on=True, progress=None, forced=None):
+    """서비스 경로의 단계형 Agent. 모델이 단계를 나누고(1회), 단계마다 도구를 고른다.
+    단계가 하나면 원래 질문을 질문 담당 Agent(question_agent.run)에 그대로 넘긴다(단순 질문 정확도 유지, dev 278/282).
+    단계가 여럿이면 단계마다 모델이 고른 도구로 계산하고, 질문 나누기와 같은 모양(status 'Agent', agent.lines·trace·topics)으로 묶는다."""
+    import analyst
+    import question_agent
+    say = progress or (lambda i, d: None)
+    env = dict(env or {})
+    if forced:  # 확인 카드에서 고른 선택지로 다시 계산: 질문 담당 Agent로 바로
+        return question_agent.run(question, env, llm_on=llm_on, progress=progress, forced=forced)
+    t0 = time.perf_counter()
+    say(1, "질문에 물은 것이 몇 가지인지 단계로 나누고 있어요")
+    plan = (analyst._ask(None, S_PLAN, question, PLAN_SCHEMA, max_tokens=400) or {}).get("steps") or []
+    plan = [s for s in plan if str(s.get("do", "")).strip()][:MAX_STEPS]
+    ptrace = {"step": 1, "tool": "plan", "name": "단계 나누기", "by": BY if plan else "코드(모델이 단계를 쓰지 못함)", "ok": bool(plan),
+              "args": json.dumps([s.get("do") for s in plan], ensure_ascii=False)[:160], "note": f"{len(plan) or 1}단계", "sec": round(time.perf_counter() - t0, 2)}
+    if len(plan) > 1 and not _multi_ok(question):  # 여러 일을 잇는 표지가 없는 질문을 낱말마다 쪼갠 계획은 받지 않는다('노형동 / 카페 / 가게 수')
+        ptrace["note"] = f"모델이 {len(plan)}단계로 나눴지만 질문에 여러 일을 잇는 표지가 없어 1단계로 봄"
+        ptrace["by"] = BY + " + 코드 검사"
+        plan = plan[:1]
+    if len(plan) <= 1:
+        r = question_agent.run(question, env, llm_on=llm_on, progress=progress)
+        r["step_agent"] = {"plan": [question], "trace": [ptrace]}
+        return r
+    return _serve_steps(question, env, llm_on, (lambda i, d: progress(i, d, STAGES)) if progress else say, plan, ptrace, t0)
+
+
+def _serve_steps(question, env, llm_on, say, plan, ptrace, t0):
+    import question_agent
+    import split
+    import prompts as P
+    chat = _chat()
+    steps = [{"do": s["do"].strip(), "uses_prev": bool(s.get("uses_prev")), "state": "남음", "result": None, "tries": 0} for s in plan]
+    trace, topics, facts, lines, series, tables = [ptrace], [], {"q": question}, [], [], []
+    notes = []  # 단계마다 붙은 안내·한계(대체 지표, 기간 등)를 묶은 답에도 남긴다
+    while any(s["state"] == "남음" for s in steps):
+        if time.perf_counter() - t0 > BUDGET:
+            trace.append({"step": len(trace) + 1, "tool": "-", "name": "시간 상한", "by": "코드", "ok": False, "args": "", "note": f"{BUDGET:.0f}초를 넘어 멈춤", "sec": 0})
+            break
+        i = next(k for k, s in enumerate(steps) if s["state"] == "남음")
+        s = steps[i]
+        say(2, f"{i + 1}/{len(steps)}단계: {s['do'][:40]}")
+        tools = [TOOL_ASK] + ([P.TOOL_TECHNIQUE] if _tech_ok(s["do"]) else []) + [P.TOOL_CATALOG, TOOL_SKIP]
+        t1 = time.perf_counter()
+        try:
+            msg = chat(None, [{"role": "system", "content": S_SERVE}, {"role": "user", "content": _state(question, steps, i, facts, s.get("hint"))}], tools)["message"]
+        except Exception as e:  # noqa: BLE001
+            msg = {"content": f"모델 오류 {type(e).__name__}"}
+        fn, args = _first_call(msg, {t["function"]["name"] for t in tools})
+        s["tries"] += 1
+        who, out = BY, None
+        if fn is None:
+            ok, reply = False, {"error": "도구를 부르지 않았어요. 지금 단계에 맞는 도구 하나를 부르세요."}
+        elif fn == "answer_question":
+            ok, reply, out, args = _ask_step(args, s, facts, env, llm_on)
+        else:
+            ok, reply, out, args = _do(fn, args, s, facts)
+        if not ok and s["tries"] >= TRIES and fn != "skip_step":  # 두 번 실패하면 코드가 단계 문장 그대로 일반 답을 한 번 부른다
+            ok, reply, out, args = _ask_step({"question": s["do"]}, s, facts, env, llm_on)
+            fn, who = "answer_question", "코드(모델이 두 번 실패해 단계 문장 그대로)"
+        trace.append({"step": len(trace) + 1, "tool": fn or "-", "name": f"{i + 1}단계 · " + {"answer_question": "일반 답", "run_technique": "통계 기법", "search_center_catalog": "센터 자료 찾기", "skip_step": "건너뜀"}.get(fn, "도구 없음"),
+                      "by": who, "ok": ok, "args": (args.get("question") if isinstance(args, dict) and args.get("question") else json.dumps(args, ensure_ascii=False))[:160] if args else "",
+                      "note": str(reply.get("error") or reply.get("conclusion") or reply.get("note") or "")[:120], "sec": round(time.perf_counter() - t1, 2)})
+        head = f"{i + 1}. {(args or {}).get('question') or s['do']}"
+        if fn == "skip_step" and ok:
+            s["state"], s["result"] = "건너뜀", reply.get("note")
+            lines.append(f"{head} → 자료로 할 수 없어 넘겼어요: {reply.get('note')}")
+        elif ok:
+            s["state"], s["result"] = "끝남", reply.get("conclusion") or reply.get("note")
+            card = (out or {}).get("card") or {}
+            lines.append(f"{head} → {s['result']}")
+            lines += [f"   · {e['text']}" for e in (card.get("evidence") or []) if e["text"] not in str(s["result"])][:2]  # 결론과 같은 근거 줄은 다시 쓰지 않는다
+            if fn == "answer_question" and out:
+                notes += list((out.get("understood") or {}).get("notes") or []) + list(card.get("limits") or [])
+                topics.append({"tuple": out.get("tuple"), "card": card, "question": (args or {}).get("question")})
+                _facts(out, facts)
+                seen_t = {x.get("title", "").split(" · ", 1)[-1] for x in series}
+                series += [x for x in split._piece_series(i, out) if x.get("title", "").split(" · ", 1)[-1] not in seen_t]  # 같은 그래프는 한 번만
+            if isinstance(args, dict) and (args.get("space") or args.get("dongs") or (out or {}).get("tuple", {}).get("space")):
+                facts["space"] = list(args.get("space") or args.get("dongs") or out["tuple"]["space"])
+        elif s["tries"] >= TRIES:
+            s["state"], s["result"] = "못 함", reply.get("error")
+            lines.append(f"{head} → {reply.get('error') or '답을 만들지 못했어요'}")
+        else:
+            s["hint"] = reply.get("error")
+    say(3, "단계별 답을 묶고 있어요")
+    n_ok = sum(1 for s in steps if s["state"] == "끝남")
+    ag = {"status": "성공" if n_ok else "실패", "method": f"단계형 Agent({len(steps)}단계)", "lines": lines, "by": "AI(로컬 모델: 단계 나누기·도구 고르기) + 프로그램(숫자)",
+          "result": {"numbers": {}, "notes": [], "series": series, "tables": tables}, "trace": trace, "topics": topics or None, "backend": "ollama",
+          "plan": [f"{k + 1}. {s['do']}" + (" (앞 단계 결과를 씀)" if s["uses_prev"] else "") for k, s in enumerate(steps)], "sec": round(time.perf_counter() - t0, 1)}
+    if not n_ok:
+        ag["error"] = "어느 단계도 답하지 못했어요."
+    first = next((tp["tuple"] for tp in topics if tp.get("tuple")), {})
+    return {"question": question, "status": "Agent", "tuple": first, "interpret": {"path": "단계형 Agent", "card": None}, "agent": ag,
+            "escalated": f"단계형 Agent가 질문을 {len(steps)}단계로 나눠 답함",
+            "card": {"conclusion": (lines or [""])[0], "evidence": [], "intervals": [], "limits": list(dict.fromkeys(notes)), "next_questions": []},
+            "step_agent": {"plan": [s["do"] for s in steps], "trace": trace}, "sec": round(time.perf_counter() - t0, 3)}
+
+
+PERIOD = re.compile(r"\d{4}\s*년(?:\s*\d{1,2}\s*월)?|작년(?:\s*\d{1,2}\s*월)?|올해|지난해|(?:최근|지난)\s*\d{1,2}\s*개월|요즘|요새|성수기|비수기")
+MULTI_Q = re.compile(r"(하고|이고|한\s*뒤|한\s*후|한\s*다음|그\s*다음|다음에|이어서|이후|먼저|뽑고|찾고|보고|확인하고|조회하고|비교하고|파악하고|계산하고|살피고|분석하고|구하고|추려|그중|1위\s*(동네|업종)|함께|같이|까지|도\s*(알려|보여|분석|비교|확인))")
+
+
+def _multi_ok(question):
+    import plan_agent
+    import split
+    return bool(MULTI_Q.search(question) or plan_agent.multi(question) or len(split.pieces(question) or []) >= 2)
+
+
+def _chat():
+    import expert
+    return expert._chat_fn("ollama")
+
+
+def _ask_step(args, s, facts, env, llm_on):
+    """answer_question: 모델이 쓴 하위 질문 문장을 질문 담당 Agent(해석·보정·계산·검수)로 답한다. 앞 결과의 동네가 빠졌으면 채운다."""
+    import question_agent
+    q = str((args or {}).get("question") or s["do"]).strip()
+    places = qparse.find_places(q)[0]
+    has_place = bool(places)
+    ref = re.search(r"(1위|첫\s*번째|선정된|그|해당|위)\s*(동네|지역|곳)", s["do"])
+    if s["uses_prev"] and facts.get("dongs") and ref and has_place and not set(places) & set(facts["dongs"]):
+        q = s["do"].replace(ref.group(0), facts["dongs"][0])  # 모델이 앞 결과와 다른 동네를 적었으면 단계 문장의 '1위 동네'를 앞 결과로 바꾼다
+        has_place = True
+    elif s["uses_prev"] and facts.get("dongs") and (not has_place or PREV_WORDS.search(q)):
+        dong = facts["dongs"][0]
+        q = PREV_WORDS.sub("", q) if PREV_WORDS.search(q) else q
+        q = f"{dong} {q.strip()}"
+    elif not has_place and facts.get("space") and not re.search(r"제주\s*(도|전체|전역)|동네\s*(별|들)|순위|가장|제일|어디", q):
+        q = f"{'·'.join(facts['space'][:2])} {q}"  # 단계 문장에 동네가 없으면 앞 단계의 동네를 이어받는다
+    per = PERIOD.findall(facts.get("q") or "")
+    miss = [w for w in dict.fromkeys(per) if w not in q]
+    if miss:  # 원래 질문의 기간('2024년', '최근 3개월')이 하위 질문에서 빠졌으면 이어 붙인다
+        q = f"{' '.join(miss)} {q}"
+    out = question_agent.run(q, dict(env, _no_split=True), llm_on=llm_on)
+    card = out.get("card") or {}
+    ok = out.get("status") not in ("범위밖", "선택필요", "되묻기", "실패") and bool(card.get("evidence"))
+    if not ok:
+        return False, {"error": card.get("conclusion") or (out.get("choose") or {}).get("message") or "답을 만들지 못했어요"}, out, {"question": q}
+    return True, {"conclusion": card.get("conclusion")}, out, {"question": q}
+
+
+def serve_expert(question):
+    """상세 분석(로컬): 여러 일을 묻는 요청이면 단계형 Agent로 답하고(상세 분석 결과 모양), 아니면 None(분석 담당 Agent가 맡음)."""
+    import analyst
+    if not _multi_ok(question):
+        return None
+    t0 = time.perf_counter()
+    plan = [s for s in ((analyst._ask(None, S_PLAN, question, PLAN_SCHEMA, max_tokens=400) or {}).get("steps") or []) if str(s.get("do", "")).strip()][:MAX_STEPS]
+    if len(plan) <= 1:
+        return None
+    ptrace = {"step": 1, "tool": "plan", "name": "단계 나누기", "by": BY, "ok": True, "args": json.dumps([s.get("do") for s in plan], ensure_ascii=False)[:160],
+              "note": f"{len(plan)}단계", "sec": round(time.perf_counter() - t0, 2)}
+    r = _serve_steps(question, {}, False, lambda i, d: None, plan, ptrace, t0)
+    return dict(r["agent"], backend="ollama", sec=r["sec"])

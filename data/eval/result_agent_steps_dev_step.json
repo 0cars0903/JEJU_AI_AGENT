@@ -1,0 +1,284 @@
+{
+ "summary": {
+  "file": "route_test_100.jsonl",
+  "mode": "step",
+  "measured": "2026-11-16",
+  "a 모든 단계 처리": "14/20",
+  "b 모든 단계 처리": "6/10",
+  "전체": "20/30",
+  "처리한 단계": "52/63",
+  "지연 중앙값": 10.0
+ },
+ "rows": [
+  {
+   "id": "X1-R051",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 14.3
+  },
+  {
+   "id": "X1-R052",
+   "group": "a",
+   "done": 3,
+   "parts": 3,
+   "ok": true,
+   "status": "Agent",
+   "sec": 8.2
+  },
+  {
+   "id": "X1-R053",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 16.4
+  },
+  {
+   "id": "X1-R054",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 14.9
+  },
+  {
+   "id": "X1-R055",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 6.1
+  },
+  {
+   "id": "X1-R056",
+   "group": "a",
+   "done": 2,
+   "parts": 3,
+   "ok": false,
+   "status": "Agent",
+   "sec": 14.5
+  },
+  {
+   "id": "X1-R057",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 9.8
+  },
+  {
+   "id": "X1-R058",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 6.8
+  },
+  {
+   "id": "X1-R059",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 18.7
+  },
+  {
+   "id": "X1-R060",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 8.2
+  },
+  {
+   "id": "X1-R061",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 11.4
+  },
+  {
+   "id": "X1-R062",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 14.6
+  },
+  {
+   "id": "X1-R063",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 12.3
+  },
+  {
+   "id": "X1-R064",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 6.6
+  },
+  {
+   "id": "X1-R065",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 8.4
+  },
+  {
+   "id": "X1-R066",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 6.1
+  },
+  {
+   "id": "X1-R067",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 10.0
+  },
+  {
+   "id": "X1-R068",
+   "group": "a",
+   "done": 2,
+   "parts": 3,
+   "ok": false,
+   "status": "Agent",
+   "sec": 13.5
+  },
+  {
+   "id": "X1-R069",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 6.1
+  },
+  {
+   "id": "X1-R070",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 9.6
+  },
+  {
+   "id": "X1-R071",
+   "group": "b",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 5.4
+  },
+  {
+   "id": "X1-R072",
+   "group": "b",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 5.0
+  },
+  {
+   "id": "X1-R073",
+   "group": "b",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 11.7
+  },
+  {
+   "id": "X1-R074",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 5.4
+  },
+  {
+   "id": "X1-R075",
+   "group": "b",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 17.6
+  },
+  {
+   "id": "X1-R076",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 9.4
+  },
+  {
+   "id": "X1-R077",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 9.9
+  },
+  {
+   "id": "X1-R078",
+   "group": "b",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 24.2
+  },
+  {
+   "id": "X1-R079",
+   "group": "b",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "Agent",
+   "sec": 12.6
+  },
+  {
+   "id": "X1-R080",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "Agent",
+   "sec": 16.6
+  }
+ ]
+}

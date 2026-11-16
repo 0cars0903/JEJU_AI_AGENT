@@ -93,12 +93,16 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
   const res = r.result ?? {};
   const nums = Object.entries(res.numbers ?? {});
   const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
+  const stepped = /^(단계형 Agent|질문 나누기)/.test(r.method ?? "");
   return createPortal(
     <div ref={rootRef} className="print-only print-expert" data-testid="expert-report" aria-hidden>
-      <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent · 상세 분석</h1>
-      <p>요청: {q}</p>
+      {/* 여러 단계 질문(단계형 Agent·질문 나누기)은 도민 질문의 보고서다. 상세 분석과 머리말을 나눈다(2026-11-16) */}
+      <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent · {stepped ? "보고서" : "상세 분석"}</h1>
+      <p>{stepped ? "질문" : "요청"}: {q}</p>
       <p>
-        기법: {r.method} · {r.code ? "AI가 작성한 코드" : "정해진 기법 코드"}를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 도구 {r.trace?.length ?? 0}단계 · 만든 때 {now}
+        {stepped
+          ? `처리: ${r.method} · 단계마다 정해진 계산 코드로 답한 결과(설명 숫자는 계산 결과와 대조함) · 도구 ${r.trace?.length ?? 0}회 · 만든 때 ${now}`
+          : `기법: ${r.method} · ${r.code ? "AI가 작성한 코드" : "정해진 기법 코드"}를 제출본 자료로 실행한 결과(설명 숫자는 실행 결과와 대조함) · 도구 ${r.trace?.length ?? 0}단계 · 만든 때 ${now}`}
       </p>
       <div className="report-part">
         <h2>설명</h2>

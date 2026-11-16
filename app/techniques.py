@@ -69,7 +69,7 @@ def parse(question):
     dongs = sorted({d for d in Q.DONGS if d in q}, key=q.index)
     target = next((t for t in Q.TARGETS_BIZ if t in q), None)
     metrics = sorted({m for m, (_, pat, _) in METRIC.items() if re.search(pat, q)}, key=lambda m: re.search(METRIC[m][1], q).start())
-    k = re.search(r"(\d)\s*개\s*(?:군집|그룹|유형|묶음)", q)
+    k = re.search(r"(\d{1,2})\s*개\s*(?:군집|그룹|유형|묶음)", q)
     return {"tech": detect(q), "dongs": dongs, "target": target, "metrics": metrics, "k": int(k.group(1)) if k else None}
 
 
@@ -711,6 +711,10 @@ def answer(question, slots=None):
         p["tech"] = slots["method"]
         p["dongs"] = slots.get("space") or p["dongs"]
         p["target"] = slots.get("target") or p["target"]
+        if "k" in slots:  # 조건에 맞게 고친 군집 수(분석 담당 Agent ② 대안, 2026-11-16)
+            p["k"] = slots["k"]
+        if slots.get("metrics"):  # 조건에 맞게 줄인 지표(회귀 설명 변수 3개 이하)
+            p["metrics"] = list(slots["metrics"])
     p["q"] = question or ""
     tech = p["tech"]
     tname = TECH[tech][0]

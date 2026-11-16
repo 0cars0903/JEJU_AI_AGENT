@@ -1,0 +1,554 @@
+{
+ "summary": {
+  "file": "route_eval_200.jsonl",
+  "mode": "loop",
+  "measured": "2026-11-16",
+  "a 모든 단계 처리": "17/40",
+  "b 모든 단계 처리": "0/20",
+  "전체": "17/60",
+  "처리한 단계": "52/122",
+  "지연 중앙값": 6.4
+ },
+ "rows": [
+  {
+   "id": "X1-V101",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 10.0
+  },
+  {
+   "id": "X1-V102",
+   "group": "a",
+   "done": 0,
+   "parts": 3,
+   "ok": false,
+   "status": "성공",
+   "sec": 2.9
+  },
+  {
+   "id": "X1-V103",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 11.0
+  },
+  {
+   "id": "X1-V104",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.0
+  },
+  {
+   "id": "X1-V105",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 7.9
+  },
+  {
+   "id": "X1-V106",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 10.6
+  },
+  {
+   "id": "X1-V107",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 11.2
+  },
+  {
+   "id": "X1-V108",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 3.6
+  },
+  {
+   "id": "X1-V109",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.6
+  },
+  {
+   "id": "X1-V110",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 11.4
+  },
+  {
+   "id": "X1-V111",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 5.7
+  },
+  {
+   "id": "X1-V112",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 8.0
+  },
+  {
+   "id": "X1-V113",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 13.5
+  },
+  {
+   "id": "X1-V114",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 8.2
+  },
+  {
+   "id": "X1-V115",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.5
+  },
+  {
+   "id": "X1-V116",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 10.7
+  },
+  {
+   "id": "X1-V117",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 6.3
+  },
+  {
+   "id": "X1-V118",
+   "group": "a",
+   "done": 0,
+   "parts": 3,
+   "ok": false,
+   "status": "성공",
+   "sec": 7.6
+  },
+  {
+   "id": "X1-V119",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 16.6
+  },
+  {
+   "id": "X1-V120",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "실패",
+   "sec": 4.4
+  },
+  {
+   "id": "X1-V121",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 11.6
+  },
+  {
+   "id": "X1-V122",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 0.9
+  },
+  {
+   "id": "X1-V123",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 6.2
+  },
+  {
+   "id": "X1-V124",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 11.4
+  },
+  {
+   "id": "X1-V125",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 10.2
+  },
+  {
+   "id": "X1-V126",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 10.9
+  },
+  {
+   "id": "X1-V127",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 8.3
+  },
+  {
+   "id": "X1-V128",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 0.7
+  },
+  {
+   "id": "X1-V129",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.5
+  },
+  {
+   "id": "X1-V130",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 9.5
+  },
+  {
+   "id": "X1-V131",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 14.3
+  },
+  {
+   "id": "X1-V132",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 11.7
+  },
+  {
+   "id": "X1-V133",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 10.8
+  },
+  {
+   "id": "X1-V134",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 5.9
+  },
+  {
+   "id": "X1-V135",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 5.9
+  },
+  {
+   "id": "X1-V136",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 10.9
+  },
+  {
+   "id": "X1-V137",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 8.2
+  },
+  {
+   "id": "X1-V138",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.4
+  },
+  {
+   "id": "X1-V139",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 11.7
+  },
+  {
+   "id": "X1-V140",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 8.1
+  },
+  {
+   "id": "X1-V141",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.4
+  },
+  {
+   "id": "X1-V142",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.6
+  },
+  {
+   "id": "X1-V143",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 7.9
+  },
+  {
+   "id": "X1-V144",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.0
+  },
+  {
+   "id": "X1-V145",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.3
+  },
+  {
+   "id": "X1-V146",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 7.2
+  },
+  {
+   "id": "X1-V147",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.4
+  },
+  {
+   "id": "X1-V148",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 5.5
+  },
+  {
+   "id": "X1-V149",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.1
+  },
+  {
+   "id": "X1-V150",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 3.8
+  },
+  {
+   "id": "X1-V151",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V152",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V153",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V154",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V155",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V156",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V157",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V158",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V159",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  },
+  {
+   "id": "X1-V160",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "상한",
+   "sec": 0.0
+  }
+ ]
+}

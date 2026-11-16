@@ -36,7 +36,7 @@ S_UNDERSTAND = ("너는 제주빅데이터센터의 상권 분석 담당자다. 
                 "동네는 제주 행정동·읍면 이름, 업종은 음식점·카페·한식 같은 말을 질문에서 그대로 옮긴다. 이유는 한 문장, 숫자 없이 쓴다.")
 F_UNDERSTAND = {"type": "object", "required": ["kind", "dongs", "target", "keyword", "reason"], "properties": {
     "kind": {"type": "string", "enum": KINDS}, "dongs": {"type": "array", "items": {"type": "string"}},
-    "target": {"type": "string"}, "keyword": {"type": "string"}, "reason": {"type": "string"}}}
+    "target": {"type": "string", "maxLength": 20}, "keyword": {"type": "string", "maxLength": 40}, "reason": {"type": "string", "maxLength": 120}}}  # 낱말을 끝없이 늘어놓아 JSON이 잘리던 결함(2026-11-16)
 S_ALT = ("너는 상권 분석 담당자다. 고른 기법이 자료 조건에 맞지 않아 계산하지 않았다. 이유를 읽고, 요청에 가장 가깝게 답할 수 있는 다른 기법을 하나 고른다. "
          "맞는 기법이 없으면 general을 고른다. 이유는 한 문장.\n" + TECH_GUIDE)
 F_ALT = {"type": "object", "required": ["kind", "reason"], "properties": {"kind": {"type": "string", "enum": TECHS + ["general"]}, "reason": {"type": "string"}}}
@@ -113,13 +113,17 @@ def understand(question, chat=None, checks=True):
     log.append({"tool": "understand", "name": "요청 이해(기법 고르기)", "by": BY, "ok": a.get("kind") in KINDS,
                 "args": json.dumps({k: a.get(k) for k in ("kind", "dongs", "target")}, ensure_ascii=False),
                 "note": str(a.get("reason") or "")[:120], "sec": round(time.perf_counter() - t0, 2)})
+    if checks and not a.get("kind") and T.detect(question):  # 모델 응답을 읽지 못했으면(빈 응답·잘린 JSON) 질문에 적힌 기법을 쓴다
+        kind = T.detect(question)
+        log.append({"tool": "check", "name": "코드 검사", "by": "코드", "ok": True, "args": "", "note": f"모델 응답을 읽지 못해 질문에 적힌 '{T.TECH[kind][0]}'(으)로", "sec": 0.0})
     if checks:
         named = T.detect(question)
-        if named and kind != named and kind in TECHS:  # 요청에 적힌 기법 이름과 다른 '기법'을 고르면 한 번 되묻는다(일반으로 판단했으면 덮어쓰지 않음, 2026-11-14 B2)
+        if named and kind != named and (kind in TECHS or kind == "general"):  # 기법 이름이 적혔는데 '일반'으로 판단해도 메모를 붙여 한 번 더 묻는다(덮어쓰지는 않음, 2026-11-16)  # 요청에 적힌 기법 이름과 다른 '기법'을 고르면 한 번 되묻는다(일반으로 판단했으면 덮어쓰지 않음, 2026-11-14 B2)
             t1 = time.perf_counter()
             again = _ask(chat, S_UNDERSTAND, f"{question}\n(검사 메모: 요청에 '{T.TECH[named][0]}'이라는 말이 있어요. 요청의 뜻이 그 기법과 맞는지 다시 판단하세요.)", F_UNDERSTAND)
             k2 = again.get("kind") if again.get("kind") in KINDS else kind
-            fixed = k2 != named
+            fixed = k2 != named and (kind in TECHS or (k2 == "general" and ASK_ANALYSIS.search(question)))
+            # 처음에 '일반'이었다가 다시 물어도 일반이면 그대로 둔다(B2). 다만 기법 이름 + '분석해줘·계산해줘'처럼 분석을 요구하면 적힌 기법으로(2026-11-16 '노형동 입지계수 분석해줘')
             log.append({"tool": "understand", "name": "요청 이해(다시 판단)", "by": BY, "ok": True, "args": json.dumps({"kind": k2}, ensure_ascii=False),
                         "note": str(again.get("reason") or "")[:120], "sec": round(time.perf_counter() - t1, 2)})
             if fixed:  # 그래도 다르면 적힌 기법으로 바로잡는다(코드 검사)
@@ -147,6 +151,7 @@ def understand(question, chat=None, checks=True):
 
 
 # 일반 질문 모양(시각·가게 수·붐빔)이 뚜렷하고 분석을 뜻하는 말이 없는 요청만 일반 답으로 돌린다. 조정용 기법 요청 667문항에서 잘못 돌림 0건(2026-11-16)
+ASK_ANALYSIS = re.compile(r"(분석|계산|산출|추정|검정|돌려|구해|적용|수행)\s*(해\s*(줘|주세요|봐|줄래)|하자|해|해봐)?\s*[.?!]?\s*$|분석\s*(을|해)")
 SIMPLE_Q = re.compile(r"(오전|오후|새벽|아침|저녁|밤|낮)\s*\d{1,2}\s*시|\d{1,2}\s*시\s*(쯤|경|에)|몇\s*(곳|집)|사람\s*(이\s*)?많|붐비|붐벼|북적|발길|손님\s*(이\s*)?(많|몰)|밤\s*늦게|점심\s*시간")
 ANALYSIS_HINT = re.compile(r"관계|상관|연관|영향|요인|원인|이유|때문|아니면|차이|비교해|견줘|군집|묶|무리|그룹|덩어리|패거리|세트|나눠|유형|비슷한|닮은|추세|계절|분해|분포|이상치|튀는|예측|전망|회귀|검정|유의|생존\s*분석|패턴|수록|함께|같이|따라|곳이\s*\S+도\s")  # '사람 많이 오는 곳이 장사도 잘 되는지'(관계)
 FOREIGN = re.compile(r"[\u4e00-\u9fff\u3040-\u30ff]|[A-Za-z]{3,}")  # 한자·가나·영문 단어(소형 모델이 중국어로 새는 경우, 2026-11-14 B1 측정 중 발견)
@@ -183,6 +188,7 @@ def run(question, chat=None, checks=True):
     u, log = understand(question, chat, checks)
     add(log)
     kind, ans, method = u["kind"], None, None
+    refused = (None, None)
     if kind == "catalog":
         ok, rep = expert._catalog({"keyword": u["keyword"] or question})
         add([{"tool": "search_center_catalog", "name": "센터 자료 찾기", "by": "코드", "ok": ok and bool(rep.get("found")), "args": u["keyword"], "note": rep.get("note", "")[:120], "sec": 0.0}])
@@ -204,15 +210,28 @@ def run(question, chat=None, checks=True):
             alt = _ask(chat, S_ALT, f"요청: {question}\n고른 기법: {T.TECH[kind][0]}\n계산하지 않은 이유: {why}", F_ALT)
             k2 = alt.get("kind") if alt.get("kind") in TECHS + ["general"] else "general"
             add([{"tool": "alternative", "name": "대안 고르기", "by": BY, "ok": True, "args": k2, "note": str(alt.get("reason") or "")[:120], "sec": round(time.perf_counter() - t1, 2)}])
-            if k2 in TECHS and k2 != kind:
+            fix, fix_note = _repair(question, kind)
+            if k2 == kind and fix:  # 같은 기법을 골랐으면 조건에 맞게 인자를 고쳐 다시 계산한다(대안 6건 모두 같은 기법을 골라 실패하던 결함, 2026-11-16 조정용 tech_dev_alt_8)
+                ok, rep, ans = expert._technique(question, {"technique": kind, "dongs": u["dongs"], "target": u["target"], **fix})
+                add([{"tool": "run_technique", "name": f"{T.TECH[kind][0]} 조건 맞춰 다시 계산", "by": "코드", "ok": ok, "args": json.dumps(fix, ensure_ascii=False), "note": fix_note, "sec": 0.0}])
+                if ok and ans:
+                    ans.setdefault("card", {}).setdefault("limits", []).insert(0, fix_note)
+            elif k2 in TECHS and k2 != kind:
                 kind = k2
                 ok, rep, ans = expert._technique(question, {"technique": kind, "dongs": u["dongs"], "target": u["target"]})
                 add([{"tool": "run_technique", "name": f"{T.TECH[kind][0]} 계산", "by": "코드", "ok": ok, "args": kind, "note": (rep.get("error") or rep.get("conclusion") or "")[:120], "sec": 0.0}])
             else:
+                if k2 == kind:  # 같은 기법을 골랐는데 코드가 고칠 수 없는 조건(동네 없는 입지계수 등)
+                    refused = (kind, why)
                 kind = "general"
             if not ok and kind != "general":
+                refused = (kind, why)  # 고칠 수 없는 조건(동네 없는 입지계수 등): 일반 답도 못 하면 하지 않은 이유를 그대로 답한다
                 kind = "general"
         method = f"{T.TECH[kind][0]} (정해진 기법 코드)" if kind in TECHS else None
+    if kind == "general" and refused[0]:  # 기법 조건이 맞지 않고 고칠 수도 없으면 일반 답으로 넘기지 않고 이유와 대신 할 일을 답한다
+        lines = [f"{T.TECH[refused[0]][0]} 분석을 하지 않았어요: {refused[1]}"]
+        return {"status": "성공", "method": f"{T.TECH[refused[0]][0]} (조건 확인에서 멈춤)", "backend": "ollama", "trace": trace, "plan": _plan(trace), "code": None,
+                "result": {"numbers": {}, "notes": [], "series": [], "tables": []}, "lines": lines, "by": "프로그램(기법 조건 확인)", "sec": round(time.perf_counter() - t0, 1)}
     if kind == "general":  # 일반 질문: 일반 경로(정해진 계산)로 답한다
         import result
         out = result.respond(question, {"_no_split": False}, llm_on=False)
@@ -245,6 +264,20 @@ def run(question, chat=None, checks=True):
     return {"status": "성공", "method": method, "backend": "ollama", "trace": trace, "plan": _plan(trace), "code": None,
             "result": {"numbers": numbers, "notes": card.get("limits") or [], "tables": [], "series": expert._views_to_series(ans)},
             "lines": [x for x in lines if x], "by": "AI(로컬 모델: 기법 선택·해석·다음 분석) + 프로그램(숫자)", "next": nexts, "sec": round(time.perf_counter() - t0, 1)}
+
+
+def _repair(question, kind):
+    """기법 조건에 맞게 코드가 고칠 수 있는 인자(분석 담당 Agent ② 대안). 고칠 수 없으면 ({}, "")."""
+    p = T.parse(question)
+    if kind == "cluster" and p.get("k") is not None and not 2 <= p["k"] <= 6:
+        k = 6 if p["k"] > 6 else 2
+        return {"k": k}, f"군집 수 {p['k']}개는 동네 43곳에 맞지 않아 {k}개로 나눴어요(2~6개만 계산)."
+    if kind == "regress":
+        xs = [m for m in p.get("metrics") or [] if m != "sales"]
+        if len(xs) > 3:
+            names = "·".join(T.METRIC[m][0] for m in xs[:3])
+            return {"metrics": ["sales"] + xs[:3]}, f"설명 변수가 {len(xs)}개라 질문에 먼저 나온 3개({names})만 썼어요(동네 43곳이라 3개까지)."
+    return {}, ""
 
 
 def _plan(trace):

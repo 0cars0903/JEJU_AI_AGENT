@@ -1,0 +1,284 @@
+{
+ "summary": {
+  "file": "route_test_100.jsonl",
+  "mode": "loop",
+  "measured": "2026-11-16",
+  "a 모든 단계 처리": "5/20",
+  "b 모든 단계 처리": "1/10",
+  "전체": "6/30",
+  "처리한 단계": "25/63",
+  "지연 중앙값": 9.7
+ },
+ "rows": [
+  {
+   "id": "X1-R051",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 12.8
+  },
+  {
+   "id": "X1-R052",
+   "group": "a",
+   "done": 1,
+   "parts": 3,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.3
+  },
+  {
+   "id": "X1-R053",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 12.2
+  },
+  {
+   "id": "X1-R054",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 12.6
+  },
+  {
+   "id": "X1-R055",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 12.3
+  },
+  {
+   "id": "X1-R056",
+   "group": "a",
+   "done": 3,
+   "parts": 3,
+   "ok": true,
+   "status": "성공",
+   "sec": 15.8
+  },
+  {
+   "id": "X1-R057",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 9.2
+  },
+  {
+   "id": "X1-R058",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "실패",
+   "sec": 13.9
+  },
+  {
+   "id": "X1-R059",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 7.3
+  },
+  {
+   "id": "X1-R060",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 12.9
+  },
+  {
+   "id": "X1-R061",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 9.0
+  },
+  {
+   "id": "X1-R062",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 8.9
+  },
+  {
+   "id": "X1-R063",
+   "group": "a",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 13.2
+  },
+  {
+   "id": "X1-R064",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 15.7
+  },
+  {
+   "id": "X1-R065",
+   "group": "a",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 6.9
+  },
+  {
+   "id": "X1-R066",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 11.7
+  },
+  {
+   "id": "X1-R067",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 1.6
+  },
+  {
+   "id": "X1-R068",
+   "group": "a",
+   "done": 0,
+   "parts": 3,
+   "ok": false,
+   "status": "성공",
+   "sec": 21.6
+  },
+  {
+   "id": "X1-R069",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "실패",
+   "sec": 13.6
+  },
+  {
+   "id": "X1-R070",
+   "group": "a",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 12.4
+  },
+  {
+   "id": "X1-R071",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.7
+  },
+  {
+   "id": "X1-R072",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.9
+  },
+  {
+   "id": "X1-R073",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 7.9
+  },
+  {
+   "id": "X1-R074",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 9.4
+  },
+  {
+   "id": "X1-R075",
+   "group": "b",
+   "done": 0,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 8.6
+  },
+  {
+   "id": "X1-R076",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 9.7
+  },
+  {
+   "id": "X1-R077",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 6.8
+  },
+  {
+   "id": "X1-R078",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.2
+  },
+  {
+   "id": "X1-R079",
+   "group": "b",
+   "done": 2,
+   "parts": 2,
+   "ok": true,
+   "status": "성공",
+   "sec": 10.0
+  },
+  {
+   "id": "X1-R080",
+   "group": "b",
+   "done": 1,
+   "parts": 2,
+   "ok": false,
+   "status": "성공",
+   "sec": 4.4
+  }
+ ]
+}

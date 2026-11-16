@@ -228,7 +228,9 @@ def _ask_core(body: Ask, request: Request, progress=None):
     import question_agent
     if question_agent.enabled() or body.agent_pick:  # 질문 담당 Agent(2026-11-15): 계산 → 결과 확인 → 다음 행동을 로컬 모델이 고른다(Ollama가 있을 때)
         try:  # agent_pick: 확인 카드에서 사용자가 고른 선택지로 계산(모델 판단 없음)
-            return clean(question_agent.run(question, env, llm_on=on, progress=lambda i, d: say(i, d, question_agent.STAGES), forced=body.agent_pick))
+            # 단계형 Agent(2026-11-16 마스터 '전체 서비스에 적용'): 모델이 질문을 단계로 나누고 단계마다 도구를 고른다. 단계가 하나면 질문 담당 Agent 그대로
+            import step_agent
+            return clean(step_agent.serve(question, env, llm_on=on, progress=lambda i, d, names=None: say(i, d, names or question_agent.STAGES), forced=body.agent_pick))
         except ValueError as e:
             raise HTTPException(422, str(e))
     say(1, "질문을 읽고 자료를 계산하고 숫자를 대조하고 있어요")

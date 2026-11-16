@@ -146,6 +146,9 @@ def main():
                 return rng.choice(ops), "무작위 기준선"
             A.decide = decide
         ask = lambda q: A.run(q, {}, llm_on=False)  # noqa: E731
+    elif mode == "step":  # 단계형 Agent(2026-11-16 서비스 경로): 모델이 단계를 나누고 단계마다 도구를 고른다. 단계가 하나면 질문 담당 Agent
+        import step_agent
+        ask = lambda q: step_agent.serve(q, {}, llm_on=False)  # noqa: E731
     else:
         ask = lambda q: result.respond(q, {}, llm_on=False)  # noqa: E731
     rows = []

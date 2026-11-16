@@ -156,7 +156,7 @@ def _technique(question, args):
     dongs = list(dict.fromkeys(d for d in raw if d in techniques.Q.DONGS)) or None
     tgt = (args.get("target") or "").strip() or None
     bad_t = tgt if tgt and tgt not in techniques.Q.TARGETS_BIZ else None  # 목록 밖 업종은 빼고 알린다(2026-11-14: 없는 업종 이름을 붙여 답한 결함)
-    slots = {"method": tech, "space": dongs, "target": None if bad_t else tgt}
+    slots = {"method": tech, "space": dongs, "target": None if bad_t else tgt, **{k: args[k] for k in ("k", "metrics") if k in args}}
     ans = techniques.answer(question, slots)
     steps = (ans.get("process") or {}).get("steps") or []
     if any(s.get("status") == "거부" for s in steps):
@@ -236,6 +236,10 @@ def ask(question, chat=None, user="local", mode="expert", use_claude=False):
     if not _quota(user):
         return {"status": "상한", "error": f"오늘 상세 분석 요청 상한({DAILY}건)에 닿았어요."}
     if name == "ollama" and mode == "expert" and os.environ.get("JEJU_ANALYST") != "0":
+        import step_agent  # 여러 일을 묻는 요청은 단계형 Agent(2026-11-16 마스터 '전체 서비스에 적용'), 기법 하나는 분석 담당 Agent
+        multi = step_agent.serve_expert(question)
+        if multi:
+            return multi
         # 로컬 상세 분석은 단계형 분석 담당 Agent(app/analyst.py): 단계마다 모델이 판단하고 코드가 검사한다(2026-11-14 마스터 지시)
         import analyst
         return analyst.run(question, chat=chat)
