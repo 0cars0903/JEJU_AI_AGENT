@@ -57,7 +57,7 @@ def _local_on():
     import urllib.request
     import llm
     try:
-        with urllib.request.urlopen(llm.OLLAMA_URL.replace("/api/chat", "/api/tags"), timeout=2) as r:
+        with urllib.request.urlopen(urllib.request.Request(llm.OLLAMA_URL.replace("/api/chat", "/api/tags"), headers=llm.ollama_headers()), timeout=llm.ping_timeout()) as r:
             names = {m["name"] for m in json.loads(r.read()).get("models", [])}
         ok = AGENT_MODEL in names or f"{AGENT_MODEL}:latest" in names
     except OSError:

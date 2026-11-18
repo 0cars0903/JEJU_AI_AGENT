@@ -21,11 +21,17 @@ CHAT = os.environ.get("JEJU_OLLAMA_MODEL", "qwen3:1.7b")
 PINNED = {"bge-m3": "790764642607", "qwen3:1.7b": "8f68893c685c", "qwen2.5:7b": "845dbda0ea48"}
 
 
+def _req(url):
+    """OLLAMA_TOKEN이 있으면 공유 토큰을 붙인 요청(llm.ollama_headers와 같은 머리글)."""
+    tok = os.environ.get("OLLAMA_TOKEN")
+    return urllib.request.Request(url, headers={"Authorization": "Bearer " + tok} if tok else {})
+
+
 def ollama_models(url=None):
     """Ollama에 받아 둔 모델 이름 집합. Ollama가 꺼져 있으면 None."""
     url = url or os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat").replace("/api/chat", "/api/tags")
     try:
-        with urllib.request.urlopen(url, timeout=2) as r:
+        with urllib.request.urlopen(_req(url), timeout=10 if os.environ.get("OLLAMA_TOKEN") else 2) as r:
             tags = json.loads(r.read())
     except (OSError, ValueError):
         return None
@@ -41,7 +47,7 @@ def digests(url=None):
     """Ollama에 받아 둔 모델의 digest(앞 12자리). Ollama가 꺼져 있으면 {}."""
     url = url or os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat").replace("/api/chat", "/api/tags")
     try:
-        with urllib.request.urlopen(url, timeout=2) as r:
+        with urllib.request.urlopen(_req(url), timeout=10 if os.environ.get("OLLAMA_TOKEN") else 2) as r:
             tags = json.loads(r.read())
     except (OSError, ValueError):
         return {}

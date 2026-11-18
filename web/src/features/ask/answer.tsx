@@ -162,13 +162,14 @@ function SummaryGrid({ cells, sample }: { cells: SummaryCell[]; sample?: boolean
   );
 }
 
-function LineItems({ lines, srcNo, sample }: { lines: Line[]; srcNo: (s?: string | null) => number; sample?: boolean }) {
+function LineItems({ lines, srcNo, sample, prevTag }: { lines: Line[]; srcNo: (s?: string | null) => number; sample?: boolean; prevTag?: string | null }) {
   return (
     <ul className="flex flex-col gap-3">
       {lines.map((l, i) => (
         <li key={i} className="flex flex-col gap-1">
           {/* 같은 꼬리표가 줄마다 되풀이되지 않게, 앞 줄과 다를 때만 보인다(UI 검토 2026-11-13) */}
-          {(i === 0 || lines[i - 1].tag !== l.tag) && <Tag text={l.tag} layer={l.layer} />}
+          {/* 접힌 나머지 줄은 펼친 줄의 마지막 꼬리표와 이어서 본다(2026-11-18 화면 시험) */}
+          {(i === 0 ? prevTag !== l.tag : lines[i - 1].tag !== l.tag) && <Tag text={l.tag} layer={l.layer} />}
           <span className="text-[length:var(--krds-fs-body-large)]">
             {l.text}
             <SrcMark n={srcNo(l.source)} sample={sample} />
@@ -353,7 +354,7 @@ export function AnswerCard({ r, sample }: { r: AskResult; sample?: boolean }) {
                       {a.summary ? `${b.title} 보기(${rest.length}줄)` : `${b.title} 나머지 ${rest.length}줄 보기`}
                     </summary>
                     <div className="pt-2 pb-3">
-                      <LineItems lines={rest} srcNo={srcNo} sample={sample} />
+                      <LineItems lines={rest} srcNo={srcNo} sample={sample} prevTag={first.length > 0 ? first[first.length - 1].tag : undefined} />
                     </div>
                   </details>
                 )}

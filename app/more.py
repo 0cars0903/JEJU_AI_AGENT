@@ -171,11 +171,11 @@ _EMB = {}
 def _embed(texts):
     """bge-m3 임베딩(CPU, Ollama). 서비스와 측정이 같은 함수를 쓴다."""
     import numpy as np
-    import requests
+    import llm
     url = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat").replace("/api/chat", "/api/embed")
     out = []
     for i in range(0, len(texts), 32):
-        r = requests.post(url, json={"model": "bge-m3", "input": texts[i:i + 32], "options": {"num_gpu": 0}}, timeout=600)
+        r = llm.http().post(url, headers=llm.ollama_headers(), json={"model": "bge-m3", "input": texts[i:i + 32], "options": {"num_gpu": 0}}, timeout=600)
         out += r.json()["embeddings"]
     v = np.array(out, dtype=np.float32)
     return v / np.linalg.norm(v, axis=1, keepdims=True)

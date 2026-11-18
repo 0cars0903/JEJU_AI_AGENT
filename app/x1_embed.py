@@ -14,9 +14,9 @@ from pathlib import Path
 import os
 
 import numpy as np
-import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import llm  # noqa: E402
 import qparse  # noqa: E402
 import qtuple as Q  # noqa: E402
 
@@ -35,7 +35,7 @@ def embed(texts, batch=32):
     todo = [t for t in texts if _key(t) not in _cache]
     for i in range(0, len(todo), batch):
         chunk = todo[i:i + batch]
-        r = requests.post(EMBED_URL, json={"model": MODEL, "input": chunk, "options": {"num_gpu": 0}}, timeout=600)
+        r = llm.http().post(EMBED_URL, headers=llm.ollama_headers(), json={"model": MODEL, "input": chunk, "options": {"num_gpu": 0}}, timeout=600)
         for t, v in zip(chunk, r.json()["embeddings"]):
             _cache[_key(t)] = v
     if todo:
@@ -45,7 +45,7 @@ def embed(texts, batch=32):
 
 def embed_live(q):
     """서비스와 같은 조건: 캐시 없이 한 문장을 바로 임베딩한다(시간 측정용)."""
-    r = requests.post(EMBED_URL, json={"model": MODEL, "input": [q], "options": {"num_gpu": 0}}, timeout=120)
+    r = llm.http().post(EMBED_URL, headers=llm.ollama_headers(), json={"model": MODEL, "input": [q], "options": {"num_gpu": 0}}, timeout=120)
     return np.array(r.json()["embeddings"], dtype=np.float32)
 
 

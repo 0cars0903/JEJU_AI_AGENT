@@ -283,7 +283,8 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
     const report = page.getByTestId("report");
     const titles = await report.locator("h2").allTextContents();
     await expect(page.getByTestId("report-summary").locator("th")).toHaveCount(5); // 첫 쪽은 화면과 같은 5칸 요약(문서 23 H3)
-    expect(titles).toEqual(["한눈에", "판단할 때 볼 것", "지금 상태", "앞으로", "업종 생존", "비슷한 동네와 계절", "날씨", "알 수 있는 것과 없는 것", "부록 A. 방법과 검증", "부록 B. 자료 목록과 기준 시점"]);
+    expect(titles).toEqual(["한눈에", "판단할 때 볼 것", "지금 상태", "분석", "앞으로",  // "분석": 흐름 기법 줄(more.attach, 문제 기록 56번)
+      "업종 생존", "비슷한 동네와 계절", "날씨", "알 수 있는 것과 없는 것", "부록 A. 방법과 검증", "부록 B. 자료 목록과 기준 시점"]);
     await expect(page.getByTestId("report-methods").locator("tbody tr")).toHaveCount(await methods.locator("li").count());
   });
 

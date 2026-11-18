@@ -18,6 +18,7 @@ import os
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import llm  # noqa: E402
 import qparse  # noqa: E402
 import qtuple as Q  # noqa: E402
 
@@ -59,8 +60,7 @@ class M1:
             self.low_conf = m.get("low_conf", LOW_CONF)
 
     def _embed(self, q):
-        import requests
-        r = requests.post(EMBED_URL, json={"model": self.embed_model, "input": [q], "options": {"num_gpu": 0}}, timeout=10)
+        r = llm.http().post(EMBED_URL, headers=llm.ollama_headers(), json={"model": self.embed_model, "input": [q], "options": {"num_gpu": 0}}, timeout=10)
         return np.array(r.json()["embeddings"][0], dtype=np.float64)
 
     def _predict(self, head, v):

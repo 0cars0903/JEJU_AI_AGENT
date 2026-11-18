@@ -66,3 +66,18 @@ class ModelVersion(unittest.TestCase):
         lines = C.version_lines({"qwen2.5:7b": "000000000000"})
         self.assertEqual(len(lines), 1)
         self.assertIn("qwen2.5:7b", lines[0])
+
+    def test_ollama_token_header(self):
+        """OLLAMA_TOKEN이 있으면 Ollama 요청에 공유 토큰을 붙이고, 없으면 붙이지 않는다(Vercel 데모 터널, 2026-11-18)."""
+        import llm
+        old = os.environ.pop("OLLAMA_TOKEN", None)
+        try:
+            self.assertNotIn("Authorization", llm.ollama_headers())
+            self.assertEqual(check_env._req("http://x/api/tags").headers, {})
+            os.environ["OLLAMA_TOKEN"] = "t-123"
+            self.assertEqual(llm.ollama_headers()["Authorization"], "Bearer t-123")
+            self.assertEqual(check_env._req("http://x/api/tags").get_header("Authorization"), "Bearer t-123")
+        finally:
+            os.environ.pop("OLLAMA_TOKEN", None)
+            if old is not None:
+                os.environ["OLLAMA_TOKEN"] = old

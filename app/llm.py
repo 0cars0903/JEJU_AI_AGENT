@@ -14,12 +14,47 @@ NUM_CTX = int(os.environ.get("JEJU_NUM_CTX", "4096"))
 GPU_LAYERS = {k.strip(): int(v) for k, v in (x.split("=", 1) for x in os.environ.get("JEJU_GPU_LAYERS", "qwen3:1.7b=0").split(",") if "=" in x)}
 
 
+def ollama_headers():
+    """Ollama 요청 머리글. OLLAMA_TOKEN이 있으면 공유 토큰을 붙인다(Vercel 데모 → Mac mini Ollama 터널, 2026-11-18 문제 기록 69번)."""
+    h = {"Content-Type": "application/json"}
+    if os.environ.get("OLLAMA_TOKEN"):
+        h["Authorization"] = "Bearer " + os.environ["OLLAMA_TOKEN"]
+    return h
+
+
+def ping_timeout():
+    """Ollama 상태 확인 제한 시간(초). 원격 터널(OLLAMA_TOKEN)은 TLS 연결이 붙어 2초를 넘길 수 있다(2026-11-18 Vercel 데모)."""
+    return 10 if os.environ.get("OLLAMA_TOKEN") else 2
+
+
+_ALIVE = {"t": 0.0}
+_SESSION = []
+
+
+def http():
+    """Ollama용 requests 세션(연결 다시 쓰기). 원격 터널은 호출마다 새 TLS 연결을 맺으면 1초 남짓씩 늘어난다(2026-11-18 Vercel 데모: 같은 질문 로컬 26초, 데모 99초)."""
+    if not _SESSION:
+        import requests
+        _SESSION.append(requests.Session())
+    return _SESSION[0]
+
+
 def _ollama_alive():
-    try:
-        urllib.request.urlopen(OLLAMA_URL.replace("/api/chat", "/api/tags"), timeout=2)
+    import time
+    remote = bool(os.environ.get("OLLAMA_TOKEN"))
+    if remote and time.time() - _ALIVE["t"] < 60:  # 원격 터널: 성공한 확인을 60초 다시 쓴다(질문 1개에 확인 35번이 오가던 것, 2026-11-18)
         return True
-    except OSError:
-        return False
+    for _ in range(2 if remote else 1):  # 원격 터널은 새 서버의 첫 연결이 실패할 수 있어 한 번 더 확인한다(2026-11-18 Vercel 데모 첫 질문 'Ollama 꺼짐')
+        try:
+            if remote:
+                http().get(OLLAMA_URL.replace("/api/chat", "/api/tags"), headers=ollama_headers(), timeout=ping_timeout()).raise_for_status()
+            else:
+                urllib.request.urlopen(urllib.request.Request(OLLAMA_URL.replace("/api/chat", "/api/tags"), headers=ollama_headers()), timeout=ping_timeout())
+            _ALIVE["t"] = time.time()
+            return True
+        except OSError:
+            pass
+    return False
 
 
 def backend():
@@ -52,9 +87,14 @@ def chat(model, messages, tools, name=None, max_tokens=700, fmt=None, effort=Non
             payload["logprobs"], payload["top_logprobs"] = True, int(logprobs)
         if model.startswith("qwen3"):
             payload["think"] = False
-        req = urllib.request.Request(OLLAMA_URL, json.dumps(payload).encode(), {"Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=300) as r:
-            out = json.loads(r.read())
+        if os.environ.get("OLLAMA_TOKEN"):  # 원격 터널: 연결을 다시 쓴다
+            resp = http().post(OLLAMA_URL, data=json.dumps(payload).encode(), headers=ollama_headers(), timeout=300)
+            resp.raise_for_status()
+            out = resp.json()
+        else:
+            req = urllib.request.Request(OLLAMA_URL, json.dumps(payload).encode(), ollama_headers())
+            with urllib.request.urlopen(req, timeout=300) as r:
+                out = json.loads(r.read())
         if LOG_PATH:  # 학습 증류의 자기 증류 자료(58번, 2026-11-17): 7B 호출의 입력과 응답을 그대로 남긴다(측정 때만 켬)
             try:
                 with open(LOG_PATH, "a", encoding="utf-8") as f:

@@ -227,6 +227,19 @@ class Status20261116(unittest.TestCase):
             os.environ.pop("VERCEL", None)
             self.assertEqual(A.status(), (True, None))
 
+    def test_vercel_needs_ollama_url(self):
+        """Vercel 데모: OLLAMA_URL(Mac mini 터널)이 없으면 끄고, 있으면 Ollama 확인으로 넘어간다(2026-11-18)."""
+        import check_env
+        import llm
+        with mock.patch.dict(os.environ, {"VERCEL": "1", "JEJU_QUESTION_AGENT": "1"}):
+            os.environ.pop("OLLAMA_URL", None)
+            self.assertEqual(A.status(), (False, "웹 데모(로컬 모델 없음)"))
+        A._STATUS.clear()
+        with mock.patch.dict(os.environ, {"VERCEL": "1", "JEJU_QUESTION_AGENT": "1", "LLM_BACKEND": "ollama", "OLLAMA_URL": "https://x.ts.net/api/chat"}), \
+                mock.patch.object(llm, "_ollama_alive", return_value=True), \
+                mock.patch.object(check_env, "ollama_models", return_value={"qwen2.5:7b"}):
+            self.assertEqual(A.status(), (True, None))
+
     def test_missing_lines(self):
         import check_env
         lines = check_env.missing_lines({"bge-m3"})

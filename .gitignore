@@ -47,3 +47,5 @@ models/m1_intent.prev.json
 models/m1_intent.candidate.json
 models/retrain_log.jsonl
 data/x1/feedback_train.jsonl
+.vercel
+.env*

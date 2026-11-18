@@ -61,6 +61,7 @@ def evidenced(q, m):
 
 RANK_Q = re.compile(r"(가장|제일|젤|최고|최대|최소|꼴찌|1위|순위|어디가|어느\s*동네)")
 LOW_Q = re.compile(r"(가장|제일|젤|덜)\s*(적|낮|작|안)|최하위|꼴찌|(적|낮|작)은\s*(동네|곳|지역|데)")
+START_Q = re.compile(r"(차려|열어|내|개업해|창업해|시작해)도\s*(될|되|괜찮)")  # 창업 판단 질문('노형동 카페 차려도 될까?')
 DATA_Q = re.compile(r"(자료|데이터)\S{0,2}\s*(뭐|무엇|어떤|있)")
 OUT_HINT = re.compile(r"인허가|허가|신고|서류|절차|법률|법적|세금|맛집|맛있|맛은|후기|평점|리뷰|추천해|추천\s*(횟집|식당|가게|음식점|카페|술집|주점|메뉴|빵집)|매매가|시세|임대|권리금|예약자|투숙객")  # 명세 6절 범위 밖 낱말
 FUTURE_MONEY_Q = re.compile(r"(내년|다음\s*해|앞으로|미래|\d+\s*년\s*뒤|하면).{0,25}(매출|수익|벌|수입).{0,15}(얼마|예측|나올|될지|될까)")
@@ -85,7 +86,7 @@ def status():
     import expert
     import llm
     model = expert.AGENT_MODEL
-    if os.environ.get("VERCEL"):
+    if os.environ.get("VERCEL") and not os.environ.get("OLLAMA_URL"):  # Vercel 데모는 Mac mini Ollama 터널(OLLAMA_URL·OLLAMA_TOKEN)이 있을 때만 켠다(2026-11-18)
         v = (False, "웹 데모(로컬 모델 없음)")
     elif os.environ.get("LLM_BACKEND") == "rule":
         v = (False, "꺼 둠")  # 일부러 LLM을 끈 구성(시험·확인 서버)은 화면에 알리지 않는다
@@ -232,7 +233,8 @@ def gaps(q, it, r, done=()):
                     "change": {"metric": ev or alt}, "note": "", "only": bool(ev)})
     if metric_done:
         pass
-    elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T9", "T10", "T11"):  # 비슷한 동네·자료 찾기는 지표 없이 답한다(51번 초보 문항 '연동이랑 닮은 동네'가 점포 수로 바뀌던 결함). 종합 진단(T10)은 여러 지표를 함께 보는 답이라 지표 없음이 아니다(2026-11-18 캡처: '노형동 카페 차려도 될까?'가 카드 매출로 바뀌던 결함)
+    elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T9", "T11") \
+            and not (t.get("type") == "T10" and START_Q.search(q)):  # 비슷한 동네·자료 찾기는 지표 없이 답한다(51번 초보 문항 '연동이랑 닮은 동네'가 점포 수로 바뀌던 결함). 창업 판단 질문의 종합 진단(T10)은 여러 지표를 함께 보는 답이라 지표 없음이 아니다(2026-11-18 캡처: '노형동 카페 차려도 될까?'가 카드 매출로 바뀌던 결함). 그 밖의 T10('장사 잘 되는 편'·'창업 활발')은 지표 후보를 그대로 낸다(조정용 일반 질문 회귀 2건)
         out.append({"kind": "지표 없음", "text": "질문에서 지표 낱말을 찾지 못해 기본 지표(가게 수 등)로 계산했어요." + (f" 질문과 가까운 지표 후보: {', '.join(dict.fromkeys(cand))}." if cand else ""),
                     "change": {"metric": list(dict.fromkeys(cand))}, "note": next((why for _, why in hints if why), "")})
     elif cand and not fixed and not set(t.get("metric") or []) & {m for ms, _ in hints for m in ms}:
