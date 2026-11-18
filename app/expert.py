@@ -1,6 +1,6 @@
 """상세 분석: 도구 호출 루프(문서 26 안 A, 2026-11-14). 요청 → LLM이 도구를 골라 호출 → 코드가 검사·실행 → 답 제출 → 숫자 대조.
 
-- 도구 5개(`prompts.AGENT_TOOLS`): describe_data, run_technique(기법 12종), run_python(격리 실행), search_center_catalog, submit_answer.
+- 도구 5개(`prompts.AGENT_TOOLS`): describe_data, run_technique(기법 13종), run_python(격리 실행), search_center_catalog, submit_answer.
 - 루프는 코드가 통제한다: 도구 호출 합계 MAX_STEPS(5)번, 시간 예산 BUDGET(90초, Vercel 상한 120초 안).
 - 백엔드: Claude 키가 있으면 Claude(도구 5개). 없으면 로컬 Ollama `JEJU_AGENT_MODEL`(기본 qwen2.5:7b)이 설치돼 있을 때 도구 4개(run_python 제외).
   로컬 모델은 도구 선택 9/10이지만 스스로 끝내지 못해(문서 26 8절 측정), 분석 도구가 성공하면 코드가 루프를 끝낸다.

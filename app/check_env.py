@@ -91,7 +91,7 @@ def report(models, has_key, backend=None):
     if backend == "rule":
         lines.append("[상세 분석] LLM_BACKEND=rule이라 꺼져 있습니다.")
     elif models is not None and AGENT in models:
-        lines.append(f"[상세 분석] Ollama {AGENT}가 도구 4개(코드 실행 제외)와 통계 기법 12종을 골라 씁니다.")
+        lines.append(f"[상세 분석] Ollama {AGENT}가 도구 4개(코드 실행 제외)와 통계 기법 13종을 골라 씁니다.")
     elif not has_key:
         lines.append(f"[상세 분석] 로컬 모델이 없어 꺼져 있습니다(선택: 'ollama pull {AGENT}'). 통계 기법 13종은 사이드바에서 그대로 씁니다.")
     if has_key and not auto:
