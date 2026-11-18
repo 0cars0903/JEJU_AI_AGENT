@@ -176,11 +176,11 @@ def run(code, timeout=None):
     app_dir = str(Path(__file__).resolve().parent)
     env = {k: v for k, v in os.environ.items() if k in ("PATH", "SYSTEMROOT", "TEMP", "TMP", "LANG")}  # 키는 넘기지 않는다
     env["PYTHONIOENCODING"] = "utf-8"
-    env["PYTHONUTF8"] = "1"  # Windows 기본 인코딩(cp949·cp1252)과 상관없이 UTF-8로(2026-11-19 Windows 시험)
+    # -I(격리 모드)는 PYTHON* 환경 변수를 무시하므로 UTF-8 모드는 명령줄 -X utf8로 켠다(2026-11-19 Windows 시험: 입력 코드의 한글이 cp1252로 읽혀 깨짐)
     limit = timeout or TIME_LIMIT
     with tempfile.TemporaryDirectory(prefix="jeju_expert_") as work:  # 빈 임시 폴더에서 실행
         win = os.name == "nt"
-        p = subprocess.Popen([sys.executable, "-I", "-c", RUNNER, app_dir, json.dumps(lib_paths())], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+        p = subprocess.Popen([sys.executable, "-I", "-X", "utf8", "-c", RUNNER, app_dir, json.dumps(lib_paths())], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, env=env, cwd=work, preexec_fn=None if win else _posix_limits)
         if win:
             _windows_job(p)
