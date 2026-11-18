@@ -1,7 +1,7 @@
 """여러 단계·기법 + 일반 질문(Agent 문항)의 단계 처리 측정(2026-11-16).
 
 사용: python tools/eval/agent_steps_eval.py --file 문항.jsonl --mode step|loop [--out 결과.json]
-- 문항: 조정용 interaction/gemini_work/047/route_test_100.jsonl, 판정용 data/eval/route_eval_200.jsonl. group a(여러 단계)·b(기법 + 일반)만 쓴다.
+- 문항: 조정용 data/eval/route_test_100.jsonl(원본 interaction/gemini_work/047), 판정용 data/eval/route_eval_200.jsonl. group a(여러 단계)·b(기법 + 일반)만 쓴다.
 - step: 서비스 경로의 단계형 Agent(app/step_agent.serve). loop: 옛 도구 루프(app/expert.ask, mode=escalate, 로컬 모델).
 - 채점: 정답 단계(parts)마다, 성공한 도구 호출 가운데 도구 종류·동네·지표 묶음이 맞는 것이 하나라도 있으면 그 단계를 처리한 것으로 본다.
   모든 단계를 처리한 문항만 '성공'이다. 호출 인자(단계형은 단계 답의 해석)를 보므로 답 내용까지 맞는지는 보지 않는다(후한 채점).
@@ -19,6 +19,7 @@ args = sys.argv[1:]
 FILE = Path(args[args.index("--file") + 1])
 MODE = args[args.index("--mode") + 1] if "--mode" in args else "step"
 OUT = Path(args[args.index("--out") + 1]) if "--out" in args else None
+STAFF = "--staff" in args  # 심사용 계정으로 로그인한 요청처럼(단계별 도구 고르기에 Claude, 모델은 JEJU_STEP_CLAUDE_MODEL). 2026-11-18 모델 비교
 
 FAM = {"매출": {"매출", "매출성장", "이용건수", "건당금액", "시간대매출", "과거매출", "업종비교", "시장추이"}, "유동인구": {"일평균방문", "시간대방문", "시간대매출", "방문거주비", "청년비중", "고령비중", "방문연령구성"},
        "방문인구": {"일평균방문", "시간대방문", "방문거주비"}, "생존율": {"5년생존율", "조건부생존", "폐업률"}, "폐업률": {"폐업률", "폐업수", "5년생존율"}, "개업수": {"개업수"},
@@ -106,7 +107,7 @@ def run_step(q):
     if os.environ.get("JEJU_EVAL_API_ROUTE", "1") == "1" and biz_compare.detect(q):
         x = biz_compare.answer(q)
         return x, [("answer_topic", {"space": (x.get("understood") or {}).get("slots", {}).get("space") or [], "metric": ["점포수", "매출"]})]
-    x = step_agent.serve(q, {}, llm_on=False)
+    x = step_agent.serve(q, {"staff": STAFF}, llm_on=False)
     calls = []
     if x.get("status") == "Agent":
         for tp in (x.get("agent") or {}).get("topics") or []:

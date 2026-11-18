@@ -11,10 +11,12 @@
 | 순서 | Windows(센터 PC) | macOS |
 |---|---|---|
 | 0. Ollama 설치(처음 1회, 필수) | [Ollama](https://ollama.com/download)를 설치하고 **새 명령 창**을 연다 | 같음(새 터미널) |
-| 1. 설치(처음 1회, 인터넷 필요) | `scripts\setup_windows.bat`(패키지와 로컬 모델 3개를 받고, 빠진 모델은 한 번 더 받는다) | `sh scripts/setup_mac.sh` |
-| 2. 실행 | `scripts\run_windows.bat` | `sh scripts/run_mac.sh` |
+| 1. 설치(처음 1회, 인터넷 필요) | 최상위 `1_설치_Windows.bat` 두 번 클릭(= `scripts\setup_windows.bat`. 패키지와 로컬 모델 3개를 받고, 빠진 모델은 한 번 더 받는다) | `1_설치_mac.command` 두 번 클릭(= `sh scripts/setup_mac.sh`) |
+| 2. 실행 | `2_실행_Windows.bat` 두 번 클릭(= `scripts\run_windows.bat`) | `2_실행_mac.command` 두 번 클릭(= `sh scripts/run_mac.sh`) |
 | 3. 접속 | 실행하면 기록을 남기지 않는 브라우저 창(Edge InPrivate, 없으면 Chrome 시크릿)이 http://localhost:8501 로 열린다 | 같음(Chrome 시크릿, 없으면 Edge InPrivate) |
-| 4. 방문자가 바뀔 때 | 브라우저 창을 닫고 `scripts\run_windows.bat`을 다시 실행한다(서버는 그대로 쓰고 새 창만 연다) | 창을 닫고 `sh scripts/run_mac.sh`를 다시 실행 |
+| 4. 방문자가 바뀔 때 | 브라우저 창을 닫고 `2_실행_Windows.bat`을 다시 실행한다(서버는 그대로 쓰고 새 창만 연다) | 창을 닫고 `2_실행_mac.command`를 다시 실행 |
+
+처음 보는 분은 최상위 [`00_먼저_읽기.md`](00_먼저_읽기.md)에서 대회 제출 항목별 파일 위치를 확인할 수 있다. `scripts` 폴더 안의 파일은 프로젝트 최상위에서 실행해야 한다(폴더 안에서 두 번 클릭하면 경로가 맞지 않는다).
 
 필요 환경: Python 3.9(설치 스크립트가 `requirements.txt`로 설치한다). 표준 테이블(`data/tables/`)이 들어 있어 데이터를 내려받지 않아도 바로 동작한다.
 
@@ -122,7 +124,7 @@ Anthropic의 구분(*Building effective agents*, 2024-12-19)은 다음에 부를
 | 요청 이해 106·107·111·64 | `data/eval/tech_route_eval_120.jsonl`(판정). 조정·질문 기록: `tech_dev_24.jsonl`·`tech_dev_052_48.jsonl`·`tech_dev_general_60.jsonl`·`tech_dev_rag_654.jsonl`(색인 `python tools/rag_build.py --tune`) | `python tools/eval/tech_route.py data/eval/tech_route_eval_120.jsonl`, `--no-checks`, `--rule`(결과 `data/eval/result_tech_route_120*.json`. 107은 지운 분류기 의견 방식, 커밋 0d74e20) |
 | 일반 질문 226 | `data/eval/general_answer_v2.jsonl`(split judge 판정, dev 조정. 질문은 표준어 타이핑 기준이고 제주어는 지원 범위 밖. 정답 기준 `data/eval/answer_rubric.md`, 자료 능력 명세 `data/eval/capability_spec.md`, 라벨 합치기 `tools/eval/merge_labels.py`) | `python tools/eval/general_answer.py --split judge --mode step`(결과 `data/eval/result_ga2_*.json`) |
 | 5단계 전체 | 위와 같은 판정 문항의 기법 96개 | `python tools/eval/analyst_eval.py data/eval/tech_route_eval_120.jsonl` |
-| 단계형 Agent 46·41·17, 조정용 22·20·6 | `data/eval/route_eval_200.jsonl`(판정), `interaction/gemini_work/047/route_test_100.jsonl`(조정)의 group a·b | `python tools/eval/agent_steps_eval.py --file data/eval/route_eval_200.jsonl --mode step`, `--mode loop`(결과 `data/eval/result_agent_steps_*.json`). 일반 질문 단계형 구성: `python tools/eval/general_answer.py --split judge --mode step` |
+| 단계형 Agent 49·옛 도구 루프 17(답 내용 43·13), 로그인(Claude) 45(43) | `data/eval/route_eval_200.jsonl`(판정), `data/eval/route_test_100.jsonl`(조정)의 group a·b | `python tools/eval/agent_steps_eval.py --file data/eval/route_eval_200.jsonl --mode step`, `--mode loop`(결과 `data/eval/result_agent_steps_*.json`). 일반 질문 단계형 구성: `python tools/eval/general_answer.py --split judge --mode step` |
 
 - 학습 자료(`data/x1/human_train.jsonl`·`fragment_train.jsonl`)와 판정 문항은 모두 Gemini가 만들었다. 같은 문장은 0개지만 같은 생성기라 말투가 비슷할 수 있다. 판정 문항으로 지시문·규칙을 고치지 않았다. 규칙·선택지·안내 문장은 조정용 304문항의 오답만 보고 고쳤다. 안내 낱말 대조는 061 검토 뒤 좁혔다('센터'·'방문'·'기준으로'만으로는 통과하지 않음). 측정 결과 파일은 `data/eval/result_*.json`에 남긴다.
 - 로컬 모델은 온도 0·seed 0으로 호출한다(`app/llm.py`). 계산은 모두 코드라 같은 표·같은 코드면 같은 숫자가 나온다.
@@ -277,6 +279,8 @@ Claude 기능(여러 단계 질문의 단계별 도구 고르기, 상세 분석�
 - 결과 생성 확인: `python app/result.py "질문"`.
 
 ### 오류와 제약
+- `.env`를 셸 명령(`source .env`)으로 읽지 않는다. 계정 해시의 `$`가 변수로 풀려 로그인이 실패한다. 앱은 실행할 때 `.env`를 직접 읽는다.
+
 | 증상 | 원인과 조치 |
 |---|---|
 | 답 아래에 '질문 담당 Agent 꺼짐'이 보이고 확인 카드가 뜨지 않음 | Ollama가 꺼져 있거나 `qwen2.5:7b`가 없다. 새 명령 창에서 `ollama pull qwen2.5:7b`를 실행하고 앱을 다시 시작한다 |

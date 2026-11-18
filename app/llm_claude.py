@@ -86,7 +86,16 @@ def chat(model, messages, tools, temperature=None, max_tokens=None, effort=None)
               "betas": BETAS, "fallbacks": "default"}
     if system:
         kwargs["system"] = system
-    return from_claude(client().beta.messages.create(**kwargs))
+    import time
+    t0 = time.perf_counter()
+    out = from_claude(client().beta.messages.create(**kwargs))
+    if os.environ.get("JEJU_CLAUDE_LOG"):  # 측정 때만: 요청한 모델·실제 답한 모델·토큰·시간(2026-11-18 모델 비교)
+        try:
+            with open(os.environ["JEJU_CLAUDE_LOG"], "a", encoding="utf-8") as f:
+                f.write(json.dumps({"asked": kwargs["model"], "model": out.get("model"), "sec": round(time.perf_counter() - t0, 2), **out["usage"]}) + "\n")
+        except OSError:
+            pass
+    return out
 
 
 if __name__ == "__main__":  # 형식 변환 점검(네트워크·키 없이)
