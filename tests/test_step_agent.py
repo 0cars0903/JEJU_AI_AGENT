@@ -1,6 +1,7 @@
 """단계형 Agent(app/step_agent.py, 2026-11-16): 모델은 가짜로 바꿔 끼워 코드 쪽 장치만 시험한다."""
 import json
 import sys
+import os
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -301,3 +302,31 @@ class ClauseConfirm(unittest.TestCase):
             s = {"do": "노형동 카페 매출", "uses_prev": False, "state": "남음", "result": None, "tries": 0}
             S._ask_step({"question": {"question": "노형동 카페 매출 알려줘"}}, s, {}, {}, False)
         self.assertEqual(asked[0], "노형동 카페 매출 알려줘")
+
+
+class StepClaudeMode(unittest.TestCase):
+    def test_modes(self):  # 2026-11-18 마스터 '(나)': 센터 운영 always는 로그인 없이 Sonnet, 제출본·데모 login은 로그인만, 공개 서버는 always를 login으로
+        import expert
+        import llm_claude
+        seen, local_calls = [], []
+
+        def local(model, msgs, tools):
+            local_calls.append(1)
+            return {"message": {"content": ""}}
+        base = [mock.patch.object(expert, "_chat_fn", lambda name: local), mock.patch.object(expert, "claude_key", lambda: True),
+                mock.patch.object(llm_claude, "chat", lambda m, msgs, tools, effort=None: seen.append(m) or {"message": {"content": ""}})]
+        for p in base:
+            p.start()
+        try:
+            for env, staff, want in [({"JEJU_STEP_CLAUDE": "always"}, False, "claude"), ({"JEJU_STEP_CLAUDE": "login"}, False, "local"),
+                                     ({"JEJU_STEP_CLAUDE": "on"}, True, "claude"), ({"JEJU_STEP_CLAUDE": "always", "VERCEL": "1"}, False, "local"),
+                                     ({"JEJU_STEP_CLAUDE": "off"}, True, "local")]:
+                with mock.patch.dict("os.environ", env):
+                    if "VERCEL" not in env:
+                        os.environ.pop("VERCEL", None)
+                    c = S._chat(staff)
+                    c(None, [], [])
+                    self.assertEqual("claude" if getattr(c, "last", None) == "claude" else "local", want, (env, staff))
+        finally:
+            for p in base:
+                p.stop()

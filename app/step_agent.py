@@ -851,14 +851,27 @@ def clauses(question):
 STEP_CLAUDE_MODEL = os.environ.get("JEJU_STEP_CLAUDE_MODEL", "claude-sonnet-5-5")
 
 
+def step_claude_mode():
+    """단계별 도구 고르기에 Claude를 쓰는 범위: login(기본) · always(센터 운영) · off. 예전 값 on은 login으로 본다."""
+    m = os.environ.get("JEJU_STEP_CLAUDE", "login").strip().lower()
+    m = {"on": "login"}.get(m, m)
+    if m not in ("login", "always", "off"):
+        m = "login"
+    if m == "always" and os.environ.get("VERCEL"):
+        m = "login"  # 공개 데모에서 로그인 없이 키를 쓰지 않게
+    return m
+
+
 def _chat(staff=False):
-    """단계별 도구 고르기 모델. Claude 키가 있고 심사용(담당자) 계정으로 로그인한 요청이면 Sonnet, 그 밖에는 7B
-    (문제 기록 60번 A안, 마스터 2026-11-18 '실행 A안' · '가. 단 평가자만 사용가능해야함').
-    근거: 조정용 130문항에서 정답 수는 7B와 같고(+1 −1) 문항당 시간 30~40% 짧음. JEJU_STEP_CLAUDE=off면 로그인해도 7B.
+    """단계별 도구 고르기 모델(문제 기록 60번 A안, 마스터 2026-11-18 '실행 A안' · '가. 단 평가자만 사용가능해야함' · '(나)로 진행').
+    JEJU_STEP_CLAUDE: login(기본, 제출본·데모) = 키가 있고 심사용(담당자) 계정으로 로그인한 요청만 Sonnet,
+    always(센터 운영) = 키가 있으면 로그인 없이도 항상 Sonnet, off = 항상 7B. 공개 서버(Vercel)에서는 always를 login으로 본다(키 보안).
+    근거: 같은 정확도(판정 답 내용 43 = 43)에서 시간이 짧음(개발 PC 평균 50초 → 13초). 센터 PC(VRAM 3GB)는 7B 일부를 CPU에서 계산해 더 느릴 것으로 판단.
     Claude 호출이 실패하면 그 호출부터 이 질문이 끝날 때까지 7B로 돌아간다."""
     import expert
     local = expert._chat_fn("ollama")
-    if not staff or not expert.claude_key() or os.environ.get("JEJU_STEP_CLAUDE", "on") == "off":
+    mode = step_claude_mode()
+    if mode == "off" or not expert.claude_key() or (mode == "login" and not staff):
         return local
     import llm_claude
     state = {"claude": True}
