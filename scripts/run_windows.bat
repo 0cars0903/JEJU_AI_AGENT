@@ -1,4 +1,6 @@
 @echo off
+rem UTF-8 mode: Korean text in files and console works the same on any Windows language setting (2026-11-19).
+set PYTHONUTF8=1
 rem Starts the app at http://localhost:8501 and opens it in a private browser window (no browsing history is kept).
 rem Run again to open a new private window: the running server is reused.
 .venv\Scripts\python -m app.open_browser --if-running http://localhost:8501 && exit /b 0

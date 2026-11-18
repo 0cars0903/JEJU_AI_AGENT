@@ -172,7 +172,7 @@ def _technique(question, args):
 
 def _catalog(args):
     kw = [w for w in str(args.get("keyword") or "").replace(",", " ").split() if w]
-    items = json.loads((Path(__file__).resolve().parents[1] / "data" / "catalog.json").read_text())
+    items = json.loads((Path(__file__).resolve().parents[1] / "data" / "catalog.json").read_text(encoding="utf-8"))
     def score(c):
         text = " ".join(str(c.get(k) or "") for k in ("name", "domain", "columns", "space", "time", "category"))
         return sum(w in text for w in kw)

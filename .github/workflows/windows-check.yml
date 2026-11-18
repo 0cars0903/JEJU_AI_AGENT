@@ -26,6 +26,7 @@ jobs:
         shell: cmd
         env:
           LLM_BACKEND: rule
+          PYTHONUTF8: "1"  # 실행 스크립트와 같은 UTF-8 모드(2026-11-19)
         run: .venv\Scripts\python -m unittest discover -s tests
 
       # run_windows.bat과 같은 명령으로 서버를 띄우고 화면·질문 응답을 확인한다.
@@ -33,6 +34,7 @@ jobs:
         shell: pwsh
         env:
           LLM_BACKEND: rule
+          PYTHONUTF8: "1"
         run: |
           $p = Start-Process -FilePath ".venv\Scripts\python.exe" -ArgumentList "-m","uvicorn","app.api:app","--host","127.0.0.1","--port","8501" -PassThru
           $ok = $false

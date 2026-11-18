@@ -1,4 +1,6 @@
 @echo off
+rem UTF-8 mode: Korean text in files and console works the same on any Windows language setting (2026-11-19).
+set PYTHONUTF8=1
 rem Run once. Creates .venv and installs packages. Needs Python 3.9 and internet.
 py -3.9 -m venv .venv || python -m venv .venv
 rem If pip in .venv does not run on this Python (seen on a Windows PC, 2026-11-16), reinstall the pip made for Python 3.9.

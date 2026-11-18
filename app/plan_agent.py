@@ -62,7 +62,7 @@ def _backend():
 def _load():
     if not _mem and CACHE.exists():
         try:
-            _mem.update(json.loads(CACHE.read_text()))
+            _mem.update(json.loads(CACHE.read_text(encoding="utf-8")))
         except (OSError, ValueError):
             pass
     return _mem
@@ -71,7 +71,7 @@ def _load():
 def _save():
     try:
         CACHE.parent.mkdir(parents=True, exist_ok=True)
-        CACHE.write_text(json.dumps(_mem, ensure_ascii=False, indent=0))
+        CACHE.write_text(json.dumps(_mem, ensure_ascii=False, indent=0), encoding="utf-8")
     except OSError:  # 읽기 전용 환경이면 메모리에만 둔다
         pass
 

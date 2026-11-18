@@ -176,6 +176,7 @@ def run(code, timeout=None):
     app_dir = str(Path(__file__).resolve().parent)
     env = {k: v for k, v in os.environ.items() if k in ("PATH", "SYSTEMROOT", "TEMP", "TMP", "LANG")}  # 키는 넘기지 않는다
     env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"  # Windows 기본 인코딩(cp949·cp1252)과 상관없이 UTF-8로(2026-11-19 Windows 시험)
     limit = timeout or TIME_LIMIT
     with tempfile.TemporaryDirectory(prefix="jeju_expert_") as work:  # 빈 임시 폴더에서 실행
         win = os.name == "nt"
