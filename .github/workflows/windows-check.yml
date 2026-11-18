@@ -16,10 +16,11 @@ jobs:
         with:
           python-version: "3.9"
 
-      # 사용자가 실행하는 설치 스크립트를 그대로 쓴다. 끝의 pause가 입력을 기다리지 않게 빈 입력을 넣는다.
-      - name: setup_windows.bat
+      # 평가 위원이 두 번 클릭하는 최상위 바로가기(1_설치_Windows.bat → scripts\setup_windows.bat)를 그대로 쓴다(2026-11-19).
+      # 끝의 pause가 입력을 기다리지 않게 빈 입력을 넣는다.
+      - name: 1_설치_Windows.bat
         shell: cmd
-        run: echo.| call scripts\setup_windows.bat
+        run: echo.| call 1_설치_Windows.bat
 
       - name: unit tests (LLM 없음)
         shell: cmd
