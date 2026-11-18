@@ -98,7 +98,6 @@ export function AskPage() {
 
   const askedBack = useRef<string | null>(null);
   const [stage, setStage] = useState<Stage | null>(null); // 서버가 보낸 지금 처리 단계(마스터 2026-11-15)
-  const [accepted, setAccepted] = useState<string | null>(null); // 확인 카드에서 [이 판단대로 답 보기]를 누른 주소
   const hist = useRef<HistoryItem[]>([]); // 대화 맥락: 직전 답 2개(이 탭 안에서만, 2026-11-16 1번 ⑥)
   const m = useMutation({
     mutationFn: (b: AskBody) => {
@@ -418,7 +417,7 @@ export function AskPage() {
               }}
             >
               {(res: AskResult) =>
-                res !== SAMPLE && res.status === "Agent" && res.agent && !(res.confirm?.pause && accepted !== key) ? (
+                res !== SAMPLE && res.status === "Agent" && res.agent ? (
                   <div className="flex flex-col gap-3" data-testid="agent-answer">
                     <p className="rounded-(--radius) bg-muted px-3 py-2 text-(--krds-text-bolder)">
                       {res.agent.backend === "code"
@@ -430,10 +429,8 @@ export function AskPage() {
                     )}
                     <ResultView r={res.agent} q={res.question ?? ""} />
                   </div>
-                ) : res !== SAMPLE && res.confirm?.pause && accepted !== key ? (
-                  // 확인 카드가 멈춤이면 답을 가리고 먼저 고르게 한다(마스터 2026-11-15)
-                  <AgentConfirm r={res} accepted={false} onAccept={() => setAccepted(key)} onPick={(pick) => run({ question: res.question ?? undefined, agent_pick: pick }, res.question ?? "")} />
                 ) : (
+                // 판단이 갈려도 답을 가리지 않는다. 확인 카드를 답 위에 펼쳐 보인다(마스터 2026-11-19 '해석을 바로 보여주게 수정', 11/15의 멈춤을 바꿈)
                 <div className="flex flex-col gap-4">
                   {res !== SAMPLE && (
                     <AgentConfirm r={res} accepted onAccept={() => undefined} onPick={(pick) => run({ question: res.question ?? undefined, agent_pick: pick }, res.question ?? "")} />

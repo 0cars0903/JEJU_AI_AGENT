@@ -894,11 +894,22 @@ export function AgentConfirm({ r, accepted, onAccept, onPick }: { r: AskResult; 
     );
   }
   return (
-    <details data-testid="agent-confirm" data-pause="false" className="rounded-(--radius) border border-(--krds-border-gray-light) px-3 py-2">
+    <details
+      data-testid="agent-confirm"
+      data-pause={c.pause ? "true" : "false"}
+      open={c.pause || undefined}
+      className={c.pause ? "rounded-(--radius) border-2 border-(--krds-border-primary) px-3 py-2" : "rounded-(--radius) border border-(--krds-border-gray-light) px-3 py-2"}
+    >
       <summary className="cursor-pointer">
         <strong>질문 담당 Agent의 판단:</strong> {first.text} <span className="text-(--krds-text-bolder)">(다른 처리로 보기)</span>
       </summary>
       <div className="mt-2 flex flex-col gap-2">
+        {c.pause && (
+          // 판단이 갈린 답(2026-11-19): 답은 아래에 그대로 보이고, 이 카드만 펼쳐 둔다
+          <p data-testid="agent-confirm-why" className="text-(--krds-text-bolder)">
+            {c.why}. 답은 아래에 보여 드려요. 질문과 다르면 다른 처리를 골라 주세요.
+          </p>
+        )}
         {c.after?.[0] && <p className="text-(--krds-text-bolder)">그 뒤 결과 검증: {c.after[0]}</p>}
         {choices.length > 0 && <div className="flex flex-wrap gap-2">{choices}</div>}
         {comment}

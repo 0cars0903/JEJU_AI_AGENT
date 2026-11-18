@@ -832,7 +832,7 @@ test.describe("사용성 점검 2차 반영", () => {
     await expect(page.getByTestId("answer-card")).toBeVisible();
   });
 
-  test("C2c 확인 카드: 멈춤이면 답을 가리고, [이 판단대로 답 보기]·다른 선택지·직접 적기가 동작한다(마스터 2026-11-15)", async ({ page }) => {
+  test("C2c 확인 카드: 판단이 갈려도 답을 바로 보이고 카드를 펼쳐 둔다, 다른 선택지·직접 적기가 동작한다(마스터 2026-11-15, 11/19 멈춤 없앰)", async ({ page }) => {
     const bodies: Record<string, unknown>[] = [];
     const fb: Record<string, unknown>[] = [];
     await page.route("**/api/ask{,/stream}", async (route) => {
@@ -856,20 +856,16 @@ test.describe("사용성 점검 2차 반영", () => {
     await page.keyboard.press("Enter");
     const card = page.getByTestId("agent-confirm");
     await expect(card).toHaveAttribute("data-pause", "true");
-    await expect(card).toContainText("답을 보여 드리기 전에 확인해 주세요");
-    await expect(page.getByTestId("answer-card")).toHaveCount(0);
+    await expect(page.getByTestId("answer-card")).toBeVisible(); // 답을 가리지 않는다
+    await expect(page.getByTestId("agent-confirm-why")).toContainText("답하는 방식을 바꿨어요"); // 카드는 펼쳐져 이유가 보인다
+    await expect(card).not.toContainText("답을 보여 드리기 전에 확인해 주세요");
     // 직접 적기
     await page.getByTestId("agent-confirm-write").click();
     await page.getByTestId("agent-confirm-comment").fill("가게 수를 물었어요");
     await page.getByTestId("agent-confirm-send").click();
     await expect(page.getByTestId("agent-confirm-sent")).toBeVisible();
     expect(fb.some((x) => x.comment === "가게 수를 물었어요" && x.agent_first === "사전 규칙 해석('현황')대로 답해 보기")).toBe(true);
-    // 이 판단대로 답 보기 → 답이 나오고 카드는 접힌 모양
-    await page.getByTestId("agent-confirm-accept").click();
-    await expect(page.getByTestId("answer-card")).toBeVisible();
-    await expect(page.getByTestId("agent-confirm")).toHaveAttribute("data-pause", "false");
     // 다른 선택지 → 고른 선택지를 서버에 보내 다시 계산
-    await page.getByTestId("agent-confirm").locator("summary").click();
     await page.getByTestId("agent-confirm-option").first().click();
     await expect(page.getByTestId("agent-confirm-forced")).toContainText("고른 처리로 계산한 답이에요");
     expect(bodies.some((b) => b.agent_pick === "지금 처리 그대로(되묻기·범위 밖 안내)")).toBe(true);
