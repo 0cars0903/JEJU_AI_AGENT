@@ -100,20 +100,10 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
         <span className="hidden text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder) md:inline">{HINT(!!dong)}</span>
       </div>
       {/* 스플릿 배치(Notion '화면 배치'): 데스크톱은 카드 3장 세로 | 지도, 한 화면에 들어오게 */}
-      <div className="grid gap-4 lg:grid-cols-[minmax(240px,300px)_1fr] lg:items-start">
+      {/* 지도 중심(마스터 결정 2026-11-16): 동네를 고르기 전에는 지도가 가로 전체를 쓴다. 고르면 숫자 상자와 지도를 나란히 둔다 */}
+      <div className={dong ? "grid gap-4 lg:grid-cols-[minmax(240px,300px)_1fr] lg:items-start" : "grid gap-4"}>
       {/* B1: 카드는 세 줄로 줄여 1366×768에서도 세 장이 다 보이게 한다. 작은 화면에서는 지도를 카드 위에 둬, 지도에서 고른 동네의 값이 바로 아래에 보인다(B4). */}
-      <div className="order-2 grid gap-2 md:grid-cols-3 lg:order-none lg:grid-cols-1">
-        {!dong && (
-          <div data-testid="home-first" className="flex flex-col gap-1 rounded-(--radius) border-2 border-(--krds-border-primary) bg-(--krds-surface-primary-subtler) px-3 py-3 md:col-span-3 lg:col-span-1">
-            <p className="text-[length:var(--krds-fs-heading-small)] font-bold">내 동네를 먼저 골라 주세요</p>
-            <p className="text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">위 상자에서 고르거나 지도에서 동네를 누르면 그 동네의 값이 나와요.</p>
-            <ul className="list-disc pl-5 text-[length:var(--krds-fs-body-medium)] text-(--krds-text-bolder)">
-              {(q.data?.cards ?? []).map((c) => (
-                <li key={c.kind}>{c.question}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+      <div className={dong ? "order-2 grid gap-2 md:grid-cols-3 lg:order-none lg:grid-cols-1" : "hidden"}>
         {dong && (
           // 좁은 화면: 지도 아래 카드 자리 맨 앞(머리 줄에 두면 지도가 화면 밖으로 밀린다, 사용성 점검 B1)
           <button
@@ -158,7 +148,7 @@ export function DongHome({ dongs, onAsk }: { dongs: string[]; onAsk: (slots: Slo
       </div>
       {/* 지도 경계는 동네 값을 기다리지 않고 바로 그린다. 값이 오면 색을 칠한다. 예전에는 값 요청이 늦거나 실패하면 지도 자리가 통째로 비었다(운영 '처음 화면' 지도 없음, 2026-11-13) */}
       {(
-        <div className="order-1 lg:order-none lg:max-w-[calc((100dvh-32rem)*1.5)]">
+        <div className={dong ? "order-1 lg:order-none lg:max-w-[calc((100dvh-30rem)*1.5)]" : "order-1 mx-auto w-full lg:max-w-[calc((100dvh-24rem)*1.5)]"}>
         {q.isError && !q.data && (
           <p data-testid="home-map-error" role="alert" className="mb-2 flex flex-wrap items-center gap-2 text-[length:var(--krds-fs-body-medium)]">
             지도 값을 불러오지 못했어요.

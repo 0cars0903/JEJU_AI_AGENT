@@ -211,7 +211,13 @@ def find_places(q, mode=None, trace=None):
     """trace에 list를 주면 (질문에 쓴 낱말, 읽은 동네)를 담는다(이해 상자 안내용)."""
     mode = mode or PLACE_MODE
     found, strong, amb, used = [], set(), {}, q
+    explicit = set()  # 질문에 행정동 이름 그대로 적힌 동(생활 지명보다 우선, 2026-11-17 실패 검토: 시장 이름이 적힌 동을 덮어써 두 동이 되던 결함)
     toks = _kiwi().tokenize(q) if mode == "kiwi" else None
+    if mode != "old" and not COMPARE.search(q):  # '중문 예래동'·'신제주 연동': 생활 지명 바로 뒤에 행정동 이름이 오면 생활 지명은 위치를 꾸미는 말로 본다(2026-11-17 조정용 R062)
+        for m in re.finditer(r"(?<![가-힣0-9])([가-힣]{2,4})\s+([가-힣0-9]{1,5}(?:동|읍|면))(?![가-힣]*(?:와|과|랑|하고)\s)", q):
+            k, d = m.group(1), m.group(2)
+            if k in PLACES and not ADMIN_SUFFIX.search(k) and d in PLACES and "dong" in PLACES[d] and PLACES[d]["dong"] == d:
+                used = used[:m.start(1)] + " " * len(k) + used[m.end(1):]
     for k in PLACE_KEYS:
         start = 0
         while True:
@@ -231,6 +237,8 @@ def find_places(q, mode=None, trace=None):
                 elif "dong" in v:
                     if v["dong"] not in found:
                         found.append(v["dong"])
+                    if k == v["dong"] and ADMIN_SUFFIX.search(k):
+                        explicit.add(k)
                     if trace is not None:
                         trace.append((k, v["dong"]))
                     if k in STRONG or (ADMIN_SUFFIX.search(k) and len(k) >= 3):
@@ -240,7 +248,9 @@ def find_places(q, mode=None, trace=None):
                 used = used[:i] + " " * len(k) + used[i + len(k):]  # 글자 위치를 유지해 형태소 위치와 맞춘다
                 break
             start = i + 1
-    if mode != "old" and len(found) >= 2 and strong and not COMPARE.search(q):  # ④ 비교 표현 없이 두 동네가 잡히면 강한 근거만 남긴다
+    if mode != "old" and len(found) >= 2 and explicit and not COMPARE.search(q) and len(explicit) < len(found):
+        found = [d for d in found if d in explicit]  # ④-1 비교 표현 없이 행정동 이름과 생활 지명이 함께 잡히면 적힌 행정동만
+    elif mode != "old" and len(found) >= 2 and strong and not COMPARE.search(q):  # ④ 비교 표현 없이 두 동네가 잡히면 강한 근거만 남긴다
         found = [d for d in found if d in strong]
     return found, amb
 
@@ -383,12 +393,16 @@ def parse(q):
     CARD = {"매출", "이용건수", "건당금액", "관광객비중", "시간대매출", "외국인매출"}
     if "일평균방문" in t["metric"] and CARD & set(t["metric"]) and not re.search(r"방문|유동인구|오가는|인파|붐비|북적", q):
         t["metric"] = [m for m in t["metric"] if m != "일평균방문"]
-    if t.get("detail") and not t["metric"] and re.search(r"(?<![가-힣])(수|개수|갯수)(는|가|를|도|만|야|예요|이야)?(\s|[?.!]|$)", q):
+    if "일평균방문" in t["metric"] and "버스일평균" in t["metric"] and not re.search(r"방문|유동인구|오가는|인파|붐비|북적", q):
+        t["metric"] = [m for m in t["metric"] if m != "일평균방문"]  # '버스 손님'의 손님은 버스 승객이다(51번 BG-029)
+    if (t.get("detail") or t.get("target")) and not t["metric"] and re.search(r"(?<![가-힣])(수|개수|갯수)(는|가|를|도|만|야|예요|이야)?(\s|[?.!]|$)", q):
         t["metric"] = ["점포수"]  # '학원 수 알려줘'·'펜션 수는?'의 '수'는 가게 수다(업종 낱말이 있을 때만)
     if not t.get("detail") and t["target"] is None and "점포수" in t["metric"]:
         w = next((g for a, g in OUT_COUNT_ALIAS.items() if g in DETAIL and any(_left_ok(q, m.start()) for m in re.finditer(re.escape(a), q))), None)
         if w:
             t["target"] = t["detail"] = w
+    if "특화계수" in t["metric"] and {"개업수", "폐업수"} & set(t["metric"]) and not re.search(r"특화|비중|몰려|집중", q):
+        t["metric"] = [m for m in t["metric"] if m != "특화계수"]  # '새로 생기는 가게가 많은 편'의 '많은 편'은 개업 수가 많은지다(SN-028, 2026-11-17)
     if {"업종비교", "시장추이", "매출성장"} & set(t["metric"]):  # 묶음 지표가 있으면 같이 잡힌 '매출'은 그 안에 들어 있다
         t["metric"] = [m for m in t["metric"] if m != "매출"]
     t["cond"] = [c for c in hits(q, COND_W) if c in Q.CONDS][:2]

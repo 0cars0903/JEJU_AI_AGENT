@@ -80,6 +80,18 @@ class Ask(BaseModel):
     dataset_id: Optional[str] = Field(default=None, max_length=32)  # F9: /api/dataset로 불러온 센터 CSV
     dataset_key: Optional[str] = Field(default=None, max_length=64)  # 파일을 넣을 때 받은 열쇠. 주소에는 넣지 않는다(문서 20 A7)
     agent_pick: Optional[str] = Field(default=None, max_length=200)  # 확인 카드에서 고른 선택지 문장(2026-11-15). 서버가 만든 선택지와 같아야 쓴다
+    history: Optional[list[dict]] = Field(default=None, max_length=2)  # 대화 맥락(2026-11-16 1번 ⑥): 직전 질문·결론·동네(최대 2개)
+
+
+def _history(h):
+    """화면이 보낸 대화 맥락을 문자열 길이·개수로 제한해 넘긴다(질문 200자, 결론 300자, 동네 3개)."""
+    out = []
+    for x in (h or [])[-2:]:
+        if not isinstance(x, dict) or not isinstance(x.get("question"), str):
+            continue
+        sp = [d for d in (x.get("space") or []) if isinstance(d, str)][:3] if isinstance(x.get("space"), list) else []
+        out.append({"question": x["question"][:200], "conclusion": str(x.get("conclusion") or "")[:300], "space": [d[:20] for d in sp]})
+    return out
 
 
 class Feedback(BaseModel):
@@ -185,8 +197,34 @@ def ask_stream(body: Ask, request: Request):
     return StreamingResponse(lines(), media_type="application/x-ndjson", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
+# 동시 질문 상한(2026-11-17 문제 기록 52번): 센터 PC마다 따로 설치하므로 한 서버의 사용자는 그 PC 앞의 한 사람이다.
+# 같은 PC에서 질문이 겹치면(탭 여러 개·연달아 누름) 모델 계산을 한 번에 JEJU_MAX_CONCURRENT개(기본 1)만 하고, 나머지는 차례를 기다리며 순번을 본다.
+# GPU 하나를 여러 질문이 나눠 쓰면 모두 느려지고 메모리가 넘칠 수 있어서다. 외부 작업 큐(Redis 등)는 PC 한 대·사용자 한 명에 맞지 않아 쓰지 않는다.
+import os as _os  # noqa: E402
+import threading as _th  # noqa: E402
+
+_SLOTS = _th.BoundedSemaphore(max(1, int(_os.environ.get("JEJU_MAX_CONCURRENT", "1"))))
+_Q = {"issued": 0, "done": 0}
+_QLOCK = _th.Lock()
+
+
 def _ask_core(body: Ask, request: Request, progress=None):
     say = progress or (lambda i, d, names=None: None)
+    with _QLOCK:
+        ahead = _Q["issued"] - _Q["done"]
+        _Q["issued"] += 1
+    if ahead > 0:
+        say(1, f"앞에 질문 {ahead}개를 계산하고 있어요. 이 PC의 AI 모델은 질문을 하나씩 계산해서, 차례가 되면 바로 시작해요.", ["차례 기다리기", "질문 처리"])
+    _SLOTS.acquire()
+    try:
+        return _ask_work(body, request, say)
+    finally:
+        _SLOTS.release()
+        with _QLOCK:
+            _Q["done"] += 1
+
+
+def _ask_work(body: Ask, request: Request, say):
     import m1
     import result
     question = (body.question or "").strip()
@@ -208,7 +246,8 @@ def _ask_core(body: Ask, request: Request, progress=None):
     import techniques
     import split
     # 기법 + 다른 질문이 섞였으면 질문 나누기(result.respond)로 보낸다. 기법 하나로만 답하면 나머지 질문이 빠진다(2026-11-14)
-    multi_q = not body.slots and split.enabled() and len(split.pieces(question)) >= 2
+    import step_agent as _sa
+    multi_q = not body.slots and ((split.enabled() and len(split.pieces(question)) >= 2) or len(_sa.clauses(question)) >= 2)  # 원문 구절로 둘 이상이면 여러 질문('입지계수 계산해주고 매장 수도', 2026-11-17)
     if not body.dataset_id and ((body.slots or {}).get("topic") == "technique" or (not body.slots and techniques.detect(question) and not multi_q)):
         if (body.slots or {}).get("topic") == "technique" and not question:
             question = techniques.EXAMPLES.get(body.slots.get("method"), "")
@@ -225,12 +264,19 @@ def _ask_core(body: Ask, request: Request, progress=None):
             raise HTTPException(422, str(e))
     if "m" not in _M1:
         _M1["m"] = m1.M1()
+    import biz_compare
+    import more
+    if not body.dataset_id and biz_compare.detect(question):  # 한 동네 안에서 두 업종 견주기(문제 기록 57·58번): 업종 둘 + 비교 낱말
+        say(1, "두 업종의 가게 수와 매출 자료를 견주고 있어요")
+        return clean(biz_compare.answer(question))
     import question_agent
     if question_agent.enabled() or body.agent_pick:  # 질문 담당 Agent(2026-11-15): 계산 → 결과 확인 → 다음 행동을 로컬 모델이 고른다(Ollama가 있을 때)
         try:  # agent_pick: 확인 카드에서 사용자가 고른 선택지로 계산(모델 판단 없음)
             # 단계형 Agent(2026-11-16 마스터 '전체 서비스에 적용'): 모델이 질문을 단계로 나누고 단계마다 도구를 고른다. 단계가 하나면 질문 담당 Agent 그대로
             import step_agent
-            return clean(step_agent.serve(question, env, llm_on=on, progress=lambda i, d, names=None: say(i, d, names or question_agent.STAGES), forced=body.agent_pick))
+            env["history"] = _history(body.history)  # 대화 맥락(⑥)
+            r = step_agent.serve(question, dict(env, staff=_user(request) not in (None, "local")), llm_on=on, progress=lambda i, d, names=None: say(i, d, names or question_agent.STAGES), forced=body.agent_pick)
+            return clean(more.attach(r, question))  # 흐름 기법(문제 기록 56번, JEJU_MORE): 분석 블록에 줄로 넣음
         except ValueError as e:
             raise HTTPException(422, str(e))
     say(1, "질문을 읽고 자료를 계산하고 숫자를 대조하고 있어요")
@@ -238,7 +284,7 @@ def _ask_core(body: Ask, request: Request, progress=None):
     off = question_agent.status()[1]
     if off and off != "꺼 둠" and isinstance(r, dict):
         r["agent_off"] = off  # 화면에 '질문 담당 Agent 꺼짐'을 작게 표시(시험 때 바로 알아보도록, 2026-11-16)
-    return clean(r)
+    return clean(more.attach(r, question))
 
 
 @app.get("/api/map")

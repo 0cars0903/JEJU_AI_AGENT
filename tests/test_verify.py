@@ -158,7 +158,9 @@ class Export(unittest.TestCase):
 
 class NoEffect(unittest.TestCase):
     def test_gate_fail_is_not_error(self):  # R10 관문 실패(MASE 0.986, p 0.55) → 효과 없음, 재시도 없음(v3: R2 제외)
-        r = review("노형동 음식점 다음 달 매출 예상해줘")
+        from test_result import old_sales_model  # 2026-11-16 감쇠 방식은 관문 통과 → 탈락 경로는 바꾸기 전 방식으로
+        with old_sales_model():
+            r = review("노형동 음식점 다음 달 매출 예상해줘")
         self.assertEqual(r["status"], "no_significant_effect")
         self.assertEqual(r["retries"]["total"], 0)
         self.assertFalse(any(x["type"] in V.ROUTE for x in r["record"]))

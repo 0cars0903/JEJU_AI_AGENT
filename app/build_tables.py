@@ -147,6 +147,39 @@ def base(x):  # 612 이름 끝의 방향·보조 표기 괄호 제거: '한국�
     return re.sub(r"\([^)]*\)\s*$", "", x or "").strip()
 
 
+BOUNDARY = OUT / "admdong_jeju.geojson"
+
+
+def _inside(ring, x, y):
+    """점(x, y)이 다각형 고리 안에 있는가(반직선 교차 수)."""
+    x1, y1 = ring[:, 0], ring[:, 1]
+    x2, y2 = np.roll(x1, -1), np.roll(y1, -1)
+    c = ((y1 > y) != (y2 > y)) & (x < (x2 - x1) * (y - y1) / np.where(y2 == y1, 1e-12, y2 - y1) + x1)
+    return bool(c.sum() % 2)
+
+
+def boundary_dong(lon, lat):
+    """좌표마다 들어 있는 행정동 이름(경계 파일이 없으면 None, 경계 밖이면 NaN)."""
+    if not BOUNDARY.exists():
+        return None
+    import json
+    polys = []
+    for f in json.loads(BOUNDARY.read_text(encoding="utf-8"))["features"]:
+        g = f["geometry"]
+        for pg in (g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]):
+            polys.append((f["properties"]["adm_nm"].split()[-1], [np.array(r) for r in pg]))
+    out = []
+    for x, y in zip(lon, lat):
+        d = None
+        if pd.notna(x) and pd.notna(y):
+            for name, rings in polys:
+                if _inside(rings[0], x, y) and not any(_inside(h, x, y) for h in rings[1:]):
+                    d = name
+                    break
+        out.append(d)
+    return pd.Series(out, index=lon.index)
+
+
 def build_station_dong(stores):
     st = pd.read_parquet(OUT / "api" / "612_stations.parquet")
     st["lon"], st["lat"] = pd.to_numeric(st["longitude"], errors="coerce"), pd.to_numeric(st["latitude"], errors="coerce")
@@ -162,6 +195,12 @@ def build_station_dong(stores):
             return sd[i], "최근접 점포"
         return None, "좌표 없음"
     st[["dong", "dong_src"]] = st.apply(lambda r: pd.Series(dong_of(r)), axis=1)
+    # 좌표가 행정동 경계 안에 들면 그 동으로(2026-11-16 문제 기록 33번). 612 주소 표기는 동이 틀린 경우가 있다(귀덕1리 '애월읍' → 경계로는 한림읍).
+    # 경계: vuski/admdongkor ver20261001 제주 부분(app/build_map.py와 같은 원자료), data/interim/admdong_jeju.geojson
+    poly = boundary_dong(st["lon"], st["lat"])
+    if poly is not None:
+        st["dong_src"] = np.where(poly.notna(), "행정동 경계", st["dong_src"])
+        st["dong"] = poly.fillna(st["dong"])
     say("[612] 정류소 행정동 부여", dict(Counter(st["dong_src"])))
     by_norm, by_base, by_piece = defaultdict(list), defaultdict(list), defaultdict(list)
     for _, r in st.iterrows():

@@ -148,6 +148,13 @@ def s1_query(task, store, env):
 
     def by_dong(df):
         return df[df["dong"].isin(dongs)] if dongs else df
+    from places import REST_MAP
+    if m in ("5년생존율", "폐업률") and REST_MAP.get(tgt or ""):  # 동네 × 업종(표본 50곳 이상만, 2026-11-17 실패 검토 ④)
+        b = pd.read_parquet(TAB / ("km_biz.parquet" if m == "5년생존율" else "close_biz.parquet"))
+        b = b[(b["group"] == tgt) & (b["dong"] != "제주 전체")]
+        b = b[(b["n"] if m == "5년생존율" else b["store_years"]) >= 50]
+        col = "survival_pct" if m == "5년생존율" else "rate_pct"
+        return {"table": by_dong(b.rename(columns={col: "value"}))[["dong", "value"]], "dataset": f"780 음식점 인허가(동네별 {tgt}, 표본 50곳 이상)", "unit": "%"}
     if m in ("점포수", "특화계수"):
         b = pd.read_parquet(TAB / "biz.parquet")
         sub = v3.biz_rows(b, tgt) if tgt and tgt not in ("음식점",) else (b[b["major"] == "음식"] if tgt == "음식점" else b)
@@ -176,10 +183,10 @@ def s1_query(task, store, env):
         return {"table": out, "dataset": "780 음식점 인허가", "unit": "곳/년"}
     if m == "폐업률":
         return {"table": by_dong(pd.read_parquet(TAB / "close_3y.parquet")).rename(columns={"rate_pct": "value"}), "dataset": "780 음식점 인허가", "unit": "%"}
-    if m in ("일평균방문", "방문거주비"):
+    if m in ("일평균방문", "방문거주비", "근무거주비"):  # 근무거주비: 카탈로그에 공개 경로가 있으나 계산 분기가 없던 지표(2026-11-17 조정용 R060 '상주인구 대 직장인구')
         p = by_dong(pd.read_parquet(TAB / "pop_month.parquet"))
-        p = p.assign(value=p["visit"] / p["days"] if m == "일평균방문" else p["visit"] / p["resd"])[["dong", "ym", "value"]]
-        return {"table": p, "dataset": "583 유동인구", "unit": "지수"}
+        p = p.assign(value=p["visit"] / p["days"] if m == "일평균방문" else (p["visit"] if m == "방문거주비" else p["work"]) / p["resd"])[["dong", "ym", "value"]]
+        return {"table": p, "dataset": "583 유동인구", "unit": "지수" if m == "일평균방문" else "배"}  # 두 지수의 비는 '배'(0.2 지수로 나오던 표기)
     if m in ("버스일평균", "경로일평균"):
         bm = by_dong(pd.read_parquet(TAB / "bus_month.parquet"))
         if m == "경로일평균":

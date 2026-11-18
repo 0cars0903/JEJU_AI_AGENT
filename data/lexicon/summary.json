@@ -1,7 +1,7 @@
 {
  "places": {
-  "names": 2864,
-  "ambiguous(되묻기)": 115,
+  "names": 2867,
+  "ambiguous(되묻기)": 118,
   "sources": {
    "법정동(places.json)": 191,
    "리 이름(793 지번주소)": 118,
@@ -12,7 +12,7 @@
   "categories": 283,
   "colloquial_groups": 16
  },
- "metrics": 120,
+ "metrics": 124,
  "population": 16,
  "conditions": 43,
  "time": 23,

@@ -6,6 +6,7 @@
 - 답은 기존 답 화면 형식(answer: 결론·3블록·나눠 보기·방법과 검증·출처)으로 돌려준다.
 """
 import re
+from pathlib import Path
 from functools import lru_cache
 
 import numpy as np
@@ -18,24 +19,26 @@ from layers import _cop, _josa, _ro
 
 # ---------------------------------------------------------------- 기법·지표 사전
 TECH = {  # 이름 → (보이는 이름, 질문에서 찾을 말)
-    "corr": ("상관", r"상관|연관성|같이 움직|관계가 있"),
+    "corr": ("상관", r"상관|연관성|같이 움직|관계가 있|(?<![A-Za-z])CCF(?![A-Za-z])"),  # CCF·교차상관: 두 동네 시계열(2026-11-17 조정용 R080)
     "cluster": ("군집", r"군집|클러스터|유형으로 나눠|그룹으로 나눠|끼리 묶"),
     "change": ("변화 분해", r"(건수|건당|단가|객단가).*(분해|나눠)|변화 ?분해|(분해|나눠).*(건수|건당|단가)"),
-    "decomp": ("시계열 분해", r"시계열 ?분해|추세와 계절|계절성"),
-    "regress": ("회귀", r"회귀|영향을 미치|미치는 영향|설명하는 요인"),
+    "decomp": ("시계열 분해", r"시계열 ?분해|추세와 계절|계절성|계절 ?분해|(?<![A-Za-z])STL(?![A-Za-z])"),  # STL·계절분해(2026-11-17 조정용 R076)
+    "regress": ("회귀", r"회귀|영향을 미치|미치는 영향|설명하는 요인|(?i:newey)"),
     "test": ("두 집단 검정", r"검정|유의한 차이|유의미한 차이|통계적으로 차이|통계적으로 다른"),
-    "dist": ("분포", r"분포|히스토그램|사분위|치우쳐"),
+    "dist": ("분포", r"(?<!업종 )(?<!업종)분포|히스토그램|사분위|치우쳐"),  # '업종 분포'는 동네 안 업종 구성이라 업종 다양성(hhi)으로(2026-11-17 실패 검토 ②)
     "outlier": ("이상치", r"이상치|이상값|튀는 달|특이한 달|이상한 달"),
     # 2026-11-14 추가(마스터 지시 '추가 기법 조사·반영'): 상권 연구에서 쓰는 기법 중 제출본 자료로 계산할 수 있는 것
-    "lq": ("입지계수", r"입지 ?계수|(?<![A-Za-z])LQ(?![A-Za-z])|특화 ?계수|특화 ?업종|특화도|집적도"),
+    "lq": ("입지계수", r"입지 ?계수|(?<![A-Za-z])LQ(?![A-Za-z])|특화 ?계수|특화 ?업종|특화도|집적도|(평균|전체) ?비중과 ?비교|비중에 비해"),  # 비중 비교는 과밀(sat)보다 lq(2026-11-18 60번 진단)
     "surv": ("생존분석", r"생존 ?분석|생존 ?곡선|생존 ?함수|카플란|(?i:kaplan)|수명표|생존 ?확률"),
-    "hhi": ("업종 다양성", r"다양성 ?지수|업종 ?다양성|허핀달|(?<![A-Za-z])HHI(?![A-Za-z])|집중도 ?지수|엔트로피"),
-    "shift": ("변이할당", r"변이 ?할당|(?i:shift.?share)|성장 ?요인 ?분해|지역 ?경쟁 ?효과|산업 ?구성 ?효과"),
+    "hhi": ("업종 다양성", r"다양성 ?지수|업종 ?다양성|허핀달|(?<![A-Za-z])HHI(?![A-Za-z])|집중도 ?지수|엔트로피|업종 ?(별 ?)?(분포|구성)"),
+    "shift": ("변이할당", r"변이 ?할당|(?i:shift.?share)|성장 ?요인 ?분해|지역 ?경쟁 ?효과|(산업|업종) ?구성 ?(효과|덕분)|몫으로 나눠"),
+    # 2026-11-17 실패 검토 ⑤(마스터 '포화도의 정의 수립'): 소매 포화 지수(IRS, LaLonde 1961) = 수요 ÷ 공급
+    "sat": ("포화도", r"포화|과포화|레드 ?오션|과밀|가게가 ?너무 ?많|경쟁이 ?(심|치열)"),
 }
 PLAIN = {  # 기법 → 도민용 쉬운 말(사이드바와 같은 말, 2026-11-14 평가 지적 '도민에게 어려운 통계 용어')
     "corr": "같이 움직이는 정도", "cluster": "비슷한 동네끼리 묶기", "change": "건수와 건당 금액으로 나누기", "decomp": "추세와 계절 나누기",
     "regress": "매출에 미치는 영향", "test": "차이가 우연인지", "dist": "동네 값의 흩어짐", "outlier": "튀는 달 찾기",
-    "lq": "이 동네에 몰린 업종", "surv": "몇 년 버티는지", "hhi": "업종이 고르게 섞였는지", "shift": "성장 원인 나누기",
+    "lq": "이 동네에 몰린 업종", "surv": "몇 년 버티는지", "hhi": "업종이 고르게 섞였는지", "shift": "성장 원인 나누기", "sat": "가게가 넘치는지",
 }
 METRIC = {  # 지표 → (이름, 질문에서 찾을 말, 단위)
     "sales": ("카드 매출", r"매출|카드|소비", "원"),
@@ -44,20 +47,28 @@ METRIC = {  # 지표 → (이름, 질문에서 찾을 말, 단위)
     "surv": ("5년 생존율", r"생존|폐업", "%"),
     "tour": ("관광객 매출 비중", r"관광객", "%"),
     "sales746": ("카드 매출(746, 2017~2021)", r"$^", "원"),
+    # 2026-11-17 실패 검토: 한 동네 안에서 거주 인구와 매출의 상관을 물어도 지표가 없어 다른 상관으로 가던 결함(유동인구 583의 거주·직장 인구)
+    "resd": ("거주 인구", r"거주|주민|사는\s*사람|상주", "지수"),
+    "work": ("직장 인구", r"직장\s*인구|직장인|근무\s*인구|출근", "지수"),
 }
 CARD_BIZ = {"음식점": "음식점업", "카페": "음식점업", "한식": "음식점업", "일식": "음식점업", "횟집": "음식점업", "중식": "음식점업",
             "치킨": "음식점업", "분식": "음식점업", "주점": "음식점업", "숙박": "숙박업", "소매": "소매업", "편의점": "소매업"}
 STORE_MAJOR = {"음식점업": "음식", "숙박업": "숙박", "소매업": "소매"}
 SRC = {"sales": ("제주관광공사 카드 소비", "card_month"), "visit": ("유동인구(제주데이터허브 583)", "pop_month"),
        "stores": ("상가 정보(공공데이터포털)", "biz"), "surv": ("음식점 인허가(행정안전부)", "km"), "tour": ("제주관광공사 카드 소비", "card_month"),
-       "sales746": ("제주데이터허브 746 업종별 카드 매출", "card746_month")}
-NEXT = {"sales": "매달", "visit": "매달", "stores": "분기마다", "surv": "매년", "tour": "매달", "sales746": "갱신 끝남(2021-05)"}
+       "sales746": ("제주데이터허브 746 업종별 카드 매출", "card746_month"),
+       "resd": ("유동인구(제주데이터허브 583)", "pop_month"), "work": ("유동인구(제주데이터허브 583)", "pop_month")}
+NEXT = {"sales": "매달", "visit": "매달", "stores": "분기마다", "surv": "매년", "tour": "매달", "sales746": "갱신 끝남(2021-05)", "resd": "매달", "work": "매달"}
+
+
+UNAVAIL = re.compile(r"임대료|월세|권리금|평점|리뷰|별점|후기|매장별|점포별|가게별|개별\s*(점포|가게|매장)|단일\s*매장|골목|청년\s*인구|연령|나이|성별|인과|일별\s*(카드\s*)?매출|시간대별\s*매출")
 
 
 def detect(question):
     """기법 이름이 있으면 기법 키, 없으면 None."""
     q = question or ""
-    for k, (_, pat) in TECH.items():
+    # 변이할당은 '업종 구성'을 낱말로 품어 업종 다양성(hhi)보다 먼저 본다(2026-11-18 60번 진단: Shift-Share 질문을 hhi로 바꾼 결함)
+    for k, (_, pat) in sorted(TECH.items(), key=lambda kv: kv[0] != "shift"):
         if re.search(pat, q):
             return k
     return None
@@ -69,8 +80,10 @@ def parse(question):
     dongs = sorted({d for d in Q.DONGS if d in q}, key=q.index)
     target = next((t for t in Q.TARGETS_BIZ if t in q), None)
     metrics = sorted({m for m, (_, pat, _) in METRIC.items() if re.search(pat, q)}, key=lambda m: re.search(METRIC[m][1], q).start())
+    if {"resd", "work"} & set(metrics) and "visit" in metrics and not re.search(r"방문|유동|발길|붐비", q):
+        metrics.remove("visit")  # '거주 인구'의 '인구'를 방문으로 읽지 않는다
     k = re.search(r"(\d{1,2})\s*개\s*(?:군집|그룹|유형|묶음)", q)
-    return {"tech": detect(q), "dongs": dongs, "target": target, "metrics": metrics, "k": int(k.group(1)) if k else None}
+    return {"tech": detect(q), "dongs": dongs, "target": target, "metrics": metrics, "k": int(k.group(1)) if k else None, "q": q}
 
 
 # ---------------------------------------------------------------- 자료
@@ -104,6 +117,12 @@ def visit_monthly(dong=None):
 
 
 def monthly(metric, dong=None, target=None):
+    if metric in ("resd", "work"):  # 거주·직장 인구: 월 합 ÷ 자료 있는 날 수(방문과 같은 하루 평균 지수)
+        d = _T()["pop_month"]
+        if dong:
+            d = d[d.dong == dong]
+        d = d.assign(v=d[metric] / d.days.replace(0, np.nan))
+        return d.groupby("ym").v.sum().sort_index()
     return visit_monthly(dong) if metric == "visit" else sales_monthly(dong, target)
 
 
@@ -116,16 +135,18 @@ def cross(metric, target=None):
         d = d[d.biz == b] if b else d
         last = sorted(d.ym.unique())[-12:]
         return d[d.ym.isin(last)].groupby("dong").amt.sum()
-    if metric == "visit":
+    if metric in ("visit", "resd", "work"):
         d = T["pop_month"]
         last = sorted(d.ym.unique())[-12:]
-        g = d[d.ym.isin(last)].groupby("dong")[["visit", "days"]].sum()
-        return g.visit / g.days
+        g = d[d.ym.isin(last)].groupby("dong")[[metric, "days"]].sum()
+        return g[metric] / g.days
     if metric == "stores":
         d = T["biz"]
         m = STORE_MAJOR.get(_biz(target) or "")
-        if target == "카페":
-            d = d[d.minor.astype(str).str.contains("카페")]
+        if target and target not in ("음식점", "숙박", "소매"):  # 세부 업종(카페·치킨·편의점 등)은 그 분류의 가게만 센다(2026-11-17 쓸모 판정: '치킨 가게 수 중간값 339곳'이 음식점 전체 값이던 결함)
+            import v3
+            sub = v3.biz_rows(d, target)
+            d = sub if len(sub) else (d[d.major == m] if m else d)
         elif m:
             d = d[d.major == m]
         return d.groupby("dong")["count"].sum().astype(float)
@@ -148,7 +169,7 @@ def as_of(metric):
     T = _T()
     if metric in ("sales", "tour"):
         return str(T["card_month"].ym.max())
-    if metric == "visit":
+    if metric in ("visit", "resd", "work"):
         return str(T["pop_month"].ym.max())
     if metric == "stores":
         return "2026-09 단면"
@@ -209,11 +230,13 @@ def t_corr(p):
     a, b = m[0], next(x for x in m[1:] if x != m[0])
     warn = ["추세와 계절성이 있는 월별 값끼리의 단순 상관은 겉보기 연관성(허위 상관)일 수 있어요. 전달 대비 변화량끼리의 상관도 함께 보여 드려요.",
             "상관은 같이 움직이는 정도일 뿐 원인과 결과를 뜻하지 않아요."]
+    if len(p["dongs"]) == 2 and re.search(r"교차|CCF|시계열|월별|시차", p.get("q") or ""):  # 두 동네 월별 시계열의 교차상관(2026-11-17 조정용 R080: 43개 동네 단면 상관으로 답하던 결함)
+        return _ccf(p)
     if len(p["dongs"]) == 1:  # 한 동네의 월별 시계열
         dong = p["dongs"][0]
-        if "visit" not in (a, b):
-            a, b = "visit", "sales"
-        s1, s2 = monthly("visit", dong), monthly("sales", dong, p["target"])
+        mm = [x for x in dict.fromkeys(p["metrics"]) if x in ("visit", "sales", "resd", "work")]
+        a, b = (mm + [x for x in ("visit", "sales") if x not in mm])[:2]  # 질문이 고른 두 월별 지표(없으면 방문과 매출)
+        s1, s2 = monthly(a, dong, p["target"]), monthly(b, dong, p["target"])
         df = pd.concat([s1.rename("x"), s2.rename("y")], axis=1).dropna()
         if len(df) < 12:
             raise Reject(f"두 자료가 겹치는 달이 {len(df)}개월이라 12개월보다 적어요.", "43개 동네를 견주는 상관(동네 이름 없이 질문)을 해 보세요.")
@@ -221,14 +244,15 @@ def t_corr(p):
         rs, ps = stats.spearmanr(df.x, df.y)
         dd = df.diff().dropna()
         rd, pd_ = stats.pearsonr(dd.x, dd.y)
-        who = f"{dong} 월별 방문과 {p['target'] or ''} 카드 매출".replace("  ", " ")
+        nm = lambda x: (f"{p['target'] or ''} " if x == "sales" else "") + METRIC[x][0]  # noqa: E731
+        who = f"{dong} 월별 {nm(a)}{'과' if (ord(nm(a)[-1]) - 0xAC00) % 28 else '와'} {nm(b)}".replace("  ", " ")
         concl = f"{who}의 상관계수는 {r:.2f}이고, 전달 대비 변화량끼리는 {rd:.2f}{_cop(f'{rd:.2f}')}."
         lines = [_line(f"겹치는 {len(df)}개월({df.index[0]}~{df.index[-1]})로 계산했어요.", "표본"),
                  _line(f"Pearson 상관계수 {r:.2f}(p값 {pfmt(pr)}), 순위 상관(Spearman) {rs:.2f}(p값 {pfmt(ps)}).", "상관"),
                  _line(f"추세를 뺀 전달 대비 변화량끼리의 상관은 {rd:.2f}(p값 {pfmt(pd_)}){_cop(f'{rd:.2f}')}. 이 값이 원래 값보다 많이 낮으면 둘이 같은 계절·추세를 탄 영향이 커요.", "차분 상관")]
         nums = {"n": len(df), "pearson": r2(r, 4), "spearman": r2(rs, 4), "diff_pearson": r2(rd, 4)}
-        view = _view("scatter", "방문과 매출(달마다 한 점)", "scatter", {f"{dong}": list(zip(df.x, df.y))}, f"{len(df)}개월", unit=None)
-        src = ["visit", "sales"]
+        view = _view("scatter", f"{METRIC[a][0]}과 {METRIC[b][0]}(달마다 한 점)", "scatter", {f"{dong}": list(zip(df.x, df.y))}, f"{len(df)}개월", unit=None)
+        src = [a, b]
     else:  # 43개 동네 단면
         xa, xb = cross(a, p["target"]), cross(b, p["target"])
         df = pd.concat([xa.rename("x"), xb.rename("y")], axis=1).dropna()
@@ -255,6 +279,47 @@ def t_corr(p):
     return concl, lines, warn, [view], nums, src, ("Pearson·Spearman 상관", "두 값이 같이 커지고 작아지는 정도를 -1~1로 재요.",
                                                   "표본 수, p값, 순위 상관, 극단값을 뺀 값·차분 상관을 함께 봐요.",
                                                   "표본이 10곳(또는 12개월)보다 적으면 계산하지 않아요.")
+
+
+def _ccf(p):
+    """두 동네의 같은 월별 값(카드 매출·이용 건수·하루 방문)을 전달 대비 변화율로 바꾼 뒤 시차 −3~+3개월의 상관을 잰다."""
+    d1, d2 = p["dongs"][:2]
+    cnt = bool(re.search(r"건수", p.get("q") or ""))
+    metric = "visit" if p["metrics"][:1] == ["visit"] else "sales"
+    if cnt:
+        cm = _T()["card_month"]
+        s1, s2 = (cm[cm.dong == d].groupby("ym").cnt.sum().sort_index() for d in (d1, d2))
+        what = "카드 이용 건수"
+    else:
+        s1, s2 = monthly(metric, d1, p["target"]), monthly(metric, d2, p["target"])
+        what = METRIC[metric][0]
+    df = pd.concat([s1.rename("a"), s2.rename("b")], axis=1).dropna().astype(float)
+    if len(df) < 24:
+        raise Reject(f"두 동네 자료가 겹치는 달이 {len(df)}개월이라 24개월보다 적어요.", "두 동네의 값을 비교해 보세요.")
+    g = df.pct_change().replace([np.inf, -np.inf], np.nan).dropna()
+    res = {}
+    for k in range(-3, 4):  # k > 0: d1이 k개월 먼저 움직이고 d2가 따라옴
+        x, y = g["a"].shift(k), g["b"]
+        m = pd.concat([x, y], axis=1).dropna()
+        res[k] = stats.pearsonr(m.iloc[:, 0], m.iloc[:, 1]) + (len(m),)
+    r0, p0, n0 = res[0]
+    kb = max(res, key=lambda k: abs(res[k][0]))
+    rb, pb, nb = res[kb]
+    lead = "같은 달" if kb == 0 else (f"{d1}이(가) {kb}개월 먼저" if kb > 0 else f"{d2}이(가) {-kb}개월 먼저")
+    concl = (f"{d1}과(와) {d2}의 월별 {what} 변화율은 같은 달 상관계수가 {r0:.2f}이고, 몇 달 앞서거나 늦게 따라 움직이는 관계는 이보다 약해요." if kb == 0 else
+             f"{d1}과(와) {d2}의 월별 {what} 변화율은 같은 달 상관계수가 {r0:.2f}이고, 가장 큰 상관은 {lead} 움직일 때 {rb:.2f}{_cop(f'{rb:.2f}')}.")
+    concl = concl.replace(f"{d1}과(와)", _josa(d1, "과", "와")).replace(f"{d1}이(가)", _josa(d1, "이", "가")).replace(f"{d2}이(가)", _josa(d2, "이", "가"))
+    lines = [_line(f"겹치는 {len(df)}개월({df.index[0]}~{df.index[-1]})의 {_josa(what, '을', '를')} 전달 대비 변화율로 바꿔 계산했어요(추세 때문에 생기는 겉보기 상관을 줄이려고).", "표본"),
+             _line("시차별 상관(앞 동네가 n개월 먼저): " + ", ".join(f"{k:+d}개월 {res[k][0]:.2f}" for k in res) + ".", "교차상관"),
+             _line(f"같은 달 상관의 p값(우연만으로 이만한 결과가 나올 확률, 0.05보다 작으면 우연이 아니라고 봐요)은 {pfmt(p0)}" + ("" if kb == 0 else f", 가장 큰 시차의 p값은 {pfmt(pb)}") + ("이에요." if pfmt(p0 if kb == 0 else pb).endswith("미만") else "예요."), "검정")]
+    warn = ["시차 7개를 함께 보면 그중 하나가 우연히 커 보일 수 있어요. 같은 달 값을 먼저 보세요.",
+            "상관은 같이 움직이는 정도일 뿐 한 동네가 다른 동네를 움직인다는 뜻이 아니에요. 제주 전체 경기·관광 계절이 두 동네를 함께 움직였을 수 있어요."]
+    view = _view("ccf", "시차별 상관", "bar", {"상관계수": [(f"{k:+d}개월", res[k][0]) for k in res]}, f"{d1}·{d2}", unit=None)
+    nums = {"n_months": len(df), "r_lag0": r2(r0, 4), "best_lag": kb, "r_best": r2(rb, 4)}
+    return concl, lines, warn, [view], nums, ["visit" if metric == "visit" and not cnt else "sales"], (
+        "교차상관(CCF)", "두 동네의 월별 값을 전달 대비 변화율로 바꾸고, 한쪽을 −3~+3개월 밀어 가며 상관계수를 재요.",
+        "같은 달 상관과 가장 큰 시차의 상관, 각각의 p값을 함께 봐요.",
+        "겹치는 달이 24개월보다 적으면 계산하지 않아요.")
 
 
 def _std(df):
@@ -352,7 +417,58 @@ def t_decomp(p):
         "24개월보다 짧은 자료는 계산하지 않아요.")
 
 
+def _weather_reg(p):
+    """비 오는 날 하루 방문 변화(Newey-West 회귀, 2026-11-17 실패 검토 ⑥). app/rain_test.py와 같은 설계:
+    동네 × 일 로그 방문 = 비 온 날(1mm 이상) + 요일·연월·공휴일·연휴·명절·방학·강풍·기온(2차) 통제, 표준오차 Newey-West(시차 7).
+    카드 매출은 월 단위라 날씨 효과를 계산할 수 없다고 밝힌다."""
+    import rain_test as RT
+    d = pd.read_parquet(Path(__file__).resolve().parents[1] / "data" / "tables" / "panel_v2.parquet")
+    dong = p["dongs"][0] if p["dongs"] else None
+    if dong:
+        d = d[d.emd == dong].copy()
+        who = dong
+    else:  # 제주 전체: 날마다 43개 동 방문 합
+        g = d.groupby("date").agg(visit=("visit", "sum"), rain=("rain", "first"), temp=("temp", "first"), windy=("windy", "first"), holiday=("holiday", "first"),
+                                  long_break=("long_break", "first"), myeongjeol=("myeongjeol", "first"), vacation=("vacation", "first")).reset_index()
+        d, who = g.assign(y=np.log(g.visit)), "제주 전체"
+    d = d.sort_values("date").reset_index(drop=True)
+    d["date"] = pd.to_datetime(d["date"])
+    if len(d) < 200:
+        raise Reject(f"{who}의 일별 방문 자료가 {len(d)}일이라 날씨 효과를 가리기에 적어요.", "다른 동네로 다시 물어보세요.")
+    X = RT.design(d)
+    lines, eff = [], {}
+    for name, cols in (("wet", [(d["rain"] >= 1).astype(float).rename("wet")]),
+                       ("bins", [d["rain"].between(1, 10, inclusive="left").astype(float).rename("r1"), d["rain"].between(10, 30, inclusive="left").astype(float).rename("r2"),
+                                 (d["rain"] >= 30).astype(float).rename("r3")])):
+        Xi = pd.concat([X] + cols, axis=1)
+        with np.errstate(all="ignore"), __import__("warnings").catch_warnings():
+            __import__("warnings").simplefilter("ignore")
+            b, se, dfree = RT.ols_nw(d["y"], Xi, lag=RT.LAG)
+        for c in cols:
+            k = list(Xi.columns).index(c.name)
+            pv = stats.norm.sf(abs(b[k] / se[k])) * 2 if se[k] > 0 else 1.0
+            eff[c.name] = ((np.exp(b[k]) - 1) * 100, (np.exp(b[k] - 1.96 * se[k]) - 1) * 100, (np.exp(b[k] + 1.96 * se[k]) - 1) * 100, pv, int(c.sum()))
+    e, lo, hi, pv, nw = eff["wet"]
+    sig = pv < 0.05
+    concl = (f"{who} 하루 방문은 비 온 날(1mm 이상, {nw}일) 평소보다 {e:+.1f}%(95% 구간 {lo:+.1f}%~{hi:+.1f}%, p값 {pfmt(pv)})"
+             + ("로, 우연으로 보기 어려운 차이예요." if sig else "로, 차이가 있다고 보기 어려워요."))
+    if re.search(r"매출|카드|소비|장사", p.get("q") or ""):  # 매출을 물었으면 할 수 없다는 것을 먼저 밝힌다
+        concl = "카드 매출은 일별 자료가 없어 날씨가 매출에 주는 영향은 계산할 수 없어요. 대신 하루 방문으로 보면, " + concl
+    names = {"r1": "1~10mm", "r2": "10~30mm", "r3": "30mm 이상"}
+    lines.append(_line("비의 양별: " + ", ".join(f"{names[k]} {eff[k][0]:+.1f}%(p값 {pfmt(eff[k][3])}, {eff[k][4]}일)" for k in ("r1", "r2", "r3")) + ".", "강수량별"))
+    lines.append(_line(f"{len(d)}일({str(d['date'].min().date())}~{str(d['date'].max().date())})로 요일·연월·공휴일·연휴·명절·방학·강풍·기온을 함께 넣어 계산했어요. "
+                       "날마다 값이 이어져 생기는 오차는 Newey-West 표준오차(시차 7일)로 바로잡았어요.", "방법", block="analysis", layer="L3"))
+    warn = ["카드 매출은 월 단위라 날씨가 매출에 주는 영향은 계산할 수 없어요(일별 카드 매출은 공개 자료에 없음). 위 결과는 하루 방문 지수예요.",
+            "강수는 관측소 값의 중앙값이라 동네마다 실제 비와 다를 수 있어요."]
+    v = _view("rain", f"{who} 비의 양별 방문 변화(%)", "bar", {"방문 변화(%)": [(names[k], float(eff[k][0])) for k in ("r1", "r2", "r3")]}, "평소(비 안 온 날) 대비")
+    nums = {"n_days": len(d), "wet_days": nw, "effect_pct": r2(e, 1), "lo_pct": r2(lo, 1), "hi_pct": r2(hi, 1), "p": r2(pv, 4)}
+    return concl, lines, warn, [v], nums, ["visit"], (
+        "날씨 회귀(Newey-West)", "동네 × 일 로그 방문을 비 온 날 여부와 달력·기온 통제 변수로 설명하는 최소제곱 회귀", "표준오차는 Newey-West(시차 7일)", "기상 관측과 방문 지수의 측정 한계")
+
+
 def t_regress(p):
+    if re.search(r"강수|강우|비\s*(가\s*)?(오|올|온)|날씨|기온|기상|맑은", p.get("q") or ""):  # 날씨 회귀: 일별 방문으로 계산(2026-11-17 실패 검토 ⑥, 전에는 거절)
+        return _weather_reg(p)
     ys = "sales"
     xs = [m for m in p["metrics"] if m not in (ys,)] or ["visit", "stores"]
     xs = list(dict.fromkeys(xs))
@@ -601,6 +717,52 @@ def t_lq(p):
         "동네·제주 전체의 가게 수와 비중을 함께 봐요.", "가게가 30곳 미만인 동네는 계산하지 않아요.")
 
 
+def t_sat(p):
+    """포화도: 가게 1곳당 수요(소매 포화 지수 IRS = 수요 ÷ 공급)를 43개 동네 중간값과 견준다. 1보다 작을수록 가게가 수요보다 많다(포화 쪽).
+    수요: 카드 매출을 업종으로 나눌 수 있는 대분류(음식점·소매·숙박, 전 업종)는 최근 12개월 카드 매출, 세부 업종(카페 등)은 하루 방문(대리값)."""
+    import v3
+    tgt = p.get("target")
+    sub_ok = bool(tgt) and tgt not in ("음식점", "숙박", "소매")
+    stores = cross("stores", tgt)
+    if sub_ok:
+        dem, dname, unit = cross("visit"), "하루 방문", "지수"
+    else:
+        dem, dname, unit = cross("sales", tgt), "최근 12개월 카드 매출", "원"
+    df = pd.concat([dem.rename("d"), stores.rename("s")], axis=1).dropna()
+    df = df[(df.s >= 5) & ~df.index.isin(["우도면", "추자면"])]  # 가게가 5곳 미만인 동네와 섬 2곳(표본 적음, 사용자 확정 2026-11-06 6번)은 뺀다
+    if len(df) < 10:
+        raise Reject(f"가게가 5곳 이상인 동네가 {len(df)}곳뿐이라 견줄 수 없어요.", "업종 없이 다시 물어보세요.")
+    df["per"] = df.d / df.s
+    med = df.per.median()
+    df["idx"] = df.per / med
+    df = df.sort_values("idx")
+    word = lambda x: "포화 쪽(가게에 비해 수요가 적음)" if x < 0.8 else ("여유 쪽(가게에 비해 수요가 많음)" if x > 1.25 else "중간")  # noqa: E731
+    who = tgt or "전 업종"
+    per_txt = lambda v: f"{v / 1e8:,.2f}억 원" if unit == "원" else f"{v:,.0f}"  # noqa: E731
+    lines, nums = [], {"n": len(df), "median_per": r2(med, 2)}
+    if p["dongs"]:
+        d = p["dongs"][0]
+        if d not in df.index:
+            raise Reject(f"{d} {who} 가게가 5곳보다 적거나 자료가 없어요.", "다른 동네로 다시 물어보세요.")
+        r = df.loc[d]
+        rank = int((df.idx < r.idx).sum() + 1)
+        concl = f"{d} {who} 포화도 지수는 {r.idx:.2f}로 {word(r.idx)}이에요(제주 {len(df)}개 동네 중 포화가 심한 순서로 {rank}위)."
+        lines.append(_line(f"{d} {who} 가게 {int(r.s):,}곳, 가게 1곳당 {dname} {per_txt(r.per)}(43개 동네 중간값 {per_txt(med)}).", "포화도"))
+        nums.update({"dong_idx": r2(r.idx, 2), "rank": rank})
+    else:
+        top = df.head(3)
+        concl = f"{who} 포화도 지수가 가장 낮은(가게에 비해 수요가 적은) 동네는 " + ", ".join(f"{i}({v:.2f})" for i, v in top.idx.items()) + "예요."
+        nums.update({"min_idx": r2(df.idx.iloc[0], 2)})
+    lines.append(_line(f"포화도 지수 = (가게 1곳당 {dname}) ÷ (43개 동네 중간값). 1보다 작으면 수요에 비해 가게가 많은 편이에요.", "읽는 법", block="analysis", layer="L3"))
+    warn = ["소매 포화 지수(IRS = 수요 ÷ 매장 공급)를 공개 자료로 근사한 값이에요. 매장 면적 대신 가게 수를 썼어요."]
+    if sub_ok:
+        warn.append(f"{tgt}만의 카드 매출 자료가 없어 수요는 하루 방문 지수로 대신 봤어요. 방문은 지출이 아니라 수요의 대리값이에요.")
+    v = _view("sat", f"{who} 포화도 지수(낮을수록 포화)", "bar", {"포화도 지수": [(i, float(x)) for i, x in df.idx.head(10).items()]}, "1보다 작으면 포화 쪽")
+    return concl, lines, warn, [v], nums, (["stores", "visit"] if sub_ok else ["stores", "sales"]), (
+        "포화도(소매 포화 지수 근사)", f"동네마다 '{dname} ÷ {who} 가게 수'를 구하고 43개 동네 중간값으로 나눠요.",
+        "가게가 5곳 미만인 동네와 우도면·추자면은 빼요.", "가게 수는 2025 단면, 수요는 최근 12개월 값이라 시점이 조금 달라요.")
+
+
 def t_hhi(p):
     """업종 다양성 = 1 − Σ(업종 비중²)(허핀달 지수를 뒤집은 값). 클수록 여러 업종이 고르게 섞여 있다."""
     d = _T()["biz"].groupby(["dong", "middle"])["count"].sum()
@@ -667,6 +829,23 @@ def t_shift(p):
     dong = _want_dong(p, "변이할당은 한 동네의 성장을 제주 전체와 견주어 나누는 기법이라")
     d = _T()["card746_month"]
     d = d.assign(y=d.ym.str[:4])
+    full = d[d.y.isin(["2017", "2019"])].groupby("y").amt.sum()  # 제주 전체 성장률 G는 업종을 한정해도 모든 업종으로 잰다
+    tgt, scope = p.get("target"), ""
+    import qparse as _qp
+    det = _qp.find_detail(p.get("q") or "")
+    if det and not tgt:  # '베이커리'처럼 업종 칸에 없는 세부 업종: 동네 전체로 계산하지 않고 밝힌다(2026-11-17 067)
+        raise Reject(f"746 카드 자료에는 {det['word'] if isinstance(det, dict) else det}만 따로 나뉜 업종이 없어요(카페·한식·일식·중식·주점 등만 있음).", "업종 없이 동네 전체로, 또는 음식점 전체로 다시 물어보세요.")
+    if tgt:  # 업종 한정(2026-11-17 실패 검토: 업종을 물었는데 동네 전체로 계산하던 결함). 세부 업종은 746의 해당 분류, 대분류는 그 대분류 전체
+        import v3
+        if tgt in v3.BIZ42:
+            d = d[d.biz42.str.startswith(v3.BIZ42[tgt])]
+        elif tgt in ("음식점", "소매", "숙박") and _biz(tgt):
+            d = d[d.biz == _biz(tgt)]
+        else:
+            raise Reject(f"746 카드 자료에는 {tgt}만 따로 나뉜 업종이 없어요(카페·한식·일식·중식·주점 등만 있음).", "업종 없이 동네 전체로, 또는 음식점 전체로 다시 물어보세요.")
+        if d.empty:
+            raise Reject(f"{tgt}만의 746 카드 자료가 없어요.", "업종 없이 동네 전체로 다시 물어보세요.")
+        scope = f" {tgt}"
     y0, y1 = "2017", "2019"  # 1년 단위 완결 자료 중 코로나 이전 처음과 끝(2020년 이후는 코로나 충격이라 기본값에서 뺌)
     g = d[d.y.isin([y0, y1])].groupby(["y", "dong", "biz42"]).amt.sum()
     jeju = g.groupby(level=["y", "biz42"]).sum()
@@ -674,13 +853,13 @@ def t_shift(p):
         raise Reject(f"{dong}의 746 카드 자료가 없어요.", "다른 동네로 다시 물어보세요.")
     e0, e1 = g[y0][dong], g[y1][dong].reindex(g[y0][dong].index).fillna(0)
     j0, j1 = jeju[y0], jeju[y1].reindex(jeju[y0].index).fillna(0)
-    G = j1.sum() / j0.sum() - 1
+    G = full["2019"] / full["2017"] - 1
     gi = (j1 / j0 - 1).reindex(e0.index)
     ri = (e1 / e0.replace(0, np.nan) - 1).fillna(0)
     ns, im, rs = (e0 * G).sum(), (e0 * (gi - G)).sum(), (e0 * (ri - gi)).sum()
     tot = e1.sum() - e0.sum()
     rs_i = (e0 * (ri - gi)).sort_values()
-    concl = (f"{dong} 카드 매출은 {y0}→{y1}년 {fmt(tot, 'sales746')} 변했어요. 나눠 보면 제주 전체 성장 효과 {fmt(ns, 'sales746')}, "
+    concl = (f"{dong}{scope} 카드 매출은 {y0}→{y1}년 {fmt(tot, 'sales746')} 변했어요. 나눠 보면 {dong}{scope}의 제주 전체 성장 효과 {fmt(ns, 'sales746')}, "
              f"업종 구성 효과 {fmt(im, 'sales746')}, 동네 고유 효과 {fmt(rs, 'sales746')}이에요.")
     lines = [_line(f"{y0}년 {fmt(e0.sum(), 'sales746')} → {y1}년 {fmt(e1.sum(), 'sales746')}. 같은 기간 제주 전체 {G * 100:+.1f}%.", "매출 변화"),
              _line(f"동네 고유 효과가 가장 큰 업종: {rs_i.index[-1]}({fmt(rs_i.iloc[-1], 'sales746')}), 가장 작은 업종: {rs_i.index[0]}({fmt(rs_i.iloc[0], 'sales746')}).", "업종별 고유 효과", block="analysis", layer="L3")]
@@ -695,15 +874,45 @@ def t_shift(p):
 
 
 RUN = {"change": t_change, "corr": t_corr, "cluster": t_cluster, "decomp": t_decomp, "regress": t_regress, "test": t_test, "dist": t_dist, "outlier": t_outlier,
-       "lq": t_lq, "surv": t_surv, "hhi": t_hhi, "shift": t_shift}
+       "lq": t_lq, "surv": t_surv, "hhi": t_hhi, "shift": t_shift, "sat": t_sat}
 EXAMPLES = {"change": "노형동 음식점 매출 변화를 건수와 건당 금액으로 분해해줘", "corr": "43개 동네 방문과 매출의 상관 분석해줘", "cluster": "43개 동네를 군집분석 해줘", "decomp": "노형동 음식점 월 매출 시계열 분해해줘",
             "regress": "동네별 매출에 방문과 가게 수가 미치는 영향 회귀분석해줘", "test": "노형동과 연동 음식점 매출이 통계적으로 차이 있어?",
             "dist": "43개 동네 음식점 매출 분포 보여줘", "outlier": "제주 전체 음식점 매출에서 튀는 달 찾아줘",
             "lq": "노형동 업종별 입지계수 구해줘", "surv": "노형동 음식점 생존 곡선 분석해줘", "hhi": "노형동 업종 다양성 지수 알려줘",
-            "shift": "노형동 카드 매출 변이할당 분석해줘"}
+            "shift": "노형동 카드 매출 변이할당 분석해줘", "sat": "노형동 카페 포화도 알려줘"}
 
 
 # ---------------------------------------------------------------- 답 묶기
+# 전문 용어 풀이(2026-11-16 문제 기록 18번, 057 2-4 'p값·Z점수 같은 전문 용어'): 답에서 처음 나올 때 한 번만 괄호로 쉬운 말을 붙인다.
+GLOSS = [("p값", "우연만으로 이만한 결과가 나올 확률, 0.05보다 작으면 우연이 아니라고 봐요"),
+         ("Pearson 상관계수", "두 값이 함께 커지고 작아지는 정도, -1~1"),
+         ("R²", "동네 사이 차이 가운데 고른 변수로 설명되는 몫, 0~1"),
+         ("VIF", "설명 변수끼리 겹치는 정도, 10을 넘으면 믿기 어려워요"),
+         ("실루엣", "묶음이 잘 나뉜 정도, 1에 가까울수록 잘 나뉨"),
+         ("Wilcoxon", "짝 지은 두 값의 차이가 한쪽으로 쏠렸는지 보는 검정"),
+         ("표준오차", "계수가 흔들리는 폭"),
+         ("입지계수", "제주 전체보다 몰린 정도, 1보다 크면 더 몰림"),
+         ("왜도", "한쪽으로 쏠린 정도, 0이면 좌우 대칭"),
+         ("카플란-마이어", "아직 영업 중인 가게도 반영하는 생존율 계산법"),
+         ("허핀달 지수", "업종이 한쪽에 몰린 정도"),
+         ("Shapiro", "값이 종 모양 분포인지 보는 검정")]
+
+
+def gloss(texts):
+    """문장 목록에서 용어가 처음 나온 자리에만 '(풀이)'를 붙인다. 이미 괄호 풀이가 붙어 있으면 건너뛴다."""
+    done, out = set(), []
+    for t in texts:
+        for term, plain in GLOSS:
+            if term in done or term not in t:
+                continue
+            i = t.index(term) + len(term)
+            if not t[i:i + 1] == "(":
+                t = t[:i] + f"({plain})" + t[i:]
+            done.add(term)
+        out.append(t)
+    return out
+
+
 def answer(question, slots=None):
     """기법 질문 하나의 답(기존 /api/ask 응답 형식)."""
     p = parse(question)
@@ -724,7 +933,15 @@ def answer(question, slots=None):
     others = [k for k in RUN if k != tech][:3]
     sugg = [{"text": EXAMPLES[k], "slots": {"topic": "technique", "method": k}} for k in others]
     try:
+        miss = UNAVAIL.search(p["q"] or "")
+        if miss:  # 공개 자료에 없는 변수를 넣어 달라는 요청은 다른 변수로 바꿔 계산하지 않는다(2026-11-17 새 문항 067 조정용)
+            raise Reject(f"공개 자료에는 '{miss.group(0)}' 값이 없어 이 변수로는 {tname} 분석을 할 수 없어요.",
+                         "동네 단위의 가게 수·카드 매출·하루 방문·생존율로 바꿔 다시 물어보세요.")
         concl, lines, warn, views, nums, used, (mtitle, how, check, limit) = RUN[tech](p)
+        g = gloss([concl] + [x["text"] for x in lines] + list(warn))
+        concl, warn = g[0], g[1 + len(lines):]
+        for x, t in zip(lines, g[1:1 + len(lines)]):
+            x["text"] = t
     except Reject as e:
         text = f"{tname} 분석을 하지 않았어요: {e.why}"
         a = {"conclusion": {"text": text, "layer": "L3", "tag": "계산하지 않음"},

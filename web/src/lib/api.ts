@@ -72,6 +72,8 @@ export type PlanAgent = { escalate?: boolean; by: string; from: string; from_ko:
 export type AskResult = {
   question: string | null;
   status: string;
+  /** 해석한 칸(대화 맥락에 동네만 씀) */
+  tuple?: { space?: string[] | null } | null;
   /** 해석 경로. plan_agent: 안 C(문서 26) 계획 선택 Agent 기록 */
   interpret?: { path?: string; confidence?: number | null; plan_agent?: PlanAgent | null } | null;
   /** 중간안(2026-11-14): 일반 경로가 못 풀어 Agent에게 넘긴 답(status "Agent") */
@@ -122,7 +124,9 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 export const getGuide = () => call<Guide>("/api/guide");
 export const getMap = () => call<JejuMapData>("/api/map");
 export const getSummary = (dong: string) => call<DongSummary>(`/api/summary?dong=${encodeURIComponent(dong)}`);
-export type AskBody = { question?: string; slots?: Slots; dataset_id?: string; dataset_key?: string; agent_pick?: string };
+/** 대화 맥락(2026-11-16 1번 ⑥): 직전 질문·결론·동네. 서버가 '그럼 애월읍은?' 같은 이어지는 질문에 쓴다(최대 2개). */
+export type HistoryItem = { question: string; conclusion?: string; space?: string[] };
+export type AskBody = { question?: string; slots?: Slots; dataset_id?: string; dataset_key?: string; agent_pick?: string; history?: HistoryItem[] };
 /** 검수·재실행 라인 4단계: [맞아요](ok) 또는 [조건 바꾸기]로 고친 해석을 서버에 남긴다. 실패해도 화면은 그대로 둔다. */
 /** expect: '답할지' 신호(2026-11-15). 범위 밖 안내의 [맞아요]=범위밖·[답할 수 있는 질문이에요]=답함, 되묻기 화면에서 조건을 고름=되묻기. */
 export const sendFeedback = (b: {

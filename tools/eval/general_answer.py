@@ -24,6 +24,7 @@ split = args[args.index("--split") + 1] if "--split" in args else "dev"
 mode = args[args.index("--mode") + 1] if "--mode" in args else "workflow"
 out = Path(args[args.index("--out") + 1]) if "--out" in args else None
 policy = args[args.index("--policy") + 1] if "--policy" in args else "model"
+LLM_ON = "--llm-on" in args  # 실행 구성 측정(2026-11-16): 설명 문장 LLM(qwen3:1.7b)을 켠다. 기본은 끔(llm_on=False)
 FILE = Path(args[args.index("--file") + 1]) if "--file" in args else ROOT / "data" / "eval" / "general_answer_v2.jsonl"
 # ③ 안내 정직성: notice 종류마다 답(결론·안내·한계·근거 문장)에 있어야 하는 말
 # 2026-11-15 061 검토로 좁힘: '기준으로'(기준 시점 서술)·'봤어요'·'없어'(대체 지표), '센터'(출처 이름), '방문'(지표 이름)만으로는 통과하지 않는다
@@ -148,7 +149,7 @@ def main():
         ask = lambda q: A.run(q, {}, llm_on=False)  # noqa: E731
     elif mode == "step":  # 단계형 Agent(2026-11-16 서비스 경로): 모델이 단계를 나누고 단계마다 도구를 고른다. 단계가 하나면 질문 담당 Agent
         import step_agent
-        ask = lambda q: step_agent.serve(q, {}, llm_on=False)  # noqa: E731
+        ask = lambda q: step_agent.serve(q, {}, llm_on=LLM_ON)  # noqa: E731
     else:
         ask = lambda q: result.respond(q, {}, llm_on=False)  # noqa: E731
     rows = []

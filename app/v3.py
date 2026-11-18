@@ -456,8 +456,13 @@ def signals(dong, target=None, biz5=None, detail=None, names=None):
 
 
 # ---------- R10 업종 월 매출 예상 ----------
+DAMP = 0.5  # 최근 비율을 절반만 반영(2026-11-16 문제 기록 31번). 조정 기간 2024-10~2025-09에서 고름:
+# 지금 방식(1.0) 오차 비율 0.939, 6개월 비율 0.941, 절반 반영 0.875, 직전 달 변화 1.014, 감쇠 Holt-Winters 1.034.
+# 보고 기간 2025-10~2026-09: 절반 반영 0.909(짝 비교 p < 0.001), 지금 방식 0.982(p 0.16). scratchpad r10_alt.py와 같은 계산.
+
+
 def _model_pred(s, m):
-    """작년 같은 달 × 최근 3개월의 작년 대비 비율(계절 단순 + 추세 보정)."""
+    """작년 같은 달 × (최근 3개월의 작년 대비 비율)^DAMP(계절 단순 + 감쇠한 추세 보정)."""
     m12 = _months_back(m, 12)
     if m12 not in s.index:
         return None
@@ -466,7 +471,7 @@ def _model_pred(s, m):
         a, a0 = _months_back(m, k), _months_back(m, k + 12)
         if a in s.index and a0 in s.index and s[a0] > 0:
             r.append(s[a] / s[a0])
-    return float(s[m12] * np.median(r)) if r else None
+    return float(s[m12] * np.median(r) ** DAMP) if r else None
 
 
 @lru_cache(maxsize=1)

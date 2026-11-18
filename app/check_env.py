@@ -90,6 +90,8 @@ def report(models, has_key, backend=None):
         lines.append(f"[상세 분석] 로컬 모델이 없어 꺼져 있습니다(선택: 'ollama pull {AGENT}'). 통계 기법 12종은 사이드바에서 그대로 씁니다.")
     if has_key and not auto:
         lines.append("[Claude] 키가 있습니다. 담당자가 로그인한 뒤 상세 분석의 [Claude로 분석]을 누른 요청에만 씁니다(계정: JEJU_ACCOUNTS).")
+    if has_key and backend not in ("rule", "ollama") and os.environ.get("JEJU_STEP_CLAUDE", "on") != "off":  # 문제 기록 60번 A안(2026-11-18, 로그인한 심사용 계정만)
+        lines.append("[여러 단계 질문] 담당자(심사용) 계정으로 로그인하면 Claude(claude-sonnet-5-5)가 단계마다 쓸 도구를 고릅니다. 로그인하지 않으면 로컬 7B입니다. 연결이 안 되면 로컬 7B로 돌아갑니다(끄기: JEJU_STEP_CLAUDE=off).")
     return lines
 
 

@@ -60,7 +60,7 @@ EXPLAIN_SYSTEM = """당신은 분석 결과를 상권 분석 담당자에게 설
 
 
 # ---------- 상세 분석 도구 루프(문서 26 안 A, 2026-11-14) ----------
-TECHNIQUES = ["change", "corr", "cluster", "decomp", "regress", "test", "dist", "outlier", "lq", "surv", "hhi", "shift"]
+TECHNIQUES = ["change", "corr", "cluster", "decomp", "regress", "test", "dist", "outlier", "lq", "surv", "hhi", "shift", "sat"]  # sat 포화도(2026-11-17)
 
 AGENT_SYSTEM = """당신은 제주빅데이터센터 상권 분석 담당자를 돕는 데이터 분석 Agent입니다. 요청을 받으면 도구를 골라 분석하고 답을 제출합니다.
 
@@ -95,7 +95,8 @@ TOOL_TECHNIQUE = _tool("run_technique", "정해진 통계 기법 코드로 계�
                        "test=두 동네·두 집단의 값이 정말 다른지, dist=여러 동네 값이 어떻게 퍼져 있는지(구간·치우침), "
                        "outlier=평소와 다르게 튀거나 떨어진 달 찾기, change=매출 변화를 결제 건수와 건당 금액(손님 수와 한 번에 쓰는 돈)으로 나누기, "
                        "lq=한 동네에 제주 전체보다 많이 몰린 업종(비중 비교), surv=개업 뒤 몇 년 살아남는지(생존 곡선), "
-                       "hhi=업종이 고르게 섞였는지(다양성 점수), shift=매출 변화를 제주 전체 성장·업종 구성·동네 고유 효과로 나누기",
+                       "hhi=업종이 고르게 섞였는지(다양성 점수), shift=매출 변화를 제주 전체 성장·업종 구성·동네 고유 효과로 나누기, "
+                       "sat=이 동네 이 업종이 포화인지(가게 1곳당 수요를 43개 동네 중간값과 견줌)",
                        {"technique": {"type": "string", "enum": TECHNIQUES},
                         "dongs": {"type": "array", "items": {"type": "string"}, "description": "동네 이름(행정동). 제주 전체면 빈 배열"},
                         "target": {"type": "string", "description": "업종(예: 카페, 음식점). 없으면 빈 문자열"}})

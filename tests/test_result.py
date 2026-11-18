@@ -31,6 +31,25 @@ def fake_llm(text):
     return mock.patch.object(R.llm, "chat", return_value={"message": {"content": text}})
 
 
+
+def old_sales_model():
+    """업종 월 매출 예상의 관문 탈락 경로를 시험할 때 쓰는 바꾸기 전 방식(최근 비율 그대로, 보고 기간 오차 비율 0.98).
+    2026-11-16 감쇠 방식(DAMP 0.5)으로 바꾼 뒤에는 관문을 통과해, 탈락 경로는 이 방식으로 재현한다."""
+    import contextlib
+    import v3
+
+    @contextlib.contextmanager
+    def ctx():
+        old = v3.DAMP
+        v3.DAMP = 1.0
+        v3._r10_gate.cache_clear()
+        try:
+            yield
+        finally:
+            v3.DAMP = old
+            v3._r10_gate.cache_clear()
+    return ctx()
+
 class Card(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -70,7 +89,7 @@ class Card(unittest.TestCase):
         self.assertIn("보다 많아요", self.out["노형동이랑 연동 버스 이용 비교해줘"]["card"]["conclusion"])
         self.assertIn("카페 개업 수", self.out["노형동 카페 개업 최근 3년 늘었어?"]["card"]["conclusion"])  # 판정 결과는 자료 갱신에 따라 바뀜
         self.assertIn("비슷한 동네", self.out["노형동이랑 비슷한 동네는?"]["card"]["conclusion"])
-        self.assertTrue(self.out["노형동 카페 5년 생존율은?"]["card"]["conclusion"].startswith("카페 5년 생존율"))
+        self.assertTrue(self.out["노형동 카페 5년 생존율은?"]["card"]["conclusion"].startswith("노형동 카페"))  # 2026-11-17: 동네 × 업종 생존율(표본 50곳 이상)이 결론
         d = self.out["노형동 생활 진단해줘"]  # v3: 상권 종합 진단은 판단 재료(수요·경쟁·생존) 요약이 결론
         self.assertEqual(d["answer"]["conclusion"]["tag"], "판단할 때 볼 것")
         self.assertIn("guide", [b["id"] for b in d["answer"]["blocks"]])
@@ -327,7 +346,9 @@ class Misfire20261115(unittest.TestCase):
     def test_conditions(self):
         self.assertIn("눈 온 날", self.notes("눈 오는 날 매출 많은 동네"))
         self.assertNotIn("비", self.ask("눈 오는 날 매출 많은 동네")["tuple"].get("cond") or [])
-        self.assertTrue(self.conc("비가 올 때 노형동 매출").startswith("비에 따른 노형동"))
+        c = self.conc("비가 올 때 노형동 매출")  # 2026-11-17: 매출은 일별 자료가 없다는 것을 먼저 밝히고 방문으로 대신
+        self.assertTrue(c.startswith("카드 매출은 일별 자료가 없어"))
+        self.assertIn("비에 따른 노형동", c)
         self.assertIn("하루 단위 매출", self.notes("비가 올 때 노형동 매출"))
 
     def test_recent_months(self):  # '최근 3개월'은 마지막 3개월 합계(2026-11-15)
@@ -350,7 +371,15 @@ class LayersV3(unittest.TestCase):  # v3 답 구조(docs/기획/v3_설계.md 6�
     def setUpClass(cls):
         cls.value = ask("노형동에 카페 차려도 될까?")
         cls.market = R.respond(slots={"topic": "market", "target": "음식점"}, llm_on=False)
-        cls.sales_fc = R.respond(slots={"topic": "forecast", "space": ["노형동"], "target": "음식점", "variant": "sales"}, llm_on=False)
+        with old_sales_model():
+            cls.sales_fc = R.respond(slots={"topic": "forecast", "space": ["노형동"], "target": "음식점", "variant": "sales"}, llm_on=False)
+        cls.sales_fc_new = R.respond(slots={"topic": "forecast", "space": ["노형동"], "target": "음식점", "variant": "sales"}, llm_on=False)
+
+    def test_sales_forecast_passes_with_damped_model(self):  # 2026-11-16 감쇠 방식: 관문 통과, 예상 값과 범위를 보임
+        lines = [x for b in self.sales_fc_new["answer"]["blocks"] for x in b["lines"]]
+        self.assertEqual(self.sales_fc_new["status"], "성공")
+        self.assertIn("예상", self.sales_fc_new["card"]["conclusion"])
+        self.assertTrue(any(x.get("kind") == "forecast" for x in lines) or "예상 범위" in self.sales_fc_new["card"]["conclusion"])
 
     def test_value_question_gives_materials_not_refusal(self):  # L5: 첫 문장이 거절이 아니고 신호를 먼저, 판단은 직접
         a = self.value["answer"]
@@ -471,7 +500,8 @@ class Persona20(unittest.TestCase):  # 페르소나 사용성 점검 지적의 �
 class Report21(unittest.TestCase):  # 보고서 개편(docs/조사/21_보고서_조건패널_개편_조사와계획.md 6.1절)
     @classmethod
     def setUpClass(cls):
-        cls.r = ask("노형동 카페 차려도 될까?")
+        with old_sales_model():  # 관문 탈락 문구를 시험한다(바꾸기 전 방식)
+            cls.r = ask("노형동 카페 차려도 될까?")
         cls.lines = [x for b in cls.r["answer"]["blocks"] for x in b["lines"]]
 
     def text(self, word):
@@ -686,10 +716,15 @@ class Deep22(unittest.TestCase):  # 문서 22: 업종 탭, 단순 주제의 모�
         self.assertRegex(txt, r"구좌읍만 보면 오차가 단순 예상의 약 \d+%")
         self.assertIn("비가 오면 위 값보다 약", txt)
 
-    def test_r4_dong_yearly_pass_rate(self):  # 4단계 R4: 손계산 노형동 2년차 91.7%
-        txt = " ".join(x["text"] for x in self.ana(self.slots({"topic": "openclose", "space": ["노형동"], "target": "카페"})))
+    def test_r4_dong_yearly_pass_rate(self):  # 4단계 R4: 손계산 노형동 2년차 91.7%(업종 없이 묻는 동네 음식점 전체)
+        txt = " ".join(x["text"] for x in self.ana(self.slots({"topic": "openclose", "space": ["노형동"], "target": "음식점"})))
         self.assertIn("2년차 91.7%", txt)
         self.assertNotIn("안정", txt)
+
+    def test_r4_dong_biz_survival(self):  # 2026-11-17 실패 검토 ④: 업종을 물으면 동네 × 업종 5년 생존율(노형동 카페 135곳, 51.1%)
+        txt = " ".join(x["text"] for x in self.ana(self.slots({"topic": "openclose", "space": ["노형동"], "target": "카페"})))
+        self.assertIn("노형동 카페(135곳", txt)
+        self.assertIn("51.1%", txt)
 
     def test_biz_tabs_only_with_stores(self):  # 2단계: 업종 탭, 숙박은 생존 자료 없음 안내
         tabs = self.slots({"topic": "diagnose", "space": ["노형동"], "target": "카페"})["answer"]["biz_tabs"]

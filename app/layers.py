@@ -308,11 +308,17 @@ def _table_lines(o, t, metric, v, note):
                f"{int(g0['hour'].iloc[0])}시에 매출 비중이 가장 큽니다" if len(groups) == 1 else "동네마다 시간대별 매출 비중을 함께 보여 줘요", x="hour", unit="%")
         return
     if "origin" in tab:
-        last = tab[tab["ym"] == tab["ym"].max()].sort_values("value", ascending=False)
+        rn = t.get("ask_recent")
+        yms = sorted(tab["ym"].unique())[-rn:] if rn else [tab["ym"].max()]
+        last = tab[tab["ym"].isin(yms)].groupby("origin", as_index=False)["value"].sum().sort_values("value", ascending=False)
         og = ", ".join(f"{a}({o.num(b, '원')})" for a, b in zip(last["origin"].head(3), last["value"].head(3)))
         asked = t.get("asked_space") or t.get("space")  # 물은 동네(해석의 동네는 비움, 2026-11-16)
         only = f"{asked[0]}만 따로 센 자료는 없어 제주 전체 값이에요. " if asked else ""
-        o.line("L1", f"{only}제주 전체 외국인 관광객 카드 매출이 많은 출신지역은 {og}{_cop(og)}.", src, tab["ym"].max())
+        when = ""
+        if rn:  # '최근 3개월'을 물으면 마지막 N개월 합계로(2026-11-17 조정용 GA-051: 최근 한 달로 답하던 결함)
+            o.numbers.append(float(len(yms)))
+            when = f"최근 {len(yms)}개월({_ym_ko(yms[0])}~{_ym_ko(yms[-1])}, 합계) "
+        o.line("L1", f"{only}{when}제주 전체 외국인 관광객 카드 매출이 많은 출신지역은 {og}{_cop(og)}.", src, tab["ym"].max())
         return
     if "ym" in tab:
         end = _asked_ym(o, t, tab, label, src, metric, word, unit)
@@ -402,7 +408,7 @@ def _table_lines(o, t, metric, v, note):
         mt = v3.meta()
         asof = {"점포수": v3.BIZ_ASOF, "특화계수": v3.BIZ_ASOF, "5년생존율": f"개업 {mt.get('km_cohort')}", "조건부생존": f"개업 {mt.get('km_cohort')}", "폐업률": mt.get("close_years")}.get(metric)
         if metric in ("5년생존율", "조건부생존", "폐업률"):  # 동네별 값은 업종 구분이 없는 음식점 전체 값
-            word = "음식점 전체 "
+            word = f"{t['target']} " if t.get("target") and f"동네별 {t['target']}" in str(src) else "음식점 전체 "  # 동네 × 업종 표를 썼으면 업종 이름(2026-11-17)
         if metric in ("5년생존율", "폐업률") and t.get("type") == "T3" and tab["dong"].nunique() > 6 and _rate_rank(o, t, metric, word, label, src, asof, unit):
             return  # 폐업·생존은 순위 없이 값 + 95% 구간 + 표본 수(사용자 확정 2026-11-06, docs/조사/06_EDA_H1H3.md 3번)
         cur = _drop_small(o, t, tab).sort_values("value", ascending=asc) if tab["dong"].nunique() > 6 else tab  # 근거 줄도 결론과 같은 순서로(2026-11-16, 작은 순서 결론 아래 큰 순서 근거가 나오던 결함)
@@ -417,13 +423,13 @@ def _table_lines(o, t, metric, v, note):
             same = float(g["value"].iloc[0]) == float(g["value"].iloc[-1])
             more = "높아요" if unit == "%" else "많아요"
             body = "동네마다 같아요" if same else f"{_josa(g['dong'].iloc[0], '이', '가')} {', '.join(g['dong'].iloc[1:])}보다 {more}"
-            ci = _rate_ci(metric, list(g["dong"]))
+            ci = _rate_ci(metric, list(g["dong"]), t.get("target") if f"동네별 {t.get('target')}" in str(src) else None)
             if ci and not same:  # 생존율·폐업률은 95% 구간이 겹치면 차이를 단정하지 않는다(미처리 결함 D5)
                 (a_lo, a_hi), (b_lo, b_hi) = ci[g["dong"].iloc[0]], ci[g["dong"].iloc[-1]]
                 if a_lo <= b_hi and b_lo <= a_hi:
                     body = f"{'·'.join(g['dong'])}의 차이는 자료로 확인되지 않아요(신뢰 구간이 겹쳐요)"
             o.line("L2", f"{word}{label}: {body}({vals}).", src, asof, kind="compare")
-            if metric in ("5년생존율", "조건부생존", "폐업률") and t.get("target") and t.get("target") != "음식점":
+            if metric in ("5년생존율", "조건부생존", "폐업률") and t.get("target") and t.get("target") != "음식점" and f"동네별 {t['target']}" not in str(src):
                 o.line("L5", f"{t['target']}만의 동네별 값은 자료에 없어 음식점 전체 값으로 비교했어요. {t['target']}의 제주 전체 값은 아래에 있어요.", None, None)
         if tab["dong"].nunique() > 6:
             _rank_head(o, t, word, label, cur, cur["dong"].nunique(), unit)
@@ -607,6 +613,9 @@ def _judgement_lines(o, t, rv, ev):
                 else:
                     txt = f"{head}: {cw[1]}({rng})."
                 o.side = "R3" in side_r
+                if t.get("type") == "T6" and re.search(r"매출|카드|결제|장사", getattr(o, "q", "") or t.get("_q") or ""):
+                    # 비 오는 날 매출을 물었으면 할 수 없다는 것을 먼저 밝힌다(카드 매출은 월 단위, 2026-11-17 새 문항 067)
+                    txt = "카드 매출은 일별 자료가 없어 비 오는 날 매출 변화는 볼 수 없어요. 대신 하루 방문으로 보면, " + txt
                 o.line("L3", txt, None, tag=cw[0], kind="rain")
                 o.side = False
             elif j["name"].startswith("관문"):
@@ -618,6 +627,14 @@ def _judgement_lines(o, t, rv, ev):
                             if t.get("type") != "T8" and rid == "R1":  # 종합 진단·단순 주제의 곁가지 예상은 한 줄로 줄인다
                                 o.side = rid in side_r
                                 _visit_forecast_lines(o, fv, j)
+                                o.side = False
+                                continue
+                            if t.get("type") != "T8" and rid == "R10":  # 예측을 묻지 않은 매출 질문: 예상은 곁가지 한 줄(결론이 되지 않게, 2026-11-16 31번 감쇠 방식 통과 뒤)
+                                f = fv["forecast"][0]
+                                o.side = True
+                                rng = f"(예상 범위 {o.num(f['lo'], '원')}~{o.num(f['hi'], '원')})" if "lo" in f else ""
+                                o.line("L4", f"참고로 다음 달({_ym_ko(f['ym'])}) {f['dong']} {fv.get('biz') or ''} 카드 매출 예상은 {o.num(f['value'], '원')}{rng}이에요.".replace("  ", " "),
+                                       None, tag="예상 범위(10번 중 8번 맞는 폭)" if rng else "모델 예상", kind="salesfc")
                                 o.side = False
                                 continue
                             for i, f in enumerate(fv["forecast"][:3]):
@@ -741,6 +758,23 @@ KM_LABEL = {"제주 평균보다 낮음": ("제주 전체보다 낮아요", "자
 
 def _dong_survival_line(o, dong, grp):
     """동네 음식점(업종 구분 없음)의 연차별 통과율과 5년 생존율 구간·판정(문서 22 4절 R4 ①②). '몇 년 넘기면 안정' 같은 해석은 쓰지 않는다."""
+    from places import REST_MAP
+    g = (grp or {}).get("group") if isinstance(grp, dict) else grp
+    if REST_MAP.get(g or ""):  # 업종을 물었으면 동네 × 업종 5년 생존율(표본 50곳 이상일 때만, 2026-11-17 실패 검토 ④)
+        kb = pd.read_parquet(v3.TAB / "km_biz.parquet")
+        row = kb[(kb["dong"] == dong) & (kb["group"] == g) & (kb["year"] == 5)]
+        jb = kb[(kb["dong"] == "제주 전체") & (kb["group"] == g) & (kb["year"] == 5)]
+        if len(row) and int(row.iloc[0]["n"]) >= 50:
+            r = row.iloc[0]
+            word, tag = KM_LABEL.get(r["label"], (None, NOT_SURE))
+            txt = (f"{dong} {g}({int(r['n']):,}곳, 2015년~ 개업)의 5년 생존율은 {o.num(r['survival_pct'], '%')}(95% 구간 {o.num(r['lo_pct'], '%')}~{o.num(r['hi_pct'], '%')})"
+                   + (f"이고, {word}(제주 {g} 전체 {o.num(float(jb.iloc[0]['survival_pct']), '%')})." if word and len(jb) else "예요."))
+            o.numbers += [float(r["n"]), 95.0, 5.0, 2015.0] + ([round(float(jb.iloc[0]["survival_pct"]), 1)] if len(jb) else [])
+            o.line("L3", txt, "780 음식점 인허가(동네 × 업종 카플란-마이어)", None, tag=f"{dong} {g}", kind="survival")
+            return
+        if len(row):
+            o.line("L5", f"{dong} {_josa(g)} 2015년 이후 개업이 {int(row.iloc[0]['n'])}곳뿐이라(50곳 미만) 업종만의 생존율 대신 음식점 전체로 봤어요.", None, None, tag="표본 부족")
+            o.numbers += [float(row.iloc[0]["n"]), 50.0, 2015.0]
     k = pd.read_parquet(v3.TAB / "km.parquet")
     k = k[k["dong"] == dong].sort_values("year")
     if len(k) < 5:
@@ -1409,6 +1443,10 @@ def _rate_rank(o, t, metric, word, label, src, asof, unit):
     try:
         T = {"5년생존율": ("km", "survival_pct", "개업"), "폐업률": ("close_3y", "rate_pct", "영업")}[metric]
         d = pd.read_parquet(v3.ROOT / "data" / "tables" / f"{T[0]}.parquet")
+        from places import REST_MAP
+        if REST_MAP.get(t.get("target") or ""):  # 업종을 지정했으면 동네 × 업종 표(app/build_biz_survival.py, 2026-11-17 실패 검토 ④)
+            b = pd.read_parquet(v3.ROOT / "data" / "tables" / ("km_biz.parquet" if metric == "5년생존율" else "close_biz.parquet"))
+            d = b[b["group"] == t["target"]].drop(columns="group")
     except Exception:
         return False
     if metric == "5년생존율":
@@ -1445,13 +1483,17 @@ def _rate_rank(o, t, metric, word, label, src, asof, unit):
     return True
 
 
-def _rate_ci(metric, dongs):
-    """생존율(5년)·3년 폐업률의 동네별 95% 구간. 없으면 None."""
+def _rate_ci(metric, dongs, tgt=None):
+    """생존율(5년)·3년 폐업률의 동네별 95% 구간. 없으면 None. 업종을 주면 동네 × 업종 표(2026-11-17)."""
     try:
-        T = {"5년생존율": ("km", lambda d: d[d.year == d.year.max()]), "폐업률": ("close_3y", lambda d: d)}.get(metric)
+        import places as _pl
+        biz = _pl.biz_rate_ok(tgt, dongs, metric)
+        T = {"5년생존율": ("km_biz" if biz else "km", lambda d: d[d.year == d.year.max()]), "폐업률": ("close_biz" if biz else "close_3y", lambda d: d)}.get(metric)
         if not T:
             return None
         d = T[1](pd.read_parquet(v3.ROOT / "data" / "tables" / f"{T[0]}.parquet"))
+        if biz:
+            d = d[d["group"] == tgt]
         d = d[d.dong.isin(dongs)].set_index("dong")
         return {k: (float(r.lo_pct), float(r.hi_pct)) for k, r in d.iterrows()} if set(dongs) <= set(d.index) else None
     except Exception:
@@ -1574,6 +1616,8 @@ def build(t, rv, ev, value_q=False):
         cmp_ = next((x for x in main if x.get("kind") == "compare"), None)
         lead = next((x for x in main if x.get("kind") == {"T9": "similar", "T15": "anomaly"}.get(t.get("type"), "survival")), None)
         sp = [d for d in (t.get("space") or []) if isinstance(d, str)]
+        if lead and lead.get("kind") == "survival" and len(sp) == 1 and t.get("target") not in (None, "음식점") and not any(d in lead["text"] for d in sp):
+            lead = next((x for x in main if x.get("kind") == "survival" and x["text"].startswith(sp[0])), lead)  # 동네 × 업종 생존 줄이 있으면 그것이 결론(2026-11-17)
         if lead and lead.get("kind") == "survival" and sp and t.get("target") in (None, "음식점") and not any(d in lead["text"] for d in sp):  # 업종 없이 동네를 물었으면(동네 값은 음식점 전체만 있음) 제주 전체 업종 생존율이 아니라 그 동네 값을 결론으로(2026-11-15 최종 평가 결함)
             lead = next((x for x in main if x["layer"] == "L1" and x["text"].startswith(tuple(sp)) and "생존율" in x["text"]), lead)
         if t.get("type") == "T4":  # 센터 자료의 흐름 줄이 있으면 그것이 결론(문서 20 A6)

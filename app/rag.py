@@ -43,8 +43,42 @@ def load():
     return _lib
 
 
-def neighbors(vec, name, k=None, skip=None):
-    """vec와 비슷한 과거 질문 k개: [(문장, 분석, 유사도)]. skip: 빼고 찾을 기록 번호(조정용 leave-one-out)."""
+# 낱말 검색(BM25) 혼합(2026-11-16 문제 기록 28번): 이웃을 고를 때만 '벡터 유사도 + 가중 × BM25(글자 두 개 단위, 최댓값으로 나눔)'를 쓴다.
+# 투표 가중과 SIM 기준은 벡터 유사도 그대로. 가중은 기록 안 leave-one-out으로 정함(기법 기록 786문장: 이웃 투표가 자기 분석과 같음
+# 0 → 71.4%, 0.3 → 74.0%, 0.5 → 74.6%, 0.7 → 76.3%, 1.0 → 76.8%. 거짓 '어긋남'이 0일 때(43) 이하인 것 가운데 가장 높은 0.7).
+BM25_W = {"tech": 0.7}
+_bm = {}
+
+
+def _grams(q):
+    t = re.sub(r"\s+", "", norm(q))
+    return [t[i:i + 2] for i in range(len(t) - 1)]
+
+
+def _bm25(name, lib, q, k1=1.2, b=0.75):
+    """기록 문장마다 질문 q의 BM25 점수(최댓값 1로 나눔)."""
+    if name not in _bm:
+        import math
+        from collections import Counter
+        docs = [Counter(_grams(x)) for x in lib["q"]]
+        avg = float(np.mean([sum(d.values()) for d in docs])) or 1.0
+        df = Counter(g for d in docs for g in d)
+        idf = {g: math.log(1 + (len(docs) - n + 0.5) / (n + 0.5)) for g, n in df.items()}
+        post = {}
+        for i, d in enumerate(docs):
+            ln = sum(d.values())
+            for g, tf in d.items():
+                post.setdefault(g, []).append((i, idf[g] * tf * (k1 + 1) / (tf + k1 * (1 - b + b * ln / avg))))
+        _bm[name] = post
+    sc = np.zeros(len(lib["q"]), dtype=np.float32)
+    for g in set(_grams(q)):
+        for i, w in _bm[name].get(g, ()):
+            sc[i] += w
+    return sc / (sc.max() + 1e-9)
+
+
+def neighbors(vec, name, k=None, skip=None, q=None):
+    """vec와 비슷한 과거 질문 k개: [(문장, 분석, 유사도)]. skip: 빼고 찾을 기록 번호(조정용 leave-one-out). q: 질문 문장(있으면 BM25 혼합)."""
     lib = load().get(name)
     if not lib:
         return []
@@ -52,10 +86,13 @@ def neighbors(vec, name, k=None, skip=None):
     v = np.asarray(vec, dtype=np.float32)
     v = v / (np.linalg.norm(v) + 1e-9)
     s = lib["vec"] @ v
+    sim = s.copy()
+    if q and BM25_W.get(name):
+        s = s + BM25_W[name] * _bm25(name, lib, q)
     if skip is not None:
         s[skip] = -1
     idx = np.argsort(-s)[:k]
-    return [(lib["q"][i], lib["label"][i], float(s[i])) for i in idx]
+    return [(lib["q"][i], lib["label"][i], float(sim[i])) for i in idx]
 
 
 def vote(nb, sim):
@@ -70,13 +107,13 @@ def vote(nb, sim):
     return top, w[top] / sum(w.values()), nb[0][2]
 
 
-def check(vec, first, name, skip=None, group=None):
+def check(vec, first, name, skip=None, group=None, q=None):
     """1차 분석(first)과 비슷한 과거 질문의 분석을 견준다. group: 분석 이름을 묶는 함수(예: 기법이 아니면 모두 general)."""
     lib = load().get(name)
     if not lib or vec is None:
         return {"used": False}
     p = lib["param"]
-    nb = neighbors(vec, name, p.get("k", 5), skip)
+    nb = neighbors(vec, name, p.get("k", 5), skip, q)
     g = group or (lambda x: x)
     nb = [(q, g(lab), s) for q, lab, s in nb]
     top, share, best = vote(nb, p.get("sim", 0.8))

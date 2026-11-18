@@ -6,6 +6,12 @@ import urllib.request
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat")
 DEFAULT_OLLAMA_MODEL = os.environ.get("JEJU_OLLAMA_MODEL", "qwen3:1.7b")  # 제출본 기본 경로. GTX 1060 메모리에 맞게 작은 모델(1.4GB)
+# 센터 PC(GTX 1060, VRAM 3GB) 메모리 설정(2026-11-17 문제 기록 52번). 문맥 32,768토큰(Ollama 기본)이면 qwen2.5:7b가 6.61GB를 쓴다.
+# 실제 호출은 최대 2,788토큰이라 문맥을 4,096으로 줄이면 7b 전체 4.43GB이고, GPU에 올리는 층 수는 Ollama가 남은 VRAM에 맞춰 정한다(나머지 층은 CPU).
+# 문장 모델(qwen3:1.7b, 1.35GB)은 GPU에서 7b와 자리를 다투면 모델을 번갈아 다시 올리게 되므로 CPU에 둔다.
+LOG_PATH = os.environ.get("JEJU_LLM_LOG", "")
+NUM_CTX = int(os.environ.get("JEJU_NUM_CTX", "4096"))
+GPU_LAYERS = {k.strip(): int(v) for k, v in (x.split("=", 1) for x in os.environ.get("JEJU_GPU_LAYERS", "qwen3:1.7b=0").split(",") if "=" in x)}
 
 
 def _ollama_alive():
@@ -34,7 +40,10 @@ def chat(model, messages, tools, name=None, max_tokens=700, fmt=None, effort=Non
         return llm_claude.chat(model, messages, tools, effort=effort)
     if name == "ollama":
         model = model or DEFAULT_OLLAMA_MODEL
-        payload = {"model": model, "messages": messages, "stream": False, "options": {"temperature": 0, "seed": 0, "num_predict": max_tokens}}
+        opts = {"temperature": 0, "seed": 0, "num_predict": max_tokens, "num_ctx": NUM_CTX}
+        if model in GPU_LAYERS:
+            opts["num_gpu"] = GPU_LAYERS[model]
+        payload = {"model": model, "messages": messages, "stream": False, "options": opts}
         if tools:
             payload["tools"] = tools
         if fmt:
@@ -45,5 +54,13 @@ def chat(model, messages, tools, name=None, max_tokens=700, fmt=None, effort=Non
             payload["think"] = False
         req = urllib.request.Request(OLLAMA_URL, json.dumps(payload).encode(), {"Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=300) as r:
-            return json.loads(r.read())
+            out = json.loads(r.read())
+        if LOG_PATH:  # 학습 증류의 자기 증류 자료(58번, 2026-11-17): 7B 호출의 입력과 응답을 그대로 남긴다(측정 때만 켬)
+            try:
+                with open(LOG_PATH, "a", encoding="utf-8") as f:
+                    f.write(json.dumps({"model": model, "messages": messages, "tools": tools or None, "format": fmt,
+                                        "response": {k: v for k, v in (out.get("message") or {}).items() if k in ("role", "content", "tool_calls")}}, ensure_ascii=False) + "\n")
+            except OSError:
+                pass
+        return out
     raise ValueError(f"알 수 없는 LLM 백엔드: {name}")

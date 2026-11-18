@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorState } from "@/components/states";
 import { SendIcon } from "@/components/icons";
-import { ApiError, type AskBody, type AskResult, type CenterFile, type DatasetMeta, type Slots, getGuide, readCenter, writeCenter, sendFeedback, askStream, type Stage } from "@/lib/api";
+import { ApiError, type AskBody, type AskResult, type HistoryItem, type CenterFile, type DatasetMeta, type Slots, getGuide, readCenter, writeCenter, sendFeedback, askStream, type Stage } from "@/lib/api";
 import { StepPicker } from "./step-picker";
 import { CenterUpload, Report, Requests, Views, copyText } from "./views";
 import { DongHome } from "./dong-home";
@@ -82,7 +82,6 @@ export function AskPage() {
   const [picker, setPicker] = useState<Picker | null>(null);
   const correction = useRef<{ question: string; before: Slots } | null>(null); // [조건 바꾸기]로 연 선택 화면이면 원래 질문
   const [panel, setPanel] = useState(false);
-  const [moreRep, setMoreRep] = useState(false);
   const [center, setCenterState] = useState<CenterFile | null>(null);
   const [emptyHint, setEmptyHint] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -100,12 +99,17 @@ export function AskPage() {
   const askedBack = useRef<string | null>(null);
   const [stage, setStage] = useState<Stage | null>(null); // 서버가 보낸 지금 처리 단계(마스터 2026-11-15)
   const [accepted, setAccepted] = useState<string | null>(null); // 확인 카드에서 [이 판단대로 답 보기]를 누른 주소
+  const hist = useRef<HistoryItem[]>([]); // 대화 맥락: 직전 답 2개(이 탭 안에서만, 2026-11-16 1번 ⑥)
   const m = useMutation({
     mutationFn: (b: AskBody) => {
       setStage(null);
       return askStream(b, setStage);
     },
     onSuccess: (r) => {
+      const concl = r.card?.conclusion || r.agent?.lines?.[0];
+      if (r.question && concl && (r.status === "성공" || r.status === "Agent")) {
+        hist.current = [...hist.current.filter((h) => h.question !== r.question), { question: r.question, conclusion: concl.slice(0, 300), space: r.tuple?.space ?? [] }].slice(-2);
+      }
       if (r.status === "선택필요" && r.choose) {
         setPicker({ preset: r.choose.preset, notice: r.choose.message });
         askedBack.current = r.question ?? null; // 되묻기 뒤 조건을 고르면 '되묻기가 맞았다'는 기록으로 남긴다(2026-11-15)
@@ -123,7 +127,10 @@ export function AskPage() {
   useEffect(() => {
     askedKey.current = key;
     if (req) {
-      m.mutate(withCenter(req.body));
+      const b = withCenter(req.body);
+      const typed = b.question && !b.slots && !b.agent_pick;
+      const h = typed ? hist.current.filter((x) => x.question !== b.question) : [];
+      m.mutate(h.length ? { ...b, history: h } : b);
       setText(req.body.question ?? (req.label !== PICK_LABEL ? req.label : ""));
       requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     } else {
@@ -361,21 +368,7 @@ export function AskPage() {
           )}
         </section>
 
-        {!req && guide.data && (
-          <section data-testid="representative" aria-label="이런 걸 물어볼 수 있어요" className="flex flex-wrap items-center gap-2">
-            <span className="font-semibold">이런 걸 물어볼 수 있어요</span>
-            {guide.data.representative.slice(0, moreRep ? undefined : 3).map((x) => (
-              <Button key={x.text} variant="outline" className="h-auto min-h-11 whitespace-normal py-2 text-left" onClick={() => run({ slots: x.slots }, x.text)}>
-                {x.text}
-              </Button>
-            ))}
-            {guide.data.representative.length > 3 && (
-              <button type="button" data-testid="rep-more" className="min-h-11 rounded-(--radius) px-3 underline hover:bg-muted" onClick={() => setMoreRep(!moreRep)}>
-                {moreRep ? "접기" : `더 보기(${guide.data.representative.length - 3})`}
-              </button>
-            )}
-          </section>
-        )}
+        {/* 첫 화면은 지도 중심(마스터 결정 2026-11-16): 예시 질문 칩을 두지 않는다. 서비스가 만든 문장을 그대로 입력하면 같은 버튼 값으로 답한다(guide.match_sentence) */}
         {!req && guide.data && <DongHome dongs={guide.data.dongs} onAsk={(s, t) => run({ slots: s }, t)} />}
         {guide.isError && <ErrorState error={guide.error} onRetry={() => guide.refetch()} />}
         {/* 설계 11-2절 상세 분석: 첫 화면은 지도 아래, 답 화면은 답 아래. 찾기 쉽게 머리말에 [상세 분석] 바로 가기를 둔다 */}
@@ -425,13 +418,16 @@ export function AskPage() {
               }}
             >
               {(res: AskResult) =>
-                res !== SAMPLE && res.status === "Agent" && res.agent ? (
+                res !== SAMPLE && res.status === "Agent" && res.agent && !(res.confirm?.pause && accepted !== key) ? (
                   <div className="flex flex-col gap-3" data-testid="agent-answer">
                     <p className="rounded-(--radius) bg-muted px-3 py-2 text-(--krds-text-bolder)">
                       {res.agent.backend === "code"
                         ? "묻는 것이 여럿인 질문이라 하나씩 나눠, 조각마다 정해진 계산으로 답했어요."
                         : `정해진 질문 종류 하나로 바로 답하기 어려운 질문이라 Agent가 도구를 골라 답했어요${res.escalated ? ` (${res.escalated})` : ""}.`}
                     </p>
+                    {res.confirm?.first && (
+                      <AgentConfirm r={res} accepted onAccept={() => undefined} onPick={(pick) => run({ question: res.question ?? undefined, agent_pick: pick }, res.question ?? "")} />
+                    )}
                     <ResultView r={res.agent} q={res.question ?? ""} />
                   </div>
                 ) : res !== SAMPLE && res.confirm?.pause && accepted !== key ? (

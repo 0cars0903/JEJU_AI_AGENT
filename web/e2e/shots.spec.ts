@@ -11,7 +11,7 @@ test("장면 캡처", async ({ page }, info) => {
     await route.continue();
   });
   await page.goto("/");
-  await expect(page.getByTestId("representative")).toBeVisible();
+  await expect(page.getByTestId("dong-home")).toBeVisible();
   await page.screenshot({ path: `${OUT}/${tag}-1-first.png`, fullPage: true });
   await page.getByTestId("question-input").fill("노형동에 카페 차려도 될까?");
   await page.getByTestId("ask-submit").click();

@@ -237,7 +237,7 @@ def ask(question, chat=None, user="local", mode="expert", use_claude=False):
         return {"status": "상한", "error": f"오늘 상세 분석 요청 상한({DAILY}건)에 닿았어요."}
     if name == "ollama" and mode == "expert" and os.environ.get("JEJU_ANALYST") != "0":
         import step_agent  # 여러 일을 묻는 요청은 단계형 Agent(2026-11-16 마스터 '전체 서비스에 적용'), 기법 하나는 분석 담당 Agent
-        multi = step_agent.serve_expert(question)
+        multi = step_agent.serve_expert(question, staff=user not in (None, "local"))  # 로그인한 심사용 계정만 Claude
         if multi:
             return multi
         # 로컬 상세 분석은 단계형 분석 담당 Agent(app/analyst.py): 단계마다 모델이 판단하고 코드가 검사한다(2026-11-14 마스터 지시)

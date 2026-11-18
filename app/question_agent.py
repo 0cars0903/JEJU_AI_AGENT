@@ -62,7 +62,7 @@ def evidenced(q, m):
 RANK_Q = re.compile(r"(가장|제일|젤|최고|최대|최소|꼴찌|1위|순위|어디가|어느\s*동네)")
 LOW_Q = re.compile(r"(가장|제일|젤|덜)\s*(적|낮|작|안)|최하위|꼴찌|(적|낮|작)은\s*(동네|곳|지역|데)")
 DATA_Q = re.compile(r"(자료|데이터)\S{0,2}\s*(뭐|무엇|어떤|있)")
-OUT_HINT = re.compile(r"인허가|허가|신고|서류|절차|법률|법적|세금|맛집|맛있|맛은|후기|평점|리뷰|추천해|매매가|시세|임대|권리금|예약자|투숙객")  # 명세 6절 범위 밖 낱말
+OUT_HINT = re.compile(r"인허가|허가|신고|서류|절차|법률|법적|세금|맛집|맛있|맛은|후기|평점|리뷰|추천해|추천\s*(횟집|식당|가게|음식점|카페|술집|주점|메뉴|빵집)|매매가|시세|임대|권리금|예약자|투숙객")  # 명세 6절 범위 밖 낱말
 FUTURE_MONEY_Q = re.compile(r"(내년|다음\s*해|앞으로|미래|\d+\s*년\s*뒤|하면).{0,25}(매출|수익|벌|수입).{0,15}(얼마|예측|나올|될지|될까)")
 PRIVATE_Q = re.compile(r"명단|연락처|전화\s*번호|인적\s*사항|개인\s*정보|주민\s*번호|예약자|투숙객\s*정보|누가\s*(사|운영)")
 VAGUE_DONG = re.compile(r"^\s*동네|우리\s*동네|이\s*(동네|근방|근처)|여기|저희\s*(동네|가게)|제\s*가게")
@@ -232,7 +232,7 @@ def gaps(q, it, r, done=()):
                     "change": {"metric": ev or alt}, "note": "", "only": bool(ev)})
     if metric_done:
         pass
-    elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요"):
+    elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T9", "T11"):  # 비슷한 동네·자료 찾기는 지표 없이 답한다(51번 초보 문항 '연동이랑 닮은 동네'가 점포 수로 바뀌던 결함)
         out.append({"kind": "지표 없음", "text": "질문에서 지표 낱말을 찾지 못해 기본 지표(가게 수 등)로 계산했어요." + (f" 질문과 가까운 지표 후보: {', '.join(dict.fromkeys(cand))}." if cand else ""),
                     "change": {"metric": list(dict.fromkeys(cand))}, "note": next((why for _, why in hints if why), "")})
     elif cand and not fixed and not set(t.get("metric") or []) & {m for ms, _ in hints for m in ms}:

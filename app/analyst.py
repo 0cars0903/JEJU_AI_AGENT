@@ -86,7 +86,7 @@ def _rag_check(question, kind, chat, log):
     except Exception:
         return kind
     g = lambda k: k if k in TECHS else "general"  # noqa: E731
-    chk = rag.check(vec, g(kind), "tech", group=g)
+    chk = rag.check(vec, g(kind), "tech", group=g, q=question)
     if not chk.get("differ"):
         return kind
     t1 = time.perf_counter()
@@ -189,6 +189,9 @@ def run(question, chat=None, checks=True):
     add(log)
     kind, ans, method = u["kind"], None, None
     refused = (None, None)
+    if kind == "catalog" and _answerable(question):  # 공개 자료로 답할 수 있는 일반 질문을 센터 자료 찾기로 보내던 결함(2026-11-16 '상관없이 노형동 카페 몇 곳이야?')
+        add([{"tool": "check", "name": "코드 검사", "by": "코드", "ok": True, "args": "", "note": "공개 자료로 답할 수 있는 질문이라 센터 자료 찾기 대신 일반 답으로", "sec": 0.0}])
+        kind = "general"
     if kind == "catalog":
         ok, rep = expert._catalog({"keyword": u["keyword"] or question})
         add([{"tool": "search_center_catalog", "name": "센터 자료 찾기", "by": "코드", "ok": ok and bool(rep.get("found")), "args": u["keyword"], "note": rep.get("note", "")[:120], "sec": 0.0}])
@@ -264,6 +267,16 @@ def run(question, chat=None, checks=True):
     return {"status": "성공", "method": method, "backend": "ollama", "trace": trace, "plan": _plan(trace), "code": None,
             "result": {"numbers": numbers, "notes": card.get("limits") or [], "tables": [], "series": expert._views_to_series(ans)},
             "lines": [x for x in lines if x], "by": "AI(로컬 모델: 기법 선택·해석·다음 분석) + 프로그램(숫자)", "next": nexts, "sec": round(time.perf_counter() - t0, 1)}
+
+
+FIND_DATA = re.compile(r"자료|데이터|어디서|어디에서|목록|센터|찾아|있나요\?*$|있어\?*$|받을|조회")
+
+
+def _answerable(question):
+    """규칙 해석기가 지표와 종류를 읽고 자료를 찾는 말이 없으면 공개 자료로 답할 수 있는 일반 질문으로 본다."""
+    import qparse
+    p = qparse.parse(question)
+    return bool(p.get("metric")) and p.get("type") not in ("T11", "T12") and not FIND_DATA.search(question)
 
 
 def _repair(question, kind):

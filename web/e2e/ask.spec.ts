@@ -32,6 +32,12 @@ async function conclusion(page: Page) {
 }
 
 // P13 질문 화면 시험(docs/기획/07_화면API명세.md). 기본은 LLM 없는 경로. 녹화: RECORD=1 npx playwright test
+/** 서비스가 만든 문장(첫 대표 질문)을 입력해 답을 받는다. 첫 화면에 예시 칩이 없어진 뒤(2026-11-16) 칩 누르기를 대신한다 */
+async function askRep(page: import("@playwright/test").Page, text = "노형동 카페 가게는 몇 곳이야?") {
+  await page.getByTestId("question-input").fill(text);
+  await page.getByTestId("question-input").press("Enter");
+}
+
 test.describe("질문 유도 4가지와 이해 카드", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
@@ -39,12 +45,9 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
     await expect(page.getByTestId("dong-home")).toBeVisible(); // 화면이 붙은 뒤(정적 HTML 단계 제외)
   });
 
-  test("④ 대표 질문을 누르면 해석 없이 답한다", async ({ page }) => {
-    const rep = page.getByTestId("representative");
-    await expect(rep.getByRole("button")).toHaveCount(4); // 대표 질문 3개 + 더 보기
-    await rep.getByTestId("rep-more").click();
-    await expect(rep.getByRole("button")).toHaveCount(10); // 9개(기법 분석 예 2개 포함) + 접기
-    await rep.getByRole("button", { name: "노형동 카페 가게는 몇 곳이야?" }).click();
+  test("④ 첫 화면에는 예시 질문이 없고, 서비스가 만든 문장을 입력하면 해석 없이 답한다", async ({ page }) => {
+    await expect(page.getByTestId("representative")).toHaveCount(0); // 지도 중심 첫 화면(마스터 결정 2026-11-16)
+    await askRep(page);
     await expect(await conclusion(page)).toContainText("노형동");
     await expect(page.getByTestId("understood")).toContainText("이렇게 이해했어요");
     await expect(page.getByTestId("understood")).not.toContainText("추정했어요");
@@ -88,7 +91,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
   });
 
   test("판단 과정: 처리 기록 5단계(해석·계획·계산·검수·설명)와 누가 정했는지 보인다(문서 26 안 D)", async ({ page }) => {
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     const proc = page.getByTestId("process");
     await proc.locator("summary").click();
@@ -106,7 +109,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
       j.interpret = { ...(j.interpret ?? {}), plan_agent: { by: "AI(Claude)", from: "T1", from_ko: "현황 조회", to: "T4", to_ko: "추세", kept: false, reason: "흐름을 묻는 질문", cached: true } };
       await route.fulfill({ json: j });
     });
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     const proc = page.getByTestId("process");
     await proc.locator("summary").click();
@@ -149,7 +152,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
       sent.push(r.request().postData() ?? "");
       return r.fulfill({ json: { ok: true } });
     });
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(page.getByTestId("understood-check")).toContainText("확인이 필요해요");
     await page.getByTestId("understood-ok").click();
     await expect(page.getByTestId("understood-check")).toHaveCount(0);
@@ -158,7 +161,7 @@ test.describe("질문 유도 4가지와 이해 카드", () => {
   });
 
   test("② 추천 질문을 누르면 이어서 답한다", async ({ page }) => {
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     const first = page.getByTestId("suggestions").getByRole("button").first();
     const label = (await first.textContent()) ?? "";
@@ -194,12 +197,12 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
     await expect(page.getByTestId("dong-home")).toBeVisible(); // 화면이 붙은 뒤(정적 HTML 단계 제외)
   });
 
-  test("첫 화면: 대표 질문 한 줄 + 동네 한눈에, 결과는 같은 탭 주소 + 새 탭으로 열기", async ({ page }) => {
-    await expect(page.getByTestId("representative")).toBeVisible();
+  test("첫 화면: 지도 중심 동네 한눈에(예시 질문 없음), 결과는 같은 탭 주소 + 새 탭으로 열기", async ({ page }) => {
+    await expect(page.getByTestId("representative")).toHaveCount(0);
     await expect(page.getByTestId("dong-home")).toBeVisible();
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
-    await expect(page).toHaveURL(/\?s=/);
+    await expect(page).toHaveURL(/\?(s|q)=/); // 입력한 문장은 ?q=, 버튼 값은 ?s=
     await expect(page.getByTestId("open-new-tab")).toHaveAttribute("target", "_blank");
     await page.goBack();
     await expect(page.getByTestId("dong-home")).toBeVisible();
@@ -255,7 +258,7 @@ test.describe("v3 3블록·나눠 보기·자료 요청·보고서", () => {
   });
 
   test("보고서: 인쇄용 정리본이 있고 화면에서는 숨김", async ({ page }) => {
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     // 인쇄는 한 곳: PC는 사이드바 '이 답', 폰·태블릿은 답 카드 바로 가기(사이드바 안 1, 이중 검토 040)
     await expect(page.getByTestId("nav-print").or(page.getByTestId("shortcut-print")).locator("visible=true")).toHaveCount(1);
@@ -492,7 +495,7 @@ test.describe("사용성 점검 반영", () => {
 
   test("A9 [링크 복사]는 현재 주소를 복사하고 '복사했어요'를 보여 준다", async ({ page, context }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]).catch(() => {});
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     // PC는 사이드바 '이 답'의 링크 복사, 폰·태블릿은 답 위 단추(사이드바 안 1)
     const side = page.getByTestId("nav-copy");
@@ -575,7 +578,7 @@ test.describe("사용성 점검 반영", () => {
     test.skip(info.project.name !== "desktop");
     await page.getByTestId("home-dong").selectOption("노형동"); // 숫자 카드는 동네를 고른 뒤에 나온다
     await openPicker(page);
-    for (const loc of [page.getByTestId("rep-more"), page.getByTestId("group-shop"), page.getByTestId("home-card-visit")]) {
+    for (const loc of [page.getByTestId("group-shop"), page.getByTestId("home-card-visit")]) {
       expect(await loc.evaluate((e) => getComputedStyle(e).cursor)).toBe("pointer");
     }
     await page.getByTestId("panel-close").click(); // 겹침형 패널을 닫아야 지도 위에 마우스를 올릴 수 있다
@@ -589,7 +592,7 @@ test.describe("사용성 점검 반영", () => {
     await expect(await conclusion(page)).toBeVisible();
     await expect(page.getByTestId("question-input")).toBeFocused();
     await page.goBack();
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     await expect(page.getByTestId("question-input")).toBeFocused();
     const asked = ((await page.getByTestId("asked").textContent()) ?? "").replace("질문: ", "").trim();
@@ -604,13 +607,12 @@ test.describe("사용성 점검 반영", () => {
 
   test("B6 첫 방문에는 동네를 먼저 고르게 하고, 고른 동네는 다음에도 보여 준다", async ({ page }) => {
     // 문서 20 7.5절 7번: 첫 방문에는 다른 동네(노형동) 숫자를 보여 주지 않는다
-    await expect(page.getByTestId("home-first")).toContainText("내 동네를 먼저 골라 주세요");
+    await expect(page.getByTestId("home-map")).toBeVisible(); // 지도 중심: 고르기 전에는 지도만(안내 상자 없음)
     await expect(page.getByTestId("home-dong")).toHaveValue("");
     await expect(page.locator('[data-testid^="home-card-"]')).toHaveCount(0);
     await expect(page.locator('[data-testid="home-map"] path[aria-pressed="true"]')).toHaveCount(0);
     await page.locator('[data-testid="home-map"] path[data-dong="애월읍"]').click();
     await expect(page.getByTestId("home-dong")).toHaveValue("애월읍");
-    await expect(page.getByTestId("home-first")).toHaveCount(0);
     await expect(page.getByTestId("home-card-stores")).toBeVisible();
     await page.reload();
     await expect(page.getByTestId("home-dong")).toHaveValue("애월읍");
@@ -619,7 +621,7 @@ test.describe("사용성 점검 반영", () => {
 
   test("B7 인쇄 화면은 보고서만 찍고 첫 쪽 맨 위에서 시작한다", async ({ page }, info) => {
     test.skip(info.project.name !== "desktop");
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     await page.emulateMedia({ media: "print" });
     const top = await page.getByTestId("report").evaluate((e) => Math.round(e.getBoundingClientRect().top + window.scrollY));
@@ -1097,7 +1099,7 @@ test.describe("데모 로그인(2026-11-13)", () => {
 
 test("UI 검토(2026-11-13): 답 화면은 위 단추 한 줄, 출처는 근거 차트 뒤, 같은 꼬리표는 한 번만", async ({ page }) => {
   await page.goto("/");
-  await page.getByTestId("representative").getByRole("button", { name: "노형동 카페 가게는 몇 곳이야?" }).click();
+  await askRep(page);
   await expect(await conclusion(page)).toContainText("노형동");
   await expect(page.getByTestId("print-report")).toHaveCount(0);
   await expect(page.getByTestId("asked")).toHaveClass(/sr-only/); // 입력 칸과 같은 질문은 화면에 두 번 보이지 않는다
@@ -1137,7 +1139,7 @@ test.describe("2026-11-13 지적 반영", () => {
 
   test("보고서 쪽 나눔: 장마다 report-part, 부록은 새 쪽, 인쇄 직전 긴 장 표시", async ({ page }) => {
     await page.goto("/");
-    await page.getByTestId("representative").getByRole("button").first().click();
+    await askRep(page);
     await expect(await conclusion(page)).toBeVisible();
     const rep = page.getByTestId("report");
     expect(await rep.locator(".report-part").count()).toBeGreaterThan(1);
