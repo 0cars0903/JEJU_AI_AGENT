@@ -41,3 +41,5 @@ if %errorlevel%==0 (
   echo ============================================================
 )
 pause
+rem Packages installed. A missing Ollama only shows the notice above, so finish as success (2026-11-19: 'where ollama' left errorlevel 1).
+exit /b 0
