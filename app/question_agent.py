@@ -232,7 +232,7 @@ def gaps(q, it, r, done=()):
                     "change": {"metric": ev or alt}, "note": "", "only": bool(ev)})
     if metric_done:
         pass
-    elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T9", "T11"):  # 비슷한 동네·자료 찾기는 지표 없이 답한다(51번 초보 문항 '연동이랑 닮은 동네'가 점포 수로 바뀌던 결함)
+    elif not (t.get("metric") or []) and r.get("status") not in ("범위밖", "선택필요") and t.get("type") not in ("T9", "T10", "T11"):  # 비슷한 동네·자료 찾기는 지표 없이 답한다(51번 초보 문항 '연동이랑 닮은 동네'가 점포 수로 바뀌던 결함). 종합 진단(T10)은 여러 지표를 함께 보는 답이라 지표 없음이 아니다(2026-11-18 캡처: '노형동 카페 차려도 될까?'가 카드 매출로 바뀌던 결함)
         out.append({"kind": "지표 없음", "text": "질문에서 지표 낱말을 찾지 못해 기본 지표(가게 수 등)로 계산했어요." + (f" 질문과 가까운 지표 후보: {', '.join(dict.fromkeys(cand))}." if cand else ""),
                     "change": {"metric": list(dict.fromkeys(cand))}, "note": next((why for _, why in hints if why), "")})
     elif cand and not fixed and not set(t.get("metric") or []) & {m for ms, _ in hints for m in ms}:

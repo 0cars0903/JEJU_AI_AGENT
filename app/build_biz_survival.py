@@ -37,7 +37,10 @@ def main():
         co = g[(g["open_date"] >= KM_START) & (g["open_date"] <= km_end)].copy()
         co["event"] = co["close_date"].notna()
         co["y"] = ((co["close_date"].fillna(end) - co["open_date"]).dt.days / 365.25).clip(lower=0)
-        j5, jse, jn = km_at(co["y"].to_numpy(), co["event"].to_numpy(), 5)
+        # 제주 전체는 동네를 못 찾은 가게까지 센다(기존 업종 생존율 표와 같은 모집단, 2026-11-18: 같은 답에 50.3%·50.1%가 함께 나오던 결함)
+        ga = rest[rest["업종구분소분류"].isin(cats) & (rest["open_date"] >= KM_START) & (rest["open_date"] <= km_end)]
+        ya = ((ga["close_date"].fillna(end) - ga["open_date"]).dt.days / 365.25).clip(lower=0)
+        j5, jse, jn = km_at(ya.to_numpy(), ga["close_date"].notna().to_numpy(), 5)
         p5, cells = {}, []
         for d in dongs:
             x = co[co["admin_dong"] == d]
@@ -52,7 +55,7 @@ def main():
         for c in cells:
             c.append("표본 부족" if c[6] < MIN_N else ("차이 확인 안 됨" if c[0] not in sig else ("제주 평균보다 높음" if c[3] > j5 * 100 else "제주 평균보다 낮음")))
         km_rows += cells
-        km_rows.append(["제주 전체", grp, 5, j5 * 100, *(v * 100 for v in loglog_ci(j5, jse)), len(co), ""])
+        km_rows.append(["제주 전체", grp, 5, j5 * 100, *(v * 100 for v in loglog_ci(j5, jse)), len(ga), ""])
         # 3년 폐업률
         k, n = pd.Series(0.0, index=dongs), pd.Series(0.0, index=dongs)
         for yy in years:

@@ -256,8 +256,11 @@ class Clauses(unittest.TestCase):  # 원문 구절 나누기(2026-11-17 문제 �
                 mock.patch.object(llm_claude, "chat", lambda m, msgs, tools, effort=None: seen.append(m) or call("ask", {})):
             S._chat()(None, [], [])
             self.assertEqual((seen, len(local_calls)), ([], 2))  # 키 있음·로그인 안 함 → 7B(마스터 2026-11-18 '평가자만')
-            S._chat(True)(None, [], [])
+            c = S._chat(True)
+            c(None, [], [])
+            self.assertEqual(S._who(c), S.BY_CLAUDE)  # 표시: Claude가 답했으면 Claude(2026-11-18)
         self.assertEqual(seen, [S.STEP_CLAUDE_MODEL])  # 키 있음·로그인 → Sonnet
+        self.assertEqual(S._who(S._chat()), S.BY)  # 표시: 아직 부르지 않았거나 로컬이면 로컬 모델
         with mock.patch.dict("os.environ", {"JEJU_STEP_CLAUDE": "off"}), mock.patch.object(expert, "_chat_fn", lambda name: local), \
                 mock.patch.object(expert, "claude_key", lambda: True):
             S._chat(True)(None, [], [])

@@ -462,6 +462,7 @@ def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, sta
     import split
     import prompts as P
     chat = _chat(staff)
+    used_claude = False
     steps = [{"do": s["do"].strip(), "uses_prev": bool(s.get("uses_prev")), "orig": bool(s.get("orig")), "state": "남음", "result": None, "tries": 0} for s in plan]
     trace, topics, facts, lines, series, tables = [ptrace], [], {"q": question}, [], [], []
     facts["history"] = [{"q": h["question"], "result": str(h.get("conclusion") or "")[:200],
@@ -500,7 +501,8 @@ def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, sta
                 msg = {"content": f"모델 오류 {type(e).__name__}"}
             fn, args = _first_call(msg, {t["function"]["name"] for t in tools})
             s["tries"] += 1
-            who, out = BY, None
+            who, out = _who(chat), None
+            used_claude = used_claude or who == BY_CLAUDE
             if fn is None:
                 ok, reply = False, {"error": "도구를 부르지 않았어요. 지금 단계에 맞는 도구 하나를 부르세요."}
             elif fn == "answer_question":
@@ -581,8 +583,10 @@ def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, sta
         steps.append({"do": add, "uses_prev": False, "state": "남음", "result": None, "tries": 0})
     say(3, "단계별 답을 묶고 있어요")
     n_ok = sum(1 for s in steps if s["state"] == "끝남")
-    ag = {"status": "성공" if n_ok else "실패", "method": f"단계형 Agent({len(steps)}단계)", "lines": lines, "by": "AI(로컬 모델: 단계 나누기·도구 고르기·다시 계획·자기 확인) + 프로그램(숫자)",
-          "result": {"numbers": {}, "notes": [], "series": series, "tables": tables}, "trace": trace, "topics": topics or None, "backend": "ollama",
+    ag = {"status": "성공" if n_ok else "실패", "method": f"단계형 Agent({len(steps)}단계)", "lines": lines,
+          "by": ("AI(로컬 모델: 단계 나누기·다시 계획·자기 확인, Claude Sonnet: 단계별 도구 고르기) + 프로그램(숫자)" if used_claude
+                 else "AI(로컬 모델: 단계 나누기·도구 고르기·다시 계획·자기 확인) + 프로그램(숫자)"),
+          "result": {"numbers": {}, "notes": [], "series": series, "tables": tables}, "trace": trace, "topics": topics or None, "backend": "claude" if used_claude else "ollama",
           "plan": [f"{k + 1}. {s['do']}" + (" (앞 단계 결과를 씀)" if s["uses_prev"] else "") for k, s in enumerate(steps)], "sec": round(time.perf_counter() - t0, 1)}
     if not n_ok:
         ag["error"] = "어느 단계도 답하지 못했어요."
@@ -818,11 +822,23 @@ def _chat(staff=False):
     def chat(model, messages, tools):
         if state["claude"]:
             try:
-                return llm_claude.chat(STEP_CLAUDE_MODEL, messages, tools, effort="low")
+                out = llm_claude.chat(STEP_CLAUDE_MODEL, messages, tools, effort="low")
+                chat.last = "claude"
+                return out
             except Exception:  # noqa: BLE001  키 오류·연결 끊김·한도 초과 등: 7B로
                 state["claude"] = False
+        chat.last = "local"
         return local(model, messages, tools)
+    chat.last = None
     return chat
+
+
+BY_CLAUDE = "AI(Claude Sonnet)"
+
+
+def _who(chat):
+    """이번 도구 고르기를 실제로 답한 모델의 표시(2026-11-18: 로그인해 Claude가 골라도 화면에 '로컬 모델'로 나오던 결함)."""
+    return BY_CLAUDE if getattr(chat, "last", None) == "claude" else BY
 
 
 def _ask_step(args, s, facts, env, llm_on):
@@ -905,7 +921,7 @@ def serve_expert(question, staff=False):
     ptrace = {"step": 1, "tool": "plan", "name": "단계 나누기", "by": BY, "ok": True, "args": json.dumps([s.get("do") for s in plan], ensure_ascii=False)[:160],
               "note": f"{len(plan)}단계", "sec": round(time.perf_counter() - t0, 2)}
     r = _serve_steps(question, {}, False, lambda i, d: None, plan, ptrace, t0, staff=staff)
-    return dict(r["agent"], backend="ollama", sec=r["sec"])
+    return dict(r["agent"], backend=r["agent"].get("backend", "ollama"), sec=r["sec"])
 
 
 # ---------- 1번 문제 '도민 질문 경로가 Workflow다'의 남은 6가지(2026-11-16 마스터 '6가지 개선부터 우선 진행') ----------
