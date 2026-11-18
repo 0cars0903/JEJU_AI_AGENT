@@ -15,7 +15,7 @@ import { Tip } from "@/components/tip";
 import { useNav } from "@/components/nav-context";
 import { copyText } from "@/features/ask/views";
 
-// 기법 분석 12종(app/techniques.py EXAMPLES와 같은 문장). 누르면 그 예시 질문으로 답한다.
+// 기법 분석 13종(app/techniques.py EXAMPLES와 같은 문장). 누르면 그 예시 질문으로 답한다.
 // 이름 옆에 쉬운 말을 함께 적는다(1차 사용자 도민, 이중 검토 040 요청 1). local = 지금 보던 동네로 바꿔 물을 수 있는 기법.
 const TECH: { k: string; name: string; plain: string; q: string; local?: string }[] = [
   { k: "corr", name: "상관", plain: "같이 움직이는 정도", q: "43개 동네 방문과 매출의 상관 분석해줘" },
@@ -30,6 +30,7 @@ const TECH: { k: string; name: string; plain: string; q: string; local?: string 
   { k: "surv", name: "생존분석", plain: "몇 년 버티는지", q: "노형동 음식점 생존 곡선 분석해줘", local: "노형동" },
   { k: "hhi", name: "업종 다양성", plain: "업종이 고르게 섞였는지", q: "노형동 업종 다양성 지수 알려줘", local: "노형동" },
   { k: "shift", name: "변이할당", plain: "성장 원인 나누기", q: "노형동 카드 매출 변이할당 분석해줘", local: "노형동" },
+  { k: "sat", name: "포화도", plain: "가게가 넘치는지", q: "노형동 카페 포화도 알려줘", local: "노형동" },
 ];
 
 function Item({ icon, label, onClick, href, current, compact, testId, extra }: {

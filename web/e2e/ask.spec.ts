@@ -1236,6 +1236,10 @@ test.describe("사이드바(안 1, 2026-11-13)", () => {
     await bar.getByTestId("nav-tech-decomp").click();
     await expect(await conclusion(page)).toContainText("애월읍");
     await expect(await conclusion(page)).toContainText("계절지수");
+    await expect(bar.getByTestId("nav-tech-list").locator("li")).toHaveCount(13); // 기법 13종(README·app/techniques.py와 같은 수, 2026-11-19 포화도 추가)
+    await bar.getByTestId("nav-tech-sat").click();
+    await expect(await conclusion(page)).toContainText("애월읍");
+    await expect(await conclusion(page)).toContainText("포화도");
     await bar.getByTestId("nav-reset").click();
     await expect(page.getByTestId("dong-home")).toBeVisible();
     await expect(bar.getByTestId("nav-print")).toHaveCount(0);

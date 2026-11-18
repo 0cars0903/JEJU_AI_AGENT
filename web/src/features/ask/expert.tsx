@@ -1,7 +1,7 @@
 "use client";
 
 /** 상세 분석(설계 11-2절, 2026-11-13; 2026-11-14 구조 수정): 센터 담당자가 자유 문장으로 분석을 요청하면
- * 로컬 분석 담당 Agent(qwen2.5:7b, app/analyst.py)가 요청을 기법 12종에 연결해 계산·해석한다(Claude 없이 동작).
+ * 로컬 분석 담당 Agent(qwen2.5:7b, app/analyst.py)가 요청을 기법 13종에 연결해 계산·해석한다(Claude 없이 동작).
  * Claude는 담당자 계정으로 로그인한 뒤 [Claude로 분석]을 누른 요청에만 쓴다. 코드·결과표·그래프를 함께 보여 주고 내려받게 한다. */
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -544,7 +544,7 @@ export function ExpertMode() {
       <summary className="cursor-pointer font-semibold">상세 분석: 분석 기법을 직접 요청하기(AI가 도구를 골라 실행)</summary>
       <div className="mt-2 flex flex-col gap-2">
         <p className="text-(--krds-text-bolder)">
-          센터 담당자처럼 분석 기법을 정해 묻고 싶을 때 써요. AI가 자료 확인·통계 기법 12종·센터 자료 찾기 가운데 필요한 도구를 골라 제출본 표로 실행하고, 고른 순서와 결과를 모두 보여 드려요.
+          센터 담당자처럼 분석 기법을 정해 묻고 싶을 때 써요. AI가 자료 확인·통계 기법 13종·센터 자료 찾기 가운데 필요한 도구를 골라 제출본 표로 실행하고, 고른 순서와 결과를 모두 보여 드려요.
           {local && " 기본은 이 PC의 로컬 모델이 처리해요."}
         </p>
         <Textarea data-testid="expert-input" value={q} onChange={(e) => setQ(e.target.value)} rows={2} maxLength={500} placeholder={EXAMPLES[0]} />
