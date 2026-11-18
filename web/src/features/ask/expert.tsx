@@ -330,6 +330,7 @@ export function ResultView({ r, q }: { r: ExpertResult; q: string }) {
       </div>
     );
   }
+  if (r.steps?.length) return <StepScreen r={r} q={q} steps={r.steps} />;
   const res = r.result ?? {};
   const nums = Object.entries(res.numbers ?? {});
   return (
@@ -417,6 +418,78 @@ export function ResultView({ r, q }: { r: ExpertResult; q: string }) {
           </>
         )}
       </details>
+    </div>
+  );
+}
+
+function Chip({ text }: { text: string }) {
+  return <span className="inline-block w-fit rounded-(--radius) bg-muted px-2 py-0.5 text-[length:var(--krds-fs-label-medium)] text-(--krds-text-bolder)">{text}</span>;
+}
+
+/** 여러 단계 질문의 화면 답(2026-11-18 마스터: 보고서와 같은 뼈대로). 한눈에 → 단계별(원문 구절 제목·결론·근거·그래프) → 알 수 있는 것과 없는 것 → 처리 기록 */
+function StepScreen({ r, q, steps }: { r: ExpertResult; q: string; steps: StepReport[] }) {
+  const answered = steps.filter((s) => s.state === "끝남" && s.kind !== "dup");
+  const cmp = [...answered].reverse().find((s) => s.kind === "compare_steps");
+  return (
+    <div data-testid="expert-result" className="flex flex-col gap-4">
+      <ExpertPrint q={q} r={r} />
+      <section data-testid="step-summary" className="flex flex-col gap-2 rounded-(--radius) border border-(--krds-border-gray) p-4">
+        <h3 className="font-semibold">한눈에 · {steps.length}단계로 나눠 답했어요</h3>
+        {cmp && <p className="text-lg font-semibold">{cmp.text}</p>}
+        <ol className="flex flex-col gap-1">
+          {steps
+            .filter((s) => s !== cmp)
+            .map((s) => (
+              <li key={s.no}>
+                <span className="font-semibold">{s.no}단계</span> · {s.text}
+              </li>
+            ))}
+        </ol>
+      </section>
+      {steps.map((s) => (
+        <section key={s.no} data-testid="step-section" className="flex flex-col gap-2 border-t border-(--krds-border-gray-light) pt-3">
+          <h3 className="text-base font-semibold">
+            {s.no}. {s.title}
+          </h3>
+          {s.tag && <Chip text={s.tag} />}
+          <p className="font-semibold">{s.text}</p>
+          {(s.evidence ?? []).length > 0 && (
+            <ul className="flex flex-col gap-2">
+              {s.evidence!.map((e, i) => (
+                <li key={i} className="flex flex-col gap-0.5">
+                  {e.tag && <Chip text={e.tag} />}
+                  <span>{e.text}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {(s.views ?? []).map((v) => (
+            <figure key={v.id} className="flex flex-col gap-1" data-testid="step-chart">
+              <figcaption className="font-semibold">
+                {v.label} — {v.summary}
+              </figcaption>
+              <ViewChart v={v} />
+            </figure>
+          ))}
+        </section>
+      ))}
+      {(r.limits ?? []).length > 0 && (
+        <section data-testid="step-limits" className="flex flex-col gap-1 border-t border-(--krds-border-gray-light) pt-3">
+          <h3 className="font-semibold">알 수 있는 것과 없는 것</h3>
+          <ul className="flex list-disc flex-col gap-1 pl-5">
+            {r.limits!.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <Button variant="outline" data-testid="expert-print" onClick={printExpert} className="self-start">
+        PDF로 저장(인쇄)
+      </Button>
+      <p className="text-[length:var(--krds-fs-body-small)] text-(--krds-text-subtle)">
+        처리: {r.method} · 숫자는 정해진 계산 코드가 냄 · 판단: {r.by} · {r.sec}초
+      </p>
+      <AgentTrace r={r} />
     </div>
   );
 }

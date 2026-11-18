@@ -1061,6 +1061,13 @@ test.describe("상세 분석(설계 11-2절)", () => {
     await page.getByTestId("expert").locator("summary").click();
     await page.getByTestId("expert-input").fill("노형동 카페 매출 흐름 확인하고 연동과 비교해줘");
     await page.getByTestId("expert-submit").click();
+    // 화면 답도 같은 뼈대(2026-11-18): 한눈에(비교 결론 먼저) → 단계별 절(그래프 포함) → 한계. 줄 글(lines)은 보이지 않는다
+    await expect(page.getByTestId("step-summary")).toContainText("노형동이 1.5%p 높아요.");
+    await expect(page.getByTestId("step-section")).toHaveCount(3);
+    await expect(page.getByTestId("step-section").first()).toContainText("1. 노형동 카페의 최근 1년 매출 흐름을 먼저 확인해줘");
+    await expect(page.getByTestId("step-chart")).toHaveCount(1);
+    await expect(page.getByTestId("step-limits")).toContainText("대분류");
+    await expect(page.getByTestId("expert-lines")).toHaveCount(0);
     await expect(page.getByTestId("expert-print")).toBeVisible();
     await page.emulateMedia({ media: "print" });
     await page.evaluate(() => document.body.classList.add("printing-expert"));
