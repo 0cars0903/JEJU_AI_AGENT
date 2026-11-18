@@ -1035,6 +1035,50 @@ test.describe("상세 분석(설계 11-2절)", () => {
     await page.getByTestId("expert-submit").click();
     await expect(page.getByTestId("expert-fail")).toContainText("기법 목록");
   });
+
+  test("여러 단계 보고서(2026-11-18): 한눈에·단계별 절(원문 구절 제목·결론·근거)·한계·부록 A 처리 과정(고른 쪽)·부록 B 자료", async ({ page }) => {
+    await page.route("**/api/expert/status", (r) => r.fulfill({ json: { enabled: true, available: true, backend: "ollama", daily_limit: 50 } }));
+    const view = { id: "monthly", label: "월별 흐름", kind: "line", x: "월", summary: "달마다 카드 매출", unit: "원",
+      series: [{ name: "노형동", points: [["2026-08", 1.0e10], ["2026-09", 1.05e10]] }, { name: "연동", points: [["2026-08", 1.1e10], ["2026-09", 1.19e10]] }] };
+    await page.route("**/api/expert", (r) =>
+      r.fulfill({
+        json: {
+          status: "성공", method: "단계형 Agent(3단계)", plan: ["1. a", "2. b", "3. c"], by: "AI", backend: "claude", sec: 8,
+          lines: ["1. 노형동 카페 매출 흐름 → 줄 글"], result: { numbers: {}, notes: [], series: [], tables: [] },
+          trace: [{ step: 1, tool: "plan", name: "단계 나누기", by: "코드(질문 원문의 구절로 나눔)", args: "", ok: true, note: "3단계", sec: 0 }],
+          limits: ["카드 매출은 업종 대분류만 있어요."],
+          steps: [
+            { no: 1, title: "노형동 카페의 최근 1년 매출 흐름을 먼저 확인해줘", kind: "answer_question", state: "끝남", text: "노형동 매출: 가릴 수 없어요.", by: "AI(Claude Sonnet)",
+              tag: "자료로 가릴 수 없음", source: "제주관광공사 카드 소비", evidence: [{ text: "2026년 9월 105억 원이에요.", tag: "과거 기록", source: "제주관광공사 카드 소비" }],
+              freshness: [{ source: "제주관광공사 카드 소비", as_of: "2026-09" }], views: [] },
+            { no: 2, title: "노형동과 연동 카페 매출과 비교 분석해줘.", kind: "answer_question", state: "끝남", text: "연동이 노형동보다 많아요.", by: "AI(로컬 모델)", views: [view], evidence: [] },
+            { no: 3, title: "매출 비교", kind: "compare_steps", state: "끝남", text: "노형동이 1.5%p 높아요.", by: "AI(Claude Sonnet)", views: [], evidence: [] },
+          ],
+        },
+      }),
+    );
+    await page.goto("/");
+    await page.getByTestId("expert").locator("summary").click();
+    await page.getByTestId("expert-input").fill("노형동 카페 매출 흐름 확인하고 연동과 비교해줘");
+    await page.getByTestId("expert-submit").click();
+    await expect(page.getByTestId("expert-print")).toBeVisible();
+    await page.emulateMedia({ media: "print" });
+    await page.evaluate(() => document.body.classList.add("printing-expert"));
+    const rep = page.getByTestId("expert-report");
+    await expect(rep).toBeVisible();
+    await expect(rep.locator("h2").first()).toHaveText("한눈에");
+    await expect(rep.locator("strong").first()).toHaveText("노형동이 1.5%p 높아요."); // 비교·종합 단계가 한눈에 맨 앞
+    await expect(rep.getByTestId("report-step")).toHaveCount(3);
+    await expect(rep.getByTestId("report-step").first()).toContainText("1. 노형동 카페의 최근 1년 매출 흐름을 먼저 확인해줘");
+    await expect(rep.getByTestId("report-step").first()).toContainText("105억 원이에요. [1]");
+    await expect(rep.getByTestId("report-step").nth(1).locator("svg").first()).toBeVisible();
+    await expect(rep.getByTestId("report-limits")).toContainText("대분류");
+    await expect(rep.getByTestId("report-process")).toContainText("AI(Claude Sonnet)");
+    await expect(rep.getByTestId("report-process")).toContainText("비교·종합");
+    await expect(rep.getByTestId("report-sources")).toContainText("2026-09");
+    await expect(rep).not.toContainText("줄 글"); // 줄 글(lines)은 보고서에 쓰지 않는다
+    await expect(rep).not.toContainText("AI가 코드를 쓰지 않고");
+  });
 });
 
 test.describe("데모 로그인(2026-11-13)", () => {

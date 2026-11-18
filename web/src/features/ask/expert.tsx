@@ -9,8 +9,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { CartesianGrid, Line, LineChart, Bar, BarChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { type ExpertResult, type ExpertSeries, type ExpertTable, askExpert, getExpertStatus } from "@/lib/api";
-import { shortNum } from "./views";
+import { type ExpertResult, type ExpertSeries, type ExpertTable, type StepReport, askExpert, getExpertStatus } from "@/lib/api";
+import { ViewChart, shortNum } from "./views";
 import { LoginForm } from "@/components/login";
 import { markLongParts } from "./print-layout";
 
@@ -94,6 +94,14 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
   const nums = Object.entries(res.numbers ?? {});
   const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
   const stepped = /^(단계형 Agent|질문 나누기)/.test(r.method ?? "");
+  if (stepped && r.steps?.length) {
+    return createPortal(
+      <div ref={rootRef} className="print-only print-expert" data-testid="expert-report" aria-hidden>
+        <StepBody q={q} r={r} steps={r.steps} now={now} />
+      </div>,
+      host,
+    );
+  }
   return createPortal(
     <div ref={rootRef} className="print-only print-expert" data-testid="expert-report" aria-hidden>
       {/* 여러 단계 질문(단계형 Agent·질문 나누기)은 도민 질문의 보고서다. 상세 분석과 머리말을 나눈다(2026-11-16) */}
@@ -155,6 +163,148 @@ function ExpertPrint({ q, r }: { q: string; r: ExpertResult }) {
       </div>
     </div>,
     host,
+  );
+}
+
+const STEP_KIND: Record<string, string> = {
+  answer_question: "일반 답(정해진 계산)", run_technique: "통계 기법", compare_steps: "비교·종합(앞 단계 숫자로)", rank_industries: "업종 순위",
+  skip_step: "넘김(자료 범위 밖)", search_center_catalog: "센터 자료 찾기", dup: "앞 단계와 같음", fail: "답하지 못함",
+};
+
+/** 여러 단계 질문 보고서(2026-11-18 마스터: 여러 단계 보고서가 읽기 어렵다). 일반 보고서와 같은 뼈대:
+ * 한눈에 → 단계별 절(질문 원문 구절 제목·결론·근거·그래프) → 알 수 있는 것과 없는 것 → 부록 A 처리 과정 → 부록 B 자료와 기준 시점 */
+function StepBody({ q, r, steps, now }: { q: string; r: ExpertResult; steps: StepReport[]; now: string }) {
+  const base = (x: string) => x.replace(/\(.*$/, "").replace(/ 기록$/, "").trim();
+  const asOf = new Map<string, string>();
+  for (const s of steps) for (const f of s.freshness ?? []) if (f.source && !asOf.has(base(f.source))) asOf.set(base(f.source), f.as_of);
+  const srcs = Array.from(asOf.keys());
+  const mark = (name?: string | null) => {
+    const n = name ? srcs.indexOf(base(name)) + 1 : 0;
+    return n > 0 ? ` [${n}]` : "";
+  };
+  const answered = steps.filter((s) => s.state === "끝남" && s.kind !== "dup");
+  const cmp = [...answered].reverse().find((s) => s.kind === "compare_steps");
+  const splitBy = r.trace?.[0]?.tool === "plan" ? r.trace[0].by : "AI(로컬 모델)";
+  return (
+    <>
+      <h1>제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent 보고서</h1>
+      <p>질문: {q}</p>
+      <p>이렇게 이해했어요: 물은 일이 {steps.length}가지라 {steps.length}단계로 나눠 답했어요.</p>
+      <h2>한눈에</h2>
+      {cmp && (
+        <p>
+          <strong>{cmp.text}</strong>
+        </p>
+      )}
+      <ul data-testid="report-step-summary">
+        {steps
+          .filter((s) => s !== cmp)
+          .map((s) => (
+            <li key={s.no}>
+              <span className="report-tag">{s.no}단계</span>
+              {s.text}
+              {mark(s.source)}
+            </li>
+          ))}
+      </ul>
+      {steps.map((s) => (
+        <div key={s.no} className="report-part" data-testid="report-step">
+          <h2>
+            {s.no}. {s.title}
+          </h2>
+          {s.tag && <span className="report-tag">{s.tag}</span>}
+          <p>
+            <strong>{s.text}</strong>
+            {mark(s.source)}
+          </p>
+          {(s.evidence ?? []).length > 0 && (
+            <ul>
+              {s.evidence!.map((e, i) => (
+                <li key={i}>
+                  {e.tag && <span className="report-tag">{e.tag}</span>}
+                  {e.text}
+                  {mark(e.source)}
+                </li>
+              ))}
+            </ul>
+          )}
+          {(s.views ?? []).length > 0 && (
+            <div className="report-charts">
+              {s.views!.map((v) => (
+                <div key={v.id} className="report-chart">
+                  <h3>
+                    {v.label} — {v.summary}
+                  </h3>
+                  <ViewChart v={v} width={640} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+      {(r.limits ?? []).length > 0 && (
+        <div data-testid="report-limits" className="report-part">
+          <h2>알 수 있는 것과 없는 것</h2>
+          <ul>
+            {r.limits!.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div data-testid="report-process" className="report-part report-appendix">
+        <h2>부록 A. 처리 과정</h2>
+        <table className="report-table">
+          <thead>
+            <tr>
+              <th>단계</th>
+              <th>한 일</th>
+              <th>방법</th>
+              <th>고른 쪽</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>-</td>
+              <td>질문을 단계로 나눔</td>
+              <td>{steps.length}단계</td>
+              <td>{splitBy}</td>
+            </tr>
+            {steps.map((s) => (
+              <tr key={s.no}>
+                <td>{s.no}</td>
+                <td>{s.title}</td>
+                <td>{STEP_KIND[s.kind] ?? s.kind}</td>
+                <td>{s.by}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p>숫자는 모두 정해진 계산 코드가 냈고, 설명 문장의 숫자는 계산 결과와 대조했어요.</p>
+      </div>
+      <div data-testid="report-sources" className="report-part">
+        <h2>부록 B. 자료 목록과 기준 시점</h2>
+        <table className="report-table">
+          <thead>
+            <tr>
+              <th>자료</th>
+              <th>기준 시점</th>
+            </tr>
+          </thead>
+          <tbody>
+            {srcs.map((x, i) => (
+              <tr key={x}>
+                <td>
+                  [{i + 1}] {x}
+                </td>
+                <td>{asOf.get(x)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p>생성 {now} · 제주빅데이터센터 빅데이터 분석·컨설팅 지원 보조 Agent</p>
+      </div>
+    </>
   );
 }
 

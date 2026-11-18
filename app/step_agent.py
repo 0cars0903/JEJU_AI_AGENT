@@ -457,6 +457,41 @@ def serve(question, env=None, llm_on=True, progress=None, forced=None):
     return r
 
 
+def _rep(fn, result, card, out, who, subs=()):
+    """보고서용 단계 정리: 결론·근거(태그·자료·기준 시점)·대신 쓴 지표 안내·그래프(선·막대 2개까지)·자료 기준 시점·답한 모델."""
+    a = (out or {}).get("answer") or {}
+    concl = (a.get("conclusion") or {}) if out else {}
+    ev = [{"text": e["text"], "tag": e.get("tag"), "source": e.get("dataset"), "as_of": e.get("as_of")}
+          for e in (card.get("evidence") or []) if e.get("text") and e["text"] not in str(result)][:4]
+    views = [v for v in (a.get("views") or [])[: max(1, min(2, a.get("default_views") or 2))] if v.get("kind") in ("line", "bar") and v.get("series")]
+    return {"kind": fn or "-", "text": result, "tag": concl.get("tag"), "source": concl.get("source"), "evidence": ev, "notes": list(dict.fromkeys(subs))[:1],
+            "views": views, "freshness": [{"source": f.get("source"), "as_of": f.get("as_of")} for f in (a.get("freshness") or [])], "by": who}
+
+
+def _limits(notes):
+    """단계마다 붙은 한계 문장을 한 번씩만. 업종 대분류 안내처럼 같은 뜻의 문장은 첫 문장만 남긴다."""
+    out, keys = [], set()
+    for n in (str(x) for x in notes if x):
+        key = "대분류" if "대분류" in n else n
+        if key not in keys:
+            keys.add(key)
+            out.append(n)
+    return out
+
+
+def _report_steps(steps):
+    """단계별 보고서 항목. 제목은 질문 원문 구절(원문 구절 단계)이나 모델이 실제로 물은 문장. 뒤 단계에 같은 그래프(같은 종류·같은 동네)가 있으면 앞 것은 뺀다."""
+    out = []
+    for k, s in enumerate(steps):
+        rep = dict(s.get("rep") or {"kind": "none", "text": s.get("result") or "처리하지 못했어요", "by": "-"})
+        out.append(dict(rep, no=k + 1, title=s["do"] if s.get("orig") else (s.get("asked") or s["do"]), state=s["state"], uses_prev=bool(s.get("uses_prev"))))
+    names = lambda v: {x.get("name") for x in v.get("series") or []}  # noqa: E731
+    for k, st in enumerate(out):
+        later = [v for x in out[k + 1:] for v in x.get("views") or []]
+        st["views"] = [v for v in st.get("views") or [] if not any(w.get("id") == v.get("id") and names(v) == names(w) for w in later)]
+    return out
+
+
 def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, staff=False):
     import analyst
     import split
@@ -481,10 +516,12 @@ def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, sta
                 s["state"], s["result"] = "끝남", f"앞 {i}단계의 답을 함께 보세요(따로 계산하지 않았어요)."  # 앞 단계를 모아 보여 달라는 단계는 다시 계산하지 않는다(R054 4단계)
                 trace.append({"step": len(trace) + 1, "tool": "-", "name": f"{i + 1}단계 · 앞 단계 모음", "by": "코드", "ok": True, "args": s["do"][:160], "note": s["result"], "sec": 0})
                 lines.append(f"{i + 1}. {s['do']} → {s['result']}")
+                s["rep"] = {"kind": "dup", "text": s["result"], "by": "코드"}
                 continue
             same = next((k for k, x in enumerate(steps[:i]) if x["state"] == "끝남" and re.sub(r"\W", "", x["do"]) == re.sub(r"\W", "", s["do"])), None)
             if same is not None:  # 다시 계획·자기 확인이 끝난 단계와 같은 문장을 다시 넣으면 계산하지 않는다(53번, 조정용 R075)
                 s["state"], s["result"] = "끝남", f"{same + 1}단계와 같은 단계라 다시 계산하지 않았어요."
+                s["rep"] = {"kind": "dup", "text": s["result"], "by": "코드"}
                 trace.append({"step": len(trace) + 1, "tool": "-", "name": f"{i + 1}단계 · 같은 단계", "by": "코드", "ok": True, "args": s["do"][:160], "note": s["result"], "sec": 0})
                 continue
             say(2, f"{i + 1}/{len(steps)}단계: {s['do'][:40]}")
@@ -542,17 +579,20 @@ def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, sta
             if fn == "skip_step" and ok:
                 s["state"], s["result"] = "건너뜀", reply.get("note")
                 lines.append(f"{head} → 자료로 할 수 없어 넘겼어요: {reply.get('note')}")
+                s["rep"] = {"kind": "skip", "text": f"자료로 할 수 없어 넘겼어요: {reply.get('note')}", "by": who}
             elif ok:
                 s["state"], s["result"] = "끝남", reply.get("conclusion") or reply.get("note")
                 card = (out or {}).get("card") or {}
                 dup = next((k for k, x in enumerate(steps[:i]) if x.get("state") == "끝남" and x.get("result") == s["result"]), None)
                 if dup is not None:  # 다른 문장의 단계가 앞 단계와 똑같은 답을 내면 다시 쓰지 않는다(2026-11-17 실패 검토 V160 유형: 같은 답이 세 번 나오던 결함)
                     lines.append(f"{head} → {dup + 1}단계와 같은 결과예요. 이 단계만의 값은 자료에서 따로 찾지 못했어요.")
+                    s["rep"] = {"kind": "dup", "text": f"{dup + 1}단계와 같은 결과예요. 이 단계만의 값은 자료에서 따로 찾지 못했어요.", "by": who}
                     continue
                 lines.append(f"{head} → {s['result']}")
                 sub = [n for n in list(((out or {}).get("understood") or {}).get("notes") or []) + list(card.get("limits") or []) if "대신" in str(n)]
                 lines += [f"   · {n}" for n in dict.fromkeys(sub)][:1]  # 다른 지표로 대신 답했으면 그 단계 바로 아래에 밝힌다(시간대 사람 수·비 온 날 매출, 2026-11-17)
                 lines += [f"   · {e['text']}" for e in (card.get("evidence") or []) if e["text"] not in str(s["result"])][:2]  # 결론과 같은 근거 줄은 다시 쓰지 않는다
+                s["rep"] = _rep(fn, s["result"], card, out, who, sub)  # 보고서용 단계 정리(2026-11-18 마스터: 여러 단계 보고서 가독성)
                 if fn == "answer_question" and out:
                     s["value"] = values_of(s["result"], _label(out, s["do"]))
                     if s["value"] and "제주 전체" in str(s["result"]) and ((out.get("tuple") or {}).get("space")):
@@ -567,6 +607,7 @@ def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, sta
             elif s["tries"] >= TRIES:
                 s["state"], s["result"] = "못 함", reply.get("error")
                 lines.append(f"{head} → {reply.get('error') or '답을 만들지 못했어요'}")
+                s["rep"] = {"kind": "fail", "text": reply.get("error") or "답을 만들지 못했어요", "by": who}
             else:
                 s["hint"] = reply.get("error")
             if s["state"] in ("못 함", "건너뜀") and not replanned and any(x["state"] == "남음" for x in steps) and time.perf_counter() - t0 < BUDGET - 30:
@@ -587,7 +628,8 @@ def _serve_steps(question, env, llm_on, say, plan, ptrace, t0, history=None, sta
           "by": ("AI(로컬 모델: 단계 나누기·다시 계획·자기 확인, Claude Sonnet: 단계별 도구 고르기) + 프로그램(숫자)" if used_claude
                  else "AI(로컬 모델: 단계 나누기·도구 고르기·다시 계획·자기 확인) + 프로그램(숫자)"),
           "result": {"numbers": {}, "notes": [], "series": series, "tables": tables}, "trace": trace, "topics": topics or None, "backend": "claude" if used_claude else "ollama",
-          "plan": [f"{k + 1}. {s['do']}" + (" (앞 단계 결과를 씀)" if s["uses_prev"] else "") for k, s in enumerate(steps)], "sec": round(time.perf_counter() - t0, 1)}
+          "plan": [f"{k + 1}. {s['do']}" + (" (앞 단계 결과를 씀)" if s["uses_prev"] else "") for k, s in enumerate(steps)], "sec": round(time.perf_counter() - t0, 1),
+          "steps": _report_steps(steps), "limits": _limits(notes)}
     if not n_ok:
         ag["error"] = "어느 단계도 답하지 못했어요."
     first = next((tp["tuple"] for tp in topics if tp.get("tuple")), {})
@@ -703,8 +745,10 @@ CONJ = {"있고": "있어?", "없고": "없어?", "많고": "많아?", "적고":
         "버티고": "버텨?", "살아남고": "살아남아?", "열고": "열어?", "벌고": "벌어?", "늘고": "늘어?", "줄고": "줄어?",
         # 2026-11-17 새 문항 067 조정용: 기법을 시키고 이어서 다른 것을 묻는 연결('변이할당분석 해주고 매장 수도')
         "해주고": "해줘", "계산해주고": "계산해줘", "계산하고": "계산해줘", "분석해주고": "분석해줘", "분석하고": "분석해줘", "구해주고": "구해줘", "구하고": "구해줘",
-        "보여주고": "보여줘", "알려주고": "알려줘", "진단해주고": "진단해줘", "얼마이고": "얼마야?"}
-CONJ_CUT = re.compile(r"(" + "|".join(sorted(CONJ, key=len, reverse=True)) + r")\s+")
+        "보여주고": "보여줘", "알려주고": "알려줘", "진단해주고": "진단해줘", "얼마이고": "얼마야?",
+        # 2026-11-18 데모(영상 장면 2 '…흐름을 먼저 확인하고, 그 다음 …'): 확인·살펴보기 연결이 없어 모델이 명사 4조각으로 나눔
+        "확인하고": "확인해줘", "확인해주고": "확인해줘", "살펴보고": "살펴봐줘", "살펴봐주고": "살펴봐줘"}
+CONJ_CUT = re.compile(r"(" + "|".join(sorted(CONJ, key=len, reverse=True)) + r"),?\s+(?:그\s*다음(?:에|으로)?|그리고|이어서|다음으로)?\s*")  # 뒤 구절 앞의 순서 말('그 다음')은 뗀다
 ASK_WORD = re.compile(r"포화|과밀|변이|입지|다양성|분해|상관|회귀|군집|클러스터|검정|이상치|분포|매출|폐업|개업|생존|방문|유동|점포|가게|매장|버스|손님|관광객|비중|순위|인구|장사|벌어|벌이|사람|붐비|붐벼|버티|버텨|살아남|문\s*(닫|여|연|열)|새로|생기|생긴|생겨"
                       r"|몇\s*(개|곳|군데)|얼마|닮|비슷|잘돼|잘되|오래|열어|여는|수는|비율|거기|그곳|그\s*동네|줄어|늘어|비\s*오|1등|1위|제일|가장|순위|\d+\s*년\s*(넘|이상)")
 RANK_HEAD = re.compile(r"(1등|1위|제일|가장|최고)\S*\s*(\S+\s*){0,2}(동네|곳|데)|(닮|비슷)\S*\s*(동네|곳|데)")
@@ -844,7 +888,10 @@ def _who(chat):
 def _ask_step(args, s, facts, env, llm_on):
     """answer_question: 모델이 쓴 하위 질문 문장을 질문 담당 Agent(해석·보정·계산·검수)로 답한다. 앞 결과의 동네가 빠졌으면 채운다."""
     import question_agent
-    q = str((args or {}).get("question") or s["do"]).strip()
+    q = (args or {}).get("question") or s["do"]
+    while isinstance(q, dict):  # 모델이 인자를 {'question': {'question': '…'}}처럼 한 번 더 감싼 경우(2026-11-18 데모 PDF 4단계)
+        q = q.get("question") or s["do"]
+    q = str(q).strip()
     m = BIZ_ASK.search(s["do"]) if facts.get("biz") else None
     if m:  # 계획 단계가 '1순위 업종 점포 수'를 물으면 모델이 다시 쓴 문장 대신 앞 단계가 찾은 업종으로 묻는다(53번, 조정용 R075)
         q = BIZ_REF.sub(facts["biz"], m.group(0), count=1)
@@ -915,10 +962,15 @@ def serve_expert(question, staff=False):
     if not _multi_ok(question):
         return None
     t0 = time.perf_counter()
-    plan = [s for s in ((analyst._ask(None, _plan_sys(question), question, PLAN_SCHEMA, max_tokens=400) or {}).get("steps") or []) if str(s.get("do", "")).strip()][:MAX_STEPS]
+    cl = clauses(question)  # 서비스 경로와 같게: 원문 구절이 둘 이상이면 코드가 구절로 나눈다(2026-11-18 데모: 상세 분석이 '노형동 카페 / 1년 매출 흐름 / …' 4조각으로 나눠 같은 답을 되풀이)
+    if len(cl) >= 2:
+        plan, by = cl, "코드(질문 원문의 구절로 나눔)"
+    else:
+        plan = [s for s in ((analyst._ask(None, _plan_sys(question), question, PLAN_SCHEMA, max_tokens=400) or {}).get("steps") or []) if str(s.get("do", "")).strip()][:MAX_STEPS]
+        by = BY
     if len(plan) <= 1:
         return None
-    ptrace = {"step": 1, "tool": "plan", "name": "단계 나누기", "by": BY, "ok": True, "args": json.dumps([s.get("do") for s in plan], ensure_ascii=False)[:160],
+    ptrace = {"step": 1, "tool": "plan", "name": "단계 나누기", "by": by, "ok": True, "args": json.dumps([s.get("do") for s in plan], ensure_ascii=False)[:160],
               "note": f"{len(plan)}단계", "sec": round(time.perf_counter() - t0, 2)}
     r = _serve_steps(question, {}, False, lambda i, d: None, plan, ptrace, t0, staff=staff)
     return dict(r["agent"], backend=r["agent"].get("backend", "ollama"), sec=r["sec"])

@@ -187,7 +187,7 @@ class SixImprovements(unittest.TestCase):
         q = "청년 유동인구가 가장 많은 동네 3곳을 뽑고, 1위 동네의 카페 점포 수를 알려줘."
         fake = {"question": q, "status": "Agent", "agent": {"lines": []}, "card": {"limits": []}, "step_agent": {"plan": ["a", "b"], "trace": []}}
         with mock.patch("analyst._ask", return_value=plan), mock.patch("question_agent._ask_choice", return_value=({}, {"1": 0.8, "2": 0.2})), \
-                mock.patch.object(S, "_serve_steps", return_value=fake):
+                mock.patch.object(S, "_serve_steps", return_value=fake), mock.patch.object(S, "clauses", return_value=[]):  # 모델 계획 경로를 검사(쉼표 뒤 연결은 2026-11-18부터 코드가 구절로 나눔)
             r = S.serve(q, {}, llm_on=False)
         self.assertTrue(r["confirm"]["pause"])
         self.assertEqual(r["confirm"]["options"][0]["pick"], S.ONE_STEP)
@@ -284,3 +284,20 @@ class Clauses(unittest.TestCase):  # 원문 구절 나누기(2026-11-17 문제 �
             S.serve("노형동 카페 수랑 연동 카페 수 알려줘", {"staff": True})
             S.serve("노형동 카페 수랑 연동 카페 수 알려줘", {})
         self.assertEqual(got, [True, False])
+
+
+class ClauseConfirm(unittest.TestCase):
+    def test_confirm_then_compare(self):  # 2026-11-18 데모(영상 장면 2): '먼저 확인하고, 그 다음 …'을 두 구절로, 순서 말은 뗌
+        q = "노형동 카페의 최근 1년 매출 흐름을 먼저 확인하고, 그 다음 연동 카페 매출과 비교 분석해줘."
+        steps = [x["do"] for x in S.clauses(q)]
+        self.assertEqual(len(steps), 2)
+        self.assertIn("확인해줘", steps[0])
+        self.assertNotIn("그 다음", steps[1])
+        self.assertIn("연동", steps[1])
+
+    def test_nested_question_arg(self):  # 모델이 인자를 {'question': {'question': …}}로 감싼 경우 안쪽 문장으로 묻는다
+        asked = []
+        with mock.patch("question_agent.run", side_effect=lambda q, *a, **k: asked.append(q) or {"status": "성공", "card": {"conclusion": "x"}}):
+            s = {"do": "노형동 카페 매출", "uses_prev": False, "state": "남음", "result": None, "tries": 0}
+            S._ask_step({"question": {"question": "노형동 카페 매출 알려줘"}}, s, {}, {}, False)
+        self.assertEqual(asked[0], "노형동 카페 매출 알려줘")

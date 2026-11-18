@@ -222,6 +222,12 @@ export function writeCenter(c: CenterFile | null) {
 /** 상세 분석(설계 11-2절): Claude가 계획·pandas 코드를 짜고 격리 실행한 결과 */
 export type ExpertTable = { title?: string; columns: string[]; rows: (string | number | null)[][] };
 export type ExpertSeries = { title?: string; kind?: "line" | "bar" | "scatter"; name?: string; x: (string | number)[]; y: (number | null)[] };
+export type StepReport = {
+  no: number; title: string; kind: string; state: string; text: string; by: string; uses_prev?: boolean;
+  tag?: string | null; source?: string | null; notes?: string[];
+  evidence?: { text: string; tag?: string | null; source?: string | null; as_of?: string | null }[];
+  views?: View[]; freshness?: { source: string; as_of: string }[];
+};
 export type ExpertResult = {
   status: "성공" | "실패" | "꺼짐" | "상한" | "오류";
   method?: string;
@@ -234,6 +240,10 @@ export type ExpertResult = {
   /** 도구 루프 기록(문서 26 안 A): 단계·도구·누가 골랐는지·성공·메모 */
   trace?: { step: number; tool: string; name: string; by: string; args: string; ok: boolean; note: string; sec: number }[];
   backend?: "claude" | "ollama" | "code";
+  /** 여러 단계 보고서(2026-11-18): 단계마다 원문 구절 제목·결론·근거·그래프·자료 기준 시점·답한 모델 */
+  steps?: StepReport[];
+  /** 단계마다 붙은 한계를 한 번씩 모은 것 */
+  limits?: string[];
   error?: string;
   hint?: string;
   sec?: number;
